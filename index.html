@@ -1,1 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Cronograma de Producción</title>
+  <!-- FullCalendar -->
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+  <!-- Papa Parse para CSV -->
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <style>
+    body { font-family: Arial; margin: 20px; }
+    #calendar { max-width: 1100px; margin: 0 auto; }
+    /* formato condicional */
+    .evento-plan { background-color: #d9ead3; border-color: #6aa84f; color: #000; }
+    .evento-real { background-color: #cfe2f3; border-color: #3d85c6; color: #000; }
+    .cumplido { border: 3px solid #00b050 !important; }
+    .desvio { border: 3px solid #ff0000 !important; background-color: #f4cccc !important; }
+    .sin-plan { background-color: #efefef; border-color: #999; color: #666; }
+    .sin-real { opacity: 0.6; }
+    .leyenda { margin: 20px auto; max-width: 600px; display: flex; gap: 20px; justify-content: center; }
+    .leyenda span { display: inline-block; padding: 5px 10px; border-radius: 4px; font-size: 0.9em; }
+  </style>
+</head>
+<body>
+  <h2>Calendario de Producción</h2>
+  <div class="leyenda">
+    <span style="background:#d9ead3;">Plan</span>
+    <span style="background:#cfe2f3;">Real</span>
+    <span style="border:3px solid #00b050; background:#d9ead3;">Cumplido ✓</span>
+    <span style="border:3px solid #ff0000; background:#f4cccc;">Desvío ✗</span>
+    <span style="background:#efefef;">Sin plan</span>
+  </div>
+  <div id="calendar"></div>
 
+  <script>
+    // ⚠️ REEMPLAZÁ estas URLs con las que copiaste de Google Sheets
+    const PLAN_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';   // hoja DatosProd
+    const REAL_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=1774340358&single=true&output=csv';   // hoja ProduccionHistorica
+
+    // Mapa de turnos para ordenar
+    const turnoOrden = { 'T1':1, 'T2':2, 'T3':3 };
+
+    // Función para cargar y parsear CSV
+    async function cargarCSV(url) {
+      const respuesta = await fetch(url);
+      const texto = await respuesta.text();
+      return new Promise((resolve, reject) => {
+        Papa.parse(texto, {
+          header: true,
+          skipEmptyLines: true,
+          complete: results => resolve(results.data),
+          error: err => reject(err)
+        });
+      });
+    }
+
+    // Convierte fecha "AAAA-MM-DD" a Date
+    function parseFecha(fechaStr) {
+      if (!fechaStr) return null;
+      const partes = fechaStr.split('-');
+      if (partes.length !== 3) return null;
+      return new Date(partes[0], partes[1]-1, partes[2]);
+    }
+
+    // Genera lista de días entre dos fechas (inclusive)
+    function diasEntre(fechaInicio, fechaFin) {
+      const dias = [];
+      let actual = new Date(fechaInicio);
+      while (actual <= fechaFin) {
+        dias.push(new Date(actual));
+        actual.setDate(actual.getDate() + 1);
+      }
+      return dias;
+    }
+
+    document.addEventListener('DOMContentLoaded', async function() {
+      try {
+        // 1. Cargar ambos CSV
+        const [planData, realData] = await Promise.all([
+          cargarCSV(PLAN_URL),
+          cargarCSV(REAL_URL)
+        ]);
+
+        // 2. Procesar plan: cada tarea se expande en eventos por turno
+        const eventosPlan = [];
+        planData.forEach(row => {
+          const ladrillo = row['LADRILLO']?.trim();
+          const tarea = row['TAREA']?.trim();
+          const fechaIni = parseFecha(row['FECHA INICIO']);
+          const fechaFin = parseFecha(row['FECHA FIN']);
+          const turnoIni = row['TURNO INICIO']?.trim();
+          const turnoFin = row['TURNO FIN']?.trim();
+
+          if (!ladrillo || !fechaIni || !fechaFin) return;
+
+          const dias = diasEntre(fechaIni, fechaFin);
+          dias.forEach((dia, idx) => {
+            // Determinar turnos para este día
+            let turnosDia = [];
+            if (dias.length === 1) {
+              // Si la tarea empieza y termina el mismo día, incluir desde turnoIni hasta turnoFin
+              for (let t = turnoOrden[turnoIni]; t <= turnoOrden[turnoFin]; t++) {
+                let nombreTurno = Object.keys(turnoOrden).find(k => turnoOrden[k] === t);
+                turnosDia.push(nombreTurno);
+              }
+            } else if (idx === 0) {
+              // Primer día: desde turnoIni hasta T3
+              for (let t = turnoOrden[turnoIni]; t <= 3; t++) {
+                let nombreTurno = Object.keys(turnoOrden).find(k => turnoOrden[k] === t);
+                turnosDia.push(nombreTurno);
+              }
+            } else if (idx === dias.length - 1) {
+              // Último día: desde T1 hasta turnoFin
+              for (let t = 1; t <= turnoOrden[turnoFin]; t++) {
+                let nombreTurno = Object.keys(turnoOrden).find(k => turnoOrden[k] === t);
+                turnosDia.push(nombreTurno);
+              }
+            } else {
+              // Días intermedios: todos los turnos (T1, T2, T3)
+              turnosDia = ['T1','T2','T3'];
+            }
+
+            turnosDia.forEach(turno => {
+              const titulo = `${ladrillo} (${tarea})`;
+              eventosPlan.push({
+                title: titulo,
+                start: dia.toISOString().split('T')[0],
+                allDay: true,
+                extendedProps: {
+                  tipo: 'plan',
+                  ladrillo: ladrillo,
+                  turno: turno,
+                  tarea: tarea
+                },
+                className: 'evento-plan'
+              });
+            });
+          });
+        });
+
+        // 3. Procesar real: cada fila es un turno en un día
+        const eventosReal = [];
+        realData.forEach(row => {
+          const diaStr = row['Día']?.trim();
+          const turno = row['Turno']?.trim();
+          let molde = row['Molde']?.trim();
+          // Algunas filas usan "L. carga" + "N° de molde", unificamos con Molde
+          if (!molde) {
+            const carga = row['L. carga']?.trim();
+            const nro = row['N° de molde']?.trim();
+            if (carga && nro) molde = carga + ' (' + nro + ')';
+          }
+          if (!diaStr || !turno) return;
+          // Parsear fecha (formato DD/MM/AAAA)
+          const partes = diaStr.split('/');
+          if (partes.length !== 3) return;
+          const fecha = new Date(partes[2], partes[1]-1, partes[0]);
+
+          eventosReal.push({
+            title: molde || 'Sin dato',
+            start: fecha.toISOString().split('T')[0],
+            allDay: true,
+            extendedProps: {
+              tipo: 'real',
+              ladrillo: molde,
+              turno: turno
+            },
+            className: 'evento-real'
+          });
+        });
+
+        // 4. Combinar ambos en un solo array y aplicar formato condicional
+        // Vamos a agrupar por fecha+turno para comparar
+        const mapaReal = {}; // clave "2025-08-01_T1" -> ladrillo real
+        eventosReal.forEach(ev => {
+          const clave = ev.start + '_' + ev.extendedProps.turno;
+          mapaReal[clave] = ev.extendedProps.ladrillo;
+        });
+
+        const todosEventos = [];
+
+        eventosPlan.forEach(plan => {
+          const clave = plan.start + '_' + plan.extendedProps.turno;
+          const realLadrillo = mapaReal[clave];
+          if (realLadrillo) {
+            // Hay dato real
+            if (realLadrillo === plan.extendedProps.ladrillo) {
+              plan.className = 'evento-plan cumplido';
+              plan.title += ' ✓';
+            } else {
+              plan.className = 'evento-plan desvio';
+              plan.title += ' ✗ (real: ' + realLadrillo + ')';
+            }
+            // Eliminar esa clave para no duplicar
+            delete mapaReal[clave];
+          } else {
+            plan.className = 'evento-plan sin-real';
+          }
+          todosEventos.push(plan);
+        });
+
+        // Agregar reales que no tienen plan correspondiente
+        eventosReal.forEach(real => {
+          const clave = real.start + '_' + real.extendedProps.turno;
+          if (mapaReal[clave]) {
+            real.className = 'evento-real sin-plan';
+            real.title += ' (sin plan)';
+            todosEventos.push(real);
+          }
+        });
+
+        // 5. Inicializar calendario
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          initialView: 'dayGridMonth',
+          locale: 'es',
+          headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek'
+          },
+          events: todosEventos,
+          eventDidMount: function(info) {
+            // Tooltip opcional
+            info.el.title = info.event.title;
+          }
+        });
+        calendar.render();
+
+      } catch (error) {
+        console.error('Error al cargar datos:', error);
+        document.getElementById('calendar').innerHTML = 
+          '<p style="color:red;">Error al cargar los datos. Revisá las URLs de las hojas publicadas.</p>';
+      }
+    });
+  </script>
+</body>
+</html>
