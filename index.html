@@ -2,237 +2,478 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Cronograma de Producción</title>
-  <!-- FullCalendar -->
-  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
-  <!-- Papa Parse para CSV -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Cerámica Marcos Paz – Cronograma de Producción</title>
+  <!-- Librerías CDN -->
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
-    body { font-family: Arial; margin: 20px; }
-    #calendar { max-width: 1100px; margin: 0 auto; }
-    /* formato condicional */
-    .evento-plan { background-color: #d9ead3; border-color: #6aa84f; color: #000; }
-    .evento-real { background-color: #cfe2f3; border-color: #3d85c6; color: #000; }
-    .cumplido { border: 3px solid #00b050 !important; }
-    .desvio { border: 3px solid #ff0000 !important; background-color: #f4cccc !important; }
-    .sin-plan { background-color: #efefef; border-color: #999; color: #666; }
-    .sin-real { opacity: 0.6; }
-    .leyenda { margin: 20px auto; max-width: 600px; display: flex; gap: 20px; justify-content: center; }
-    .leyenda span { display: inline-block; padding: 5px 10px; border-radius: 4px; font-size: 0.9em; }
+    :root {
+      --terracota: #cc6b4b;
+      --barro: #a0522d;
+      --arcilla: #e8c39e;
+      --fondo: #fdf8f2;
+      --texto: #4a3b32;
+      --verde-cumplido: #4caf50;
+      --rojo-desvio: #e53935;
+      --gris-sinplan: #bdbdbd;
+      --borde-celda: #d7ccc8;
+      --blanco: #ffffff;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif;
+      background: var(--fondo);
+      color: var(--texto);
+      padding: 15px;
+      min-height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      margin-bottom: 20px;
+      border-bottom: 3px solid var(--terracota);
+      padding-bottom: 15px;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+    .logo-area img {
+      height: 60px;
+    }
+    .reloj-fecha {
+      font-weight: 700;
+      background: var(--blanco);
+      padding: 8px 15px;
+      border-radius: 20px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: right;
+    }
+    .btn-agregar {
+      background: var(--barro);
+      color: white;
+      border: none;
+      padding: 12px 25px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 1rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.3s;
+    }
+    .btn-agregar:hover { background: #8b4513; }
+
+    .cal-header {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 15px;
+    }
+    .cal-header button {
+      background: var(--terracota);
+      border: none;
+      color: white;
+      padding: 8px 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 700;
+      transition: 0.2s;
+    }
+    .cal-header button:hover { background: #b85432; }
+
+    .mes-anio {
+      font-size: 1.3rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .calendario-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 5px;
+    }
+    .dia-nombre {
+      text-align: center;
+      font-weight: 700;
+      color: var(--barro);
+      padding: 8px 0;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+    .dia-celda {
+      background: var(--blanco);
+      border: 1px solid var(--borde-celda);
+      border-radius: 6px;
+      padding: 5px;
+      min-height: 90px;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      font-size: 0.8rem;
+      overflow: hidden;
+    }
+    .dia-numero {
+      font-weight: 800;
+      font-size: 0.9rem;
+      margin-bottom: 4px;
+      color: var(--barro);
+    }
+    .turno-fila {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin: 2px 0;
+      padding: 2px 4px;
+      border-radius: 4px;
+      background: #f5f0eb;
+      font-size: 0.7rem;
+    }
+    .turno-fila .turno-etiqueta {
+      font-weight: 700;
+      min-width: 22px;
+      color: var(--barro);
+    }
+    .molde-badge {
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-weight: 700;
+      color: white;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 80px;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+    .estado-icono {
+      margin-left: auto;
+      font-size: 0.9rem;
+    }
+
+    .leyenda {
+      margin-top: 20px;
+      background: var(--blanco);
+      padding: 15px;
+      border-radius: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      font-size: 0.8rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+    .leyenda-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .leyenda-color {
+      width: 20px; height: 20px; border-radius: 4px;
+    }
+
+    .sin-plan { background-color: #f0f0f0; opacity: 0.7; }
+    .vacio { background-color: #fafafa; }
+
+    @media (max-width: 600px) {
+      .dia-celda { min-height: 70px; padding: 3px; }
+      .molde-badge { font-size: 0.65rem; max-width: 60px; }
+    }
   </style>
 </head>
 <body>
-  <h2>Calendario de Producción</h2>
-  <div class="leyenda">
-    <span style="background:#d9ead3;">Plan</span>
-    <span style="background:#cfe2f3;">Real</span>
-    <span style="border:3px solid #00b050; background:#d9ead3;">Cumplido ✓</span>
-    <span style="border:3px solid #ff0000; background:#f4cccc;">Desvío ✗</span>
-    <span style="background:#efefef;">Sin plan</span>
+  <!-- ENCABEZADO -->
+  <div class="header">
+    <div class="logo-area">
+      <!-- CAMBIÁ la ruta por la URL de tu logo -->
+      <img src="https://via.placeholder.com/150x60?text=LOGO+CERAMICA" alt="Logo Cerámica Marcos Paz">
+      <div style="line-height:1.2;">
+        <strong style="font-size:1.2rem;">Cerámica Marcos Paz</strong><br>
+        <small style="color:#8b5a2b;">Tucumán – Argentina</small>
+      </div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 15px;">
+      <div class="reloj-fecha" id="relojFecha"></div>
+      <a href="admin.html" class="btn-agregar">🧱 + Agregar Planificación</a>
+    </div>
   </div>
-  <div id="calendar"></div>
+
+  <!-- NAVEGACIÓN DEL CALENDARIO -->
+  <div class="cal-header">
+    <button onclick="cambiarMes(-1)">◀ Mes anterior</button>
+    <span class="mes-anio" id="mesAnioLabel"></span>
+    <button onclick="cambiarMes(1)">Mes siguiente ▶</button>
+  </div>
+
+  <!-- CALENDARIO -->
+  <div class="calendario-grid" id="calendarioGrid"></div>
+
+  <!-- LEYENDA -->
+  <div class="leyenda">
+    <div class="leyenda-item"><div class="leyenda-color" style="background:#8bc34a;"></div> Cumplido (plan = real)</div>
+    <div class="leyenda-item"><div class="leyenda-color" style="background:#ff9800;"></div> Desvío (plan ≠ real)</div>
+    <div class="leyenda-item"><div class="leyenda-color" style="background:#e0e0e0;"></div> Sin planificación</div>
+    <div class="leyenda-item"><span style="font-size:1.2rem;">🔬</span> Prueba realizada</div>
+    <div class="leyenda-item"><span style="font-size:1.2rem;">🧱</span> Producción planificada</div>
+  </div>
 
   <script>
-    // ⚠️ REEMPLAZÁ estas URLs con las que copiaste de Google Sheets
-    const PLAN_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';   // hoja DatosProd
-    const REAL_URL  = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=1774340358&single=true&output=csv';   // hoja ProduccionHistorica
+    // ======== CONFIGURACIÓN ========
+    const CSV_MOLDES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQeQfWb0LQqub8pDTzEZv9SaQ7GBoQ12oJvde7C55CdWw9tL26JjLpJVEtXv8Ls02m1G36ztRgJg0W/pub?gid=0&single=true&output=csv';
+    const CSV_PLAN   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQeQfWb0LQqub8pDTzEZv9SaQ7GBoQ12oJvde7C55CdWw9tL26JjLpJVEtXv8Ls02m1G36ztRgJg0W/pub?gid=304716517&single=true&output=csv';
+    const CSV_REAL   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQeQfWb0LQqub8pDTzEZv9SaQ7GBoQ12oJvde7C55CdWw9tL26JjLpJVEtXv8Ls02m1G36ztRgJg0W/pub?gid=1874633951&single=true&output=csv';
 
-    // Mapa de turnos para ordenar
-    const turnoOrden = { 'T1':1, 'T2':2, 'T3':3 };
+    // Colores por cada molde (generados según su nombre)
+    const moldColors = new Map();
+    function colorParaMolde(molde) {
+      if (!molde) return '#cccccc';
+      if (moldColors.has(molde)) return moldColors.get(molde);
+      let hash = 0;
+      for (let i = 0; i < molde.length; i++) {
+        hash = molde.charCodeAt(i) + ((hash << 5) - hash);
+      }
+      const hue = hash % 360;
+      const color = `hsl(${hue}, 60%, 65%)`;
+      moldColors.set(molde, color);
+      return color;
+    }
 
-    // Función para cargar y parsear CSV
-    async function cargarCSV(url) {
-      const respuesta = await fetch(url);
-      const texto = await respuesta.text();
-      return new Promise((resolve, reject) => {
-        Papa.parse(texto, {
+    // Datos globales
+    let moldesDisponibles = [];        // lista de nombres de moldes
+    let planPorFechaTurno = {};        // { '2026-07-31_T1': { molde, tipo } }
+    let realPorFechaTurno = {};        // { '2026-07-31_T1': 'H12 (1)' }
+
+    let fechaActual = new Date();
+
+    // ======== FUNCIONES AUXILIARES ========
+    async function fetchCSV(url) {
+      const resp = await fetch(url);
+      const text = await resp.text();
+      return new Promise((resolve) => {
+        Papa.parse(text, {
           header: true,
           skipEmptyLines: true,
-          complete: results => resolve(results.data),
-          error: err => reject(err)
+          complete: results => resolve(results.data)
         });
       });
     }
 
-    // Convierte fecha "AAAA-MM-DD" a Date
-    function parseFecha(fechaStr) {
-      if (!fechaStr) return null;
-      const partes = fechaStr.split('-');
-      if (partes.length !== 3) return null;
-      return new Date(partes[0], partes[1]-1, partes[2]);
+    function formatearFechaAAAAMMDD(fecha) {
+      const y = fecha.getFullYear();
+      const m = String(fecha.getMonth() + 1).padStart(2, '0');
+      const d = String(fecha.getDate()).padStart(2, '0');
+      return `${y}-${m}-${d}`;
     }
 
-    // Genera lista de días entre dos fechas (inclusive)
-    function diasEntre(fechaInicio, fechaFin) {
-      const dias = [];
-      let actual = new Date(fechaInicio);
-      while (actual <= fechaFin) {
-        dias.push(new Date(actual));
-        actual.setDate(actual.getDate() + 1);
-      }
-      return dias;
+    function generarClaveFechaTurno(fechaStr, turno) {
+      return `${fechaStr}_${turno}`;
     }
 
-    document.addEventListener('DOMContentLoaded', async function() {
-      try {
-        // 1. Cargar ambos CSV
-        const [planData, realData] = await Promise.all([
-          cargarCSV(PLAN_URL),
-          cargarCSV(REAL_URL)
-        ]);
+    function actualizarReloj() {
+      const ahora = new Date();
+      const opciones = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' };
+      document.getElementById('relojFecha').innerText = ahora.toLocaleDateString('es-AR', opciones);
+    }
 
-        // 2. Procesar plan: cada tarea se expande en eventos por turno
-        const eventosPlan = [];
-        planData.forEach(row => {
-          const ladrillo = row['LADRILLO']?.trim();
-          const tarea = row['TAREA']?.trim();
-          const fechaIni = parseFecha(row['FECHA INICIO']);
-          const fechaFin = parseFecha(row['FECHA FIN']);
-          const turnoIni = row['TURNO INICIO']?.trim();
-          const turnoFin = row['TURNO FIN']?.trim();
+    // ======== CARGA DE DATOS ========
+    async function cargarDatos() {
+      const [datosMoldes, datosPlan, datosReal] = await Promise.all([
+        fetchCSV(CSV_MOLDES),
+        fetchCSV(CSV_PLAN),
+        fetchCSV(CSV_REAL)
+      ]);
 
-          if (!ladrillo || !fechaIni || !fechaFin) return;
+      // Procesar catálogo de moldes
+      moldesDisponibles = datosMoldes.map(row => row['Molde N°']?.trim()).filter(Boolean);
 
-          const dias = diasEntre(fechaIni, fechaFin);
-          dias.forEach((dia, idx) => {
-            // Determinar turnos para este día
-            let turnosDia = [];
-            if (dias.length === 1) {
-              // Si la tarea empieza y termina el mismo día, incluir desde turnoIni hasta turnoFin
-              for (let t = turnoOrden[turnoIni]; t <= turnoOrden[turnoFin]; t++) {
-                let nombreTurno = Object.keys(turnoOrden).find(k => turnoOrden[k] === t);
-                turnosDia.push(nombreTurno);
-              }
-            } else if (idx === 0) {
-              // Primer día: desde turnoIni hasta T3
-              for (let t = turnoOrden[turnoIni]; t <= 3; t++) {
-                let nombreTurno = Object.keys(turnoOrden).find(k => turnoOrden[k] === t);
-                turnosDia.push(nombreTurno);
-              }
-            } else if (idx === dias.length - 1) {
-              // Último día: desde T1 hasta turnoFin
-              for (let t = 1; t <= turnoOrden[turnoFin]; t++) {
-                let nombreTurno = Object.keys(turnoOrden).find(k => turnoOrden[k] === t);
-                turnosDia.push(nombreTurno);
-              }
-            } else {
-              // Días intermedios: todos los turnos (T1, T2, T3)
-              turnosDia = ['T1','T2','T3'];
-            }
+      // Procesar planificación (DatosProd)
+      planPorFechaTurno = {};
+      datosPlan.forEach(row => {
+        const molde = row['MOLDE']?.trim();
+        const tarea = row['TAREA']?.trim();
+        const fechaIni = row['FECHA INICIO']?.trim();
+        const turnoIni = row['TURNO INICIO']?.trim();
+        const fechaFin = row['FECHA FIN']?.trim();
+        const turnoFin = row['TURNO FIN']?.trim();
+        if (!molde || !fechaIni || !fechaFin) return;
 
-            turnosDia.forEach(turno => {
-              const titulo = `${ladrillo} (${tarea})`;
-              eventosPlan.push({
-                title: titulo,
-                start: dia.toISOString().split('T')[0],
-                allDay: true,
-                extendedProps: {
-                  tipo: 'plan',
-                  ladrillo: ladrillo,
-                  turno: turno,
-                  tarea: tarea
-                },
-                className: 'evento-plan'
-              });
-            });
-          });
-        });
+        const inicio = new Date(fechaIni + 'T00:00:00');
+        const fin = new Date(fechaFin + 'T00:00:00');
+        const turnos = ['T1', 'T2', 'T3'];
 
-        // 3. Procesar real: cada fila es un turno en un día
-        const eventosReal = [];
-        realData.forEach(row => {
-          const diaStr = row['Día']?.trim();
-          const turno = row['Turno']?.trim();
-          let molde = row['Molde']?.trim();
-          // Algunas filas usan "L. carga" + "N° de molde", unificamos con Molde
-          if (!molde) {
-            const carga = row['L. carga']?.trim();
-            const nro = row['N° de molde']?.trim();
-            if (carga && nro) molde = carga + ' (' + nro + ')';
-          }
-          if (!diaStr || !turno) return;
-          // Parsear fecha (formato DD/MM/AAAA)
-          const partes = diaStr.split('/');
-          if (partes.length !== 3) return;
-          const fecha = new Date(partes[2], partes[1]-1, partes[0]);
+        for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate() + 1)) {
+          const diaStr = formatearFechaAAAAMMDD(d);
+          let turnosDelDia = [];
 
-          eventosReal.push({
-            title: molde || 'Sin dato',
-            start: fecha.toISOString().split('T')[0],
-            allDay: true,
-            extendedProps: {
-              tipo: 'real',
-              ladrillo: molde,
-              turno: turno
-            },
-            className: 'evento-real'
-          });
-        });
-
-        // 4. Combinar ambos en un solo array y aplicar formato condicional
-        // Vamos a agrupar por fecha+turno para comparar
-        const mapaReal = {}; // clave "2025-08-01_T1" -> ladrillo real
-        eventosReal.forEach(ev => {
-          const clave = ev.start + '_' + ev.extendedProps.turno;
-          mapaReal[clave] = ev.extendedProps.ladrillo;
-        });
-
-        const todosEventos = [];
-
-        eventosPlan.forEach(plan => {
-          const clave = plan.start + '_' + plan.extendedProps.turno;
-          const realLadrillo = mapaReal[clave];
-          if (realLadrillo) {
-            // Hay dato real
-            if (realLadrillo === plan.extendedProps.ladrillo) {
-              plan.className = 'evento-plan cumplido';
-              plan.title += ' ✓';
-            } else {
-              plan.className = 'evento-plan desvio';
-              plan.title += ' ✗ (real: ' + realLadrillo + ')';
-            }
-            // Eliminar esa clave para no duplicar
-            delete mapaReal[clave];
+          if (d.getTime() === inicio.getTime() && d.getTime() === fin.getTime()) {
+            // Mismo día: desde turnoIni hasta turnoFin
+            const idxIni = turnos.indexOf(turnoIni);
+            const idxFin = turnos.indexOf(turnoFin);
+            for (let i = idxIni; i <= idxFin; i++) turnosDelDia.push(turnos[i]);
+          } else if (d.getTime() === inicio.getTime()) {
+            const idxIni = turnos.indexOf(turnoIni);
+            for (let i = idxIni; i < 3; i++) turnosDelDia.push(turnos[i]);
+          } else if (d.getTime() === fin.getTime()) {
+            const idxFin = turnos.indexOf(turnoFin);
+            for (let i = 0; i <= idxFin; i++) turnosDelDia.push(turnos[i]);
           } else {
-            plan.className = 'evento-plan sin-real';
+            turnosDelDia = ['T1', 'T2', 'T3'];
           }
-          todosEventos.push(plan);
-        });
 
-        // Agregar reales que no tienen plan correspondiente
-        eventosReal.forEach(real => {
-          const clave = real.start + '_' + real.extendedProps.turno;
-          if (mapaReal[clave]) {
-            real.className = 'evento-real sin-plan';
-            real.title += ' (sin plan)';
-            todosEventos.push(real);
-          }
-        });
+          turnosDelDia.forEach(turno => {
+            const clave = generarClaveFechaTurno(diaStr, turno);
+            planPorFechaTurno[clave] = { molde, tipo: tarea };
+          });
+        }
+      });
 
-        // 5. Inicializar calendario
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-          initialView: 'dayGridMonth',
-          locale: 'es',
-          headerToolbar: {
-            left: 'prev,next today',
-            center: 'title',
-            right: 'dayGridMonth,timeGridWeek'
-          },
-          events: todosEventos,
-          eventDidMount: function(info) {
-            // Tooltip opcional
-            info.el.title = info.event.title;
-          }
-        });
-        calendar.render();
+      // Procesar producción real (ProduccionMoldes)
+      realPorFechaTurno = {};
+      datosReal.forEach(row => {
+        const diaRaw = row['Día']?.trim();
+        const turno = row['Turno']?.trim();
+        const moldeReal = row['L. carga (N)']?.trim();   // nombre completo del molde
+        if (!diaRaw || !turno || !moldeReal) return;
 
-      } catch (error) {
-        console.error('Error al cargar datos:', error);
-        document.getElementById('calendar').innerHTML = 
-          '<p style="color:red;">Error al cargar los datos. Revisá las URLs de las hojas publicadas.</p>';
+        // Suponemos formato DD/MM/AAAA en la hoja real
+        const partes = diaRaw.split('/');
+        if (partes.length !== 3) return;
+        const fecha = new Date(partes[2], partes[1] - 1, partes[0]);
+        const clave = generarClaveFechaTurno(formatearFechaAAAAMMDD(fecha), turno);
+        realPorFechaTurno[clave] = moldeReal;
+      });
+
+      renderizarCalendario();
+    }
+
+    // ======== RENDERIZADO DEL CALENDARIO ========
+    function renderizarCalendario() {
+      const grid = document.getElementById('calendarioGrid');
+      grid.innerHTML = '';
+
+      const year = fechaActual.getFullYear();
+      const month = fechaActual.getMonth();
+      const diasEnMes = new Date(year, month + 1, 0).getDate();
+      const primerDia = new Date(year, month, 1).getDay();
+
+      document.getElementById('mesAnioLabel').innerText = 
+        fechaActual.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
+
+      // Días de la semana
+      ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'].forEach(d => {
+        const el = document.createElement('div');
+        el.className = 'dia-nombre';
+        el.innerText = d;
+        grid.appendChild(el);
+      });
+
+      // Espacios vacíos antes del primer día
+      for (let i = 0; i < primerDia; i++) {
+        grid.appendChild(document.createElement('div'));
       }
+
+      // Celdas de los días
+      for (let dia = 1; dia <= diasEnMes; dia++) {
+        const fechaStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(dia).padStart(2, '0')}`;
+        const celda = document.createElement('div');
+        celda.className = 'dia-celda';
+
+        // Número del día
+        const numDia = document.createElement('div');
+        numDia.className = 'dia-numero';
+        numDia.innerText = dia;
+        celda.appendChild(numDia);
+
+        // Para cada turno
+        ['T1', 'T2', 'T3'].forEach(turno => {
+          const clave = generarClaveFechaTurno(fechaStr, turno);
+          const plan = planPorFechaTurno[clave];
+          const real = realPorFechaTurno[clave];
+
+          const fila = document.createElement('div');
+          fila.className = 'turno-fila';
+
+          const etiqueta = document.createElement('span');
+          etiqueta.className = 'turno-etiqueta';
+          etiqueta.innerText = turno;
+          fila.appendChild(etiqueta);
+
+          if (plan) {
+            const color = colorParaMolde(plan.molde);
+            const badge = document.createElement('span');
+            badge.className = 'molde-badge';
+            badge.style.backgroundColor = color;
+            badge.innerText = plan.tipo === 'Prueba' ? '🔬' + plan.molde : '🧱' + plan.molde;
+            fila.appendChild(badge);
+
+            const estado = document.createElement('span');
+            estado.className = 'estado-icono';
+            if (real) {
+              if (real === plan.molde) {
+                estado.innerHTML = '✅';
+                badge.style.border = '2px solid #4caf50';
+              } else {
+                estado.innerHTML = '❌';
+                badge.style.border = '2px solid #e53935';
+                // Mostrar molde real
+                const realBadge = document.createElement('span');
+                realBadge.className = 'molde-badge';
+                realBadge.style.backgroundColor = colorParaMolde(real);
+                realBadge.innerText = '🔄' + real;
+                realBadge.style.marginLeft = '4px';
+                fila.appendChild(realBadge);
+              }
+            } else {
+              estado.innerHTML = '⏳';
+            }
+            fila.appendChild(estado);
+          } else if (real) {
+            // Sin plan, con producción real
+            const badge = document.createElement('span');
+            badge.className = 'molde-badge';
+            badge.style.backgroundColor = '#e0e0e0';
+            badge.innerText = '⚙️' + real;
+            fila.appendChild(badge);
+            const estado = document.createElement('span');
+            estado.className = 'estado-icono';
+            estado.innerHTML = '📌';
+            fila.appendChild(estado);
+          } else {
+            // Sin nada
+            const vacio = document.createElement('span');
+            vacio.innerText = '—';
+            vacio.style.color = '#ccc';
+            fila.appendChild(vacio);
+          }
+
+          celda.appendChild(fila);
+        });
+
+        grid.appendChild(celda);
+      }
+    }
+
+    function cambiarMes(delta) {
+      fechaActual.setMonth(fechaActual.getMonth() + delta);
+      cargarDatos();
+    }
+
+    // ======== INICIALIZACIÓN ========
+    window.addEventListener('load', () => {
+      actualizarReloj();
+      setInterval(actualizarReloj, 30000);
+      cargarDatos();
     });
   </script>
 </body>
