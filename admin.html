@@ -2,80 +2,76 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>Agregar Planificación – Cerámica Marcos Paz</title>
+  <title>Nueva Planificación – Cerámica Marcos Paz</title>
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
     :root {
-      --terracota: #cc6b4b;
-      --barro: #a0522d;
-      --fondo: #fdf8f2;
-      --texto: #4a3b32;
+      --bg: #1a1814;
+      --panel: #25221d;
+      --border: #4a4238;
+      --text: #f0e6d8;
+      --accent: #d97736;
     }
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background: var(--fondo);
-      color: var(--texto);
+      margin: 0;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
       display: flex;
       justify-content: center;
       align-items: center;
       min-height: 100vh;
-      margin: 0;
     }
-    .contenedor {
-      background: white;
+    .login-box, .form-box {
+      background: var(--panel);
       padding: 30px;
-      border-radius: 15px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      border-radius: 16px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
       width: 100%;
-      max-width: 500px;
-    }
-    h1 {
+      max-width: 440px;
       text-align: center;
-      color: var(--barro);
-      margin-bottom: 10px;
     }
-    label {
-      font-weight: 700;
-      display: block;
-      margin-top: 15px;
-    }
+    h2 { margin-top: 0; color: var(--accent); }
     input, select {
       width: 100%;
-      padding: 10px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 6px;
+      padding: 12px;
+      margin: 8px 0 16px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      color: var(--text);
+      font-weight: 500;
     }
     button {
-      background: var(--barro);
+      background: var(--accent);
       color: white;
       border: none;
       padding: 12px;
       width: 100%;
-      font-weight: 700;
       border-radius: 8px;
-      margin-top: 20px;
+      font-weight: 700;
       cursor: pointer;
-      transition: 0.3s;
+      transition: 0.2s;
     }
-    button:hover { background: #8b4513; }
-    .oculto { display: none; }
-    .error { color: red; font-weight: 700; margin-top: 10px; }
-    .exito { color: green; font-weight: 700; margin-top: 10px; }
-    #login-box { text-align: center; }
-    #login-box input { width: auto; display: inline-block; }
+    button:hover { background: #c85d2a; }
+    .error { color: #e53935; }
+    .success { color: #4caf50; }
+    .hidden { display: none; }
+    a { color: var(--accent); text-decoration: none; display: block; margin-top: 15px; }
   </style>
 </head>
 <body>
-  <div class="contenedor" id="login-box">
-    <h1>🔐 Acceso Restringido</h1>
-    <p>Ingresá la clave para planificar</p>
-    <input type="password" id="passwordInput" placeholder="Contraseña">
-    <button onclick="verificarPassword()">Entrar</button>
-    <div id="loginError" class="error"></div>
+  <!-- Pantalla de login -->
+  <div id="loginScreen" class="login-box">
+    <h2>🔐 Área Restringida</h2>
+    <input type="password" id="passwordField" placeholder="Contraseña">
+    <button onclick="checkPassword()">Ingresar</button>
+    <div id="loginMsg" class="error"></div>
   </div>
 
-  <div class="contenedor oculto" id="form-box">
-    <h1>🧱 Nueva Planificación</h1>
+  <!-- Formulario de carga -->
+  <div id="formScreen" class="form-box hidden">
+    <h2>🧱 Nueva Planificación</h2>
     <form id="planForm">
       <label>Molde:</label>
       <select id="moldeSelect" required></select>
@@ -90,7 +86,7 @@
       <input type="date" id="fechaInicio" required>
 
       <label>Turno Inicio:</label>
-      <select id="turnoInicio" required>
+      <select id="turnoInicio">
         <option value="T1">T1</option>
         <option value="T2">T2</option>
         <option value="T3">T3</option>
@@ -100,34 +96,33 @@
       <input type="date" id="fechaFin" required>
 
       <label>Turno Fin:</label>
-      <select id="turnoFin" required>
+      <select id="turnoFin">
         <option value="T1">T1</option>
         <option value="T2">T2</option>
         <option value="T3">T3</option>
       </select>
 
       <button type="submit">📤 Enviar Planificación</button>
-      <div id="msgBox" class="exito"></div>
     </form>
-    <a href="index.html" style="display:block; text-align:center; margin-top:15px; color:var(--barro);">← Volver al calendario</a>
+    <div id="formMsg"></div>
+    <a href="index.html">← Volver al calendario</a>
   </div>
 
   <script>
-    const URL_SCRIPT = 'https://script.google.com/macros/s/TU_SCRIPT_ID/exec'; // <-- REEMPLAZÁ
-    const CONTRASENA = 'CeramicaMP2024';
+    const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxNtxWxZcXMF89rE9BCbbnXP6mtiWZKNy1ZqEHkem3kVko44ojtgFAuAhThclVGyz4aTg/exec';  // <-- REEMPLAZÁ
+    const PASSWORD = 'Ladrillos2026';  // misma que en Apps Script
 
-    async function verificarPassword() {
-      const pass = document.getElementById('passwordInput').value;
-      if (pass === CONTRASENA) {
-        document.getElementById('login-box').classList.add('oculto');
-        document.getElementById('form-box').classList.remove('oculto');
-        cargarMoldes();
+    function checkPassword() {
+      if (document.getElementById('passwordField').value === PASSWORD) {
+        document.getElementById('loginScreen').classList.add('hidden');
+        document.getElementById('formScreen').classList.remove('hidden');
+        loadMoldes();
       } else {
-        document.getElementById('loginError').innerText = 'Contraseña incorrecta';
+        document.getElementById('loginMsg').textContent = 'Contraseña incorrecta';
       }
     }
 
-    async function cargarMoldes() {
+    async function loadMoldes() {
       const resp = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vTQeQfWb0LQqub8pDTzEZv9SaQ7GBoQ12oJvde7C55CdWw9tL26JjLpJVEtXv8Ls02m1G36ztRgJg0W/pub?gid=0&single=true&output=csv');
       const csv = await resp.text();
       const data = Papa.parse(csv, { header: true }).data;
@@ -137,7 +132,7 @@
         if (molde) {
           const opt = document.createElement('option');
           opt.value = molde;
-          opt.innerText = molde;
+          opt.textContent = molde;
           select.appendChild(opt);
         }
       });
@@ -152,37 +147,35 @@
       const fechaFin = document.getElementById('fechaFin').value;
       const turnoFin = document.getElementById('turnoFin').value;
 
-      // Calcular duración en días
-      const inicio = new Date(fechaInicio);
-      const fin = new Date(fechaFin);
-      const diffDias = Math.ceil((fin - inicio) / (1000 * 60 * 60 * 24)) + 1;
-      const duracionDias = diffDias > 0 ? diffDias : 1;
-      const duracionTurnos = duracionDias * 3; // aproximado
+      // Cálculo simple de duración
+      const d1 = new Date(fechaInicio), d2 = new Date(fechaFin);
+      const dias = Math.ceil((d2 - d1) / (1000*60*60*24)) + 1;
+      const duracionDias = dias > 0 ? dias : 1;
+      const duracionTurnos = duracionDias * 3; // aprox
 
       const params = new URLSearchParams({
-        password: CONTRASENA,
+        password: PASSWORD,
         molde, tarea, fechaInicio, turnoInicio, fechaFin, turnoFin,
         duracionDias, duracionTurnos
       });
 
+      const msg = document.getElementById('formMsg');
       try {
-        const response = await fetch(URL_SCRIPT, { method: 'POST', body: params });
-        const result = await response.json();
-        const msg = document.getElementById('msgBox');
-        if (result.result === 'success') {
-          msg.className = 'exito';
-          msg.innerText = '✅ Planificación agregada exitosamente.';
+        const res = await fetch(URL_SCRIPT, { method: 'POST', body: params });
+        const json = await res.json();
+        if (json.result === 'success') {
+          msg.className = 'success';
+          msg.textContent = '✅ Planificación guardada exitosamente.';
           document.getElementById('planForm').reset();
         } else {
           msg.className = 'error';
-          msg.innerText = '❌ Error: ' + result.message;
+          msg.textContent = '❌ ' + json.message;
         }
       } catch (err) {
-        document.getElementById('msgBox').className = 'error';
-        document.getElementById('msgBox').innerText = '❌ Error de conexión.';
+        msg.className = 'error';
+        msg.textContent = '❌ Error de conexión con el servidor.';
       }
     });
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
 </body>
 </html>
