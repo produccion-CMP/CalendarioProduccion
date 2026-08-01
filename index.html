@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Cerámica Marcos Paz – Planificación de Producción</title>
+  <title>Planificación de Producción – Cerámica Marcos Paz</title>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
     :root {
@@ -18,9 +18,9 @@
       --green: #4caf50;
       --red: #e53935;
       --blue: #5c8bc9;
-      --badge-bg: rgba(255,255,255,0.08);
       --shadow: 0 4px 12px rgba(0,0,0,0.4);
       --radius: 12px;
+      --cell-height: 130px;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -30,8 +30,6 @@
       color: var(--text-main);
       padding: 20px;
       min-height: 100vh;
-      display: flex;
-      flex-direction: column;
     }
 
     /* ENCABEZADO */
@@ -41,9 +39,14 @@
       align-items: center;
       flex-wrap: wrap;
       gap: 20px;
-      margin-bottom: 30px;
-      padding-bottom: 15px;
-      border-bottom: 2px solid var(--border);
+      margin-bottom: 25px;
+      padding: 15px 20px;
+      background: var(--bg-panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      background-image: url('img/deco/header-bg.png'); /* decoración opcional */
+      background-size: cover;
+      background-position: center;
     }
     .logo-container {
       display: flex;
@@ -59,6 +62,7 @@
       font-weight: 700;
       letter-spacing: 0.5px;
       color: var(--accent-light);
+      text-shadow: 0 2px 3px rgba(0,0,0,0.5);
     }
     .title-block small {
       font-size: 0.8rem;
@@ -71,13 +75,12 @@
       gap: 20px;
     }
     .live-clock {
-      background: var(--bg-panel);
+      background: rgba(0,0,0,0.3);
       padding: 10px 18px;
       border-radius: 30px;
       font-weight: 600;
       font-size: 0.9rem;
-      box-shadow: var(--shadow);
-      text-align: right;
+      backdrop-filter: blur(5px);
     }
     .btn-add {
       background: var(--accent);
@@ -125,28 +128,38 @@
     }
 
     /* CALENDARIO */
-    .calendar-grid {
+    .calendar-wrapper {
+      background: var(--bg-panel);
+      border-radius: var(--radius);
+      padding: 15px;
+      box-shadow: var(--shadow);
+    }
+    .weekdays {
       display: grid;
       grid-template-columns: repeat(7, 1fr);
-      gap: 6px;
-      flex: 1;
-    }
-    .day-name {
       text-align: center;
       font-weight: 700;
       color: var(--text-muted);
-      padding: 10px 0;
+      margin-bottom: 8px;
+    }
+    .weekdays div {
+      padding: 8px 0;
       font-size: 0.8rem;
       text-transform: uppercase;
+    }
+    .days-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 6px;
     }
     .day-cell {
       background: var(--bg-cell);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      padding: 8px 6px;
+      border-radius: 10px;
       display: flex;
       flex-direction: column;
-      min-height: 110px;
+      min-height: var(--cell-height);
+      overflow: hidden;
       transition: 0.15s;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
@@ -157,43 +170,60 @@
     .day-number {
       font-weight: 800;
       font-size: 0.9rem;
-      margin-bottom: 5px;
+      padding: 6px 8px 2px;
       color: var(--text-main);
+      text-align: center;
+      border-bottom: 1px solid var(--border);
     }
-    .turno-row {
+    .turns-container {
       display: flex;
-      align-items: center;
-      gap: 5px;
-      margin: 2px 0;
-      padding: 2px 4px;
-      border-radius: 6px;
-      background: rgba(0,0,0,0.2);
-      font-size: 0.7rem;
+      flex: 1;
+      flex-direction: row;
     }
-    .turno-badge {
+    .turn-column {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4px 2px;
+      border-right: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+      font-size: 0.7rem;
+      position: relative;
+    }
+    .turn-column:last-child { border-right: none; }
+    .turn-label {
       font-weight: 700;
       color: var(--accent-light);
-      min-width: 22px;
+      font-size: 0.6rem;
+      margin-bottom: 3px;
+      text-transform: uppercase;
     }
-    .molde-chip {
-      flex: 1;
-      padding: 2px 8px;
-      border-radius: 20px;
+    .mold-image {
+      width: 30px;
+      height: 30px;
+      object-fit: contain;
+      border-radius: 4px;
+      margin-bottom: 2px;
+      background: rgba(255,255,255,0.05);
+      padding: 2px;
+    }
+    .mold-name {
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
-      display: flex;
-      align-items: center;
-      gap: 3px;
-      font-size: 0.7rem;
-      background: var(--badge-bg);
-      border-left: 3px solid var(--accent);
+      max-width: 100%;
       color: var(--text-main);
     }
-    .status-icon {
-      margin-left: auto;
-      font-size: 0.9rem;
+    .task-emoji {
+      margin-top: 1px;
+      font-size: 0.8rem;
+    }
+    .empty-turn {
+      color: var(--text-muted);
+      font-size: 0.65rem;
     }
 
     /* LEYENDA */
@@ -217,10 +247,15 @@
     .legend-dot {
       width: 14px; height: 14px; border-radius: 4px;
     }
+    .legend-img {
+      width: 25px;
+      height: 25px;
+      object-fit: contain;
+    }
 
     @media (max-width: 640px) {
-      .day-cell { min-height: 80px; padding: 4px; }
-      .molde-chip { max-width: 50px; }
+      .day-cell { min-height: 100px; }
+      .mold-image { width: 20px; height: 20px; }
     }
   </style>
 </head>
@@ -228,8 +263,7 @@
   <!-- ENCABEZADO -->
   <header class="app-header">
     <div class="logo-container">
-      <!-- CAMBIÁ la ruta por la de tu logo (relativa o absoluta) -->
-      <img src="logo.png" alt="Cerámica Marcos Paz">
+      <img src="img/logo CMP.png" alt="Cerámica Marcos Paz">
       <div class="title-block">
         <h1>Producción Ladrillos Cerámicos</h1>
         <small>Tucumán, Argentina — Planta CEVIL</small>
@@ -249,26 +283,29 @@
   </div>
 
   <!-- CALENDARIO -->
-  <div class="calendar-grid" id="calendarGrid"></div>
+  <div class="calendar-wrapper">
+    <div class="weekdays">
+      <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
+    </div>
+    <div class="days-grid" id="daysGrid"></div>
+  </div>
 
   <!-- LEYENDA -->
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#4caf50;"></div> Cumplido (plan = real)</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#e53935;"></div> Desvío (plan ≠ real)</div>
-    <div class="legend-item"><span style="font-size:1.1rem;">🔬</span> Prueba ejecutada</div>
-    <div class="legend-item"><span style="font-size:1.1rem;">🧱</span> Producción planificada</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#5c8bc9;"></div> Real sin plan</div>
-    <div class="legend-item"><span>⏳</span> Pendiente (sin real)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div> Turno planificado</div>
+    <div class="legend-item"><span style="font-size:1.2rem;">🧱</span> Producción</div>
+    <div class="legend-item"><span style="font-size:1.2rem;">🔬</span> Prueba</div>
+    <div class="legend-item"><img src="img/moldes/H12.png" class="legend-img" onerror="this.style.display='none'"> Imagen referencial del molde</div>
+    <div class="legend-item"><span style="color:var(--text-muted);">—</span> Sin planificar</div>
   </div>
 
   <script>
-    // ========== CONFIGURACIÓN (CSVs públicos) ==========
-    const CSV_PLAN   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQeQfWb0LQqub8pDTzEZv9SaQ7GBoQ12oJvde7C55CdWw9tL26JjLpJVEtXv8Ls02m1G36ztRgJg0W/pub?gid=304716517&single=true&output=csv';
-    const CSV_REAL   = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQeQfWb0LQqub8pDTzEZv9SaQ7GBoQ12oJvde7C55CdWw9tL26JjLpJVEtXv8Ls02m1G36ztRgJg0W/pub?gid=1874633951&single=true&output=csv';
+    // ========== CONFIGURACIÓN ==========
+    const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQeQfWb0LQqub8pDTzEZv9SaQ7GBoQ12oJvde7C55CdWw9tL26JjLpJVEtXv8Ls02m1G36ztRgJg0W/pub?gid=304716517&single=true&output=csv';
+    const IMG_PATH = 'img/moldes/';   // carpeta donde están las imágenes de moldes
+    const FALLBACK_IMG = 'img/moldes/default.png'; // imagen genérica si no existe la específica
 
-    // Datos procesados
-    let planData = {};   // { '2026-07-31_T1': { molde, tipo } }
-    let realData = {};   // { '2026-07-31_T1': 'molde' }
+    let planData = {};   // { '2026-08-01_T1': { moldeCompleto, baseName, tarea } }
     let currentDate = new Date();
 
     // ========== FUNCIONES ==========
@@ -289,10 +326,18 @@
 
     function key(fecha, turno) { return `${fecha}_${turno}`; }
 
+    function getBaseName(moldeCompleto) {
+      return moldeCompleto.split(' (')[0].trim();
+    }
+
+    function getImageSrc(baseName) {
+      return `${IMG_PATH}${baseName}.png`;
+    }
+
     async function loadData() {
-      const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
+      const planRows = await fetchCSV(CSV_PLAN);
       
-      // Procesar planificación (DatosProd)
+      // Procesar planificación
       planData = {};
       planRows.forEach(row => {
         const molde = row['MOLDE']?.trim();
@@ -323,29 +368,17 @@
             turnosDia = ['T1','T2','T3'];
           }
           turnosDia.forEach(t => {
-            planData[key(dayStr, t)] = { molde, tipo: tarea };
+            const baseName = getBaseName(molde);
+            planData[key(dayStr, t)] = { moldeCompleto: molde, baseName, tarea };
           });
         }
-      });
-
-      // Procesar real (ProduccionMoldes)
-      realData = {};
-      realRows.forEach(row => {
-        const dia = row['Día']?.trim();            // formato DD/MM/AAAA
-        const turno = row['Turno']?.trim();
-        const moldeReal = row['L. carga (N)']?.trim();   // nombre completo
-        if (!dia || !turno || !moldeReal) return;
-        const partes = dia.split('/');
-        if (partes.length !== 3) return;
-        const fecha = new Date(partes[2], partes[1]-1, partes[0]);
-        realData[key(formatYYYYMMDD(fecha), turno)] = moldeReal;
       });
 
       renderCalendar();
     }
 
     function renderCalendar() {
-      const grid = document.getElementById('calendarGrid');
+      const grid = document.getElementById('daysGrid');
       grid.innerHTML = '';
       const year = currentDate.getFullYear();
       const month = currentDate.getMonth();
@@ -355,96 +388,76 @@
       document.getElementById('monthLabel').textContent = 
         currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
 
-      const weekdays = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-      weekdays.forEach(d => {
-        const el = document.createElement('div');
-        el.className = 'day-name';
-        el.textContent = d;
-        grid.appendChild(el);
-      });
-
+      // Espacios vacíos antes del primer día
       for (let i = 0; i < firstDay; i++) {
-        grid.appendChild(document.createElement('div'));
+        const emptyCell = document.createElement('div');
+        emptyCell.style.visibility = 'hidden';
+        grid.appendChild(emptyCell);
       }
 
+      // Días del mes
       for (let d = 1; d <= daysInMonth; d++) {
         const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
         const cell = document.createElement('div');
         cell.className = 'day-cell';
 
+        // Número del día
         const numDiv = document.createElement('div');
         numDiv.className = 'day-number';
         numDiv.textContent = d;
         cell.appendChild(numDiv);
 
+        // Contenedor de turnos en columnas
+        const turnsContainer = document.createElement('div');
+        turnsContainer.className = 'turns-container';
+
         ['T1','T2','T3'].forEach(turno => {
           const k = key(dateStr, turno);
           const plan = planData[k];
-          const real = realData[k];
 
-          const row = document.createElement('div');
-          row.className = 'turno-row';
+          const turnCol = document.createElement('div');
+          turnCol.className = 'turn-column';
 
-          const turnoBadge = document.createElement('span');
-          turnoBadge.className = 'turno-badge';
-          turnoBadge.textContent = turno;
-          row.appendChild(turnoBadge);
+          const turnLabel = document.createElement('div');
+          turnLabel.className = 'turn-label';
+          turnLabel.textContent = turno;
+          turnCol.appendChild(turnLabel);
 
           if (plan) {
-            const chip = document.createElement('span');
-            chip.className = 'molde-chip';
-            // Color único por molde
-            const hue = [...plan.molde].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
-            chip.style.borderLeftColor = `hsl(${hue}, 65%, 55%)`;
-            chip.style.background = `linear-gradient(90deg, hsla(${hue}, 60%, 20%, 0.4), transparent)`;
-            chip.innerHTML = (plan.tipo === 'Prueba' ? '🔬' : '🧱') + ' ' + plan.molde;
-            row.appendChild(chip);
+            // Imagen del molde
+            const img = document.createElement('img');
+            img.className = 'mold-image';
+            img.src = getImageSrc(plan.baseName);
+            img.alt = plan.moldeCompleto;
+            img.onerror = function() {
+              this.src = FALLBACK_IMG;
+              this.onerror = null; // evita bucle
+            };
+            turnCol.appendChild(img);
 
-            const status = document.createElement('span');
-            status.className = 'status-icon';
-            if (real) {
-              if (real === plan.molde) {
-                status.innerHTML = '✅';
-                chip.style.border = '1px solid #4caf50';
-              } else {
-                status.innerHTML = '❌';
-                chip.style.border = '1px solid #e53935';
-                // Mostrar también el molde real
-                const realChip = document.createElement('span');
-                realChip.className = 'molde-chip';
-                const realHue = [...real].reduce((acc, c) => acc + c.charCodeAt(0), 0) % 360;
-                realChip.style.borderLeftColor = `hsl(${realHue}, 65%, 55%)`;
-                realChip.style.background = `linear-gradient(90deg, hsla(${realHue}, 60%, 20%, 0.4), transparent)`;
-                realChip.textContent = '🔄 ' + real;
-                realChip.style.marginLeft = '3px';
-                row.appendChild(realChip);
-              }
-            } else {
-              status.innerHTML = '⏳';
-            }
-            row.appendChild(status);
-          } else if (real) {
-            const chip = document.createElement('span');
-            chip.className = 'molde-chip';
-            chip.style.borderLeftColor = '#5c8bc9';
-            chip.style.background = 'linear-gradient(90deg, rgba(92,139,201,0.2), transparent)';
-            chip.innerHTML = '⚙️ ' + real;
-            row.appendChild(chip);
-            const status = document.createElement('span');
-            status.className = 'status-icon';
-            status.innerHTML = '📌';
-            row.appendChild(status);
+            // Nombre del molde
+            const nameSpan = document.createElement('div');
+            nameSpan.className = 'mold-name';
+            nameSpan.textContent = plan.moldeCompleto;
+            nameSpan.title = plan.moldeCompleto;
+            turnCol.appendChild(nameSpan);
+
+            // Emoji de tarea
+            const taskEmoji = document.createElement('div');
+            taskEmoji.className = 'task-emoji';
+            taskEmoji.textContent = plan.tarea === 'Prueba' ? '🔬' : '🧱';
+            turnCol.appendChild(taskEmoji);
           } else {
-            const empty = document.createElement('span');
-            empty.style.color = '#555';
-            empty.textContent = '—';
-            empty.style.flex = '1';
-            row.appendChild(empty);
+            const emptyText = document.createElement('span');
+            emptyText.className = 'empty-turn';
+            emptyText.textContent = '—';
+            turnCol.appendChild(emptyText);
           }
 
-          cell.appendChild(row);
+          turnsContainer.appendChild(turnCol);
         });
 
+        cell.appendChild(turnsContainer);
         grid.appendChild(cell);
       }
     }
@@ -454,7 +467,7 @@
       loadData();
     }
 
-    // Reloj
+    // Reloj en vivo
     function updateClock() {
       const now = new Date();
       document.getElementById('liveClock').textContent = 
