@@ -116,12 +116,15 @@
     /* Tarea planificada (inicio) */
     .turn-task {
       display: flex; flex-direction: column; align-items: center; margin-bottom: 4px;
-      padding: 3px 2px; border-radius: 4px; width: 100%; background: rgba(0,0,0,0.15);
+      padding: 3px 2px; border-radius: 4px; width: 100%;
       cursor: pointer; transition: transform 0.1s;
     }
     .turn-task:hover { transform: scale(1.02); }
     .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; margin-bottom: 2px; background: rgba(255,255,255,0.05); padding: 2px; }
-    .mold-name { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; color: var(--text-main); margin-bottom: 1px; }
+    .mold-name {
+      font-weight: 700; max-width: 100%; color: inherit; margin-bottom: 1px;
+      white-space: normal; word-wrap: break-word; line-height: 1.1; font-size: 0.65rem;
+    }
     .change-label, .prueba-label { font-size: 0.5rem; border-radius: 3px; padding: 0 2px; font-weight: 700; margin-top: 1px; line-height: 1.2; }
     .change-label { background: var(--accent); color: #fff; }
     .prueba-label { background: #f1c40f; color: #000; }
@@ -138,18 +141,22 @@
       cursor: pointer;
     }
 
-    /* Real con cumplimiento - ahora barra inferior horizontal */
-    .real-task {
-      display: flex; flex-direction: column; align-items: center; padding: 4px 2px;
-      border-radius: 6px; width: 100%; margin-bottom: 4px; position: relative;
+    /* Real: tarjeta con imagen + nombre, luego barra y emoji separados */
+    .real-card {
+      display: flex; flex-direction: column; align-items: center;
+      padding: 4px 2px; border-radius: 6px 6px 0 0; width: 100%; margin-bottom: 0;
       cursor: pointer; transition: transform 0.1s;
     }
-    .real-task:hover { transform: scale(1.02); }
-    .compliance-bar-bottom {
-      position: absolute; bottom: 0; left: 0; right: 0; height: 5px;
-      border-radius: 0 0 6px 6px;
+    .real-card:hover { transform: scale(1.02); }
+
+    .compliance-row {
+      display: flex; align-items: center; justify-content: center;
+      width: 100%; margin-bottom: 4px;
     }
-    .compliance-emoji { margin-top: 2px; font-size: 0.8rem; }
+    .compliance-bar-h {
+      height: 5px; flex: 1; border-radius: 0 0 6px 6px;
+    }
+    .compliance-emoji { margin-left: 4px; font-size: 0.8rem; }
     .green-bar { background: #4caf50; } .green-emoji { color: #4caf50; }
     .orange-bar { background: #ff9800; } .orange-emoji { color: #ff9800; }
     .red-bar { background: #e53935; } .red-emoji { color: #e53935; }
@@ -172,28 +179,13 @@
     }
     .custom-tooltip strong { color: var(--accent-light); }
 
-    /* Resumen del mes */
     .resumen-mes {
-      background: var(--bg-panel);
-      border-radius: var(--radius);
-      padding: 15px 20px;
-      box-shadow: var(--shadow);
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: center;
-      font-size: 0.9rem;
-      margin-bottom: 20px;
+      background: var(--bg-panel); border-radius: var(--radius); padding: 15px 20px;
+      box-shadow: var(--shadow); display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;
+      font-size: 0.9rem; margin-bottom: 20px;
     }
-    .resumen-item {
-      text-align: center;
-      min-width: 100px;
-    }
-    .resumen-valor {
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--accent-light);
-    }
+    .resumen-item { text-align: center; min-width: 100px; }
+    .resumen-valor { font-size: 1.6rem; font-weight: 800; color: var(--accent-light); }
 
     .legend { margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius); padding: 15px 20px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; box-shadow: var(--shadow); font-size: 0.8rem; }
     .legend-item { display: flex; align-items: center; gap: 8px; }
@@ -208,8 +200,8 @@
       .turn-column { border-right: 1px solid #ddd; }
       .mold-image { width: 20px; height: 20px; filter: none; }
       .mold-name, .turn-label { color: black; }
-      .real-task { background: none; }
-      .compliance-bar-bottom { height: 3px; }
+      .real-card, .turn-task { background: none !important; }
+      .compliance-bar-h { height: 3px; }
       .continuation-bar { opacity: 0.5; }
       .month-label { color: black; font-size: 1.2rem; margin: 10px 0; }
       .days-grid { gap: 1px; }
@@ -245,7 +237,6 @@
     <button onclick="cambiarMes(1)">Siguiente ▶</button>
   </div>
 
-  <!-- Resumen del mes -->
   <div class="resumen-mes" id="resumenMes"></div>
 
   <div class="calendar-wrapper">
@@ -265,7 +256,6 @@
     <div class="legend-item"><div class="legend-dot" style="background: repeating-linear-gradient(45deg, var(--accent), var(--accent) 2px, transparent 2px, transparent 4px);"></div> Continuación</div>
   </div>
 
-  <!-- Tooltip personalizado -->
   <div class="custom-tooltip" id="customTooltip"></div>
 
   <script>
@@ -290,6 +280,14 @@
       const color = `hsl(${hue}, 60%, ${lightness}%)`;
       brickTypeColors.set(key, color);
       return color;
+    }
+
+    function pickTextColorBasedOnBgColor(bgColor) {
+      // Extraer componentes del HSL
+      const match = bgColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+      if (!match) return '#000';
+      const l = parseInt(match[3]);
+      return l > 50 ? '#000' : '#fff';
     }
 
     function toggleTheme() {
@@ -323,7 +321,11 @@
     function key(fecha, turno) { return `${fecha}_${turno}`; }
 
     function getBaseName(moldeCompleto) {
-      return moldeCompleto.split(' (')[0].trim();
+      // Eliminar número de molde entre paréntesis y también variantes como x25
+      let base = moldeCompleto.split(' (')[0].trim();
+      // Si contiene "x" o "X", quedarnos solo con la parte antes (ej: H12x25 -> H12)
+      base = base.split(/[xX]/)[0].trim();
+      return base;
     }
 
     function getMoldNumber(moldeCompleto) {
@@ -335,7 +337,6 @@
       return `${IMG_PATH}${baseName}.png`;
     }
 
-    // Tooltip
     const tooltip = document.getElementById('customTooltip');
     function showTooltip(e, content) {
       tooltip.innerHTML = content;
@@ -491,32 +492,37 @@
             const realBase = getBaseName(realMold);
             const realNumber = getMoldNumber(realMold);
             const bgColor = getBrickColor(realBase, realNumber);
+            const textColor = pickTextColorBasedOnBgColor(bgColor);
 
-            const taskDiv = document.createElement('div');
-            taskDiv.className = 'real-task';
-            taskDiv.style.backgroundColor = bgColor;
-
-            // Barra de cumplimiento horizontal inferior
-            const bar = document.createElement('div');
-            bar.className = `compliance-bar-bottom ${
-              comp.status === 'cumplido' ? 'green-bar' :
-              comp.status === 'parcial' ? 'orange-bar' :
-              comp.status === 'desvio' ? 'red-bar' : 'gray-bar'
-            }`;
-            taskDiv.appendChild(bar);
+            // Tarjeta con imagen y nombre
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'real-card';
+            cardDiv.style.backgroundColor = bgColor;
+            cardDiv.style.color = textColor;
 
             const img = document.createElement('img');
             img.className = 'mold-image';
             img.src = getImageSrc(realBase);
             img.alt = realMold;
             img.onerror = function() { this.src = FALLBACK_IMG; this.onerror = null; };
-            taskDiv.appendChild(img);
+            cardDiv.appendChild(img);
 
             const nameSpan = document.createElement('span');
             nameSpan.className = 'mold-name';
             nameSpan.textContent = realMold;
-            taskDiv.appendChild(nameSpan);
+            nameSpan.style.color = textColor;
+            cardDiv.appendChild(nameSpan);
 
+            // Barra de cumplimiento horizontal separada
+            const barRow = document.createElement('div');
+            barRow.className = 'compliance-row';
+            const barH = document.createElement('div');
+            barH.className = `compliance-bar-h ${
+              comp.status === 'cumplido' ? 'green-bar' :
+              comp.status === 'parcial' ? 'orange-bar' :
+              comp.status === 'desvio' ? 'red-bar' : 'gray-bar'
+            }`;
+            barRow.appendChild(barH);
             const emojiSpan = document.createElement('span');
             emojiSpan.className = `compliance-emoji ${
               comp.status === 'cumplido' ? 'green-emoji' :
@@ -526,26 +532,26 @@
             emojiSpan.textContent = comp.status === 'cumplido' ? '✅' : 
                                     comp.status === 'parcial' ? '⏳' : 
                                     comp.status === 'desvio' ? '⚠️' : '📌';
-            taskDiv.appendChild(emojiSpan);
+            barRow.appendChild(emojiSpan);
 
-            // Tooltip
-            taskDiv.addEventListener('mouseenter', (e) => {
+            cardDiv.addEventListener('mouseenter', (e) => {
               let tooltipContent = `<strong>Producción Real:</strong> ${realMold}<br>`;
               if (plans.length > 0) {
                 tooltipContent += `<strong>Planificado:</strong> ${plans.map(p => p.moldeCompleto).join(', ')}<br>`;
                 tooltipContent += `<strong>Estado:</strong> ${comp.reason || comp.status}`;
               } else {
-                tooltipContent += 'Sin planificación para este turno.';
+                tooltipContent += 'Sin planificación.';
               }
               showTooltip(e, tooltipContent);
             });
-            taskDiv.addEventListener('mouseleave', hideTooltip);
-            taskDiv.addEventListener('mousemove', (e) => {
+            cardDiv.addEventListener('mouseleave', hideTooltip);
+            cardDiv.addEventListener('mousemove', (e) => {
               tooltip.style.left = (e.clientX + 15) + 'px';
               tooltip.style.top = (e.clientY - 20) + 'px';
             });
 
-            turnCol.appendChild(taskDiv);
+            turnCol.appendChild(cardDiv);
+            turnCol.appendChild(barRow);
           } else {
             if (plans.length === 0) {
               const emptyText = document.createElement('span');
@@ -561,9 +567,12 @@
               prodTasks.forEach(task => {
                 const showDetail = task.esInicio || isFirstDayOfMonth;
                 if (showDetail) {
+                  const bgColor = getBrickColor(task.baseName, task.number);
+                  const textColor = pickTextColorBasedOnBgColor(bgColor);
                   const taskDiv = document.createElement('div');
                   taskDiv.className = 'turn-task';
-                  taskDiv.style.backgroundColor = getBrickColor(task.baseName, task.number);
+                  taskDiv.style.backgroundColor = bgColor;
+                  taskDiv.style.color = textColor;
 
                   const img = document.createElement('img');
                   img.className = 'mold-image';
@@ -575,6 +584,7 @@
                   const nameSpan = document.createElement('span');
                   nameSpan.className = 'mold-name';
                   nameSpan.textContent = task.moldeCompleto;
+                  nameSpan.style.color = textColor;
                   taskDiv.appendChild(nameSpan);
 
                   const otherProd = prodTasks.filter(t => t !== task && t.esFin && !t.esInicio);
@@ -585,7 +595,6 @@
                     taskDiv.appendChild(changeLabel);
                   }
 
-                  // Tooltip plan
                   taskDiv.addEventListener('mouseenter', (e) => {
                     showTooltip(e, `<strong>Plan:</strong> ${task.moldeCompleto}<br>
                       <strong>Tarea:</strong> ${task.tarea}<br>
@@ -603,7 +612,6 @@
                   const barDiv = document.createElement('div');
                   barDiv.className = 'continuation-bar';
                   barDiv.style.backgroundColor = getBrickColor(task.baseName, task.number);
-                  // Tooltip para barra
                   barDiv.addEventListener('mouseenter', (e) => {
                     showTooltip(e, `<strong>Continuación:</strong> ${task.moldeCompleto}<br>
                       <strong>Plan:</strong> ${task.tarea}<br>
@@ -622,6 +630,9 @@
               testTasks.forEach(task => {
                 const taskDiv = document.createElement('div');
                 taskDiv.className = 'turn-task prueba';
+                const bgColor = 'var(--prueba-bg)';
+                taskDiv.style.backgroundColor = bgColor;
+                taskDiv.style.color = '#000';
 
                 const img = document.createElement('img');
                 img.className = 'mold-image';
@@ -633,6 +644,7 @@
                 const nameSpan = document.createElement('span');
                 nameSpan.className = 'mold-name';
                 nameSpan.textContent = task.moldeCompleto;
+                nameSpan.style.color = '#000';
                 taskDiv.appendChild(nameSpan);
 
                 const pruebaLabel = document.createElement('span');
@@ -687,7 +699,6 @@
             const comp = getCompliance(real, plans);
             if (comp && comp.status === 'cumplido') cumplimientoTotal++;
           }
-          // Contar cambios (más de una producción en un turno)
           const prods = plans.filter(p => p.tarea === 'Producción');
           if (prods.length > 1) cambiosProgramados++;
           const tests = plans.filter(p => p.tarea === 'Prueba');
