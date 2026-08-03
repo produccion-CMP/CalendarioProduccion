@@ -44,7 +44,8 @@
       background: var(--bg-panel);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      background-image: url('img/deco/header-bg.png'); /* decoración opcional */
+      /* Fondo decorativo opcional */
+      background-image: url('img/deco/header-bg.png');
       background-size: cover;
       background-position: center;
     }
@@ -99,6 +100,23 @@
       box-shadow: var(--shadow);
     }
     .btn-add:hover { background: #c85d2a; transform: translateY(-1px); }
+    .btn-print {
+      background: #4a4238;
+      color: #fff;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: background 0.2s, transform 0.1s;
+      box-shadow: var(--shadow);
+    }
+    .btn-print:hover { background: #5e5548; }
 
     /* NAVEGACIÓN MES */
     .month-nav {
@@ -185,12 +203,13 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
+      justify-content: flex-start;
       padding: 4px 2px;
       border-right: 1px solid rgba(255,255,255,0.05);
       text-align: center;
       font-size: 0.7rem;
-      position: relative;
+      overflow-y: auto;
+      max-height: 100%;
     }
     .turn-column:last-child { border-right: none; }
     .turn-label {
@@ -201,8 +220,8 @@
       text-transform: uppercase;
     }
     .mold-image {
-      width: 30px;
-      height: 30px;
+      width: 28px;
+      height: 28px;
       object-fit: contain;
       border-radius: 4px;
       margin-bottom: 2px;
@@ -217,13 +236,39 @@
       max-width: 100%;
       color: var(--text-main);
     }
-    .task-emoji {
-      margin-top: 1px;
-      font-size: 0.8rem;
-    }
     .empty-turn {
       color: var(--text-muted);
       font-size: 0.65rem;
+      margin-top: 8px;
+    }
+
+    /* Tareas apiladas */
+    .turn-task {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 4px;
+      padding: 2px;
+      background: rgba(0,0,0,0.15);
+      border-radius: 4px;
+      width: 100%;
+      position: relative;
+    }
+    .prueba-label {
+      font-size: 0.5rem;
+      background: #5c8bc9;
+      color: white;
+      border-radius: 3px;
+      padding: 0 2px;
+      font-weight: 700;
+      margin-top: 1px;
+      line-height: 1.2;
+    }
+    .more-tasks {
+      font-size: 0.6rem;
+      color: var(--accent-light);
+      font-weight: 700;
+      margin-top: 2px;
     }
 
     /* LEYENDA */
@@ -253,6 +298,67 @@
       object-fit: contain;
     }
 
+    /* ========== ESTILOS DE IMPRESIÓN ========== */
+    @media print {
+      body {
+        background: white !important;
+        color: black !important;
+        padding: 0;
+        margin: 0;
+      }
+      .app-header, .month-nav button, .btn-add, .btn-print, .live-clock, .legend, #liveClock {
+        display: none !important;
+      }
+      .app-header {
+        background: none !important;
+        box-shadow: none;
+        padding: 0;
+        margin: 0;
+      }
+      .calendar-wrapper {
+        box-shadow: none;
+        background: none;
+        padding: 0;
+        margin: 0;
+      }
+      .day-cell {
+        background: #f9f9f9;
+        border: 1px solid #aaa;
+        box-shadow: none;
+      }
+      .turn-column {
+        background: none;
+      }
+      .turn-label {
+        color: black;
+        font-weight: 800;
+      }
+      .mold-image {
+        filter: none;
+      }
+      .mold-name {
+        color: black;
+      }
+      .prueba-label {
+        background: #999;
+      }
+      .month-nav {
+        margin-bottom: 10px;
+      }
+      .month-label {
+        font-size: 1.5rem;
+        margin: 20px 0;
+        color: black;
+      }
+      .days-grid {
+        gap: 2px;
+      }
+      @page {
+        size: A4 landscape;
+        margin: 1cm;
+      }
+    }
+
     @media (max-width: 640px) {
       .day-cell { min-height: 100px; }
       .mold-image { width: 20px; height: 20px; }
@@ -263,7 +369,8 @@
   <!-- ENCABEZADO -->
   <header class="app-header">
     <div class="logo-container">
-      <img src="img/logo CMP.png" alt="Cerámica Marcos Paz">
+      <!-- Ajustá la ruta de tu logo -->
+      <img src="img/logo.png" alt="Cerámica Marcos Paz">
       <div class="title-block">
         <h1>Producción Ladrillos Cerámicos</h1>
         <small>Tucumán, Argentina — Planta CEVIL</small>
@@ -272,6 +379,7 @@
     <div class="header-actions">
       <div class="live-clock" id="liveClock"></div>
       <a href="admin.html" class="btn-add">🧱 + Nuevo Plan</a>
+      <button class="btn-print" onclick="window.print()">🖨️ Imprimir Mes</button>
     </div>
   </header>
 
@@ -292,20 +400,19 @@
 
   <!-- LEYENDA -->
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div> Turno planificado</div>
-    <div class="legend-item"><span style="font-size:1.2rem;">🧱</span> Producción</div>
-    <div class="legend-item"><span style="font-size:1.2rem;">🔬</span> Prueba</div>
-    <div class="legend-item"><img src="img/moldes/H12.png" class="legend-img" onerror="this.style.display='none'"> Imagen referencial del molde</div>
+    <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div> Turno con plan</div>
+    <div class="legend-item"><span style="font-weight:700;">PR</span> Prueba</div>
+    <div class="legend-item"><img src="img/moldes/H12.png" class="legend-img" onerror="this.style.display='none'"> Imagen referencial</div>
     <div class="legend-item"><span style="color:var(--text-muted);">—</span> Sin planificar</div>
   </div>
 
   <script>
     // ========== CONFIGURACIÓN ==========
     const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQeQfWb0LQqub8pDTzEZv9SaQ7GBoQ12oJvde7C55CdWw9tL26JjLpJVEtXv8Ls02m1G36ztRgJg0W/pub?gid=304716517&single=true&output=csv';
-    const IMG_PATH = 'img/moldes/';   // carpeta donde están las imágenes de moldes
-    const FALLBACK_IMG = 'img/moldes/default.png'; // imagen genérica si no existe la específica
+    const IMG_PATH = 'img/moldes/';
+    const FALLBACK_IMG = 'img/moldes/default.png';
 
-    let planData = {};   // { '2026-08-01_T1': { moldeCompleto, baseName, tarea } }
+    let planData = {};   // { '2026-08-01_T1': [ {moldeCompleto, baseName, tarea}, ... ] }
     let currentDate = new Date();
 
     // ========== FUNCIONES ==========
@@ -335,46 +442,52 @@
     }
 
     async function loadData() {
-      const planRows = await fetchCSV(CSV_PLAN);
-      
-      // Procesar planificación
-      planData = {};
-      planRows.forEach(row => {
-        const molde = row['MOLDE']?.trim();
-        const tarea = row['TAREA']?.trim();
-        const fi = row['FECHA INICIO']?.trim();
-        const ti = row['TURNO INICIO']?.trim();
-        const ff = row['FECHA FIN']?.trim();
-        const tf = row['TURNO FIN']?.trim();
-        if (!molde || !fi || !ff) return;
+      try {
+        const planRows = await fetchCSV(CSV_PLAN);
+        console.log('📊 Filas obtenidas:', planRows.length);
 
-        const inicio = new Date(fi + 'T00:00:00');
-        const fin = new Date(ff + 'T00:00:00');
-        const turnos = ['T1','T2','T3'];
+        planData = {};
+        planRows.forEach((row, idx) => {
+          const molde = row['MOLDE']?.trim();
+          const tarea = row['TAREA']?.trim();
+          const fi = row['FECHA INICIO']?.trim();
+          const ti = row['TURNO INICIO']?.trim();
+          const ff = row['FECHA FIN']?.trim();
+          const tf = row['TURNO FIN']?.trim();
+          if (!molde || !fi || !ff) return;
 
-        for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate()+1)) {
-          const dayStr = formatYYYYMMDD(d);
-          let turnosDia = [];
-          if (d.getTime() === inicio.getTime() && d.getTime() === fin.getTime()) {
-            const idx1 = turnos.indexOf(ti), idx2 = turnos.indexOf(tf);
-            for (let i = idx1; i <= idx2; i++) turnosDia.push(turnos[i]);
-          } else if (d.getTime() === inicio.getTime()) {
-            const idx1 = turnos.indexOf(ti);
-            for (let i = idx1; i < 3; i++) turnosDia.push(turnos[i]);
-          } else if (d.getTime() === fin.getTime()) {
-            const idx2 = turnos.indexOf(tf);
-            for (let i = 0; i <= idx2; i++) turnosDia.push(turnos[i]);
-          } else {
-            turnosDia = ['T1','T2','T3'];
+          const inicio = new Date(fi + 'T00:00:00');
+          const fin = new Date(ff + 'T00:00:00');
+          if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) return;
+
+          const turnos = ['T1','T2','T3'];
+          for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate()+1)) {
+            const dayStr = formatYYYYMMDD(d);
+            let turnosDia = [];
+            if (d.getTime() === inicio.getTime() && d.getTime() === fin.getTime()) {
+              const idx1 = turnos.indexOf(ti), idx2 = turnos.indexOf(tf);
+              for (let i = idx1; i <= idx2; i++) turnosDia.push(turnos[i]);
+            } else if (d.getTime() === inicio.getTime()) {
+              const idx1 = turnos.indexOf(ti);
+              for (let i = idx1; i < 3; i++) turnosDia.push(turnos[i]);
+            } else if (d.getTime() === fin.getTime()) {
+              const idx2 = turnos.indexOf(tf);
+              for (let i = 0; i <= idx2; i++) turnosDia.push(turnos[i]);
+            } else {
+              turnosDia = ['T1','T2','T3'];
+            }
+            turnosDia.forEach(t => {
+              const k = key(dayStr, t);
+              if (!planData[k]) planData[k] = [];
+              planData[k].push({ moldeCompleto: molde, baseName: getBaseName(molde), tarea });
+            });
           }
-          turnosDia.forEach(t => {
-            const baseName = getBaseName(molde);
-            planData[key(dayStr, t)] = { moldeCompleto: molde, baseName, tarea };
-          });
-        }
-      });
-
-      renderCalendar();
+        });
+        console.log('✅ Planificaciones procesadas:', Object.keys(planData).length);
+        renderCalendar();
+      } catch (error) {
+        console.error('❌ Error cargando datos:', error);
+      }
     }
 
     function renderCalendar() {
@@ -413,7 +526,7 @@
 
         ['T1','T2','T3'].forEach(turno => {
           const k = key(dateStr, turno);
-          const plan = planData[k];
+          const tasks = planData[k] || [];
 
           const turnCol = document.createElement('div');
           turnCol.className = 'turn-column';
@@ -423,30 +536,44 @@
           turnLabel.textContent = turno;
           turnCol.appendChild(turnLabel);
 
-          if (plan) {
-            // Imagen del molde
-            const img = document.createElement('img');
-            img.className = 'mold-image';
-            img.src = getImageSrc(plan.baseName);
-            img.alt = plan.moldeCompleto;
-            img.onerror = function() {
-              this.src = FALLBACK_IMG;
-              this.onerror = null; // evita bucle
-            };
-            turnCol.appendChild(img);
+          if (tasks.length > 0) {
+            const maxVisible = 3;
+            const visibleTasks = tasks.slice(0, maxVisible);
+            visibleTasks.forEach(task => {
+              const taskDiv = document.createElement('div');
+              taskDiv.className = 'turn-task';
 
-            // Nombre del molde
-            const nameSpan = document.createElement('div');
-            nameSpan.className = 'mold-name';
-            nameSpan.textContent = plan.moldeCompleto;
-            nameSpan.title = plan.moldeCompleto;
-            turnCol.appendChild(nameSpan);
+              const img = document.createElement('img');
+              img.className = 'mold-image';
+              img.src = getImageSrc(task.baseName);
+              img.alt = task.moldeCompleto;
+              img.onerror = function() {
+                this.src = FALLBACK_IMG;
+                this.onerror = null;
+              };
+              taskDiv.appendChild(img);
 
-            // Emoji de tarea
-            const taskEmoji = document.createElement('div');
-            taskEmoji.className = 'task-emoji';
-            taskEmoji.textContent = plan.tarea === 'Prueba' ? '🔬' : '🧱';
-            turnCol.appendChild(taskEmoji);
+              const nameSpan = document.createElement('span');
+              nameSpan.className = 'mold-name';
+              nameSpan.textContent = task.moldeCompleto;
+              nameSpan.title = task.moldeCompleto;
+              taskDiv.appendChild(nameSpan);
+
+              if (task.tarea === 'Prueba') {
+                const pruebaLabel = document.createElement('span');
+                pruebaLabel.className = 'prueba-label';
+                pruebaLabel.textContent = 'PR';
+                taskDiv.appendChild(pruebaLabel);
+              }
+
+              turnCol.appendChild(taskDiv);
+            });
+            if (tasks.length > maxVisible) {
+              const moreDiv = document.createElement('div');
+              moreDiv.className = 'more-tasks';
+              moreDiv.textContent = `+${tasks.length - maxVisible}`;
+              turnCol.appendChild(moreDiv);
+            }
           } else {
             const emptyText = document.createElement('span');
             emptyText.className = 'empty-turn';
