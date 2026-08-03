@@ -202,7 +202,7 @@
       margin-top: 8px;
     }
 
-    /* Tarea genérica */
+    /* Tarea normal de producción */
     .turn-task {
       display: flex;
       flex-direction: column;
@@ -230,10 +230,19 @@
       text-overflow: ellipsis;
       max-width: 100%;
       color: var(--text-main);
+      margin-bottom: 1px;
     }
-    .change-emoji {
-      font-size: 1.2rem;
-      margin-bottom: 2px;
+
+    /* Etiqueta de cambio */
+    .change-label {
+      font-size: 0.5rem;
+      background: var(--accent);
+      color: #fff;
+      border-radius: 3px;
+      padding: 0 2px;
+      font-weight: 700;
+      line-height: 1.2;
+      margin-top: 1px;
     }
 
     /* Prueba: estilo amarillento suave */
@@ -296,6 +305,7 @@
       .mold-image { filter: none; }
       .mold-name { color: black; }
       .prueba-label { background: #f1c40f; }
+      .change-label { background: var(--accent); color: white; }
       .month-label { color: black; }
       .days-grid { gap: 2px; }
       @page { size: A4 landscape; margin: 1cm; }
@@ -310,7 +320,7 @@
 <body>
   <header class="app-header">
     <div class="logo-container">
-      <img src="img/logo CMP.png" alt="Cerámica Marcos Paz">
+      <img src="img/logo.png" alt="Cerámica Marcos Paz">
       <div class="title-block">
         <h1>Producción Ladrillos Cerámicos</h1>
         <small>Tucumán, Argentina — Planta CEVIL</small>
@@ -339,7 +349,7 @@
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div> Turno con plan</div>
     <div class="legend-item"><span style="font-weight:700; background:#f1c40f; color:#000; padding:0 4px; border-radius:3px;">PR</span> Prueba</div>
-    <div class="legend-item"><span style="font-size:1.2rem;">🔄️</span> Cambio de molde</div>
+    <div class="legend-item"><span style="background:var(--accent); color:#fff; padding:2px 4px; border-radius:3px; font-size:0.8rem;">🔄️</span> Cambio de molde</div>
     <div class="legend-item"><img src="img/moldes/H12.png" class="legend-img" onerror="this.style.display='none'"> Imagen referencial</div>
     <div class="legend-item"><span style="color:var(--text-muted);">—</span> Sin planificar</div>
   </div>
@@ -466,25 +476,21 @@
           const k = key(dateStr, turno);
           const tasks = planData[k] || [];
 
-          // Separar producción y pruebas
+          // Separar por tipo
           const prodTasks = tasks.filter(t => t.tarea === 'Producción');
           const pruebaTasks = tasks.filter(t => t.tarea === 'Prueba');
 
-          // Procesar cambios en producción
+          // Preparar producciones visibles (solo la que inicia, con indicador de cambio si corresponde)
           let displayProds = [];
           if (prodTasks.length === 1) {
-            displayProds.push(prodTasks[0]);
+            displayProds.push({ task: prodTasks[0], isChange: false });
           } else if (prodTasks.length > 1) {
-            const inicios = prodTasks.filter(t => t.esInicio);
+            const inicios = prodTasks.filter(t => t.esInicio && !t.esFin);
             const fines = prodTasks.filter(t => t.esFin && !t.esInicio);
-            inicios.forEach(t => {
-              t.showChangeIcon = fines.length > 0;
-              displayProds.push(t);
-            });
-            // Si hay tareas que son inicio y fin (único día), también se muestran
-            prodTasks.filter(t => t.esInicio && t.esFin).forEach(t => {
-              if (!displayProds.includes(t)) displayProds.push(t);
-            });
+            const singleDay = prodTasks.filter(t => t.esInicio && t.esFin);
+            const hasChange = inicios.length > 0 && fines.length > 0;
+            inicios.forEach(t => displayProds.push({ task: t, isChange: hasChange }));
+            singleDay.forEach(t => displayProds.push({ task: t, isChange: false }));
           }
 
           const turnCol = document.createElement('div');
@@ -501,35 +507,36 @@
             emptyText.textContent = '—';
             turnCol.appendChild(emptyText);
           } else {
-            // Mostrar producciones (ya procesadas)
-            displayProds.forEach(task => {
+            // Producciones
+            displayProds.forEach(item => {
               const taskDiv = document.createElement('div');
               taskDiv.className = 'turn-task';
 
-              if (task.showChangeIcon) {
-                const changeEmoji = document.createElement('span');
-                changeEmoji.className = 'change-emoji';
-                changeEmoji.textContent = '🔄️';
-                taskDiv.appendChild(changeEmoji);
-              } else {
-                const img = document.createElement('img');
-                img.className = 'mold-image';
-                img.src = getImageSrc(task.baseName);
-                img.alt = task.moldeCompleto;
-                img.onerror = function() { this.src = FALLBACK_IMG; this.onerror = null; };
-                taskDiv.appendChild(img);
-              }
+              // Siempre mostramos la imagen del nuevo molde
+              const img = document.createElement('img');
+              img.className = 'mold-image';
+              img.src = getImageSrc(item.task.baseName);
+              img.alt = item.task.moldeCompleto;
+              img.onerror = function() { this.src = FALLBACK_IMG; this.onerror = null; };
+              taskDiv.appendChild(img);
 
               const nameSpan = document.createElement('span');
               nameSpan.className = 'mold-name';
-              nameSpan.textContent = task.moldeCompleto;
-              nameSpan.title = task.moldeCompleto;
+              nameSpan.textContent = item.task.moldeCompleto;
+              nameSpan.title = item.task.moldeCompleto;
               taskDiv.appendChild(nameSpan);
+
+              if (item.isChange) {
+                const changeLabel = document.createElement('span');
+                changeLabel.className = 'change-label';
+                changeLabel.textContent = '🔄️';
+                taskDiv.appendChild(changeLabel);
+              }
 
               turnCol.appendChild(taskDiv);
             });
 
-            // Mostrar pruebas con estilo especial
+            // Pruebas
             pruebaTasks.forEach(task => {
               const taskDiv = document.createElement('div');
               taskDiv.className = 'turn-task prueba';
