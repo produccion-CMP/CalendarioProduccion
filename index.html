@@ -13,14 +13,13 @@
       --border: #4a4238;
       --text-main: #f0e6d8;
       --text-muted: #b8a99a;
-      --accent: #d97736;       /* terracota */
+      --accent: #d97736;
       --accent-light: #e8a87c;
-      --green: #4caf50;
-      --red: #e53935;
-      --blue: #5c8bc9;
       --shadow: 0 4px 12px rgba(0,0,0,0.4);
       --radius: 12px;
       --cell-height: 130px;
+      --prueba-bg: hsla(45, 80%, 90%, 0.25);
+      --prueba-border: #f1c40f;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -32,7 +31,6 @@
       min-height: 100vh;
     }
 
-    /* ENCABEZADO */
     .app-header {
       display: flex;
       justify-content: space-between;
@@ -44,7 +42,6 @@
       background: var(--bg-panel);
       border-radius: var(--radius);
       box-shadow: var(--shadow);
-      /* Fondo decorativo opcional */
       background-image: url('img/deco/header-bg.png');
       background-size: cover;
       background-position: center;
@@ -83,10 +80,7 @@
       font-size: 0.9rem;
       backdrop-filter: blur(5px);
     }
-    .btn-add {
-      background: var(--accent);
-      color: #fff;
-      border: none;
+    .btn-add, .btn-print {
       padding: 12px 24px;
       border-radius: 8px;
       font-weight: 700;
@@ -98,27 +92,14 @@
       gap: 8px;
       transition: background 0.2s, transform 0.1s;
       box-shadow: var(--shadow);
-    }
-    .btn-add:hover { background: #c85d2a; transform: translateY(-1px); }
-    .btn-print {
-      background: #4a4238;
-      color: #fff;
       border: none;
-      padding: 12px 24px;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: background 0.2s, transform 0.1s;
-      box-shadow: var(--shadow);
+      color: #fff;
     }
+    .btn-add { background: var(--accent); }
+    .btn-add:hover { background: #c85d2a; }
+    .btn-print { background: #4a4238; }
     .btn-print:hover { background: #5e5548; }
 
-    /* NAVEGACIÓN MES */
     .month-nav {
       display: flex;
       justify-content: center;
@@ -145,7 +126,6 @@
       color: var(--accent-light);
     }
 
-    /* CALENDARIO */
     .calendar-wrapper {
       background: var(--bg-panel);
       border-radius: var(--radius);
@@ -181,10 +161,7 @@
       transition: 0.15s;
       box-shadow: 0 2px 5px rgba(0,0,0,0.2);
     }
-    .day-cell:hover {
-      border-color: var(--accent);
-      background: #36312a;
-    }
+    .day-cell:hover { border-color: var(--accent); background: #36312a; }
     .day-number {
       font-weight: 800;
       font-size: 0.9rem;
@@ -219,6 +196,24 @@
       margin-bottom: 3px;
       text-transform: uppercase;
     }
+    .empty-turn {
+      color: var(--text-muted);
+      font-size: 0.65rem;
+      margin-top: 8px;
+    }
+
+    /* Tarea genérica */
+    .turn-task {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-bottom: 4px;
+      padding: 3px 2px;
+      border-radius: 4px;
+      width: 100%;
+      background: rgba(0,0,0,0.15);
+      position: relative;
+    }
     .mold-image {
       width: 28px;
       height: 28px;
@@ -236,34 +231,27 @@
       max-width: 100%;
       color: var(--text-main);
     }
-    .empty-turn {
-      color: var(--text-muted);
-      font-size: 0.65rem;
-      margin-top: 8px;
+    .change-emoji {
+      font-size: 1.2rem;
+      margin-bottom: 2px;
     }
 
-    /* Tareas apiladas */
-    .turn-task {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-bottom: 4px;
-      padding: 2px;
-      background: rgba(0,0,0,0.15);
-      border-radius: 4px;
-      width: 100%;
-      position: relative;
+    /* Prueba: estilo amarillento suave */
+    .turn-task.prueba {
+      background: var(--prueba-bg);
+      border: 1px solid var(--prueba-border);
     }
     .prueba-label {
       font-size: 0.5rem;
-      background: #5c8bc9;
-      color: white;
+      background: #f1c40f;
+      color: #000;
       border-radius: 3px;
       padding: 0 2px;
       font-weight: 700;
       margin-top: 1px;
       line-height: 1.2;
     }
+
     .more-tasks {
       font-size: 0.6rem;
       color: var(--accent-light);
@@ -271,7 +259,6 @@
       margin-top: 2px;
     }
 
-    /* LEYENDA */
     .legend {
       margin-top: 30px;
       background: var(--bg-panel);
@@ -298,65 +285,20 @@
       object-fit: contain;
     }
 
-    /* ========== ESTILOS DE IMPRESIÓN ========== */
     @media print {
-      body {
-        background: white !important;
-        color: black !important;
-        padding: 0;
-        margin: 0;
-      }
-      .app-header, .month-nav button, .btn-add, .btn-print, .live-clock, .legend, #liveClock {
-        display: none !important;
-      }
-      .app-header {
-        background: none !important;
-        box-shadow: none;
-        padding: 0;
-        margin: 0;
-      }
-      .calendar-wrapper {
-        box-shadow: none;
-        background: none;
-        padding: 0;
-        margin: 0;
-      }
-      .day-cell {
-        background: #f9f9f9;
-        border: 1px solid #aaa;
-        box-shadow: none;
-      }
-      .turn-column {
-        background: none;
-      }
-      .turn-label {
-        color: black;
-        font-weight: 800;
-      }
-      .mold-image {
-        filter: none;
-      }
-      .mold-name {
-        color: black;
-      }
-      .prueba-label {
-        background: #999;
-      }
-      .month-nav {
-        margin-bottom: 10px;
-      }
-      .month-label {
-        font-size: 1.5rem;
-        margin: 20px 0;
-        color: black;
-      }
-      .days-grid {
-        gap: 2px;
-      }
-      @page {
-        size: A4 landscape;
-        margin: 1cm;
-      }
+      body { background: white !important; color: black !important; padding: 0; }
+      .app-header, .month-nav button, .btn-add, .btn-print, .live-clock, .legend { display: none !important; }
+      .app-header { background: none !important; box-shadow: none; padding: 0; }
+      .calendar-wrapper { box-shadow: none; background: none; padding: 0; }
+      .day-cell { background: #f9f9f9; border: 1px solid #aaa; box-shadow: none; }
+      .turn-column { background: none; }
+      .turn-label { color: black; }
+      .mold-image { filter: none; }
+      .mold-name { color: black; }
+      .prueba-label { background: #f1c40f; }
+      .month-label { color: black; }
+      .days-grid { gap: 2px; }
+      @page { size: A4 landscape; margin: 1cm; }
     }
 
     @media (max-width: 640px) {
@@ -366,10 +308,8 @@
   </style>
 </head>
 <body>
-  <!-- ENCABEZADO -->
   <header class="app-header">
     <div class="logo-container">
-      <!-- Ajustá la ruta de tu logo -->
       <img src="img/logo.png" alt="Cerámica Marcos Paz">
       <div class="title-block">
         <h1>Producción Ladrillos Cerámicos</h1>
@@ -383,14 +323,12 @@
     </div>
   </header>
 
-  <!-- NAVEGACIÓN DEL MES -->
   <div class="month-nav">
     <button onclick="cambiarMes(-1)">◀ Anterior</button>
     <div class="month-label" id="monthLabel"></div>
     <button onclick="cambiarMes(1)">Siguiente ▶</button>
   </div>
 
-  <!-- CALENDARIO -->
   <div class="calendar-wrapper">
     <div class="weekdays">
       <div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div>
@@ -398,24 +336,22 @@
     <div class="days-grid" id="daysGrid"></div>
   </div>
 
-  <!-- LEYENDA -->
   <div class="legend">
     <div class="legend-item"><div class="legend-dot" style="background:var(--accent);"></div> Turno con plan</div>
-    <div class="legend-item"><span style="font-weight:700;">PR</span> Prueba</div>
+    <div class="legend-item"><span style="font-weight:700; background:#f1c40f; color:#000; padding:0 4px; border-radius:3px;">PR</span> Prueba</div>
+    <div class="legend-item"><span style="font-size:1.2rem;">🔄️</span> Cambio de molde</div>
     <div class="legend-item"><img src="img/moldes/H12.png" class="legend-img" onerror="this.style.display='none'"> Imagen referencial</div>
     <div class="legend-item"><span style="color:var(--text-muted);">—</span> Sin planificar</div>
   </div>
 
   <script>
-    // ========== CONFIGURACIÓN ==========
     const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vTQeQfWb0LQqub8pDTzEZv9SaQ7GBoQ12oJvde7C55CdWw9tL26JjLpJVEtXv8Ls02m1G36ztRgJg0W/pub?gid=304716517&single=true&output=csv';
     const IMG_PATH = 'img/moldes/';
     const FALLBACK_IMG = 'img/moldes/default.png';
 
-    let planData = {};   // { '2026-08-01_T1': [ {moldeCompleto, baseName, tarea}, ... ] }
+    let planData = {};
     let currentDate = new Date();
 
-    // ========== FUNCIONES ==========
     async function fetchCSV(url) {
       const resp = await fetch(url);
       const text = await resp.text();
@@ -445,9 +381,9 @@
       try {
         const planRows = await fetchCSV(CSV_PLAN);
         console.log('📊 Filas obtenidas:', planRows.length);
-
         planData = {};
-        planRows.forEach((row, idx) => {
+
+        planRows.forEach(row => {
           const molde = row['MOLDE']?.trim();
           const tarea = row['TAREA']?.trim();
           const fi = row['FECHA INICIO']?.trim();
@@ -479,7 +415,13 @@
             turnosDia.forEach(t => {
               const k = key(dayStr, t);
               if (!planData[k]) planData[k] = [];
-              planData[k].push({ moldeCompleto: molde, baseName: getBaseName(molde), tarea });
+              planData[k].push({
+                moldeCompleto: molde,
+                baseName: getBaseName(molde),
+                tarea,
+                esInicio: d.getTime() === inicio.getTime(),
+                esFin: d.getTime() === fin.getTime()
+              });
             });
           }
         });
@@ -501,32 +443,49 @@
       document.getElementById('monthLabel').textContent = 
         currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
 
-      // Espacios vacíos antes del primer día
       for (let i = 0; i < firstDay; i++) {
         const emptyCell = document.createElement('div');
         emptyCell.style.visibility = 'hidden';
         grid.appendChild(emptyCell);
       }
 
-      // Días del mes
       for (let d = 1; d <= daysInMonth; d++) {
         const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
         const cell = document.createElement('div');
         cell.className = 'day-cell';
 
-        // Número del día
         const numDiv = document.createElement('div');
         numDiv.className = 'day-number';
         numDiv.textContent = d;
         cell.appendChild(numDiv);
 
-        // Contenedor de turnos en columnas
         const turnsContainer = document.createElement('div');
         turnsContainer.className = 'turns-container';
 
         ['T1','T2','T3'].forEach(turno => {
           const k = key(dateStr, turno);
           const tasks = planData[k] || [];
+
+          // Separar producción y pruebas
+          const prodTasks = tasks.filter(t => t.tarea === 'Producción');
+          const pruebaTasks = tasks.filter(t => t.tarea === 'Prueba');
+
+          // Procesar cambios en producción
+          let displayProds = [];
+          if (prodTasks.length === 1) {
+            displayProds.push(prodTasks[0]);
+          } else if (prodTasks.length > 1) {
+            const inicios = prodTasks.filter(t => t.esInicio);
+            const fines = prodTasks.filter(t => t.esFin && !t.esInicio);
+            inicios.forEach(t => {
+              t.showChangeIcon = fines.length > 0;
+              displayProds.push(t);
+            });
+            // Si hay tareas que son inicio y fin (único día), también se muestran
+            prodTasks.filter(t => t.esInicio && t.esFin).forEach(t => {
+              if (!displayProds.includes(t)) displayProds.push(t);
+            });
+          }
 
           const turnCol = document.createElement('div');
           turnCol.className = 'turn-column';
@@ -536,21 +495,50 @@
           turnLabel.textContent = turno;
           turnCol.appendChild(turnLabel);
 
-          if (tasks.length > 0) {
-            const maxVisible = 3;
-            const visibleTasks = tasks.slice(0, maxVisible);
-            visibleTasks.forEach(task => {
+          if (displayProds.length === 0 && pruebaTasks.length === 0) {
+            const emptyText = document.createElement('span');
+            emptyText.className = 'empty-turn';
+            emptyText.textContent = '—';
+            turnCol.appendChild(emptyText);
+          } else {
+            // Mostrar producciones (ya procesadas)
+            displayProds.forEach(task => {
               const taskDiv = document.createElement('div');
               taskDiv.className = 'turn-task';
+
+              if (task.showChangeIcon) {
+                const changeEmoji = document.createElement('span');
+                changeEmoji.className = 'change-emoji';
+                changeEmoji.textContent = '🔄️';
+                taskDiv.appendChild(changeEmoji);
+              } else {
+                const img = document.createElement('img');
+                img.className = 'mold-image';
+                img.src = getImageSrc(task.baseName);
+                img.alt = task.moldeCompleto;
+                img.onerror = function() { this.src = FALLBACK_IMG; this.onerror = null; };
+                taskDiv.appendChild(img);
+              }
+
+              const nameSpan = document.createElement('span');
+              nameSpan.className = 'mold-name';
+              nameSpan.textContent = task.moldeCompleto;
+              nameSpan.title = task.moldeCompleto;
+              taskDiv.appendChild(nameSpan);
+
+              turnCol.appendChild(taskDiv);
+            });
+
+            // Mostrar pruebas con estilo especial
+            pruebaTasks.forEach(task => {
+              const taskDiv = document.createElement('div');
+              taskDiv.className = 'turn-task prueba';
 
               const img = document.createElement('img');
               img.className = 'mold-image';
               img.src = getImageSrc(task.baseName);
               img.alt = task.moldeCompleto;
-              img.onerror = function() {
-                this.src = FALLBACK_IMG;
-                this.onerror = null;
-              };
+              img.onerror = function() { this.src = FALLBACK_IMG; this.onerror = null; };
               taskDiv.appendChild(img);
 
               const nameSpan = document.createElement('span');
@@ -559,26 +547,13 @@
               nameSpan.title = task.moldeCompleto;
               taskDiv.appendChild(nameSpan);
 
-              if (task.tarea === 'Prueba') {
-                const pruebaLabel = document.createElement('span');
-                pruebaLabel.className = 'prueba-label';
-                pruebaLabel.textContent = 'PR';
-                taskDiv.appendChild(pruebaLabel);
-              }
+              const pruebaLabel = document.createElement('span');
+              pruebaLabel.className = 'prueba-label';
+              pruebaLabel.textContent = 'PR';
+              taskDiv.appendChild(pruebaLabel);
 
               turnCol.appendChild(taskDiv);
             });
-            if (tasks.length > maxVisible) {
-              const moreDiv = document.createElement('div');
-              moreDiv.className = 'more-tasks';
-              moreDiv.textContent = `+${tasks.length - maxVisible}`;
-              turnCol.appendChild(moreDiv);
-            }
-          } else {
-            const emptyText = document.createElement('span');
-            emptyText.className = 'empty-turn';
-            emptyText.textContent = '—';
-            turnCol.appendChild(emptyText);
           }
 
           turnsContainer.appendChild(turnCol);
@@ -594,7 +569,6 @@
       loadData();
     }
 
-    // Reloj en vivo
     function updateClock() {
       const now = new Date();
       document.getElementById('liveClock').textContent = 
