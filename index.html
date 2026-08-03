@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Planificación de Producción – Cerámica Marcos Paz</title>
+  <title>Cronograma de Producción – Cerámica Marcos Paz</title>
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
   <style>
     :root {
@@ -20,6 +20,7 @@
       --cell-height: 130px;
       --prueba-bg: hsla(45, 80%, 90%, 0.25);
       --prueba-border: #f1c40f;
+      --logo-shadow: drop-shadow(0 2px 4px rgba(255,255,255,0.7));
     }
 
     body.light-mode {
@@ -33,6 +34,7 @@
       --accent-light: #a0522d;
       --shadow: 0 2px 8px rgba(0,0,0,0.1);
       --prueba-bg: hsla(45, 80%, 90%, 0.6);
+      --logo-shadow: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -58,7 +60,10 @@
       box-shadow: var(--shadow);
     }
     .logo-container { display: flex; align-items: center; gap: 15px; }
-    .logo-container img { height: 55px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
+    .logo-container img {
+      height: 55px;
+      filter: var(--logo-shadow);
+    }
     .title-block h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px; color: var(--accent-light); }
     .title-block small { font-size: 0.8rem; color: var(--text-muted); }
 
@@ -121,9 +126,13 @@
     }
     .turn-task:hover { transform: scale(1.02); }
     .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; margin-bottom: 2px; background: rgba(255,255,255,0.05); padding: 2px; }
-    .mold-name {
-      font-weight: 700; max-width: 100%; color: inherit; margin-bottom: 1px;
-      white-space: normal; word-wrap: break-word; line-height: 1.1; font-size: 0.65rem;
+    .mold-base {
+      font-weight: 700; font-size: 0.7rem; color: inherit; margin-bottom: 1px;
+      white-space: normal; word-wrap: break-word; line-height: 1.1;
+    }
+    .mold-number {
+      font-weight: 600; font-size: 0.6rem; color: inherit; opacity: 0.8;
+      white-space: normal; word-wrap: break-word; line-height: 1.1;
     }
     .change-label, .prueba-label { font-size: 0.5rem; border-radius: 3px; padding: 0 2px; font-weight: 700; margin-top: 1px; line-height: 1.2; }
     .change-label { background: var(--accent); color: #fff; }
@@ -141,7 +150,7 @@
       cursor: pointer;
     }
 
-    /* Real: tarjeta con imagen + nombre, luego barra y emoji separados */
+    /* Real: tarjeta + barra + emoji en líneas separadas */
     .real-card {
       display: flex; flex-direction: column; align-items: center;
       padding: 4px 2px; border-radius: 6px 6px 0 0; width: 100%; margin-bottom: 0;
@@ -150,19 +159,39 @@
     .real-card:hover { transform: scale(1.02); }
 
     .compliance-row {
-      display: flex; align-items: center; justify-content: center;
+      display: flex; flex-direction: column; align-items: center;
       width: 100%; margin-bottom: 4px;
     }
     .compliance-bar-h {
-      height: 5px; flex: 1; border-radius: 0 0 6px 6px;
+      width: 100%; height: 5px; border-radius: 0 0 6px 6px;
+      position: relative; overflow: hidden;
     }
-    .compliance-emoji { margin-left: 4px; font-size: 0.8rem; }
+    /* Animación shimmer */
+    .compliance-bar-h::after {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%;
+      width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
+      animation: shimmer 2s infinite;
+    }
+    @keyframes shimmer {
+      0% { left: -100%; }
+      100% { left: 100%; }
+    }
+    .compliance-emoji {
+      margin-top: 2px; font-size: 0.9rem;
+      animation: pulse-emoji 1.5s ease-in-out infinite;
+    }
+    @keyframes pulse-emoji {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.15); }
+    }
     .green-bar { background: #4caf50; } .green-emoji { color: #4caf50; }
     .orange-bar { background: #ff9800; } .orange-emoji { color: #ff9800; }
     .red-bar { background: #e53935; } .red-emoji { color: #e53935; }
     .gray-bar { background: #9e9e9e; } .gray-emoji { color: #9e9e9e; }
 
-    /* Tooltip personalizado */
     .custom-tooltip {
       position: fixed;
       background: var(--bg-panel);
@@ -199,9 +228,11 @@
       .day-cell { background: #fff; border: 1px solid #999; box-shadow: none; min-height: 70px; }
       .turn-column { border-right: 1px solid #ddd; }
       .mold-image { width: 20px; height: 20px; filter: none; }
-      .mold-name, .turn-label { color: black; }
+      .mold-base, .mold-number, .turn-label { color: black; }
       .real-card, .turn-task { background: none !important; }
-      .compliance-bar-h { height: 3px; }
+      .compliance-bar-h { height: 3px; animation: none; }
+      .compliance-bar-h::after { display: none; }
+      .compliance-emoji { animation: none; }
       .continuation-bar { opacity: 0.5; }
       .month-label { color: black; font-size: 1.2rem; margin: 10px 0; }
       .days-grid { gap: 1px; }
@@ -219,8 +250,8 @@
     <div class="logo-container">
       <img src="img/logo CMP.png" alt="Cerámica Marcos Paz">
       <div class="title-block">
-        <h1>Producción Ladrillos Cerámicos</h1>
-        <small>Tucumán, Argentina — Planta CEVIL</small>
+        <h1>Cronograma de Producción</h1>
+        <small>Cerámica Marcos Paz - Planta CEVIL</small>
       </div>
     </div>
     <div class="header-actions">
@@ -276,14 +307,13 @@
       let hash = 0;
       for (let i = 0; i < baseName.length; i++) hash = baseName.charCodeAt(i) + ((hash << 5) - hash);
       const hue = hash % 360;
-      const lightness = 35 + number * 10;
+      const lightness = 38 + number * 8;
       const color = `hsl(${hue}, 60%, ${lightness}%)`;
       brickTypeColors.set(key, color);
       return color;
     }
 
     function pickTextColorBasedOnBgColor(bgColor) {
-      // Extraer componentes del HSL
       const match = bgColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
       if (!match) return '#000';
       const l = parseInt(match[3]);
@@ -321,9 +351,7 @@
     function key(fecha, turno) { return `${fecha}_${turno}`; }
 
     function getBaseName(moldeCompleto) {
-      // Eliminar número de molde entre paréntesis y también variantes como x25
       let base = moldeCompleto.split(' (')[0].trim();
-      // Si contiene "x" o "X", quedarnos solo con la parte antes (ej: H12x25 -> H12)
       base = base.split(/[xX]/)[0].trim();
       return base;
     }
@@ -344,9 +372,7 @@
       tooltip.style.left = (e.clientX + 15) + 'px';
       tooltip.style.top = (e.clientY - 20) + 'px';
     }
-    function hideTooltip() {
-      tooltip.style.display = 'none';
-    }
+    function hideTooltip() { tooltip.style.display = 'none'; }
 
     async function loadData() {
       try {
@@ -474,6 +500,9 @@
         const turnsContainer = document.createElement('div');
         turnsContainer.className = 'turns-container';
 
+        // Para control de continuidad intra-día: almacenamos por día el último molde mostrado en detalle
+        const lastDetailedMoldByTurno = {};
+
         ['T1','T2','T3'].forEach(turno => {
           const k = key(dateStr, turno);
           const plans = planData[k] || [];
@@ -494,7 +523,6 @@
             const bgColor = getBrickColor(realBase, realNumber);
             const textColor = pickTextColorBasedOnBgColor(bgColor);
 
-            // Tarjeta con imagen y nombre
             const cardDiv = document.createElement('div');
             cardDiv.className = 'real-card';
             cardDiv.style.backgroundColor = bgColor;
@@ -507,13 +535,18 @@
             img.onerror = function() { this.src = FALLBACK_IMG; this.onerror = null; };
             cardDiv.appendChild(img);
 
-            const nameSpan = document.createElement('span');
-            nameSpan.className = 'mold-name';
-            nameSpan.textContent = realMold;
-            nameSpan.style.color = textColor;
-            cardDiv.appendChild(nameSpan);
+            const baseSpan = document.createElement('span');
+            baseSpan.className = 'mold-base';
+            baseSpan.textContent = realBase;
+            baseSpan.style.color = textColor;
+            cardDiv.appendChild(baseSpan);
 
-            // Barra de cumplimiento horizontal separada
+            const numberSpan = document.createElement('span');
+            numberSpan.className = 'mold-number';
+            numberSpan.textContent = `Molde ${realNumber}`;
+            numberSpan.style.color = textColor;
+            cardDiv.appendChild(numberSpan);
+
             const barRow = document.createElement('div');
             barRow.className = 'compliance-row';
             const barH = document.createElement('div');
@@ -564,9 +597,16 @@
 
               const isFirstDayOfMonth = (d === 1) || (new Date(year, month, d-1).getMonth() !== month);
 
+              // Determinar qué moldes de producción ya se mostraron en detalle en el turno anterior de este día
+              const previousTurno = turno === 'T1' ? null : (turno === 'T2' ? 'T1' : 'T2');
+              const previousMolds = previousTurno ? lastDetailedMoldByTurno[previousTurno] || [] : [];
+
+              // Para cada tarea de producción, decidir si mostramos detalle o barra
               prodTasks.forEach(task => {
-                const showDetail = task.esInicio || isFirstDayOfMonth;
-                if (showDetail) {
+                const moldKey = task.moldeCompleto;
+                const isContinuation = previousMolds.includes(moldKey) && !task.esInicio;
+                if (!isContinuation && (task.esInicio || isFirstDayOfMonth)) {
+                  // Mostrar detalle
                   const bgColor = getBrickColor(task.baseName, task.number);
                   const textColor = pickTextColorBasedOnBgColor(bgColor);
                   const taskDiv = document.createElement('div');
@@ -581,14 +621,19 @@
                   img.onerror = function() { this.src = FALLBACK_IMG; this.onerror = null; };
                   taskDiv.appendChild(img);
 
-                  const nameSpan = document.createElement('span');
-                  nameSpan.className = 'mold-name';
-                  nameSpan.textContent = task.moldeCompleto;
-                  nameSpan.style.color = textColor;
-                  taskDiv.appendChild(nameSpan);
+                  const baseSpan = document.createElement('span');
+                  baseSpan.className = 'mold-base';
+                  baseSpan.textContent = task.baseName;
+                  baseSpan.style.color = textColor;
+                  taskDiv.appendChild(baseSpan);
 
-                  const otherProd = prodTasks.filter(t => t !== task && t.esFin && !t.esInicio);
-                  if (otherProd.length > 0) {
+                  const numberSpan = document.createElement('span');
+                  numberSpan.className = 'mold-number';
+                  numberSpan.textContent = `Molde ${task.number}`;
+                  numberSpan.style.color = textColor;
+                  taskDiv.appendChild(numberSpan);
+
+                  if (prodTasks.length > 1 && task !== prodTasks[0] && !task.esInicio) {
                     const changeLabel = document.createElement('span');
                     changeLabel.className = 'change-label';
                     changeLabel.textContent = '🔄️';
@@ -608,7 +653,11 @@
                   });
 
                   turnCol.appendChild(taskDiv);
+                  // Registrar que este molde se mostró en detalle
+                  if (!lastDetailedMoldByTurno[turno]) lastDetailedMoldByTurno[turno] = [];
+                  lastDetailedMoldByTurno[turno].push(moldKey);
                 } else {
+                  // Barra de continuación
                   const barDiv = document.createElement('div');
                   barDiv.className = 'continuation-bar';
                   barDiv.style.backgroundColor = getBrickColor(task.baseName, task.number);
@@ -627,11 +676,11 @@
                 }
               });
 
+              // Pruebas siempre detalle (porque son cortas y no se consideran continuación)
               testTasks.forEach(task => {
                 const taskDiv = document.createElement('div');
                 taskDiv.className = 'turn-task prueba';
-                const bgColor = 'var(--prueba-bg)';
-                taskDiv.style.backgroundColor = bgColor;
+                taskDiv.style.backgroundColor = 'var(--prueba-bg)';
                 taskDiv.style.color = '#000';
 
                 const img = document.createElement('img');
@@ -641,11 +690,17 @@
                 img.onerror = function() { this.src = FALLBACK_IMG; this.onerror = null; };
                 taskDiv.appendChild(img);
 
-                const nameSpan = document.createElement('span');
-                nameSpan.className = 'mold-name';
-                nameSpan.textContent = task.moldeCompleto;
-                nameSpan.style.color = '#000';
-                taskDiv.appendChild(nameSpan);
+                const baseSpan = document.createElement('span');
+                baseSpan.className = 'mold-base';
+                baseSpan.textContent = task.baseName;
+                baseSpan.style.color = '#000';
+                taskDiv.appendChild(baseSpan);
+
+                const numberSpan = document.createElement('span');
+                numberSpan.className = 'mold-number';
+                numberSpan.textContent = `Molde ${task.number}`;
+                numberSpan.style.color = '#000';
+                taskDiv.appendChild(numberSpan);
 
                 const pruebaLabel = document.createElement('span');
                 pruebaLabel.className = 'prueba-label';
