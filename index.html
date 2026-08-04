@@ -21,7 +21,6 @@
       --prueba-bg: hsla(45, 80%, 90%, 0.25);
       --prueba-border: #f1c40f;
       --logo-shadow: drop-shadow(0 2px 4px rgba(255,255,255,0.7));
-      /* Colores de encabezados de día */
       --day-header-plan: #ff9800;
       --day-header-real: #4caf50;
       --day-header-today: #ffd700;
@@ -113,15 +112,11 @@
       text-align: center; border-bottom: 1px solid var(--border);
       border-radius: 8px 8px 0 0;
     }
-    /* Colores de encabezado según estado */
     .day-header-plan { background-color: var(--day-header-plan) !important; color: #000; }
     .day-header-real { background-color: var(--day-header-real) !important; color: #000; }
     .day-header-today { background-color: var(--day-header-today) !important; color: #000; font-weight: 900; }
     .day-header-today.day-header-plan,
-    .day-header-today.day-header-real {
-      /* Si hoy es plan o real, mantener el color de hoy con borde extra */
-      border: 2px solid #000;
-    }
+    .day-header-today.day-header-real { border: 2px solid #000; }
 
     .turns-container { display: flex; flex: 1; flex-direction: row; }
     .turn-column {
@@ -133,7 +128,6 @@
     .turn-label { font-weight: 700; color: var(--accent-light); font-size: 0.6rem; margin-bottom: 3px; text-transform: uppercase; }
     .empty-turn { color: var(--text-muted); font-size: 0.65rem; margin-top: 8px; }
 
-    /* Tarea planificada (inicio) */
     .turn-task {
       display: flex; flex-direction: column; align-items: center; margin-bottom: 4px;
       padding: 3px 2px; border-radius: 4px; width: 100%;
@@ -153,7 +147,6 @@
     .change-label { background: var(--accent); color: #fff; }
     .prueba-label { background: #f1c40f; color: #000; }
 
-    /* Barra de continuación (plan sin real) */
     .continuation-bar {
       width: 100%;
       flex: 1;
@@ -165,7 +158,6 @@
       cursor: pointer;
     }
 
-    /* Real: tarjeta + barra + emoji en líneas separadas */
     .real-card {
       display: flex; flex-direction: column; align-items: center;
       padding: 4px 2px; border-radius: 6px 6px 0 0; width: 100%; margin-bottom: 0;
@@ -432,8 +424,8 @@
                 baseName: getBaseName(molde),
                 number: getMoldNumber(molde),
                 tarea,
-                esInicio: d.getTime() === inicio.getTime(),
-                esFin: d.getTime() === fin.getTime(),
+                esInicio: d.getTime() === inicio.getTime() && t === ti,
+                esFin: d.getTime() === fin.getTime() && t === tf,
                 fechaInicio: fi,
                 turnoInicio: ti,
                 fechaFin: ff,
@@ -447,13 +439,14 @@
         realRows.forEach(row => {
           const diaRaw = row['Día']?.trim();
           const turno = row['Turno']?.trim();
-          const moldeReal = row['L. carga (N)']?.trim();
+          const moldeReal = row['Molde']?.trim();  // Usamos la columna 'Molde' directamente
           if (!diaRaw || !turno || !moldeReal) return;
           const partes = diaRaw.split('/');
           if (partes.length !== 3) return;
           const fecha = new Date(partes[2], partes[1]-1, partes[0]);
           const clave = key(formatYYYYMMDD(fecha), turno);
-          realData[clave] = moldeReal;
+          if (!realData[clave]) realData[clave] = [];
+          realData[clave].push(moldeReal);
         });
 
         renderCalendar();
@@ -492,7 +485,7 @@
       const month = currentDate.getMonth();
       const daysInMonth = new Date(year, month+1, 0).getDate();
       const firstDay = new Date(year, month, 1).getDay();
-      const todayStr = formatYYYYMMDD(new Date()); // para resaltar hoy
+      const todayStr = formatYYYYMMDD(new Date());
 
       document.getElementById('monthLabel').textContent = 
         currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
@@ -503,24 +496,23 @@
         grid.appendChild(emptyCell);
       }
 
-      // Estado global de continuidad para planificación (sin real)
-      let lastDetailedPlanMold = null; // { moldeCompleto, baseName, number }
-      let lastDetailedPlanTurno = null; // { dateStr, turno }
+      // Mapas para continuidad por turno (plan y real)
+      const lastActivePlanByTurno = { T1: null, T2: null, T3: null };
+      const lastActiveRealByTurno = { T1: null, T2: null, T3: null };
 
       for (let d = 1; d <= daysInMonth; d++) {
         const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
         const cell = document.createElement('div');
         cell.className = 'day-cell';
 
-        // Determinar estado del día para colorear el número
-        const dayReal = realData[key(dateStr, 'T1')] || realData[key(dateStr, 'T2')] || realData[key(dateStr, 'T3')];
-        const dayPlan = planData[key(dateStr, 'T1')] || planData[key(dateStr, 'T2')] || planData[key(dateStr, 'T3')];
+        const dayRealTurnos = ['T1','T2','T3'].some(t => realData[key(dateStr, t)]?.length > 0);
+        const dayPlanTurnos = ['T1','T2','T3'].some(t => (planData[key(dateStr, t)] || []).length > 0);
         let dayHeaderClass = '';
         if (dateStr === todayStr) {
           dayHeaderClass = 'day-header-today';
-        } else if (dayReal) {
+        } else if (dayRealTurnos) {
           dayHeaderClass = 'day-header-real';
-        } else if (dayPlan) {
+        } else if (dayPlanTurnos) {
           dayHeaderClass = 'day-header-plan';
         }
 
@@ -536,7 +528,7 @@
         ['T1','T2','T3'].forEach(turno => {
           const k = key(dateStr, turno);
           const plans = planData[k] || [];
-          const realMold = realData[k] || null;
+          const realMolds = realData[k] || []; // array de moldes reales en este turno
 
           const turnCol = document.createElement('div');
           turnCol.className = 'turn-column';
@@ -546,38 +538,79 @@
           turnLabel.textContent = turno;
           turnCol.appendChild(turnLabel);
 
-          if (realMold) {
-            // Mostrar siempre detalle real, pues cada registro real es puntual
-            const comp = getCompliance(realMold, plans);
-            const realBase = getBaseName(realMold);
-            const realNumber = getMoldNumber(realMold);
-            const bgColor = getBrickColor(realBase, realNumber);
+          // LÓGICA PRINCIPAL: ¿Hay real?
+          if (realMolds.length > 0) {
+            // Determinar molde principal (el que continúa o inicia) y pruebas
+            let mainMold = null;
+            let testMolds = [];
+
+            if (realMolds.length === 1) {
+              mainMold = realMolds[0];
+            } else {
+              // Varios moldes en el mismo turno: buscar el que coincide con el último activo, o el primero como principal
+              const lastActive = lastActiveRealByTurno[turno];
+              const matching = realMolds.find(m => m === lastActive);
+              if (matching) {
+                mainMold = matching;
+                testMolds = realMolds.filter(m => m !== matching);
+              } else {
+                mainMold = realMolds[0];
+                testMolds = realMolds.slice(1);
+              }
+            }
+
+            const comp = getCompliance(mainMold, plans);
+            const base = getBaseName(mainMold);
+            const number = getMoldNumber(mainMold);
+            const bgColor = getBrickColor(base, number);
             const textColor = pickTextColorBasedOnBgColor(bgColor);
 
-            const cardDiv = document.createElement('div');
-            cardDiv.className = 'real-card';
-            cardDiv.style.backgroundColor = bgColor;
-            cardDiv.style.color = textColor;
+            // ¿Es continuación del turno anterior?
+            const isContinuation = lastActiveRealByTurno[turno] === mainMold;
 
-            const img = document.createElement('img');
-            img.className = 'mold-image';
-            img.src = getImageSrc(realBase);
-            img.alt = realMold;
-            img.onerror = function() { this.src = FALLBACK_IMG; this.onerror = null; };
-            cardDiv.appendChild(img);
+            if (!isContinuation) {
+              // Tarjeta de inicio/cambio
+              const cardDiv = document.createElement('div');
+              cardDiv.className = 'real-card';
+              cardDiv.style.backgroundColor = bgColor;
+              cardDiv.style.color = textColor;
 
-            const baseSpan = document.createElement('span');
-            baseSpan.className = 'mold-base';
-            baseSpan.textContent = realBase;
-            baseSpan.style.color = textColor;
-            cardDiv.appendChild(baseSpan);
+              const img = document.createElement('img');
+              img.className = 'mold-image';
+              img.src = getImageSrc(base);
+              img.alt = mainMold;
+              img.onerror = function() { this.src = FALLBACK_IMG; this.onerror = null; };
+              cardDiv.appendChild(img);
 
-            const numberSpan = document.createElement('span');
-            numberSpan.className = 'mold-number';
-            numberSpan.textContent = `Molde ${realNumber}`;
-            numberSpan.style.color = textColor;
-            cardDiv.appendChild(numberSpan);
+              const baseSpan = document.createElement('span');
+              baseSpan.className = 'mold-base';
+              baseSpan.textContent = base;
+              baseSpan.style.color = textColor;
+              cardDiv.appendChild(baseSpan);
 
+              const numberSpan = document.createElement('span');
+              numberSpan.className = 'mold-number';
+              numberSpan.textContent = `Molde ${number}`;
+              numberSpan.style.color = textColor;
+              cardDiv.appendChild(numberSpan);
+
+              if (lastActiveRealByTurno[turno] && lastActiveRealByTurno[turno] !== mainMold) {
+                const changeLabel = document.createElement('span');
+                changeLabel.className = 'change-label';
+                changeLabel.textContent = '🔄️';
+                cardDiv.appendChild(changeLabel);
+              }
+
+              turnCol.appendChild(cardDiv);
+            } else {
+              // Barra de continuación
+              const barDiv = document.createElement('div');
+              barDiv.className = 'continuation-bar';
+              barDiv.style.backgroundColor = bgColor;
+              turnCol.appendChild(barDiv);
+            }
+
+            // Barra de cumplimiento y emoji (siempre visible para el molde principal)
             const barRow = document.createElement('div');
             barRow.className = 'compliance-row';
             const barH = document.createElement('div');
@@ -597,29 +630,70 @@
                                     comp.status === 'parcial' ? '⏳' : 
                                     comp.status === 'desvio' ? '⚠️' : '📌';
             barRow.appendChild(emojiSpan);
-
-            cardDiv.addEventListener('mouseenter', (e) => {
-              let tooltipContent = `<strong>Producción Real:</strong> ${realMold}<br>`;
-              if (plans.length > 0) {
-                tooltipContent += `<strong>Planificado:</strong> ${plans.map(p => p.moldeCompleto).join(', ')}<br>`;
-                tooltipContent += `<strong>Estado:</strong> ${comp.reason || comp.status}`;
-              } else {
-                tooltipContent += 'Sin planificación.';
-              }
-              showTooltip(e, tooltipContent);
-            });
-            cardDiv.addEventListener('mouseleave', hideTooltip);
-            cardDiv.addEventListener('mousemove', (e) => {
-              tooltip.style.left = (e.clientX + 15) + 'px';
-              tooltip.style.top = (e.clientY - 20) + 'px';
-            });
-
-            turnCol.appendChild(cardDiv);
             turnCol.appendChild(barRow);
 
-            // Actualizar el último detalle visto para planificación (por si acaso)
-            // No afecta la continuidad de plan porque aquí hay real.
+            // Pruebas (si las hay) como tarjetas PR
+            testMolds.forEach(testMold => {
+              const testBase = getBaseName(testMold);
+              const testNumber = getMoldNumber(testMold);
+              const testBgColor = getBrickColor(testBase, testNumber);
+              const testTextColor = pickTextColorBasedOnBgColor(testBgColor);
+
+              const taskDiv = document.createElement('div');
+              taskDiv.className = 'turn-task prueba';
+              taskDiv.style.backgroundColor = 'var(--prueba-bg)';
+              taskDiv.style.color = '#000';
+
+              const img = document.createElement('img');
+              img.className = 'mold-image';
+              img.src = getImageSrc(testBase);
+              img.alt = testMold;
+              img.onerror = function() { this.src = FALLBACK_IMG; this.onerror = null; };
+              taskDiv.appendChild(img);
+
+              const baseSpan = document.createElement('span');
+              baseSpan.className = 'mold-base';
+              baseSpan.textContent = testBase;
+              taskDiv.appendChild(baseSpan);
+
+              const numberSpan = document.createElement('span');
+              numberSpan.className = 'mold-number';
+              numberSpan.textContent = `Molde ${testNumber}`;
+              taskDiv.appendChild(numberSpan);
+
+              const pruebaLabel = document.createElement('span');
+              pruebaLabel.className = 'prueba-label';
+              pruebaLabel.textContent = 'PR';
+              taskDiv.appendChild(pruebaLabel);
+
+              turnCol.appendChild(taskDiv);
+            });
+
+            // Actualizar último activo
+            lastActiveRealByTurno[turno] = mainMold;
+
+            // Tooltip para la tarjeta real (si se mostró) o barra
+            const lastChild = turnCol.querySelector('.real-card') || turnCol.querySelector('.continuation-bar');
+            if (lastChild) {
+              lastChild.addEventListener('mouseenter', (e) => {
+                let tooltipContent = `<strong>Producción Real:</strong> ${mainMold}<br>`;
+                if (plans.length > 0) {
+                  tooltipContent += `<strong>Planificado:</strong> ${plans.map(p => p.moldeCompleto).join(', ')}<br>`;
+                  tooltipContent += `<strong>Estado:</strong> ${comp.reason || comp.status}`;
+                } else {
+                  tooltipContent += 'Sin planificación.';
+                }
+                showTooltip(e, tooltipContent);
+              });
+              lastChild.addEventListener('mouseleave', hideTooltip);
+              lastChild.addEventListener('mousemove', (e) => {
+                tooltip.style.left = (e.clientX + 15) + 'px';
+                tooltip.style.top = (e.clientY - 20) + 'px';
+              });
+            }
+
           } else {
+            // No hay real, mostrar planificación
             if (plans.length === 0) {
               const emptyText = document.createElement('span');
               emptyText.className = 'empty-turn';
@@ -629,27 +703,18 @@
               const prodTasks = plans.filter(p => p.tarea === 'Producción');
               const testTasks = plans.filter(p => p.tarea === 'Prueba');
 
-              // Ordenar tareas de producción por orden de inicio (según fechaInicio y turnoInicio)
               prodTasks.sort((a, b) => {
                 if (a.fechaInicio < b.fechaInicio) return -1;
                 if (a.fechaInicio > b.fechaInicio) return 1;
                 return ['T1','T2','T3'].indexOf(a.turnoInicio) - ['T1','T2','T3'].indexOf(b.turnoInicio);
               });
 
-              // Para cada tarea de producción, decidir si mostramos detalle o barra
               prodTasks.forEach((task, index) => {
                 const moldKey = task.moldeCompleto;
                 const isFirstTaskOfDay = (index === 0);
-                const isContinuation = lastDetailedPlanMold && 
-                                       lastDetailedPlanMold.moldeCompleto === moldKey &&
-                                       !task.esInicio;
+                const isContinuation = lastActivePlanByTurno[turno] === moldKey && !task.esInicio;
 
-                // También mostramos detalle si es el primer turno del mes y no hay detalle previo
-                const isFirstDayOfMonth = (d === 1) && (turno === 'T1') && (index === 0);
-                const showDetail = (task.esInicio || isFirstDayOfMonth || !isContinuation) && 
-                                   (!lastDetailedPlanMold || lastDetailedPlanMold.moldeCompleto !== moldKey || task.esInicio);
-
-                if (showDetail) {
+                if (!isContinuation && (task.esInicio || isFirstTaskOfDay)) {
                   const bgColor = getBrickColor(task.baseName, task.number);
                   const textColor = pickTextColorBasedOnBgColor(bgColor);
                   const taskDiv = document.createElement('div');
@@ -667,17 +732,14 @@
                   const baseSpan = document.createElement('span');
                   baseSpan.className = 'mold-base';
                   baseSpan.textContent = task.baseName;
-                  baseSpan.style.color = textColor;
                   taskDiv.appendChild(baseSpan);
 
                   const numberSpan = document.createElement('span');
                   numberSpan.className = 'mold-number';
                   numberSpan.textContent = `Molde ${task.number}`;
-                  numberSpan.style.color = textColor;
                   taskDiv.appendChild(numberSpan);
 
-                  // Mostrar emoji de cambio si es un cambio de molde (no es el primer detalle)
-                  if (lastDetailedPlanMold && lastDetailedPlanMold.moldeCompleto !== moldKey) {
+                  if (lastActivePlanByTurno[turno] && lastActivePlanByTurno[turno] !== moldKey) {
                     const changeLabel = document.createElement('span');
                     changeLabel.className = 'change-label';
                     changeLabel.textContent = '🔄️';
@@ -697,12 +759,7 @@
                   });
 
                   turnCol.appendChild(taskDiv);
-
-                  // Actualizar el último detalle mostrado
-                  lastDetailedPlanMold = { moldeCompleto: moldKey, baseName: task.baseName, number: task.number };
-                  lastDetailedPlanTurno = { dateStr, turno };
                 } else {
-                  // Barra de continuación
                   const barDiv = document.createElement('div');
                   barDiv.className = 'continuation-bar';
                   barDiv.style.backgroundColor = getBrickColor(task.baseName, task.number);
@@ -719,9 +776,13 @@
                   });
                   turnCol.appendChild(barDiv);
                 }
+
+                // Actualizar el último molde activo para este turno
+                if (task.esInicio || !lastActivePlanByTurno[turno]) {
+                  lastActivePlanByTurno[turno] = moldKey;
+                }
               });
 
-              // Pruebas siempre detalle
               testTasks.forEach(task => {
                 const taskDiv = document.createElement('div');
                 taskDiv.className = 'turn-task prueba';
@@ -738,13 +799,11 @@
                 const baseSpan = document.createElement('span');
                 baseSpan.className = 'mold-base';
                 baseSpan.textContent = task.baseName;
-                baseSpan.style.color = '#000';
                 taskDiv.appendChild(baseSpan);
 
                 const numberSpan = document.createElement('span');
                 numberSpan.className = 'mold-number';
                 numberSpan.textContent = `Molde ${task.number}`;
-                numberSpan.style.color = '#000';
                 taskDiv.appendChild(numberSpan);
 
                 const pruebaLabel = document.createElement('span');
@@ -752,23 +811,14 @@
                 pruebaLabel.textContent = 'PR';
                 taskDiv.appendChild(pruebaLabel);
 
-                taskDiv.addEventListener('mouseenter', (e) => {
-                  showTooltip(e, `<strong>Prueba:</strong> ${task.moldeCompleto}<br>
-                    <strong>Inicio:</strong> ${task.fechaInicio} ${task.turnoInicio}<br>
-                    <strong>Fin:</strong> ${task.fechaFin} ${task.turnoFin}`);
-                });
-                taskDiv.addEventListener('mouseleave', hideTooltip);
-                taskDiv.addEventListener('mousemove', (e) => {
-                  tooltip.style.left = (e.clientX + 15) + 'px';
-                  tooltip.style.top = (e.clientY - 20) + 'px';
-                });
-
                 turnCol.appendChild(taskDiv);
               });
             }
           }
+
           turnsContainer.appendChild(turnCol);
         });
+
         cell.appendChild(turnsContainer);
         grid.appendChild(cell);
       }
@@ -792,11 +842,11 @@
         ['T1','T2','T3'].forEach(turno => {
           const k = key(dateStr, turno);
           const plans = planData[k] || [];
-          const real = realData[k];
+          const realMolds = realData[k] || [];
           if (plans.length > 0) tienePlanDia = true;
-          if (real) {
+          if (realMolds.length > 0) {
             totalReal++;
-            const comp = getCompliance(real, plans);
+            const comp = getCompliance(realMolds[0], plans); // simplificado: solo primer molde
             if (comp && comp.status === 'cumplido') cumplimientoTotal++;
           }
           const prods = plans.filter(p => p.tarea === 'Producción');
