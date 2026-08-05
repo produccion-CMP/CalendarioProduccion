@@ -28,6 +28,7 @@
       --cell-h: 68px;
       --font: 'Plus Jakarta Sans', system-ui, sans-serif;
       --prueba-bg: rgba(255,215,0,0.2);
+      --domingo-bg: #3a2e2e;
     }
 
     body.light-mode {
@@ -42,6 +43,7 @@
       --shadow: 0 2px 12px rgba(0,0,0,0.08);
       --shadow-3d: 0 4px 16px rgba(0,0,0,0.12);
       --prueba-bg: rgba(255,215,0,0.15);
+      --domingo-bg: #fce4e4;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,7 +56,6 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* Header */
     .app-header {
       display: flex;
       justify-content: space-between;
@@ -70,271 +71,120 @@
     .title-block h1 { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--accent-light); }
     .title-block small { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
 
-    .header-right {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 8px;
-    }
-    .header-top-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
+    .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+    .header-top-row { display: flex; align-items: center; gap: 12px; }
     .live-clock { font-weight: 600; font-size: 0.9rem; color: var(--text-main); background: var(--bg-cell); padding: 8px 16px; border-radius: 30px; }
     .theme-btn { background: none; border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; }
     .btn-new-plan {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      cursor: pointer;
-      text-decoration: none;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      box-shadow: var(--shadow);
+      background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 20px;
+      font-weight: 600; font-size: 0.8rem; cursor: pointer; text-decoration: none;
+      display: flex; align-items: center; gap: 6px; box-shadow: var(--shadow);
       transition: transform 0.2s, box-shadow 0.2s;
     }
     .btn-new-plan:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
 
-    /* Controles de vista */
     .views-container {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-      gap: 15px;
-      background: var(--bg-panel);
-      padding: 10px 20px;
-      border-radius: var(--radius);
-      box-shadow: var(--shadow-3d);
+      display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px;
+      flex-wrap: wrap; gap: 15px; background: var(--bg-panel); padding: 10px 20px;
+      border-radius: var(--radius); box-shadow: var(--shadow-3d);
     }
-    .switch-group {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    .switch-group { display: flex; align-items: center; gap: 8px; }
     .toggle-switch {
-      position: relative;
-      width: 180px;
-      height: 38px;
-      background: var(--bg-cell);
-      border-radius: 20px;
-      cursor: pointer;
-      border: 2px solid var(--border);
-      overflow: hidden;
+      position: relative; width: 180px; height: 38px; background: var(--bg-cell);
+      border-radius: 20px; cursor: pointer; border: 2px solid var(--border); overflow: hidden;
     }
     .toggle-option {
-      position: absolute;
-      top: 0;
-      width: 50%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 600;
-      font-size: 0.8rem;
-      transition: all 0.3s;
-      z-index: 1;
+      position: absolute; top: 0; width: 50%; height: 100%; display: flex; align-items: center;
+      justify-content: center; font-weight: 600; font-size: 0.8rem; transition: all 0.3s; z-index: 1;
     }
     .toggle-option.left { left: 0; color: var(--text-muted); }
     .toggle-option.right { right: 0; color: var(--text-muted); }
     .toggle-option.active { color: #fff; }
     .toggle-slider {
-      position: absolute;
-      top: 2px;
-      width: 48%;
-      height: calc(100% - 4px);
-      background: var(--accent);
-      border-radius: 18px;
-      transition: left 0.3s;
-      z-index: 0;
+      position: absolute; top: 2px; width: 48%; height: calc(100% - 4px);
+      background: var(--accent); border-radius: 18px; transition: left 0.3s; z-index: 0;
     }
     .toggle-slider.right { left: 50%; }
     .toggle-slider.left { left: 2%; }
 
     .cumpl-btn {
-      background: var(--bg-cell);
-      border: 2px solid var(--border);
-      padding: 10px 22px;
-      border-radius: 30px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      color: var(--text-main);
+      background: var(--bg-cell); border: 2px solid var(--border); padding: 10px 22px;
+      border-radius: 30px; font-weight: 600; font-size: 0.85rem; cursor: pointer; color: var(--text-main);
       transition: 0.2s;
     }
-    .cumpl-btn.active {
-      background: var(--accent);
-      color: #fff;
-      border-color: var(--accent);
-      box-shadow: 0 0 12px var(--accent);
-    }
+    .cumpl-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 0 12px var(--accent); }
 
     .action-btn {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 8px 16px;
-      border-radius: 24px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: 0.2s;
-      text-decoration: none;
+      background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main);
+      padding: 8px 16px; border-radius: 24px; font-weight: 600; font-size: 0.8rem;
+      cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; text-decoration: none;
     }
     .action-btn:hover { background: var(--accent); color: #fff; }
 
-    /* KPIs */
-    .kpi-container {
-      display: flex;
-      gap: 15px;
-      justify-content: center;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
+    .kpi-container { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
     .kpi-card {
-      background: var(--bg-panel);
-      border-radius: var(--radius);
-      padding: 14px 20px;
-      box-shadow: var(--shadow-3d);
-      text-align: center;
-      min-width: 100px;
-      transition: transform 0.2s, box-shadow 0.2s;
-      transform: perspective(600px) rotateX(0deg);
+      background: var(--bg-panel); border-radius: var(--radius); padding: 14px 20px;
+      box-shadow: var(--shadow-3d); text-align: center; min-width: 100px;
+      transition: transform 0.2s, box-shadow 0.2s; transform: perspective(600px) rotateX(0deg);
     }
-    .kpi-card:hover {
-      transform: perspective(600px) rotateX(2deg) translateY(-4px);
-      box-shadow: 0 12px 20px rgba(0,0,0,0.3);
-    }
+    .kpi-card:hover { transform: perspective(600px) rotateX(2deg) translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.3); }
     .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--accent-light); }
     .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
 
-    /* Navegación */
-    .month-nav {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 16px;
-      margin-bottom: 20px;
-    }
+    .month-nav { display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 20px; }
     .month-nav button {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: 0.2s;
+      background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main);
+      padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s;
     }
     .month-nav button:hover { background: var(--accent); color: #fff; }
     .month-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      cursor: pointer;
-      border-bottom: 1px dashed var(--text-muted);
-      padding: 4px 8px;
+      font-size: 1.1rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
+      border-bottom: 1px dashed var(--text-muted); padding: 4px 8px;
     }
     .month-title:hover { color: var(--accent-light); }
 
-    /* Selector de mes */
     .month-selector {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--bg-panel);
-      padding: 24px;
-      border-radius: var(--radius);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      z-index: 2000;
-      text-align: center;
+      display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: var(--bg-panel); padding: 24px; border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2000; text-align: center;
     }
     .month-selector select, .month-selector input {
-      margin: 10px;
-      padding: 8px;
-      border-radius: 6px;
-      border: 1px solid var(--border);
-      background: var(--bg-cell);
-      color: var(--text-main);
+      margin: 10px; padding: 8px; border-radius: 6px; border: 1px solid var(--border);
+      background: var(--bg-cell); color: var(--text-main);
     }
     .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1500; }
 
-    /* Tabla Gantt */
     .gantt-wrapper {
-      background: var(--bg-panel);
-      border-radius: var(--radius);
-      padding: 8px;
-      box-shadow: var(--shadow-3d);
-      overflow-x: auto;
+      background: var(--bg-panel); border-radius: var(--radius); padding: 8px;
+      box-shadow: var(--shadow-3d); overflow-x: auto;
     }
     .gantt-table {
-      width: 100%;
-      border-collapse: collapse;
-      table-layout: fixed;
+      width: 100%; border-collapse: collapse; table-layout: fixed;
     }
     .gantt-table th, .gantt-table td {
-      border: 1px solid var(--border);
-      height: var(--cell-h);
-      padding: 2px;
-      text-align: center;
-      vertical-align: middle;
-      font-size: 0.75rem;
-      position: relative;
-      transition: background 0.3s, transform 0.2s;
+      border: 1px solid var(--border); height: var(--cell-h); padding: 2px;
+      text-align: center; vertical-align: middle; font-size: 0.75rem;
+      position: relative; transition: background 0.3s, transform 0.2s;
     }
-    .gantt-table th {
-      background: var(--bg-cell);
-      font-weight: 700;
-      color: var(--accent-light);
-    }
-    .gantt-table td {
-      cursor: pointer;
-      transform: perspective(400px) translateZ(0);
-    }
-    .gantt-table td:hover {
-      transform: perspective(400px) translateZ(6px);
-      filter: brightness(1.05);
-      z-index: 5;
-    }
+    .gantt-table th { background: var(--bg-cell); font-weight: 700; color: var(--accent-light); }
+    .gantt-table th.domingo { background: var(--domingo-bg); color: #e57373; }
+    .gantt-table td { cursor: pointer; transform: perspective(400px) translateZ(0); }
+    .gantt-table td:hover { transform: perspective(400px) translateZ(6px); filter: brightness(1.05); z-index: 5; }
+    .gantt-table td.continuidad-izquierda { border-left: 3px solid rgba(255,255,255,0.4); }
+    .gantt-table td.continuidad-derecha { border-right: 3px solid rgba(255,255,255,0.4); }
 
-    .day-header {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      line-height: 1.2;
-    }
+    .day-header { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
     .day-name { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
     .day-number { font-weight: 800; font-size: 0.9rem; }
 
     .turn-label {
-      font-weight: 700;
-      color: var(--accent-light);
-      font-size: 0.85rem;
-      writing-mode: vertical-rl;
-      text-orientation: mixed;
-      margin: auto;
+      font-weight: 700; color: var(--accent-light); font-size: 0.85rem;
+      writing-mode: vertical-rl; text-orientation: mixed; margin: auto;
     }
 
     .cell-content {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100%;
-      width: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; width: 100%;
     }
     .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 2px; }
     .mold-base { font-weight: 700; font-size: 0.7rem; line-height: 1.1; }
@@ -342,25 +192,13 @@
     .change-emoji { font-size: 0.9rem; margin: 2px 0; animation: pulse 1.5s infinite; }
     @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
     .prueba-badge {
-      background: #ffd700;
-      color: #000;
-      font-weight: 700;
-      font-size: 0.6rem;
-      padding: 1px 4px;
-      border-radius: 3px;
-      margin-top: 2px;
+      background: #ffd700; color: #000; font-weight: 700; font-size: 0.6rem;
+      padding: 1px 4px; border-radius: 3px; margin-top: 2px;
     }
 
-    /* Barra de cumplimiento */
     .compliance-bar-cell {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      height: 4px;
-      border-radius: 0 0 3px 3px;
-      background: var(--gray);
-      animation: slideGrow 0.5s ease-out;
+      position: absolute; bottom: 0; left: 0; width: 100%; height: 4px;
+      border-radius: 0 0 3px 3px; background: var(--gray); animation: slideGrow 0.5s ease-out;
     }
     .compliance-bar-cell.green-bar { background: var(--green); }
     .compliance-bar-cell.orange-bar { background: var(--orange); }
@@ -368,19 +206,11 @@
     @keyframes slideGrow { from { width: 0; } to { width: 100%; } }
 
     .compliance-emoji-cell {
-      position: absolute;
-      bottom: 6px;
-      right: 4px;
-      font-size: 0.7rem;
+      position: absolute; bottom: 6px; right: 4px; font-size: 0.7rem;
     }
 
-    /* Línea entre turnos */
-    .gantt-table tbody tr {
-      border-bottom: 3px solid var(--border);
-    }
-    .gantt-table tbody tr:last-child {
-      border-bottom: none;
-    }
+    .gantt-table tbody tr { border-bottom: 3px solid var(--border); }
+    .gantt-table tbody tr:last-child { border-bottom: none; }
 
     td.today-cell {
       box-shadow: inset 0 0 0 3px var(--accent);
@@ -391,65 +221,33 @@
       50% { box-shadow: inset 0 0 0 5px var(--accent-light); }
     }
 
-    /* Pruebas info */
     .pruebas-info {
-      margin-top: 20px;
-      background: var(--bg-panel);
-      border-radius: var(--radius);
-      padding: 16px;
-      box-shadow: var(--shadow-3d);
-      font-size: 0.8rem;
+      margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius);
+      padding: 16px; box-shadow: var(--shadow-3d); font-size: 0.8rem;
     }
     .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
     .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 6px; }
 
-    /* Modal Gantt */
     .gantt-modal {
-      position: fixed;
-      top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.7);
-      display: none;
-      justify-content: center;
-      align-items: center;
-      z-index: 3000;
+      position: fixed; top:0; left:0; width:100%; height:100%;
+      background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 3000;
     }
     .gantt-content {
-      background: var(--bg-panel);
-      border-radius: var(--radius);
-      padding: 24px;
-      max-width: 700px;
-      width: 90%;
-      max-height: 80vh;
-      overflow-y: auto;
-      animation: modalPop 0.3s ease;
+      background: var(--bg-panel); border-radius: var(--radius); padding: 24px;
+      max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; animation: modalPop 0.3s ease;
     }
     @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
     .gantt-row { display: flex; align-items: center; margin: 14px 0; gap: 12px; }
     .gantt-turno { width: 40px; font-weight: 700; font-size: 1rem; }
     .gantt-bars { flex:1; display: flex; flex-direction: column; gap: 6px; }
     .gantt-bar {
-      height: 28px;
-      border-radius: 6px;
-      padding-left: 12px;
-      font-size: 0.8rem;
-      font-weight: 600;
-      display: flex;
-      align-items: center;
-      color: #fff;
-      transition: transform 0.2s;
+      height: 28px; border-radius: 6px; padding-left: 12px; font-size: 0.8rem; font-weight: 600;
+      display: flex; align-items: center; color: #fff; transition: transform 0.2s;
     }
     .gantt-bar:hover { transform: scale(1.02); }
     .gantt-bar img { width: 22px; height: 22px; margin-right: 8px; border-radius: 4px; }
     .gantt-plan { opacity: 0.7; }
-    .close-btn {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      padding: 6px 14px;
-      border-radius: 4px;
-      cursor: pointer;
-      float: right;
-    }
+    .close-btn { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; float: right; }
 
     @media print {
       body { background: white; color: black; padding: 0; font-size: 8px; }
@@ -492,7 +290,7 @@
     <div class="switch-group">
       <span style="font-weight:600; font-size:0.8rem; color:var(--text-muted);">Vista:</span>
       <div class="toggle-switch" id="toggleSwitch" onclick="toggleProdPlan()">
-        <div class="toggle-option left" id="toggleProdLabel">Producción</div>
+        <div class="toggle-option left active" id="toggleProdLabel">Producción</div>
         <div class="toggle-option right" id="togglePlanLabel">Planificación</div>
         <div class="toggle-slider left" id="toggleSlider"></div>
       </div>
@@ -555,6 +353,7 @@
       return parseInt(m[3]) > 60 ? '#000' : '#fff';
     }
 
+    // Utilidades
     function formatYYYYMMDD(date) {
       const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0');
       return `${y}-${m}-${d}`;
@@ -574,7 +373,7 @@
     async function loadData() {
       const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
 
-      // Planificación
+      // Planificación (igual que antes)
       planData = {};
       planRows.forEach(row => {
         const molde = row['LADRILLO:']?.trim();
@@ -608,7 +407,7 @@
         }
       });
 
-      // Producción real (con lógica de continuidad y pruebas)
+      // Producción real (con lógica mejorada de continuidad y pruebas)
       const allReal = [];
       realRows.forEach(row => {
         const dia = row['Día']?.trim(), turno = row['Turno']?.trim(), molde = row['Molde']?.trim();
@@ -622,8 +421,7 @@
       });
       allReal.sort((a,b) => a.date - b.date || TURNOS.indexOf(a.turno) - TURNOS.indexOf(b.turno));
 
-      // Agrupar por clave para renderizado posterior (pero la lógica de producción se hace en orden cronológico global)
-      realTasksByTurno = {};
+      // Agrupar por clave
       const groupedByClave = new Map();
       allReal.forEach(r => {
         const k = key(formatYYYYMMDD(r.date), r.turno);
@@ -631,8 +429,7 @@
         groupedByClave.get(k).push(r);
       });
 
-      // ---------- NUEVA LÓGICA DE CONTINUIDAD ----------
-      // Orden cronológico estricto (día + turno)
+      // Lista ordenada de claves (turnos ocupados)
       const sortedEntries = [];
       for (const [clave, regs] of groupedByClave.entries()) {
         sortedEntries.push({ clave, regs });
@@ -645,75 +442,62 @@
         return TURNOS.indexOf(ta) - TURNOS.indexOf(tb);
       });
 
-      let activeMold = null; // molde activo actual (el que venía produciéndose)
-      const results = new Map(); // clave -> { primary, tests }
-
+      // Mapeos de turno anterior y siguiente (entre los turnos ocupados)
+      const prevTurnoMap = new Map();
+      const nextTurnoMap = new Map();
       for (let i = 0; i < sortedEntries.length; i++) {
-        const entry = sortedEntries[i];
-        const [fechaStr, turno] = entry.clave.split('_');
-        const regs = entry.regs;
-        let primary = null;
-        let tests = [];
+        const curr = sortedEntries[i].clave;
+        prevTurnoMap.set(curr, i > 0 ? sortedEntries[i-1].clave : null);
+        nextTurnoMap.set(curr, i < sortedEntries.length-1 ? sortedEntries[i+1].clave : null);
+      }
 
-        if (activeMold === null) {
-          // No hay molde activo previo: el primer molde que aparezca se convierte en activo, los demás tests
-          primary = regs[0];
-          tests = regs.slice(1);
-          activeMold = primary.moldeCompleto;
-        } else {
-          // ¿El molde activo está presente en este turno?
-          const activeReg = regs.find(r => r.moldeCompleto === activeMold);
-          if (activeReg) {
-            primary = activeReg;
-            tests = regs.filter(r => r !== activeReg);
-            // activeMold sigue igual
-          } else {
-            // El molde activo no está presente: puede haber un cambio de producción o pruebas aisladas que no continúan.
-            // Necesitamos determinar cuál de los registros de este turno (si hay varios) va a ser el nuevo molde activo.
-            // Buscamos en los turnos futuros cuál de estos moldes aparece con continuidad.
-            const candidates = regs.map(r => r.moldeCompleto);
-            const futureMolds = [];
-            for (let j = i+1; j < sortedEntries.length; j++) {
-              const futureClave = sortedEntries[j].clave;
-              const futureRegs = sortedEntries[j].regs;
-              futureRegs.forEach(fr => futureMolds.push(fr.moldeCompleto));
-            }
-            // Si hay un candidato que aparece en el futuro (en cualquier turno), lo tomamos como nuevo molde activo.
-            // Si hay varios, elegimos el que aparezca primero en el futuro (el que tenga prioridad).
-            let newActive = null;
-            let earliestIndex = Infinity;
-            candidates.forEach(cand => {
-              const idx = futureMolds.indexOf(cand);
-              if (idx !== -1 && idx < earliestIndex) {
-                earliestIndex = idx;
-                newActive = cand;
-              }
-            });
-            // Si ningún candidato aparece en el futuro, entonces todos son pruebas (no hay nuevo activo). 
-            // Pero por seguridad, tomamos el primer candidato como activo temporal (o mantenemos el último activeMold?).
-            if (newActive) {
-              primary = regs.find(r => r.moldeCompleto === newActive);
-              tests = regs.filter(r => r.moldeCompleto !== newActive);
-              activeMold = newActive;
-            } else {
-              // No hay continuidad de ninguno: todos son pruebas. Mantenemos activeMold sin cambios (no se actualiza).
-              // Pero primary debería ser null, todos tests.
-              primary = null;
-              tests = regs; // todos son tests
-              // Importante: activeMold no cambia porque ningún molde nuevo toma el relevo.
-            }
+      // Inicializar estructura realTasksByTurno para todos los turnos con datos
+      realTasksByTurno = {};
+      // Primero creamos entradas vacías para todos los turnos
+      for (const entry of sortedEntries) {
+        realTasksByTurno[entry.clave] = { primary: null, tests: [] };
+      }
+
+      // Determinar producción principal y pruebas para cada turno
+      for (const entry of sortedEntries) {
+        const clave = entry.clave;
+        const regs = entry.regs;
+        const prevClave = prevTurnoMap.get(clave);
+        const nextClave = nextTurnoMap.get(clave);
+
+        // Moldes presentes en turno anterior (solo el primary del turno anterior)
+        const prevMold = prevClave ? (realTasksByTurno[prevClave]?.primary?.moldeCompleto || null) : null;
+        // Moldes presentes en turno siguiente (primary del turno siguiente)
+        const nextMold = nextClave ? (realTasksByTurno[nextClave]?.primary?.moldeCompleto || null) : null;
+
+        let bestScore = -1;
+        let primary = null;
+        const tests = [];
+
+        for (const reg of regs) {
+          const m = reg.moldeCompleto;
+          let score = 0;
+          if (prevMold === m) score += 1;
+          if (nextMold === m) score += 1;
+
+          if (score > bestScore) {
+            bestScore = score;
+            primary = reg;
           }
         }
 
-        results.set(entry.clave, {
-          primary: primary ? { ...primary, isContinuation: (activeMold === primary.moldeCompleto && i>0) } : null,
+        if (bestScore <= 0) {
+          // Ningún molde tiene puntaje > 0: todos son pruebas
+          primary = null;
+          tests.push(...regs);
+        } else {
+          tests.push(...regs.filter(r => r !== primary));
+        }
+
+        realTasksByTurno[clave] = {
+          primary: primary ? { ...primary, isContinuation: (prevClave && realTasksByTurno[prevClave]?.primary?.moldeCompleto === primary.moldeCompleto) } : null,
           tests: tests.map(t => ({...t, isTest:true}))
-        });
-      }
-      // Actualizar realTasksByTurno con los resultados procesados
-      realTasksByTurno = {};
-      for (const [clave, res] of results.entries()) {
-        realTasksByTurno[clave] = res;
+        };
       }
 
       renderGantt();
@@ -746,39 +530,42 @@
       const turnoWidth = 65;
       const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
 
-      let html = `<table class="gantt-table"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
+      let html = '<table class="gantt-table"><thead><tr><th style="width:' + turnoWidth + 'px;"></th>';
       const dayNames = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
       for (let d = 1; d <= daysInMonth; d++) {
         const date = new Date(year, month, d);
         const dayName = dayNames[date.getDay()];
+        const isDomingo = date.getDay() === 0;
         const dateStr = formatYYYYMMDD(date);
         const isToday = dateStr === todayStr;
-        html += `<th style="width:${colWidthCalc};" class="${isToday ? 'today-cell' : ''}">
+        html += `<th style="width:${colWidthCalc};" class="${isToday ? 'today-cell' : ''} ${isDomingo ? 'domingo' : ''}">
           <div class="day-header"><span class="day-name">${dayName}</span><span class="day-number">${d}</span></div>
         </th>`;
       }
       html += '</tr></thead><tbody>';
 
-      let lastPlanMold = null;
       let lastRealMold = null;
-      let lastRealColor = null;
+      let lastPlanMold = null;
 
-      TURNOS.forEach(turno => {
-        html += `<tr><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
-        let currentPlanMold = null;
+      TURNOS.forEach((turno, idx) => {
+        html += '<tr>';
+        html += `<td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
+
         let currentRealMold = null;
         let currentRealColor = null;
+        let currentPlanMold = null;
 
         for (let d = 1; d <= daysInMonth; d++) {
           const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
           const k = key(dateStr, turno);
           const plans = planData[k] || [];
           const realInfo = realTasksByTurno[k];
+          const isToday = dateStr === todayStr;
 
           let cellContent = '';
           let bgColor = 'transparent';
           let txtColor = 'inherit';
-          const isToday = dateStr === todayStr;
+          let extraClass = '';
 
           if (currentView === 'prod' && realInfo) {
             if (realInfo.primary) {
@@ -786,28 +573,41 @@
               const color = getBrickColor(primary.baseName, primary.number);
               if (primary.isContinuation && currentRealMold === primary.moldeCompleto) {
                 bgColor = color;
+                extraClass = 'continuidad-izquierda';
               } else {
                 bgColor = color;
                 txtColor = pickTextColor(color);
                 cellContent = createMoldHTML(primary.baseName, primary.number);
+                // Emoji de cambio si el molde actual difiere del anterior y no es el primer molde que aparece
                 if (currentRealMold && currentRealMold !== primary.moldeCompleto) {
                   cellContent += '<div class="change-emoji">🔄️</div>';
                 }
                 currentRealMold = primary.moldeCompleto;
                 currentRealColor = color;
               }
-              // pruebas reales
+              // Pruebas reales
               realInfo.tests.forEach(test => {
                 cellContent += `<div class="prueba-badge">PR ${test.baseName} ${test.number}</div>`;
               });
             } else if (realInfo.tests.length > 0) {
-              // solo pruebas
               bgColor = currentRealColor || 'var(--bg-cell)';
               txtColor = currentRealColor ? pickTextColor(currentRealColor) : 'inherit';
               realInfo.tests.forEach(test => {
                 cellContent += `<div class="prueba-badge">PR ${test.baseName} ${test.number}</div>`;
               });
             }
+
+            // Marcar continuidad con el siguiente turno (si corresponde)
+            // Verificamos si el primary de este turno es igual al primary del siguiente turno (en la misma fila de turno)
+            if (realInfo?.primary && d < daysInMonth) {
+              const nextDateStr = formatYYYYMMDD(new Date(year, month, d+1));
+              const nextKey = key(nextDateStr, turno);
+              const nextRealInfo = realTasksByTurno[nextKey];
+              if (nextRealInfo?.primary?.moldeCompleto === realInfo.primary.moldeCompleto) {
+                extraClass += ' continuidad-derecha';
+              }
+            }
+
           } else if (currentView === 'plan' && plans.length > 0) {
             const prod = plans.filter(p=>p.tarea==='Producción');
             const test = plans.filter(p=>p.tarea==='Prueba');
@@ -825,6 +625,16 @@
                 currentPlanMold = task.moldeCompleto;
               } else {
                 bgColor = color;
+                extraClass = 'continuidad-izquierda';
+                if (d < daysInMonth) {
+                  const nextDateStr = formatYYYYMMDD(new Date(year, month, d+1));
+                  const nextKey = key(nextDateStr, turno);
+                  const nextPlans = planData[nextKey] || [];
+                  const nextProd = nextPlans.filter(p=>p.tarea==='Producción');
+                  if (nextProd.length > 0 && nextProd[0].moldeCompleto === task.moldeCompleto) {
+                    extraClass += ' continuidad-derecha';
+                  }
+                }
               }
             }
             test.forEach(task => {
@@ -837,6 +647,7 @@
               const color = getBrickColor(primary.baseName, primary.number);
               if (primary.isContinuation && currentRealMold === primary.moldeCompleto) {
                 bgColor = color;
+                extraClass = 'continuidad-izquierda';
               } else {
                 bgColor = color;
                 txtColor = pickTextColor(color);
@@ -854,6 +665,14 @@
               realInfo.tests.forEach(test => {
                 cellContent += `<div class="prueba-badge">PR ${test.baseName} ${test.number}</div>`;
               });
+              if (d < daysInMonth) {
+                const nextDateStr = formatYYYYMMDD(new Date(year, month, d+1));
+                const nextKey = key(nextDateStr, turno);
+                const nextRealInfo = realTasksByTurno[nextKey];
+                if (nextRealInfo?.primary?.moldeCompleto === primary.moldeCompleto) {
+                  extraClass += ' continuidad-derecha';
+                }
+              }
             } else if (realInfo.tests.length > 0) {
               bgColor = currentRealColor || 'var(--bg-cell)';
               txtColor = currentRealColor ? pickTextColor(currentRealColor) : 'inherit';
@@ -868,7 +687,7 @@
           }
 
           html += `<td style="background-color:${bgColor}; color:${txtColor}; width:${colWidthCalc};" 
-                       class="${isToday ? 'today-cell' : ''}"
+                       class="${isToday ? 'today-cell' : ''} ${extraClass}"
                        onclick="abrirGantt('${dateStr}')">${cellContent}</td>`;
         }
         html += '</tr>';
