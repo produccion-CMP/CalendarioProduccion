@@ -58,9 +58,14 @@
 
     /* Header */
     .app-header {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 16px 24px; background: var(--bg-panel); border-radius: var(--radius);
-      box-shadow: var(--shadow-3d); margin-bottom: 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 24px;
+      background: var(--bg-panel);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-3d);
+      margin-bottom: 20px;
     }
     .logo-container { display: flex; align-items: center; gap: 16px; }
     .logo-container img { height: 56px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
@@ -191,26 +196,29 @@
       writing-mode: vertical-rl; text-orientation: mixed; margin: auto;
     }
 
-    /* Tarjeta de molde (detalle) */
-    .turn-task {
+    .cell-content {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      width: 100%; height: 100%; border-radius: 4px; padding: 2px;
+      height: 100%; width: 100%; position: relative;
     }
     .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 2px; }
     .mold-base { font-weight: 700; font-size: 0.7rem; line-height: 1.1; }
     .mold-number { font-size: 0.6rem; opacity: 0.8; }
-    .change-emoji { font-size: 0.9rem; margin-top: 2px; animation: pulse 1.5s infinite; }
+
+    .change-emoji-cell {
+      position: absolute; top: 2px; right: 2px; font-size: 0.9rem;
+      animation: pulse 1.5s infinite; z-index: 2;
+    }
     @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.2); } }
 
-    /* Barra de continuación */
-    .continuation-bar {
-      width: 100%; height: 100%; border-radius: 2px;
-    }
-
-    /* Badge de prueba */
     .prueba-badge {
       background: #ffd700; color: #000; font-weight: 700; font-size: 0.6rem;
       padding: 1px 4px; border-radius: 3px; margin-top: 2px;
+    }
+
+    /* Barra de continuación */
+    .continuation-bar {
+      width: 100%; flex: 1; min-height: 100%; border-radius: 0;
+      opacity: 0.8; margin: 0;
     }
 
     /* Barra de cumplimiento */
@@ -227,10 +235,6 @@
     .compliance-emoji-cell {
       position: absolute; bottom: 6px; right: 4px; font-size: 0.7rem;
     }
-
-    /* Línea entre turnos */
-    .gantt-table tbody tr { border-bottom: 3px solid var(--border); }
-    .gantt-table tbody tr:last-child { border-bottom: none; }
 
     td.today-cell {
       box-shadow: inset 0 0 0 3px var(--accent);
@@ -252,6 +256,7 @@
     }
     .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
     .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 6px; }
+    .pruebas-table img { width: 20px; height: 20px; vertical-align: middle; margin-right: 4px; border-radius: 3px; }
 
     /* Modal Gantt */
     .gantt-modal {
@@ -356,12 +361,12 @@
     const TURNOS = ['T1','T2','T3'];
 
     let planData = {};
-    let realTasksByTurno = {};   // { clave: { productions: [], tests: [] } }
+    let realTasksByTurno = {};
     let currentView = 'prod';
     let currentDate = new Date();
     let themeDark = true;
 
-    // Colores por tipo de ladrillo
+    // Colores
     const brickHueMap = new Map();
     function getBaseHue(baseName) {
       if (brickHueMap.has(baseName)) return brickHueMap.get(baseName);
@@ -400,7 +405,7 @@
     async function loadData() {
       const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
 
-      // Planificación
+      // Planificación (sin cambios)
       planData = {};
       planRows.forEach(row => {
         const molde = row['LADRILLO:']?.trim();
@@ -464,21 +469,28 @@
         const entry = entries[i];
         const prevEntry = i > 0 ? entries[i-1] : null;
         const nextEntry = i < entries.length - 1 ? entries[i+1] : null;
+
         const prevMolds = prevEntry ? prevEntry.regs.map(r => r.moldeCompleto) : [];
         const nextMolds = nextEntry ? nextEntry.regs.map(r => r.moldeCompleto) : [];
 
         const productions = [];
         const tests = [];
+
         entry.regs.forEach(r => {
           let score = 0;
           if (prevMolds.includes(r.moldeCompleto)) score += 1;
           if (nextMolds.includes(r.moldeCompleto)) score += 1;
+
           if (score >= 1) {
-            productions.push({ ...r, isContinuation: prevMolds.includes(r.moldeCompleto) });
+            productions.push({
+              ...r,
+              isContinuation: prevMolds.includes(r.moldeCompleto)  // viene de antes
+            });
           } else {
             tests.push({ ...r, isTest: true });
           }
         });
+
         realTasksByTurno[entry.clave] = { productions, tests };
       }
 
@@ -505,8 +517,9 @@
       document.getElementById('monthTitle').textContent = 
         currentDate.toLocaleDateString('es-AR', {month:'long', year:'numeric'}).toUpperCase();
 
+      const kpiContainer = document.getElementById('kpiContainer');
+      kpiContainer.style.display = currentView === 'cumpl' ? 'flex' : 'none';
       if (currentView === 'cumpl') actualizarKPIs();
-      document.getElementById('kpiContainer').style.display = currentView === 'cumpl' ? 'flex' : 'none';
 
       const turnoWidth = 65;
       const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
@@ -524,9 +537,8 @@
       }
       html += '</tr></thead><tbody>';
 
-      // Estado de continuidad por turno (para saber cuándo mostrar detalle)
-      let lastMoldByTurno = { T1: null, T2: null, T3: null };
-      let lastPlanMold = null;
+      // Para seguimiento de cambios: último molde activo por turno
+      const lastActiveMoldByTurno = new Map();
 
       TURNOS.forEach(turno => {
         html += `<tr><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
@@ -549,20 +561,28 @@
             productions.forEach(prod => {
               const color = getBrickColor(prod.baseName, prod.number);
               const textColor = pickTextColor(color);
-              // Determinar si mostramos detalle (solo si es el primer turno de este segmento)
-              const showDetail = !prod.isContinuation || lastMoldByTurno[turno] !== prod.moldeCompleto;
-              if (showDetail) {
-                cellContent += `<div class="turn-task" style="background-color:${color}; color:${textColor};">
-                  <img src="${getImageSrc(prod.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${prod.baseName}">
+              const isNew = !prod.isContinuation; // no venía del turno anterior
+              const previousMold = lastActiveMoldByTurno.get(turno);
+              const isChange = isNew && previousMold && previousMold !== prod.moldeCompleto;
+
+              if (isNew) {
+                // Mostrar ficha de molde
+                cellContent += `<div class="cell-content" style="background-color:${color}; color:${textColor};">
+                  <img src="${getImageSrc(prod.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'">
                   <div class="mold-base">${prod.baseName}</div>
                   <div class="mold-number">Molde ${prod.number}</div>
-                  ${lastMoldByTurno[turno] && lastMoldByTurno[turno] !== prod.moldeCompleto ? '<div class="change-emoji">🔄️</div>' : ''}
+                  ${isChange ? '<div class="change-emoji-cell">🔄️</div>' : ''}
                 </div>`;
+                lastActiveMoldByTurno.set(turno, prod.moldeCompleto);
               } else {
+                // Solo barra de color
                 cellContent += `<div class="continuation-bar" style="background-color:${color};"></div>`;
               }
-              lastMoldByTurno[turno] = prod.moldeCompleto;
+              // Actualizar último molde activo (aunque sea continuación, para mantener referencia)
+              lastActiveMoldByTurno.set(turno, prod.moldeCompleto);
             });
+
+            // Pruebas
             tests.forEach(test => {
               cellContent += `<div class="prueba-badge">PR ${test.baseName} ${test.number}</div>`;
             });
@@ -572,14 +592,14 @@
             if (prod.length > 0) {
               const task = prod[0];
               const color = getBrickColor(task.baseName, task.number);
+              const textColor = pickTextColor(color);
               const showDetail = task.esInicio || !currentPlanMold || currentPlanMold !== task.moldeCompleto;
               if (showDetail) {
-                const textColor = pickTextColor(color);
-                cellContent += `<div class="turn-task" style="background-color:${color}; color:${textColor};">
-                  <img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${task.baseName}">
+                cellContent += `<div class="cell-content" style="background-color:${color}; color:${textColor};">
+                  <img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'">
                   <div class="mold-base">${task.baseName}</div>
                   <div class="mold-number">Molde ${task.number}</div>
-                  ${currentPlanMold && currentPlanMold !== task.moldeCompleto ? '<div class="change-emoji">🔄️</div>' : ''}
+                  ${currentPlanMold && currentPlanMold !== task.moldeCompleto ? '<div class="change-emoji-cell">🔄️</div>' : ''}
                 </div>`;
                 currentPlanMold = task.moldeCompleto;
               } else {
@@ -595,19 +615,23 @@
               const comp = getCompliance(prod.moldeCompleto, plans);
               const color = getBrickColor(prod.baseName, prod.number);
               const textColor = pickTextColor(color);
-              const showDetail = !prod.isContinuation || lastMoldByTurno[turno] !== prod.moldeCompleto;
-              if (showDetail) {
-                cellContent += `<div class="turn-task" style="background-color:${color}; color:${textColor};">
-                  <img src="${getImageSrc(prod.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${prod.baseName}">
+              const isNew = !prod.isContinuation;
+              const previousMold = lastActiveMoldByTurno.get(turno);
+              const isChange = isNew && previousMold && previousMold !== prod.moldeCompleto;
+
+              if (isNew) {
+                cellContent += `<div class="cell-content" style="background-color:${color}; color:${textColor};">
+                  <img src="${getImageSrc(prod.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'">
                   <div class="mold-base">${prod.baseName}</div>
                   <div class="mold-number">Molde ${prod.number}</div>
-                  ${lastMoldByTurno[turno] && lastMoldByTurno[turno] !== prod.moldeCompleto ? '<div class="change-emoji">🔄️</div>' : ''}
+                  ${isChange ? '<div class="change-emoji-cell">🔄️</div>' : ''}
                 </div>`;
+                lastActiveMoldByTurno.set(turno, prod.moldeCompleto);
               } else {
                 cellContent += `<div class="continuation-bar" style="background-color:${color};"></div>`;
               }
-              lastMoldByTurno[turno] = prod.moldeCompleto;
-              // Barra de cumplimiento
+              lastActiveMoldByTurno.set(turno, prod.moldeCompleto);
+
               const barClass = comp.status==='cumplido'?'green-bar':comp.status==='parcial'?'orange-bar':comp.status==='desvio'?'red-bar':'gray-bar';
               const emoji = comp.status==='cumplido'?'✅':comp.status==='parcial'?'⏳':comp.status==='desvio'?'⚠️':'📌';
               cellContent += `<div class="compliance-bar-cell ${barClass}"></div><div class="compliance-emoji-cell">${emoji}</div>`;
@@ -653,8 +677,8 @@
           pruebasPlan += plans.filter(p=>p.tarea==='Prueba').length;
           prods.forEach(p => moldesSet.add(p.moldeCompleto));
           if (realInfo && realInfo.productions.length > 0) {
-            totalReal++;
             realInfo.productions.forEach(prod => {
+              totalReal++;
               const comp = getCompliance(prod.moldeCompleto, plans);
               if (comp && comp.status === 'cumplido') cumplidas++;
               moldesSet.add(prod.moldeCompleto);
@@ -674,7 +698,7 @@
       `;
     }
 
-    // ==================== PRUEBAS INFO ====================
+    // ==================== PRUEBAS INFO (con imagen) ====================
     function renderPruebasInfo() {
       const container = document.getElementById('pruebasInfo');
       const year = currentDate.getFullYear(), month = currentDate.getMonth();
@@ -708,7 +732,13 @@
       }
       let html = '<h3>🔬 Pruebas del mes</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>';
       pruebas.forEach(p => {
-        html += `<tr><td>${p.fecha}</td><td>${p.molde}</td><td>${p.tipo}</td><td>${p.estado}</td></tr>`;
+        const base = getBaseName(p.molde);
+        html += `<tr>
+          <td>${p.fecha}</td>
+          <td><img src="${getImageSrc(base)}" onerror="this.style.display='none'"> ${p.molde}</td>
+          <td>${p.tipo}</td>
+          <td>${p.estado}</td>
+        </tr>`;
       });
       html += '</tbody></table>';
       container.innerHTML = html;
@@ -771,7 +801,7 @@
           barsDiv.appendChild(bar);
         });
 
-        if (realInfo) {
+        if (realInfo && realInfo.productions.length > 0) {
           realInfo.productions.forEach(prod => {
             const comp = getCompliance(prod.moldeCompleto, plans);
             const bar = document.createElement('div'); bar.className = 'gantt-bar';
@@ -780,6 +810,8 @@
             bar.innerHTML = `<img src="${getImageSrc(prod.baseName)}" onerror="this.style.display='none'"> ${prod.moldeCompleto} ${emoji}`;
             barsDiv.appendChild(bar);
           });
+        }
+        if (realInfo && realInfo.tests.length > 0) {
           realInfo.tests.forEach(test => {
             const bar = document.createElement('div'); bar.className = 'gantt-bar';
             bar.style.backgroundColor = '#ffd700'; bar.style.color = '#000';
