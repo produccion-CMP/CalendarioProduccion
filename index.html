@@ -54,7 +54,6 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* Encabezado */
     .app-header {
       display: flex;
       justify-content: space-between;
@@ -103,7 +102,6 @@
     }
     .btn-new-plan:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
 
-    /* Controles de vista */
     .views-container {
       display: flex;
       align-items: center;
@@ -195,7 +193,6 @@
     }
     .action-btn:hover { background: var(--accent); color: #fff; }
 
-    /* KPIs */
     .kpi-container {
       display: flex;
       gap: 15px;
@@ -220,7 +217,6 @@
     .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--accent-light); }
     .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
 
-    /* Navegación */
     .month-nav {
       display: flex;
       justify-content: center;
@@ -250,7 +246,6 @@
     }
     .month-title:hover { color: var(--accent-light); }
 
-    /* Selector de mes */
     .month-selector {
       display: none;
       position: fixed;
@@ -274,7 +269,6 @@
     }
     .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1500; }
 
-    /* Tabla Gantt */
     .gantt-wrapper {
       background: var(--bg-panel);
       border-radius: var(--radius);
@@ -357,7 +351,6 @@
       margin-top: 2px;
     }
 
-    /* Barra de cumplimiento debajo de cada celda */
     .compliance-bar-cell {
       position: absolute;
       bottom: 0;
@@ -383,7 +376,6 @@
       font-size: 0.7rem;
     }
 
-    /* Línea divisoria entre turnos */
     .gantt-table tbody tr {
       border-bottom: 3px solid var(--border);
     }
@@ -400,7 +392,6 @@
       50% { box-shadow: inset 0 0 0 5px var(--accent-light); }
     }
 
-    /* Pruebas info */
     .pruebas-info {
       margin-top: 20px;
       background: var(--bg-panel);
@@ -412,7 +403,6 @@
     .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
     .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 6px; }
 
-    /* Modal Gantt */
     .gantt-modal {
       position: fixed;
       top:0;
@@ -503,7 +493,6 @@
     </div>
   </header>
 
-  <!-- Vistas y acciones -->
   <div class="views-container">
     <div class="switch-group">
       <span style="font-weight:600; font-size:0.8rem; color:var(--text-muted);">Vista:</span>
@@ -517,7 +506,6 @@
     <button class="action-btn" onclick="window.print()">🖨️ Imprimir Plan</button>
   </div>
 
-  <!-- KPIs (solo visibles en cumplimiento) -->
   <div class="kpi-container" id="kpiContainer" style="display:none;"></div>
 
   <div class="month-nav">
@@ -539,7 +527,6 @@
   </div>
 
   <script>
-    // ==================== CONFIGURACIÓN ====================
     const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';
     const CSV_REAL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=1774340358&single=true&output=csv';
     const IMG_PATH = 'img/moldes/';
@@ -548,11 +535,10 @@
 
     let planData = {};
     let realTasksByTurno = {};
-    let currentView = 'prod'; // 'prod', 'plan', 'cumpl'
+    let currentView = 'prod';
     let currentDate = new Date();
     let themeDark = true;
 
-    // Colores
     const brickHueMap = new Map();
     function getBaseHue(baseName) {
       if (brickHueMap.has(baseName)) return brickHueMap.get(baseName);
@@ -572,7 +558,6 @@
       return parseInt(m[3]) > 60 ? '#000' : '#fff';
     }
 
-    // Utilidades
     function formatYYYYMMDD(date) {
       const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0');
       return `${y}-${m}-${d}`;
@@ -582,7 +567,6 @@
     function getMoldNumber(molde) { const m = molde.match(/\((\d+)\)/); return m ? parseInt(m[1]) : 1; }
     function getImageSrc(base) { return `${IMG_PATH}${base}.png`; }
 
-    // ==================== CARGA DE DATOS ====================
     async function fetchCSV(url) {
       const r = await fetch(url);
       const t = await r.text();
@@ -641,42 +625,78 @@
         grouped.get(k).push(r);
       });
 
+      const sortedKeys = Array.from(grouped.keys()).sort();
       realTasksByTurno = {};
       let lastActiveMold = null;
-      for (const [clave, regs] of grouped) {
-        let primary = regs.find(r => r.moldeCompleto === lastActiveMold) || regs[0];
-        let tests = regs.filter(r => r !== primary);
-        realTasksByTurno[clave] = {
-          primary: { ...primary, isContinuation: (lastActiveMold === primary.moldeCompleto) },
-          tests: tests.map(t => ({...t, isTest:true}))
-        };
-        lastActiveMold = primary.moldeCompleto;
-      }
+      let lastPrimaryMold = null;
 
-      // Ajuste de pruebas intrusivas
-      let runningMold = null;
-      const sortedKeys = Array.from(grouped.keys()).sort();
+      // Primera pasada: asignar primary cuando el molde activo está presente
+      sortedKeys.forEach(clave => {
+        const registros = grouped.get(clave);
+        if (lastActiveMold && registros.some(r => r.moldeCompleto === lastActiveMold)) {
+          const primary = registros.find(r => r.moldeCompleto === lastActiveMold);
+          const tests = registros.filter(r => r !== primary);
+          primary.isContinuation = (lastPrimaryMold === primary.moldeCompleto);
+          realTasksByTurno[clave] = { primary, tests };
+          lastPrimaryMold = primary.moldeCompleto;
+          lastActiveMold = primary.moldeCompleto;
+        } else {
+          // Sin primary aún
+          realTasksByTurno[clave] = { primary: null, tests: [], candidates: registros };
+        }
+      });
+
+      // Segunda pasada: resolver candidatos
+      lastActiveMold = null;
       sortedKeys.forEach((clave, idx) => {
         const info = realTasksByTurno[clave];
-        if (!info) return;
-        if (runningMold === null) {
-          runningMold = info.primary.moldeCompleto;
+        if (info.primary) {
+          lastActiveMold = info.primary.moldeCompleto;
+          return;
+        }
+        // Buscar si lastActiveMold aparece en el futuro (como primary o como candidato que luego será primary)
+        const willReturn = sortedKeys.slice(idx+1).some(fk => {
+          const future = realTasksByTurno[fk];
+          if (future.primary) return future.primary.moldeCompleto === lastActiveMold;
+          // Si es candidato, verificamos si entre sus candidates está lastActiveMold y además ese candidato podría ser elegido primary
+          if (future.candidates && future.candidates.some(c => c.moldeCompleto === lastActiveMold)) {
+            // Para ser primary futuro, ese molde debe tener continuidad o ser el único; simplificamos: si está en candidates, podría ser elegido.
+            return true;
+          }
+          return false;
+        });
+
+        if (lastActiveMold && willReturn) {
+          // Prueba intrusiva: todos los candidatos son pruebas, lastActiveMold se mantiene
+          info.tests = info.candidates.map(r => ({...r, isTest: true}));
+          info.primary = null;
         } else {
-          if (info.primary.moldeCompleto !== runningMold) {
-            const futureKeys = sortedKeys.slice(idx+1);
-            const willReturn = futureKeys.some(fk => {
-              const fi = realTasksByTurno[fk];
-              return fi && fi.primary && fi.primary.moldeCompleto === runningMold;
+          // La producción anterior terminó (o no había). Elegir nuevo primary entre candidatos.
+          const candidates = info.candidates;
+          // Buscar cuál de estos moldes continuará en el futuro (será primary más adelante)
+          let newPrimary = null;
+          for (let cand of candidates) {
+            const willContinue = sortedKeys.slice(idx+1).some(fk => {
+              const future = realTasksByTurno[fk];
+              if (future.primary) return future.primary.moldeCompleto === cand.moldeCompleto;
+              return false;
             });
-            if (willReturn) {
-              info.primary.isTest = true;
-              info.tests.unshift(info.primary);
-              info.primary = null;
-            } else {
-              runningMold = info.primary.moldeCompleto;
+            if (willContinue) {
+              newPrimary = cand;
+              break;
             }
           }
+          if (!newPrimary) {
+            // Ninguno continúa, elegimos el primero como primary
+            newPrimary = candidates[0];
+          }
+          newPrimary.isContinuation = false;
+          const tests = candidates.filter(r => r !== newPrimary).map(r => ({...r, isTest: true}));
+          info.primary = newPrimary;
+          info.tests = tests;
+          lastActiveMold = newPrimary.moldeCompleto;
         }
+        delete info.candidates;
       });
 
       renderGantt();
@@ -692,12 +712,10 @@
       return prod.length>0 ? {status:'desvio'} : {status:'sinPlan'};
     }
 
-    // ==================== RENDER GANTT ====================
     function renderGantt() {
       const wrapper = document.getElementById('ganttWrapper');
       const year = currentDate.getFullYear(), month = currentDate.getMonth();
       const daysInMonth = new Date(year, month+1, 0).getDate();
-      const firstDayOffset = new Date(year, month, 1).getDay(); // 0=Dom
       const todayStr = formatYYYYMMDD(new Date());
 
       document.getElementById('monthTitle').textContent = 
@@ -727,8 +745,6 @@
       html += '</tr></thead><tbody>';
 
       let lastPlanMold = null;
-      let lastRealMold = null;
-      let lastRealColor = null;
 
       TURNOS.forEach(turno => {
         html += `<tr><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
@@ -745,7 +761,6 @@
           let cellContent = '';
           let bgColor = 'transparent';
           let txtColor = 'inherit';
-          let extraClass = '';
           const isToday = dateStr === todayStr;
 
           if (currentView === 'prod' && realInfo) {
@@ -813,7 +828,6 @@
                 currentRealMold = primary.moldeCompleto;
                 currentRealColor = color;
               }
-              // Barra de cumplimiento debajo
               const barClass = comp.status==='cumplido'?'green-bar':comp.status==='parcial'?'orange-bar':comp.status==='desvio'?'red-bar':'gray-bar';
               const emoji = comp.status==='cumplido'?'✅':comp.status==='parcial'?'⏳':comp.status==='desvio'?'⚠️':'📌';
               cellContent += `<div class="compliance-bar-cell ${barClass}"></div><div class="compliance-emoji-cell">${emoji}</div>`;
@@ -853,7 +867,6 @@
       </div>`;
     }
 
-    // ==================== KPIs ====================
     function actualizarKPIs() {
       const year = currentDate.getFullYear(), month = currentDate.getMonth();
       const daysInMonth = new Date(year, month+1, 0).getDate();
@@ -893,7 +906,6 @@
       `;
     }
 
-    // ==================== PRUEBAS INFO ====================
     function renderPruebasInfo() {
       const container = document.getElementById('pruebasInfo');
       const year = currentDate.getFullYear(), month = currentDate.getMonth();
@@ -901,7 +913,6 @@
 
       for (let d=1; d<=new Date(year, month+1, 0).getDate(); d++) {
         const ds = formatYYYYMMDD(new Date(year, month, d));
-        // Agrupar pruebas del día (independiente de turno)
         const dayPlanTests = [];
         const dayRealTests = [];
         TURNOS.forEach(t => {
@@ -911,7 +922,6 @@
             realTasksByTurno[k].tests.forEach(rt => dayRealTests.push(rt.moldeCompleto));
           }
         });
-        // Procesar planificadas vs reales
         dayPlanTests.forEach(molde => {
           const cumplida = dayRealTests.includes(molde);
           pruebas.push({ fecha: ds, molde, tipo: 'Plan', estado: cumplida ? '✅' : '⚠️' });
@@ -935,7 +945,6 @@
       container.innerHTML = html;
     }
 
-    // ==================== VISTAS ====================
     function setView(view) {
       currentView = view;
       document.getElementById('btnCumpl').classList.toggle('active', view === 'cumpl');
@@ -951,27 +960,21 @@
         planLabel.classList.add('active');
         prodLabel.classList.remove('active');
       } else {
-        // cumpl: ambos inactivos visualmente
         prodLabel.classList.remove('active');
         planLabel.classList.remove('active');
-        slider.className = 'toggle-slider left'; // mantener posición
       }
       renderGantt();
     }
 
     function toggleProdPlan() {
-      if (currentView === 'cumpl') {
-        setView('prod');
-      } else {
-        setView(currentView === 'prod' ? 'plan' : 'prod');
-      }
+      if (currentView === 'cumpl') setView('prod');
+      else setView(currentView === 'prod' ? 'plan' : 'prod');
     }
 
     function toggleCumplimiento() {
       setView(currentView === 'cumpl' ? 'prod' : 'cumpl');
     }
 
-    // ==================== GANTT DIARIO (modal) ====================
     function abrirGantt(dateStr) {
       document.getElementById('ganttTitulo').textContent = new Date(dateStr+'T00:00:00').toLocaleDateString('es-AR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
       const cont = document.getElementById('ganttDetalle'); cont.innerHTML = '';
@@ -1022,7 +1025,6 @@
     function cerrarGantt() { document.getElementById('ganttModal').style.display = 'none'; }
     window.addEventListener('click', e => { if (e.target === document.getElementById('ganttModal')) cerrarGantt(); });
 
-    // ==================== NAVEGACIÓN ====================
     function abrirSelectorMes() {
       document.getElementById('overlay').style.display = 'block';
       document.getElementById('monthSelector').style.display = 'block';
