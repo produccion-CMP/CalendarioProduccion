@@ -331,5 +331,670 @@
       </div>
     </div>
   </div>
+  <script>
+  // ============ CONFIGURACIÓN ============
+  const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';
+  const CSV_REAL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=1774340358&single=true&output=csv';
+  const IMG_PATH = 'img/moldes/';
+  const FALLBACK_IMG = 'img/moldes/default.png';
+
+  let planData = {};            // { clave: [ tareas plan ] }
+  let realRecords = [];         // Array de objetos reales crudos
+  let realTasksByTurno = {};    // { clave: { primary: {mold, isContinuation, ...}, tests: [...] } }
+  let currentDate = new Date();
+  let themeDark = true;
+  let lastActiveMold = null;    // para seguimiento de continuidad real
+  let lastPlanMoldGlobal = null;// para continuidad del plan
+
+  // Colores por tipo de ladrillo y número de molde
+  const brickTypeColors = new Map();
+  function getBrickColor(baseName, number) {
+    const key = `${baseName}_${number}`;
+    if (brickTypeColors.has(key)) return brickTypeColors.get(key);
+    let hash = 0;
+    for (let i = 0; i < baseName.length; i++) hash = baseName.charCodeAt(i) + ((hash << 5) - hash);
+    const hue = hash % 360;
+    const lightness = 38 + number * 8;
+    const color = `hsl(${hue}, 60%, ${lightness}%)`;
+    brickTypeColors.set(key, color);
+    return color;
+  }
+
+  function pickTextColorBasedOnBgColor(bgColor) {
+    const match = bgColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+    if (!match) return '#000';
+    const l = parseInt(match[3]);
+    return l > 50 ? '#000' : '#fff';
+  }
+
+  // ============ UTILIDADES DE FECHA ============
+  function formatYYYYMMDD(date) {
+    const y = date.getFullYear();
+    const m = String(date.getMonth()+1).padStart(2,'0');
+    const d = String(date.getDate()).padStart(2,'0');
+    return `${y}-${m}-${d}`;
+  }
+  function key(fecha, turno) { return `${fecha}_${turno}`; }
+  function getBaseName(moldeCompleto) {
+    let base = moldeCompleto.split(' (')[0].trim();
+    base = base.split(/[xX]/)[0].trim();
+    return base;
+  }
+  function getMoldNumber(moldeCompleto) {
+    const match = moldeCompleto.match(/\((\d+)\)/);
+    return match ? parseInt(match[1]) : 1;
+  }
+  function getImageSrc(baseName) { return `${IMG_PATH}${baseName}.png`; }
+
+  // ============ TOOLTIP Y TEMA ============
+  const tooltip = document.getElementById('customTooltip');
+  function showTooltip(e, content) {
+    tooltip.innerHTML = content;
+    tooltip.style.display = 'block';
+    tooltip.style.left = (e.clientX + 15) + 'px';
+    tooltip.style.top = (e.clientY - 20) + 'px';
+  }
+  function hideTooltip() { tooltip.style.display = 'none'; }
+
+  function toggleTheme() {
+    themeDark = !themeDark;
+    document.body.classList.toggle('light-mode', !themeDark);
+    localStorage.setItem('theme', themeDark ? 'dark' : 'light');
+  }
+  (function() {
+    const saved = localStorage.getItem('theme');
+    if (saved === 'light') {
+      themeDark = false;
+      document.body.classList.add('light-mode');
+    }
+  })();
+
+  // ============ CARGA DE DATOS ============
+  async function fetchCSV(url) {
+    const resp = await fetch(url);
+    const text = await resp.text();
+    return new Promise(resolve => {
+      Papa.parse(text, { header: true, skipEmptyLines: true, complete: r => resolve(r.data) });
+    });
+  }
+
+  async function loadData() {
+    try {
+      const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
+
+      // Procesar planificación (DatosProd)
+      planData = {};
+      planRows.forEach(row => {
+        const molde = row['LADRILLO:']?.trim();
+        const tarea = row['TAREA:']?.trim();
+        const fi = row['FECHA INICIO:']?.trim();
+        const ti = row['TURNO INICIO:']?.trim();
+        const ff = row['FECHA FIN:']?.trim();
+        const tf = row['TURNO FIN:']?.trim();
+        if (!molde || !fi || !ff) return;
+
+        const inicio = new Date(fi + 'T00:00:00');
+        const fin = new Date(ff + 'T00:00:00');
+        if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) return;
+
+        const turnos = ['T1','T2','T3'];
+        for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate()+1)) {
+          const dayStr = formatYYYYMMDD(d);
+          let turnosDia = [];
+          if (d.getTime() === inicio.getTime() && d.getTime() === fin.getTime()) {
+            const idx1 = turnos.indexOf(ti), idx2 = turnos.indexOf(tf);
+            for (let i = idx1; i <= idx2; i++) turnosDia.push(turnos[i]);
+          } else if (d.getTime() === inicio.getTime()) {
+            const idx1 = turnos.indexOf(ti);
+            for (let i = idx1; i < 3; i++) turnosDia.push(turnos[i]);
+          } else if (d.getTime() === fin.getTime()) {
+            const idx2 = turnos.indexOf(tf);
+            for (let i = 0; i <= idx2; i++) turnosDia.push(turnos[i]);
+          } else {
+            turnosDia = ['T1','T2','T3'];
+          }
+          turnosDia.forEach(t => {
+            const k = key(dayStr, t);
+            if (!planData[k]) planData[k] = [];
+            planData[k].push({
+              moldeCompleto: molde,
+              baseName: getBaseName(molde),
+              number: getMoldNumber(molde),
+              tarea,
+              esInicio: d.getTime() === inicio.getTime(),
+              esFin: d.getTime() === fin.getTime(),
+              fechaInicio: fi, turnoInicio: ti,
+              fechaFin: ff, turnoFin: tf
+            });
+          });
+        }
+      });
+
+      // Procesar producción real (ProduccionHistorica)
+      realRecords = [];
+      realRows.forEach(row => {
+        const diaRaw = row['Día']?.trim();
+        const turno = row['Turno']?.trim();
+        const carga = row['L. carga']?.trim();
+        const nroMolde = row['N° de molde']?.trim();
+        const moldeCompleto = row['Molde']?.trim();
+        if (!diaRaw || !turno || !moldeCompleto) return;
+        const partes = diaRaw.split('/');
+        if (partes.length !== 3) return;
+        const fecha = new Date(partes[2], partes[1]-1, partes[0]);
+        realRecords.push({
+          date: fecha,
+          turno,
+          carga,
+          nroMolde: parseInt(nroMolde) || 1,
+          moldeCompleto,
+          baseName: getBaseName(moldeCompleto),
+          number: getMoldNumber(moldeCompleto)
+        });
+      });
+
+      // Ordenar registros reales cronológicamente
+      realRecords.sort((a, b) => {
+        if (a.date < b.date) return -1;
+        if (a.date > b.date) return 1;
+        return ['T1','T2','T3'].indexOf(a.turno) - ['T1','T2','T3'].indexOf(b.turno);
+      });
+
+      // Calcular continuidad y estructurar datos reales
+      realTasksByTurno = {};
+      lastActiveMold = null;
+      // Agrupar por clave
+      const grouped = new Map();
+      realRecords.forEach(r => {
+        const k = key(formatYYYYMMDD(r.date), r.turno);
+        if (!grouped.has(k)) grouped.set(k, []);
+        grouped.get(k).push(r);
+      });
+
+      for (const [clave, registros] of grouped) {
+        const primario = registros.find(r => r.moldeCompleto === lastActiveMold);
+        let primary, tests = [];
+        if (primario) {
+          primary = primario;
+          tests = registros.filter(r => r !== primario);
+        } else {
+          primary = registros[0];
+          tests = registros.slice(1);
+        }
+
+        const isContinuation = (lastActiveMold === primary.moldeCompleto);
+        realTasksByTurno[clave] = {
+          primary: { ...primary, isContinuation },
+          tests: tests.map(t => ({ ...t, isTest: true }))
+        };
+
+        lastActiveMold = primary.moldeCompleto;
+      }
+
+      renderCalendar();
+      renderResumen();
+    } catch (error) {
+      console.error('❌ Error:', error);
+    }
+  }
+
+  function getCompliance(realMold, plans) {
+    if (!realMold) return null;
+    const prodPlans = plans.filter(p => p.tarea === 'Producción');
+    const testPlans = plans.filter(p => p.tarea === 'Prueba');
+    const matchingProd = prodPlans.find(p => p.moldeCompleto === realMold);
+    if (prodPlans.length === 0 && testPlans.length > 0) {
+      return { status: 'desvio', reason: 'Producción no planificada' };
+    }
+    if (matchingProd) {
+      if (testPlans.length > 0) {
+        return { status: 'parcial', reason: 'Producción OK, pruebas pendientes' };
+      }
+      return { status: 'cumplido', reason: '' };
+    } else {
+      if (prodPlans.length > 0) {
+        return { status: 'desvio', reason: 'Molde diferente al plan' };
+      } else {
+        return { status: 'sinPlan', reason: 'Sin planificación' };
+      }
+    }
+  }
+
+  // ============ RENDERIZADO DEL CALENDARIO ============
+  function renderCalendar() {
+    const grid = document.getElementById('daysGrid');
+    grid.innerHTML = '';
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+    const firstDay = new Date(year, month, 1).getDay();
+    const todayStr = formatYYYYMMDD(new Date());
+
+    document.getElementById('monthLabel').textContent = 
+      currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
+
+    for (let i = 0; i < firstDay; i++) {
+      const emptyCell = document.createElement('div');
+      emptyCell.style.visibility = 'hidden';
+      grid.appendChild(emptyCell);
+    }
+
+    // Reiniciar estado de continuidad para el plan (sin real)
+    lastPlanMoldGlobal = null;
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      const cell = document.createElement('div');
+      cell.className = 'day-cell';
+      cell.onclick = () => abrirGantt(dateStr);
+
+      const hasReal = realTasksByTurno[key(dateStr, 'T1')] || realTasksByTurno[key(dateStr, 'T2')] || realTasksByTurno[key(dateStr, 'T3')];
+      const hasPlan = planData[key(dateStr, 'T1')] || planData[key(dateStr, 'T2')] || planData[key(dateStr, 'T3')];
+      let dayHeaderClass = '';
+      if (dateStr === todayStr) dayHeaderClass = 'day-header-today';
+      else if (hasReal) dayHeaderClass = 'day-header-real';
+      else if (hasPlan) dayHeaderClass = 'day-header-plan';
+
+      const numDiv = document.createElement('div');
+      numDiv.className = 'day-number';
+      if (dayHeaderClass) numDiv.classList.add(dayHeaderClass);
+      numDiv.textContent = d;
+      cell.appendChild(numDiv);
+
+      const turnsContainer = document.createElement('div');
+      turnsContainer.className = 'turns-container';
+
+      ['T1','T2','T3'].forEach(turno => {
+        const k = key(dateStr, turno);
+        const realInfo = realTasksByTurno[k];
+        const plans = planData[k] || [];
+
+        const turnCol = document.createElement('div');
+        turnCol.className = 'turn-column';
+        const turnLabel = document.createElement('div');
+        turnLabel.className = 'turn-label';
+        turnLabel.textContent = turno;
+        turnCol.appendChild(turnLabel);
+
+        if (realInfo) {
+          const { primary, tests } = realInfo;
+          const comp = getCompliance(primary.moldeCompleto, plans);
+          const bgColor = getBrickColor(primary.baseName, primary.number);
+          const textColor = pickTextColorBasedOnBgColor(bgColor);
+
+          if (primary.isContinuation) {
+            const barDiv = document.createElement('div');
+            barDiv.className = 'continuation-bar';
+            barDiv.style.backgroundColor = bgColor;
+            barDiv.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>Continúa:</strong> ${primary.moldeCompleto}`));
+            barDiv.addEventListener('mouseleave', hideTooltip);
+            barDiv.addEventListener('mousemove', (e) => {
+              tooltip.style.left = (e.clientX + 15) + 'px';
+              tooltip.style.top = (e.clientY - 20) + 'px';
+            });
+            turnCol.appendChild(barDiv);
+          } else {
+            // Tarjeta completa de inicio real
+            const cardDiv = document.createElement('div');
+            cardDiv.className = 'real-card';
+            cardDiv.style.backgroundColor = bgColor;
+            cardDiv.style.color = textColor;
+
+            const img = document.createElement('img');
+            img.className = 'mold-image';
+            img.src = getImageSrc(primary.baseName);
+            img.alt = primary.moldeCompleto;
+            img.onerror = () => { img.src = FALLBACK_IMG; };
+            cardDiv.appendChild(img);
+
+            const baseSpan = document.createElement('span');
+            baseSpan.className = 'mold-base';
+            baseSpan.textContent = primary.baseName;
+            cardDiv.appendChild(baseSpan);
+
+            const numberSpan = document.createElement('span');
+            numberSpan.className = 'mold-number';
+            numberSpan.textContent = `Molde ${primary.number}`;
+            cardDiv.appendChild(numberSpan);
+
+            // Cambio si el último molde activo era diferente
+            if (lastActiveMold && lastActiveMold !== primary.moldeCompleto) {
+              const changeLabel = document.createElement('span');
+              changeLabel.className = 'change-label';
+              changeLabel.textContent = '🔄️';
+              cardDiv.appendChild(changeLabel);
+            }
+
+            const barRow = document.createElement('div');
+            barRow.className = 'compliance-row';
+            const barH = document.createElement('div');
+            barH.className = `compliance-bar-h ${
+              comp.status === 'cumplido' ? 'green-bar' :
+              comp.status === 'parcial' ? 'orange-bar' :
+              comp.status === 'desvio' ? 'red-bar' : 'gray-bar'
+            }`;
+            barRow.appendChild(barH);
+            const emojiSpan = document.createElement('span');
+            emojiSpan.className = `compliance-emoji ${
+              comp.status === 'cumplido' ? 'green-emoji' :
+              comp.status === 'parcial' ? 'orange-emoji' :
+              comp.status === 'desvio' ? 'red-emoji' : 'gray-emoji'
+            }`;
+            emojiSpan.textContent = comp.status === 'cumplido' ? '✅' : comp.status === 'parcial' ? '⏳' : comp.status === 'desvio' ? '⚠️' : '📌';
+            barRow.appendChild(emojiSpan);
+
+            cardDiv.addEventListener('mouseenter', (e) => {
+              let tooltipContent = `<strong>Producción Real:</strong> ${primary.moldeCompleto}<br>`;
+              if (plans.length > 0) {
+                tooltipContent += `<strong>Planificado:</strong> ${plans.map(p => p.moldeCompleto).join(', ')}<br>`;
+                tooltipContent += `<strong>Estado:</strong> ${comp.reason || comp.status}`;
+              } else {
+                tooltipContent += 'Sin planificación.';
+              }
+              showTooltip(e, tooltipContent);
+            });
+            cardDiv.addEventListener('mouseleave', hideTooltip);
+            cardDiv.addEventListener('mousemove', (e) => {
+              tooltip.style.left = (e.clientX + 15) + 'px';
+              tooltip.style.top = (e.clientY - 20) + 'px';
+            });
+
+            turnCol.appendChild(cardDiv);
+            turnCol.appendChild(barRow);
+            lastActiveMold = primary.moldeCompleto;
+          }
+
+          // Pruebas reales
+          tests.forEach(test => {
+            const testDiv = document.createElement('div');
+            testDiv.className = 'turn-task prueba';
+            testDiv.style.backgroundColor = 'var(--prueba-bg)';
+            testDiv.style.color = '#000';
+
+            const img = document.createElement('img');
+            img.className = 'mold-image';
+            img.src = getImageSrc(test.baseName);
+            img.alt = test.moldeCompleto;
+            img.onerror = () => { img.src = FALLBACK_IMG; };
+            testDiv.appendChild(img);
+
+            const baseSpan = document.createElement('span');
+            baseSpan.className = 'mold-base';
+            baseSpan.textContent = test.baseName;
+            testDiv.appendChild(baseSpan);
+
+            const numberSpan = document.createElement('span');
+            numberSpan.className = 'mold-number';
+            numberSpan.textContent = `Molde ${test.number}`;
+            testDiv.appendChild(numberSpan);
+
+            const pruebaLabel = document.createElement('span');
+            pruebaLabel.className = 'prueba-label';
+            pruebaLabel.textContent = 'PR';
+            testDiv.appendChild(pruebaLabel);
+
+            turnCol.appendChild(testDiv);
+          });
+        } else {
+          // Sin real: planificación
+          if (plans.length === 0) {
+            const emptyText = document.createElement('span');
+            emptyText.className = 'empty-turn';
+            emptyText.textContent = '—';
+            turnCol.appendChild(emptyText);
+          } else {
+            const prodTasks = plans.filter(p => p.tarea === 'Producción');
+            const testTasks = plans.filter(p => p.tarea === 'Prueba');
+
+            prodTasks.forEach(task => {
+              const moldKey = task.moldeCompleto;
+              const showDetail = task.esInicio || !lastPlanMoldGlobal || lastPlanMoldGlobal !== moldKey;
+              if (showDetail) {
+                const bgColor = getBrickColor(task.baseName, task.number);
+                const textColor = pickTextColorBasedOnBgColor(bgColor);
+                const taskDiv = document.createElement('div');
+                taskDiv.className = 'turn-task';
+                taskDiv.style.backgroundColor = bgColor;
+                taskDiv.style.color = textColor;
+
+                const img = document.createElement('img');
+                img.className = 'mold-image';
+                img.src = getImageSrc(task.baseName);
+                img.alt = task.moldeCompleto;
+                img.onerror = () => { img.src = FALLBACK_IMG; };
+                taskDiv.appendChild(img);
+
+                const baseSpan = document.createElement('span');
+                baseSpan.className = 'mold-base';
+                baseSpan.textContent = task.baseName;
+                taskDiv.appendChild(baseSpan);
+
+                const numberSpan = document.createElement('span');
+                numberSpan.className = 'mold-number';
+                numberSpan.textContent = `Molde ${task.number}`;
+                taskDiv.appendChild(numberSpan);
+
+                if (lastPlanMoldGlobal && lastPlanMoldGlobal !== moldKey) {
+                  const changeLabel = document.createElement('span');
+                  changeLabel.className = 'change-label';
+                  changeLabel.textContent = '🔄️';
+                  taskDiv.appendChild(changeLabel);
+                }
+
+                taskDiv.addEventListener('mouseenter', (e) => {
+                  showTooltip(e, `<strong>Plan:</strong> ${task.moldeCompleto}<br>
+                    <strong>Inicio:</strong> ${task.fechaInicio} ${task.turnoInicio}<br>
+                    <strong>Fin:</strong> ${task.fechaFin} ${task.turnoFin}`);
+                });
+                taskDiv.addEventListener('mouseleave', hideTooltip);
+                taskDiv.addEventListener('mousemove', (e) => {
+                  tooltip.style.left = (e.clientX + 15) + 'px';
+                  tooltip.style.top = (e.clientY - 20) + 'px';
+                });
+
+                turnCol.appendChild(taskDiv);
+                lastPlanMoldGlobal = moldKey;
+              } else {
+                const barDiv = document.createElement('div');
+                barDiv.className = 'continuation-bar';
+                barDiv.style.backgroundColor = getBrickColor(task.baseName, task.number);
+                turnCol.appendChild(barDiv);
+              }
+            });
+
+            testTasks.forEach(task => {
+              const taskDiv = document.createElement('div');
+              taskDiv.className = 'turn-task prueba';
+              taskDiv.style.backgroundColor = 'var(--prueba-bg)';
+              taskDiv.style.color = '#000';
+
+              const img = document.createElement('img');
+              img.className = 'mold-image';
+              img.src = getImageSrc(task.baseName);
+              img.alt = task.moldeCompleto;
+              img.onerror = () => { img.src = FALLBACK_IMG; };
+              taskDiv.appendChild(img);
+
+              const baseSpan = document.createElement('span');
+              baseSpan.className = 'mold-base';
+              baseSpan.textContent = task.baseName;
+              taskDiv.appendChild(baseSpan);
+
+              const numberSpan = document.createElement('span');
+              numberSpan.className = 'mold-number';
+              numberSpan.textContent = `Molde ${task.number}`;
+              taskDiv.appendChild(numberSpan);
+
+              const pruebaLabel = document.createElement('span');
+              pruebaLabel.className = 'prueba-label';
+              pruebaLabel.textContent = 'PR';
+              taskDiv.appendChild(pruebaLabel);
+
+              turnCol.appendChild(taskDiv);
+            });
+          }
+        }
+        turnsContainer.appendChild(turnCol);
+      });
+      cell.appendChild(turnsContainer);
+      grid.appendChild(cell);
+    }
+  }
+
+  // ============ GANTT DIARIO ============
+  function abrirGantt(dateStr) {
+    const modal = document.getElementById('ganttModal');
+    document.getElementById('ganttTitulo').textContent = `Detalle del ${new Date(dateStr + 'T00:00:00').toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
+    const cont = document.getElementById('ganttDetalle');
+    cont.innerHTML = '';
+
+    const turnos = ['T1','T2','T3'];
+    turnos.forEach(turno => {
+      const k = key(dateStr, turno);
+      const plans = planData[k] || [];
+      const realInfo = realTasksByTurno[k];
+
+      const row = document.createElement('div');
+      row.className = 'gantt-row';
+      const turnoLabel = document.createElement('div');
+      turnoLabel.className = 'gantt-turno';
+      turnoLabel.textContent = turno;
+      row.appendChild(turnoLabel);
+
+      const barContainer = document.createElement('div');
+      barContainer.className = 'gantt-bar-container';
+
+      // Plan
+      plans.filter(p => p.tarea === 'Producción').forEach(p => {
+        const bar = document.createElement('div');
+        bar.className = 'gantt-bar';
+        bar.style.backgroundColor = getBrickColor(p.baseName, p.number);
+        bar.style.width = '100%';
+        bar.textContent = `Plan: ${p.moldeCompleto}`;
+        barContainer.appendChild(bar);
+      });
+
+      plans.filter(p => p.tarea === 'Prueba').forEach(p => {
+        const bar = document.createElement('div');
+        bar.className = 'gantt-bar';
+        bar.style.backgroundColor = '#f1c40f';
+        bar.style.color = '#000';
+        bar.style.width = '100%';
+        bar.textContent = `Prueba Plan: ${p.moldeCompleto}`;
+        barContainer.appendChild(bar);
+      });
+
+      // Real
+      if (realInfo) {
+        const { primary, tests } = realInfo;
+        const comp = getCompliance(primary.moldeCompleto, plans);
+        const bar = document.createElement('div');
+        bar.className = 'gantt-bar';
+        bar.style.backgroundColor = comp.status === 'cumplido' ? '#4caf50' : comp.status === 'parcial' ? '#ff9800' : comp.status === 'desvio' ? '#e53935' : '#9e9e9e';
+        bar.style.width = '100%';
+        bar.textContent = `Real: ${primary.moldeCompleto} (${comp.status})`;
+        barContainer.appendChild(bar);
+
+        tests.forEach(test => {
+          const tBar = document.createElement('div');
+          tBar.className = 'gantt-bar';
+          tBar.style.backgroundColor = '#f1c40f';
+          tBar.style.color = '#000';
+          tBar.style.width = '100%';
+          tBar.textContent = `Prueba Real: ${test.moldeCompleto}`;
+          barContainer.appendChild(tBar);
+        });
+      }
+
+      row.appendChild(barContainer);
+      cont.appendChild(row);
+    });
+
+    modal.style.display = 'flex';
+  }
+
+  function cerrarGantt() {
+    document.getElementById('ganttModal').style.display = 'none';
+  }
+
+  // Cerrar modal al hacer clic fuera
+  window.addEventListener('click', (e) => {
+    if (e.target === document.getElementById('ganttModal')) cerrarGantt();
+  });
+
+  // ============ RESUMEN ============
+  function renderResumen() {
+    const resumenDiv = document.getElementById('resumenMes');
+    const year = currentDate.getFullYear();
+    const month = currentDate.getMonth();
+    const daysInMonth = new Date(year, month+1, 0).getDate();
+
+    let diasConPlan = new Set();
+    let cambiosProgramados = 0;
+    let pruebasProgramadas = 0;
+    let cumplimientoTotal = 0;
+    let totalReal = 0;
+
+    for (let d = 1; d <= daysInMonth; d++) {
+      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      let tienePlanDia = false;
+      ['T1','T2','T3'].forEach(turno => {
+        const k = key(dateStr, turno);
+        const plans = planData[k] || [];
+        const real = realTasksByTurno[k]?.primary;
+        if (plans.length > 0) tienePlanDia = true;
+        if (real) {
+          totalReal++;
+          const comp = getCompliance(real.moldeCompleto, plans);
+          if (comp && comp.status === 'cumplido') cumplimientoTotal++;
+        }
+        const prods = plans.filter(p => p.tarea === 'Producción');
+        if (prods.length > 1) cambiosProgramados++;
+        const tests = plans.filter(p => p.tarea === 'Prueba');
+        pruebasProgramadas += tests.length;
+      });
+      if (tienePlanDia) diasConPlan.add(dateStr);
+    }
+
+    const porcentajeCumplimiento = totalReal > 0 ? Math.round((cumplimientoTotal / totalReal) * 100) : 0;
+
+    resumenDiv.innerHTML = `
+      <div class="resumen-item">
+        <div class="resumen-valor">${diasConPlan.size}</div>
+        <div>Días con plan</div>
+      </div>
+      <div class="resumen-item">
+        <div class="resumen-valor">${cambiosProgramados}</div>
+        <div>Cambios de molde</div>
+      </div>
+      <div class="resumen-item">
+        <div class="resumen-valor">${pruebasProgramadas}</div>
+        <div>Pruebas programadas</div>
+      </div>
+      <div class="resumen-item">
+        <div class="resumen-valor">${porcentajeCumplimiento}%</div>
+        <div>Cumplimiento real</div>
+      </div>
+    `;
+  }
+
+  function cambiarMes(delta) {
+    currentDate.setMonth(currentDate.getMonth() + delta);
+    loadData();
+  }
+
+  function updateClock() {
+    const now = new Date();
+    document.getElementById('liveClock').textContent = 
+      now.toLocaleDateString('es-AR', { weekday:'short', year:'numeric', month:'short', day:'numeric' }) + 
+      ' · ' + now.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
+  }
+
+  window.addEventListener('load', () => {
+    updateClock();
+    setInterval(updateClock, 30000);
+    loadData();
+  });
+</script>
 </body>
 </html>
