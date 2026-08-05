@@ -16,14 +16,11 @@
       --accent: #d97736;
       --accent-light: #e8a87c;
       --shadow: 0 4px 12px rgba(0,0,0,0.4);
-      --radius: 12px;
-      --cell-height: 130px;
+      --radius: 10px;
+      --cell-height: 120px;
       --prueba-bg: hsla(45, 80%, 90%, 0.25);
       --prueba-border: #f1c40f;
       --logo-shadow: drop-shadow(0 2px 4px rgba(255,255,255,0.7));
-      --day-header-plan: #ff9800;
-      --day-header-real: #4caf50;
-      --day-header-today: #ffd700;
     }
 
     body.light-mode {
@@ -42,7 +39,7 @@
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
+      font-family: 'Inter', system-ui, sans-serif;
       background: var(--bg-body);
       color: var(--text-main);
       padding: 20px;
@@ -50,225 +47,140 @@
       transition: background 0.3s, color 0.3s;
     }
 
+    /* Header */
     .app-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 20px;
-      margin-bottom: 25px;
-      padding: 15px 20px;
-      background: var(--bg-panel);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap;
+      gap: 20px; margin-bottom: 20px; padding: 15px 20px;
+      background: var(--bg-panel); border-radius: var(--radius); box-shadow: var(--shadow);
     }
     .logo-container { display: flex; align-items: center; gap: 15px; }
-    .logo-container img {
-      height: 55px;
-      filter: var(--logo-shadow);
-    }
-    .title-block h1 { font-size: 1.4rem; font-weight: 700; letter-spacing: 0.5px; color: var(--accent-light); }
+    .logo-container img { height: 50px; filter: var(--logo-shadow); }
+    .title-block h1 { font-size: 1.3rem; font-weight: 700; color: var(--accent-light); margin:0; }
     .title-block small { font-size: 0.8rem; color: var(--text-muted); }
-
-    .header-actions { display: flex; align-items: center; gap: 15px; }
-    .live-clock {
-      background: rgba(0,0,0,0.3); padding: 10px 18px; border-radius: 30px;
-      font-weight: 600; font-size: 0.9rem; backdrop-filter: blur(5px);
-    }
-    .btn-icon {
+    .header-actions { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+    .live-clock { background: rgba(0,0,0,0.2); padding: 10px 18px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; }
+    .btn-icon, .btn-filter {
       background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main);
-      padding: 10px 14px; border-radius: 8px; cursor: pointer; font-size: 1.1rem;
+      padding: 8px 12px; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 600;
     }
+    .btn-filter.active { background: var(--accent); color: #fff; border-color: var(--accent); }
     .btn-add, .btn-print {
-      padding: 12px 24px; border-radius: 8px; font-weight: 700; font-size: 0.9rem;
-      cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px; border-radius: 6px; font-weight: 700; font-size: 0.85rem;
+      cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 6px;
       transition: background 0.2s; border: none; color: #fff; box-shadow: var(--shadow);
     }
     .btn-add { background: var(--accent); }
     .btn-add:hover { background: #c85d2a; }
     .btn-print { background: #4a4238; }
-    .btn-print:hover { background: #5e5548; }
 
-    .month-nav { display: flex; justify-content: center; align-items: center; gap: 25px; margin-bottom: 25px; }
+    /* Navegación */
+    .month-nav { display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 20px; }
     .month-nav button {
       background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main);
-      padding: 10px 20px; border-radius: 30px; font-weight: 600; cursor: pointer;
+      padding: 8px 18px; border-radius: 20px; font-weight: 600; cursor: pointer;
     }
     .month-nav button:hover { background: var(--accent); border-color: var(--accent); }
-    .month-label { font-size: 1.3rem; font-weight: 800; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-light); }
+    .month-label { font-size: 1.2rem; font-weight: 800; text-transform: uppercase; color: var(--accent-light); }
 
-    .calendar-wrapper { background: var(--bg-panel); border-radius: var(--radius); padding: 15px; box-shadow: var(--shadow); margin-bottom: 25px; }
-    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 700; color: var(--text-muted); margin-bottom: 8px; }
-    .weekdays div { padding: 8px 0; font-size: 0.8rem; text-transform: uppercase; }
-    .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+    /* Calendario */
+    .calendar-wrapper { background: var(--bg-panel); border-radius: var(--radius); padding: 10px; box-shadow: var(--shadow); }
+    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; }
+    .weekdays div { padding: 6px 0; font-size: 0.75rem; }
+    .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
     .day-cell {
-      background: var(--bg-cell); border: 1px solid var(--border); border-radius: 10px;
+      background: var(--bg-cell); border: 1px solid var(--border); border-radius: 8px;
       display: flex; flex-direction: column; min-height: var(--cell-height); overflow: hidden;
-      transition: 0.15s; box-shadow: 0 2px 5px rgba(0,0,0,0.2); cursor: pointer;
+      transition: border-color 0.2s; cursor: pointer;
     }
     .day-cell:hover { border-color: var(--accent); }
-    .day-number {
-      font-weight: 800; font-size: 0.9rem; padding: 6px 8px 2px; color: var(--text-main);
-      text-align: center; border-bottom: 1px solid var(--border);
-      border-radius: 8px 8px 0 0;
+    .day-header {
+      display: flex; align-items: center; justify-content: center; gap: 4px;
+      padding: 4px 0; border-bottom: 1px solid var(--border); font-weight: 700; font-size: 0.85rem;
     }
-    .day-header-plan { background-color: var(--day-header-plan) !important; color: #000; }
-    .day-header-real { background-color: var(--day-header-real) !important; color: #000; }
-    .day-header-today { background-color: var(--day-header-today) !important; color: #000; font-weight: 900; border: 2px solid #000; }
-    .day-header-today.day-header-plan,
-    .day-header-today.day-header-real { border: 2px solid #000; }
+    .day-indicator {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: transparent;
+    }
+    .day-indicator.plan { background: #ff9800; }
+    .day-indicator.real { background: #4caf50; }
+    .day-indicator.today { background: #ffd700; box-shadow: 0 0 6px #ffd700; }
 
     .turns-container { display: flex; flex: 1; flex-direction: row; }
     .turn-column {
-      flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-start;
-      padding: 4px 2px; border-right: 1px solid rgba(255,255,255,0.05); text-align: center;
-      font-size: 0.7rem; overflow-y: auto; max-height: 100%; position: relative;
+      flex: 1; display: flex; flex-direction: column; align-items: center;
+      padding: 2px 1px; border-right: 1px solid rgba(255,255,255,0.05);
+      font-size: 0.65rem; overflow: hidden;
     }
     .turn-column:last-child { border-right: none; }
-    .turn-label { font-weight: 700; color: var(--accent-light); font-size: 0.6rem; margin-bottom: 3px; text-transform: uppercase; }
-    .empty-turn { color: var(--text-muted); font-size: 0.65rem; margin-top: 8px; }
+    .turn-label { font-weight: 700; color: var(--accent-light); font-size: 0.6rem; margin: 2px 0 1px; }
+    .turn-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
+    .turn-footer { width: 100%; margin-top: auto; }
+    .compliance-bar {
+      width: 100%; height: 4px; border-radius: 2px;
+    }
+    .compliance-emoji { text-align: center; font-size: 0.7rem; margin: 1px 0; }
+    .green-bar { background: #4caf50; }
+    .orange-bar { background: #ff9800; }
+    .red-bar { background: #e53935; }
+    .gray-bar { background: #9e9e9e; }
 
-    .turn-task {
-      display: flex; flex-direction: column; align-items: center; margin-bottom: 4px;
-      padding: 3px 2px; border-radius: 4px; width: 100%;
+    .empty-turn { color: var(--text-muted); font-size: 0.6rem; }
+
+    /* Tarjetas de plan/real */
+    .mold-card {
+      display: flex; flex-direction: column; align-items: center; padding: 2px;
+      border-radius: 4px; width: 100%; margin: 1px 0;
       cursor: pointer; transition: transform 0.1s;
     }
-    .turn-task:hover { transform: scale(1.02); }
-    .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; margin-bottom: 2px; background: rgba(255,255,255,0.05); padding: 2px; }
-    .mold-base {
-      font-weight: 700; font-size: 0.7rem; color: inherit; margin-bottom: 1px;
-      white-space: normal; word-wrap: break-word; line-height: 1.1;
-    }
-    .mold-number {
-      font-weight: 600; font-size: 0.6rem; color: inherit; opacity: 0.8;
-      white-space: normal; word-wrap: break-word; line-height: 1.1;
-    }
-    .change-label, .prueba-label { font-size: 0.5rem; border-radius: 3px; padding: 0 2px; font-weight: 700; margin-top: 1px; line-height: 1.2; }
+    .mold-card:hover { transform: scale(1.02); }
+    .mold-image { width: 24px; height: 24px; object-fit: contain; border-radius: 3px; background: rgba(255,255,255,0.1); padding: 1px; }
+    .mold-base { font-weight: 700; font-size: 0.65rem; line-height: 1.1; }
+    .mold-number { font-size: 0.55rem; opacity: 0.8; }
+    .change-label, .prueba-label { font-size: 0.5rem; padding: 0 2px; border-radius: 2px; font-weight: 700; margin-top: 1px; }
     .change-label { background: var(--accent); color: #fff; }
     .prueba-label { background: #f1c40f; color: #000; }
 
     .continuation-bar {
-      width: 100%;
-      flex: 1;
-      min-height: 20px;
-      border-radius: 3px;
-      margin: 1px 0;
-      opacity: 0.85;
-      box-shadow: inset 0 0 6px rgba(0,0,0,0.4);
-      cursor: pointer;
+      width: 100%; flex: 1; min-height: 16px; border-radius: 2px; opacity: 0.8;
+      margin: 1px 0; cursor: pointer;
     }
 
-    .real-card {
-      display: flex; flex-direction: column; align-items: center;
-      padding: 4px 2px; border-radius: 6px 6px 0 0; width: 100%; margin-bottom: 0;
-      cursor: pointer; transition: transform 0.1s;
-    }
-    .real-card:hover { transform: scale(1.02); }
+    /* Filtros activos */
+    .filter-hidden { display: none !important; }
 
-    .compliance-row {
-      display: flex; flex-direction: column; align-items: center;
-      width: 100%; margin-bottom: 4px;
-    }
-    .compliance-bar-h {
-      width: 100%; height: 5px; border-radius: 0 0 6px 6px;
-      position: relative; overflow: hidden;
-    }
-    .compliance-bar-h::after {
-      content: '';
-      position: absolute;
-      top: 0; left: -100%;
-      width: 100%; height: 100%;
-      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.4), transparent);
-      animation: shimmer 2s infinite;
-    }
-    @keyframes shimmer {
-      0% { left: -100%; }
-      100% { left: 100%; }
-    }
-    .compliance-emoji {
-      margin-top: 2px; font-size: 0.9rem;
-      animation: pulse-emoji 1.5s ease-in-out infinite;
-    }
-    @keyframes pulse-emoji {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.15); }
-    }
-    .green-bar { background: #4caf50; } .green-emoji { color: #4caf50; }
-    .orange-bar { background: #ff9800; } .orange-emoji { color: #ff9800; }
-    .red-bar { background: #e53935; } .red-emoji { color: #e53935; }
-    .gray-bar { background: #9e9e9e; } .gray-emoji { color: #9e9e9e; }
+    /* Leyenda, resumen, tooltip, modal gantt */
+    .resumen-mes { background: var(--bg-panel); border-radius: var(--radius); padding: 12px 15px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; font-size: 0.85rem; margin-bottom: 15px; }
+    .resumen-item { text-align: center; min-width: 80px; }
+    .resumen-valor { font-size: 1.4rem; font-weight: 800; color: var(--accent-light); }
+
+    .legend { margin-top: 15px; background: var(--bg-panel); border-radius: var(--radius); padding: 10px 15px; display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; font-size: 0.75rem; }
+    .legend-item { display: flex; align-items: center; gap: 6px; }
 
     .custom-tooltip {
-      position: fixed;
-      background: var(--bg-panel);
-      border: 1px solid var(--accent);
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-size: 0.8rem;
-      box-shadow: 0 6px 18px rgba(0,0,0,0.6);
-      z-index: 9999;
-      pointer-events: none;
-      max-width: 220px;
-      color: var(--text-main);
-      display: none;
+      position: fixed; background: var(--bg-panel); border: 1px solid var(--accent);
+      border-radius: 6px; padding: 8px 12px; font-size: 0.75rem; box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+      z-index: 9999; pointer-events: none; max-width: 200px; display: none;
     }
-    .custom-tooltip strong { color: var(--accent-light); }
 
-    .resumen-mes {
-      background: var(--bg-panel); border-radius: var(--radius); padding: 15px 20px;
-      box-shadow: var(--shadow); display: flex; flex-wrap: wrap; gap: 20px; justify-content: center;
-      font-size: 0.9rem; margin-bottom: 20px;
-    }
-    .resumen-item { text-align: center; min-width: 100px; }
-    .resumen-valor { font-size: 1.6rem; font-weight: 800; color: var(--accent-light); }
-
-    .legend { margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius); padding: 15px 20px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: center; box-shadow: var(--shadow); font-size: 0.8rem; }
-    .legend-item { display: flex; align-items: center; gap: 8px; }
-    .legend-dot { width: 14px; height: 14px; border-radius: 4px; }
-    .legend-img { width: 25px; height: 25px; object-fit: contain; }
-
-    /* ============ GANTT MODAL ============ */
-    .gantt-modal {
-      position: fixed; top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.8); display: none; justify-content: center; align-items: center;
-      z-index: 10000;
-    }
-    .gantt-content {
-      background: var(--bg-panel); border-radius: var(--radius);
-      padding: 20px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-    }
+    .gantt-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.85); display: none; justify-content: center; align-items: center; z-index: 10000; }
+    .gantt-content { background: var(--bg-panel); border-radius: var(--radius); padding: 20px; max-width: 600px; width: 90%; max-height: 80vh; overflow-y: auto; }
     .gantt-content h3 { margin-bottom: 15px; color: var(--accent-light); }
-    .gantt-row { display: flex; align-items: center; margin: 8px 0; }
-    .gantt-turno { width: 40px; font-weight: 700; color: var(--accent-light); }
-    .gantt-bar-container { flex:1; height: 24px; background: rgba(0,0,0,0.2); border-radius: 4px; position: relative; margin: 0 8px; }
-    .gantt-bar {
-      height: 100%; border-radius: 4px; display: flex; align-items: center; padding-left: 6px;
-      font-size: 0.7rem; font-weight: 700; color: #fff; white-space: nowrap; overflow: hidden;
-    }
-    .gantt-legend { display: flex; gap: 15px; margin-top: 15px; font-size: 0.8rem; }
-    .gantt-legend span { display: flex; align-items: center; gap: 5px; }
-    .close-btn {
-      background: var(--accent); color: #fff; border: none; padding: 8px 16px;
-      border-radius: 6px; cursor: pointer; float: right; font-weight: 700;
-    }
+    .gantt-row { display: flex; align-items: center; margin: 10px 0; }
+    .gantt-turno { width: 40px; font-weight: 700; }
+    .gantt-bar-container { flex:1; height: 20px; background: rgba(0,0,0,0.2); border-radius: 3px; position: relative; margin-left: 10px; }
+    .gantt-bar { height: 100%; border-radius: 3px; display: flex; align-items: center; padding-left: 8px; font-size: 0.7rem; font-weight: 700; color: #fff; }
+    .close-btn { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; float: right; }
 
     @media print {
-      body { background: white !important; color: black !important; padding: 0; font-size: 9px; }
-      .app-header, .month-nav button, .btn-add, .btn-print, .btn-icon, .live-clock, .legend, .resumen-mes, .custom-tooltip { display: none !important; }
+      body { background: white !important; color: black !important; padding: 0; font-size: 8px; }
+      .app-header, .month-nav button, .btn-add, .btn-print, .btn-icon, .btn-filter, .live-clock, .legend, .resumen-mes, .custom-tooltip, #ganttModal { display: none !important; }
       .calendar-wrapper { box-shadow: none; background: none; padding: 0; }
-      .day-cell { background: #fff; border: 1px solid #999; box-shadow: none; min-height: 60px; }
-      .turn-column { border-right: 1px solid #ddd; }
-      .mold-image { width: 18px; height: 18px; filter: none; }
-      .mold-base, .mold-number, .turn-label { color: black; font-size: 0.65rem; }
-      .real-card, .turn-task { background: none !important; }
-      .compliance-bar-h { height: 3px; animation: none; }
-      .compliance-bar-h::after { display: none; }
-      .compliance-emoji { animation: none; font-size: 0.7rem; }
+      .day-cell { background: #fff; border: 1px solid #aaa; min-height: 60px; }
+      .mold-image { width: 16px; height: 16px; filter: none; }
+      .mold-base, .mold-number, .turn-label { color: black; }
       .continuation-bar { opacity: 0.5; }
       .month-label { color: black; font-size: 1rem; margin: 5px 0; }
       .days-grid { gap: 1px; }
-      .day-number { font-size: 0.8rem; }
       @page { size: A4 landscape; margin: 0.3cm; }
     }
   </style>
@@ -279,21 +191,24 @@
       <img src="img/logo CMP.png" alt="Cerámica Marcos Paz">
       <div class="title-block">
         <h1>Cronograma de Producción</h1>
-        <small>Cerámica Marcos Paz - Planta CEVIL</small>
+        <small>Cerámica Marcos Paz – Planta CEVIL</small>
       </div>
     </div>
     <div class="header-actions">
       <div class="live-clock" id="liveClock"></div>
-      <button class="btn-icon" onclick="toggleTheme()" title="Cambiar modo claro/oscuro">🌓</button>
+      <button class="btn-icon" onclick="toggleTheme()" title="Modo claro/oscuro">🌓</button>
+      <button class="btn-filter" id="btnVerProd" onclick="setView('prod')">Ver Producción</button>
+      <button class="btn-filter" id="btnVerPlan" onclick="setView('plan')">Ver Planificación</button>
+      <button class="btn-filter active" id="btnVerAmbos" onclick="setView('both')">Ver Ambos</button>
       <a href="admin.html" class="btn-add">🧱 + Nuevo Plan</a>
-      <button class="btn-print" onclick="window.print()">🖨️ Imprimir Mes</button>
+      <button class="btn-print" onclick="window.print()">🖨️ Imprimir Plan</button>
     </div>
   </header>
 
   <div class="month-nav">
-    <button onclick="cambiarMes(-1)">◀ Anterior</button>
+    <button onclick="cambiarMes(-1)">◀</button>
     <div class="month-label" id="monthLabel"></div>
-    <button onclick="cambiarMes(1)">Siguiente ▶</button>
+    <button onclick="cambiarMes(1)">▶</button>
   </div>
 
   <div class="resumen-mes" id="resumenMes"></div>
@@ -306,695 +221,467 @@
   </div>
 
   <div class="legend">
-    <div class="legend-item"><div class="legend-dot" style="background:#4caf50;"></div> Cumplido ✅</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#ff9800;"></div> Parcial ⏳</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#e53935;"></div> Desvío ⚠️</div>
-    <div class="legend-item"><div class="legend-dot" style="background:#9e9e9e;"></div> Sin plan 📌</div>
-    <div class="legend-item"><span style="font-weight:700; background:#f1c40f; color:#000; padding:0 4px; border-radius:3px;">PR</span> Prueba</div>
-    <div class="legend-item"><span style="background:var(--accent); color:#fff; padding:2px 4px; border-radius:3px; font-size:0.8rem;">🔄️</span> Cambio</div>
-    <div class="legend-item"><div class="legend-dot" style="background: repeating-linear-gradient(45deg, var(--accent), var(--accent) 2px, transparent 2px, transparent 4px);"></div> Continuación</div>
+    <div class="legend-item"><div style="width:12px;height:12px;background:#4caf50;border-radius:50%;"></div> Cumplido</div>
+    <div class="legend-item"><div style="width:12px;height:12px;background:#ff9800;border-radius:50%;"></div> Parcial</div>
+    <div class="legend-item"><div style="width:12px;height:12px;background:#e53935;border-radius:50%;"></div> Desvío</div>
+    <div class="legend-item"><div style="width:12px;height:12px;background:#9e9e9e;border-radius:50%;"></div> Sin plan</div>
+    <div class="legend-item"><span style="background:#f1c40f;color:#000;padding:0 3px;border-radius:2px;">PR</span> Prueba</div>
+    <div class="legend-item"><span style="background:var(--accent);color:#fff;padding:0 3px;border-radius:2px;">🔄️</span> Cambio</div>
   </div>
 
   <div class="custom-tooltip" id="customTooltip"></div>
 
-  <!-- Modal Gantt -->
   <div class="gantt-modal" id="ganttModal">
     <div class="gantt-content">
       <button class="close-btn" onclick="cerrarGantt()">Cerrar</button>
       <h3 id="ganttTitulo"></h3>
       <div id="ganttDetalle"></div>
-      <div class="gantt-legend">
-        <span><div style="width:16px;height:16px;background:#4caf50;border-radius:3px;"></div> Cumplido</span>
-        <span><div style="width:16px;height:16px;background:#ff9800;border-radius:3px;"></div> Parcial</span>
-        <span><div style="width:16px;height:16px;background:#e53935;border-radius:3px;"></div> Desvío</span>
-        <span><div style="width:16px;height:16px;background:#f1c40f;border-radius:3px;"></div> Prueba</span>
-      </div>
     </div>
   </div>
+
   <script>
-  // ============ CONFIGURACIÓN ============
-  const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';
-  const CSV_REAL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=1774340358&single=true&output=csv';
-  const IMG_PATH = 'img/moldes/';
-  const FALLBACK_IMG = 'img/moldes/default.png';
+    // ==================== CONFIGURACIÓN ====================
+    const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';
+    const CSV_REAL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=1774340358&single=true&output=csv';
+    const IMG_PATH = 'img/moldes/';
+    const FALLBACK_IMG = 'img/moldes/default.png';
 
-  let planData = {};            // { clave: [ tareas plan ] }
-  let realRecords = [];         // Array de objetos reales crudos
-  let realTasksByTurno = {};    // { clave: { primary: {mold, isContinuation, ...}, tests: [...] } }
-  let currentDate = new Date();
-  let themeDark = true;
-  let lastActiveMold = null;    // para seguimiento de continuidad real
-  let lastPlanMoldGlobal = null;// para continuidad del plan
+    let planData = {};               // clave -> array de tareas plan
+    let realTasksByTurno = {};       // clave -> { primary, tests }
+    let allRealRecords = [];         // crudo
+    let currentView = 'both';        // 'prod', 'plan', 'both'
+    let currentDate = new Date();
+    let themeDark = true;
 
-  // Colores por tipo de ladrillo y número de molde
-  const brickTypeColors = new Map();
-  function getBrickColor(baseName, number) {
-    const key = `${baseName}_${number}`;
-    if (brickTypeColors.has(key)) return brickTypeColors.get(key);
-    let hash = 0;
-    for (let i = 0; i < baseName.length; i++) hash = baseName.charCodeAt(i) + ((hash << 5) - hash);
-    const hue = hash % 360;
-    const lightness = 38 + number * 8;
-    const color = `hsl(${hue}, 60%, ${lightness}%)`;
-    brickTypeColors.set(key, color);
-    return color;
-  }
-
-  function pickTextColorBasedOnBgColor(bgColor) {
-    const match = bgColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
-    if (!match) return '#000';
-    const l = parseInt(match[3]);
-    return l > 50 ? '#000' : '#fff';
-  }
-
-  // ============ UTILIDADES DE FECHA ============
-  function formatYYYYMMDD(date) {
-    const y = date.getFullYear();
-    const m = String(date.getMonth()+1).padStart(2,'0');
-    const d = String(date.getDate()).padStart(2,'0');
-    return `${y}-${m}-${d}`;
-  }
-  function key(fecha, turno) { return `${fecha}_${turno}`; }
-  function getBaseName(moldeCompleto) {
-    let base = moldeCompleto.split(' (')[0].trim();
-    base = base.split(/[xX]/)[0].trim();
-    return base;
-  }
-  function getMoldNumber(moldeCompleto) {
-    const match = moldeCompleto.match(/\((\d+)\)/);
-    return match ? parseInt(match[1]) : 1;
-  }
-  function getImageSrc(baseName) { return `${IMG_PATH}${baseName}.png`; }
-
-  // ============ TOOLTIP Y TEMA ============
-  const tooltip = document.getElementById('customTooltip');
-  function showTooltip(e, content) {
-    tooltip.innerHTML = content;
-    tooltip.style.display = 'block';
-    tooltip.style.left = (e.clientX + 15) + 'px';
-    tooltip.style.top = (e.clientY - 20) + 'px';
-  }
-  function hideTooltip() { tooltip.style.display = 'none'; }
-
-  function toggleTheme() {
-    themeDark = !themeDark;
-    document.body.classList.toggle('light-mode', !themeDark);
-    localStorage.setItem('theme', themeDark ? 'dark' : 'light');
-  }
-  (function() {
-    const saved = localStorage.getItem('theme');
-    if (saved === 'light') {
-      themeDark = false;
-      document.body.classList.add('light-mode');
+    // Mapa de colores por tipo base y número de molde
+    const brickHueMap = new Map();
+    function getBaseHue(baseName) {
+      if (brickHueMap.has(baseName)) return brickHueMap.get(baseName);
+      let hash = 0;
+      for (let i = 0; i < baseName.length; i++) hash = baseName.charCodeAt(i) + ((hash << 5) - hash);
+      const hue = Math.abs(hash) % 360;
+      brickHueMap.set(baseName, hue);
+      return hue;
     }
-  })();
+    function getBrickColor(baseName, number) {
+      const hue = getBaseHue(baseName);
+      const saturation = 60 + number * 5;
+      const lightness = 35 + number * 8;
+      return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+    }
+    function pickTextColor(bgHSL) {
+      const match = bgHSL.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+      if (!match) return '#000';
+      return parseInt(match[3]) > 50 ? '#000' : '#fff';
+    }
 
-  // ============ CARGA DE DATOS ============
-  async function fetchCSV(url) {
-    const resp = await fetch(url);
-    const text = await resp.text();
-    return new Promise(resolve => {
-      Papa.parse(text, { header: true, skipEmptyLines: true, complete: r => resolve(r.data) });
-    });
-  }
+    // ==================== UTILIDADES ====================
+    const turnosOrder = ['T1','T2','T3'];
+    function formatYYYYMMDD(date) {
+      const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0');
+      return `${y}-${m}-${d}`;
+    }
+    function key(fecha, turno) { return `${fecha}_${turno}`; }
+    function getBaseName(molde) {
+      let base = molde.split(' (')[0].trim();
+      return base.split(/[xX]/)[0].trim();
+    }
+    function getMoldNumber(molde) {
+      const m = molde.match(/\((\d+)\)/);
+      return m ? parseInt(m[1]) : 1;
+    }
+    function getImageSrc(base) { return `${IMG_PATH}${base}.png`; }
 
-  async function loadData() {
-    try {
+    // Tooltip
+    const tooltip = document.getElementById('customTooltip');
+    function showTooltip(e, html) {
+      tooltip.innerHTML = html; tooltip.style.display = 'block';
+      tooltip.style.left = (e.clientX+15)+'px'; tooltip.style.top = (e.clientY-20)+'px';
+    }
+    function hideTooltip() { tooltip.style.display = 'none'; }
+
+    // Tema
+    function toggleTheme() {
+      themeDark = !themeDark;
+      document.body.classList.toggle('light-mode', !themeDark);
+      localStorage.setItem('theme', themeDark ? 'dark' : 'light');
+    }
+    (()=>{ if(localStorage.getItem('theme')==='light'){ document.body.classList.add('light-mode'); themeDark=false; } })();
+
+    // Filtros de vista
+    function setView(view) {
+      currentView = view;
+      document.getElementById('btnVerProd').classList.toggle('active', view==='prod');
+      document.getElementById('btnVerPlan').classList.toggle('active', view==='plan');
+      document.getElementById('btnVerAmbos').classList.toggle('active', view==='both');
+      renderCalendar();
+    }
+
+    // ==================== CARGA DE DATOS ====================
+    async function fetchCSV(url) {
+      const resp = await fetch(url);
+      const text = await resp.text();
+      return new Promise(resolve => Papa.parse(text, {header:true, skipEmptyLines:true, complete: r => resolve(r.data)}));
+    }
+
+    async function loadData() {
       const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
 
-      // Procesar planificación (DatosProd)
+      // Plan
       planData = {};
       planRows.forEach(row => {
         const molde = row['LADRILLO:']?.trim();
         const tarea = row['TAREA:']?.trim();
-        const fi = row['FECHA INICIO:']?.trim();
-        const ti = row['TURNO INICIO:']?.trim();
-        const ff = row['FECHA FIN:']?.trim();
-        const tf = row['TURNO FIN:']?.trim();
+        const fi = row['FECHA INICIO:']?.trim(), ff = row['FECHA FIN:']?.trim();
+        const ti = row['TURNO INICIO:']?.trim(), tf = row['TURNO FIN:']?.trim();
         if (!molde || !fi || !ff) return;
-
-        const inicio = new Date(fi + 'T00:00:00');
-        const fin = new Date(ff + 'T00:00:00');
-        if (isNaN(inicio.getTime()) || isNaN(fin.getTime())) return;
-
-        const turnos = ['T1','T2','T3'];
+        const inicio = new Date(fi+'T00:00:00'), fin = new Date(ff+'T00:00:00');
+        if (isNaN(inicio) || isNaN(fin)) return;
         for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate()+1)) {
           const dayStr = formatYYYYMMDD(d);
           let turnosDia = [];
           if (d.getTime() === inicio.getTime() && d.getTime() === fin.getTime()) {
-            const idx1 = turnos.indexOf(ti), idx2 = turnos.indexOf(tf);
-            for (let i = idx1; i <= idx2; i++) turnosDia.push(turnos[i]);
+            const i1 = turnosOrder.indexOf(ti), i2 = turnosOrder.indexOf(tf);
+            for (let i=i1; i<=i2; i++) turnosDia.push(turnosOrder[i]);
           } else if (d.getTime() === inicio.getTime()) {
-            const idx1 = turnos.indexOf(ti);
-            for (let i = idx1; i < 3; i++) turnosDia.push(turnos[i]);
+            const i1 = turnosOrder.indexOf(ti);
+            for (let i=i1; i<3; i++) turnosDia.push(turnosOrder[i]);
           } else if (d.getTime() === fin.getTime()) {
-            const idx2 = turnos.indexOf(tf);
-            for (let i = 0; i <= idx2; i++) turnosDia.push(turnos[i]);
-          } else {
-            turnosDia = ['T1','T2','T3'];
-          }
+            const i2 = turnosOrder.indexOf(tf);
+            for (let i=0; i<=i2; i++) turnosDia.push(turnosOrder[i]);
+          } else turnosDia = [...turnosOrder];
           turnosDia.forEach(t => {
             const k = key(dayStr, t);
             if (!planData[k]) planData[k] = [];
             planData[k].push({
-              moldeCompleto: molde,
-              baseName: getBaseName(molde),
-              number: getMoldNumber(molde),
-              tarea,
-              esInicio: d.getTime() === inicio.getTime(),
-              esFin: d.getTime() === fin.getTime(),
-              fechaInicio: fi, turnoInicio: ti,
-              fechaFin: ff, turnoFin: tf
+              moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde),
+              tarea, esInicio: d.getTime()===inicio.getTime(), esFin: d.getTime()===fin.getTime(),
+              fechaInicio: fi, turnoInicio: ti, fechaFin: ff, turnoFin: tf
             });
           });
         }
       });
 
-      // Procesar producción real (ProduccionHistorica)
-      realRecords = [];
+      // Real
+      allRealRecords = [];
       realRows.forEach(row => {
-        const diaRaw = row['Día']?.trim();
-        const turno = row['Turno']?.trim();
-        const carga = row['L. carga']?.trim();
-        const nroMolde = row['N° de molde']?.trim();
-        const moldeCompleto = row['Molde']?.trim();
-        if (!diaRaw || !turno || !moldeCompleto) return;
-        const partes = diaRaw.split('/');
+        const dia = row['Día']?.trim(), turno = row['Turno']?.trim();
+        const molde = row['Molde']?.trim();
+        if (!dia || !turno || !molde) return;
+        const partes = dia.split('/');
         if (partes.length !== 3) return;
         const fecha = new Date(partes[2], partes[1]-1, partes[0]);
-        realRecords.push({
-          date: fecha,
-          turno,
-          carga,
-          nroMolde: parseInt(nroMolde) || 1,
-          moldeCompleto,
-          baseName: getBaseName(moldeCompleto),
-          number: getMoldNumber(moldeCompleto)
+        allRealRecords.push({
+          date: fecha, turno, moldeCompleto: molde,
+          baseName: getBaseName(molde), number: getMoldNumber(molde)
         });
       });
+      allRealRecords.sort((a,b) => a.date-b.date || turnosOrder.indexOf(a.turno)-turnosOrder.indexOf(b.turno));
 
-      // Ordenar registros reales cronológicamente
-      realRecords.sort((a, b) => {
-        if (a.date < b.date) return -1;
-        if (a.date > b.date) return 1;
-        return ['T1','T2','T3'].indexOf(a.turno) - ['T1','T2','T3'].indexOf(b.turno);
-      });
-
-      // Calcular continuidad y estructurar datos reales
-      realTasksByTurno = {};
-      lastActiveMold = null;
-      // Agrupar por clave
+      // Agrupar y calcular continuidad
       const grouped = new Map();
-      realRecords.forEach(r => {
+      allRealRecords.forEach(r => {
         const k = key(formatYYYYMMDD(r.date), r.turno);
         if (!grouped.has(k)) grouped.set(k, []);
         grouped.get(k).push(r);
       });
 
-      for (const [clave, registros] of grouped) {
-        const primario = registros.find(r => r.moldeCompleto === lastActiveMold);
-        let primary, tests = [];
-        if (primario) {
-          primary = primario;
-          tests = registros.filter(r => r !== primario);
-        } else {
-          primary = registros[0];
-          tests = registros.slice(1);
-        }
-
+      realTasksByTurno = {};
+      let lastActiveMold = null;
+      for (const [clave, regs] of grouped) {
+        let primary = regs.find(r => r.moldeCompleto === lastActiveMold) || regs[0];
+        let tests = regs.filter(r => r !== primary);
         const isContinuation = (lastActiveMold === primary.moldeCompleto);
         realTasksByTurno[clave] = {
           primary: { ...primary, isContinuation },
           tests: tests.map(t => ({ ...t, isTest: true }))
         };
-
         lastActiveMold = primary.moldeCompleto;
       }
 
       renderCalendar();
       renderResumen();
-    } catch (error) {
-      console.error('❌ Error:', error);
     }
-  }
 
-  function getCompliance(realMold, plans) {
-    if (!realMold) return null;
-    const prodPlans = plans.filter(p => p.tarea === 'Producción');
-    const testPlans = plans.filter(p => p.tarea === 'Prueba');
-    const matchingProd = prodPlans.find(p => p.moldeCompleto === realMold);
-    if (prodPlans.length === 0 && testPlans.length > 0) {
-      return { status: 'desvio', reason: 'Producción no planificada' };
-    }
-    if (matchingProd) {
-      if (testPlans.length > 0) {
-        return { status: 'parcial', reason: 'Producción OK, pruebas pendientes' };
-      }
-      return { status: 'cumplido', reason: '' };
-    } else {
-      if (prodPlans.length > 0) {
-        return { status: 'desvio', reason: 'Molde diferente al plan' };
+    function getCompliance(realMold, plans) {
+      if (!realMold) return null;
+      const prodPlans = plans.filter(p => p.tarea === 'Producción');
+      const testPlans = plans.filter(p => p.tarea === 'Prueba');
+      const match = prodPlans.find(p => p.moldeCompleto === realMold);
+      if (prodPlans.length===0 && testPlans.length>0) return {status:'desvio', reason:'Sin producción planificada'};
+      if (match) {
+        if (testPlans.length>0) return {status:'parcial', reason:'Pruebas pendientes'};
+        return {status:'cumplido', reason:''};
       } else {
-        return { status: 'sinPlan', reason: 'Sin planificación' };
+        if (prodPlans.length>0) return {status:'desvio', reason:'Molde diferente'};
+        return {status:'sinPlan', reason:'Sin plan'};
       }
     }
-  }
 
-  // ============ RENDERIZADO DEL CALENDARIO ============
-  function renderCalendar() {
-    const grid = document.getElementById('daysGrid');
-    grid.innerHTML = '';
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const daysInMonth = new Date(year, month+1, 0).getDate();
-    const firstDay = new Date(year, month, 1).getDay();
-    const todayStr = formatYYYYMMDD(new Date());
+    // ==================== RENDERIZADO ====================
+    function renderCalendar() {
+      const grid = document.getElementById('daysGrid');
+      grid.innerHTML = '';
+      const year = currentDate.getFullYear(), month = currentDate.getMonth();
+      const daysInMonth = new Date(year, month+1, 0).getDate();
+      const firstDay = new Date(year, month, 1).getDay();
+      const todayStr = formatYYYYMMDD(new Date());
 
-    document.getElementById('monthLabel').textContent = 
-      currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
+      document.getElementById('monthLabel').textContent = 
+        currentDate.toLocaleDateString('es-AR', {month:'long', year:'numeric'}).toUpperCase();
 
-    for (let i = 0; i < firstDay; i++) {
-      const emptyCell = document.createElement('div');
-      emptyCell.style.visibility = 'hidden';
-      grid.appendChild(emptyCell);
-    }
+      for (let i=0; i<firstDay; i++) { const e=document.createElement('div'); grid.appendChild(e); }
 
-    // Reiniciar estado de continuidad para el plan (sin real)
-    lastPlanMoldGlobal = null;
+      let lastPlanMold = null;
 
-    for (let d = 1; d <= daysInMonth; d++) {
-      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      const cell = document.createElement('div');
-      cell.className = 'day-cell';
-      cell.onclick = () => abrirGantt(dateStr);
+      for (let d=1; d<=daysInMonth; d++) {
+        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const cell = document.createElement('div');
+        cell.className = 'day-cell';
+        cell.onclick = () => abrirGantt(dateStr);
 
-      const hasReal = realTasksByTurno[key(dateStr, 'T1')] || realTasksByTurno[key(dateStr, 'T2')] || realTasksByTurno[key(dateStr, 'T3')];
-      const hasPlan = planData[key(dateStr, 'T1')] || planData[key(dateStr, 'T2')] || planData[key(dateStr, 'T3')];
-      let dayHeaderClass = '';
-      if (dateStr === todayStr) dayHeaderClass = 'day-header-today';
-      else if (hasReal) dayHeaderClass = 'day-header-real';
-      else if (hasPlan) dayHeaderClass = 'day-header-plan';
+        // Indicador de estado del día
+        const hasReal = ['T1','T2','T3'].some(t => realTasksByTurno[key(dateStr,t)]);
+        const hasPlan = ['T1','T2','T3'].some(t => planData[key(dateStr,t)]);
+        const indicatorClass = dateStr===todayStr ? 'today' : (hasReal ? 'real' : (hasPlan ? 'plan' : ''));
 
-      const numDiv = document.createElement('div');
-      numDiv.className = 'day-number';
-      if (dayHeaderClass) numDiv.classList.add(dayHeaderClass);
-      numDiv.textContent = d;
-      cell.appendChild(numDiv);
+        const dayHeader = document.createElement('div');
+        dayHeader.className = 'day-header';
+        if (indicatorClass) {
+          const ind = document.createElement('span');
+          ind.className = `day-indicator ${indicatorClass}`;
+          dayHeader.appendChild(ind);
+        }
+        dayHeader.appendChild(document.createTextNode(d));
+        cell.appendChild(dayHeader);
 
-      const turnsContainer = document.createElement('div');
-      turnsContainer.className = 'turns-container';
+        const turnsContainer = document.createElement('div');
+        turnsContainer.className = 'turns-container';
 
-      ['T1','T2','T3'].forEach(turno => {
-        const k = key(dateStr, turno);
-        const realInfo = realTasksByTurno[k];
-        const plans = planData[k] || [];
+        ['T1','T2','T3'].forEach(turno => {
+          const k = key(dateStr, turno);
+          const realInfo = realTasksByTurno[k];
+          const plans = planData[k] || [];
 
-        const turnCol = document.createElement('div');
-        turnCol.className = 'turn-column';
-        const turnLabel = document.createElement('div');
-        turnLabel.className = 'turn-label';
-        turnLabel.textContent = turno;
-        turnCol.appendChild(turnLabel);
+          const turnCol = document.createElement('div');
+          turnCol.className = 'turn-column';
+          const label = document.createElement('div');
+          label.className = 'turn-label';
+          label.textContent = turno;
+          turnCol.appendChild(label);
 
-        if (realInfo) {
-          const { primary, tests } = realInfo;
-          const comp = getCompliance(primary.moldeCompleto, plans);
-          const bgColor = getBrickColor(primary.baseName, primary.number);
-          const textColor = pickTextColorBasedOnBgColor(bgColor);
+          const contentArea = document.createElement('div');
+          contentArea.className = 'turn-content';
+          const footerArea = document.createElement('div');
+          footerArea.className = 'turn-footer';
 
-          if (primary.isContinuation) {
-            const barDiv = document.createElement('div');
-            barDiv.className = 'continuation-bar';
-            barDiv.style.backgroundColor = bgColor;
-            barDiv.addEventListener('mouseenter', (e) => showTooltip(e, `<strong>Continúa:</strong> ${primary.moldeCompleto}`));
-            barDiv.addEventListener('mouseleave', hideTooltip);
-            barDiv.addEventListener('mousemove', (e) => {
-              tooltip.style.left = (e.clientX + 15) + 'px';
-              tooltip.style.top = (e.clientY - 20) + 'px';
-            });
-            turnCol.appendChild(barDiv);
-          } else {
-            // Tarjeta completa de inicio real
-            const cardDiv = document.createElement('div');
-            cardDiv.className = 'real-card';
-            cardDiv.style.backgroundColor = bgColor;
-            cardDiv.style.color = textColor;
+          const showReal = (currentView === 'both' || currentView === 'prod') && realInfo;
+          const showPlan = (currentView === 'both' || currentView === 'plan') && !realInfo; // si hay real, plan no se dibuja
 
-            const img = document.createElement('img');
-            img.className = 'mold-image';
-            img.src = getImageSrc(primary.baseName);
-            img.alt = primary.moldeCompleto;
-            img.onerror = () => { img.src = FALLBACK_IMG; };
-            cardDiv.appendChild(img);
+          if (showReal) {
+            const { primary, tests } = realInfo;
+            const comp = getCompliance(primary.moldeCompleto, plans);
+            const bgColor = getBrickColor(primary.baseName, primary.number);
+            const txtColor = pickTextColor(bgColor);
 
-            const baseSpan = document.createElement('span');
-            baseSpan.className = 'mold-base';
-            baseSpan.textContent = primary.baseName;
-            cardDiv.appendChild(baseSpan);
-
-            const numberSpan = document.createElement('span');
-            numberSpan.className = 'mold-number';
-            numberSpan.textContent = `Molde ${primary.number}`;
-            cardDiv.appendChild(numberSpan);
-
-            // Cambio si el último molde activo era diferente
-            if (lastActiveMold && lastActiveMold !== primary.moldeCompleto) {
-              const changeLabel = document.createElement('span');
-              changeLabel.className = 'change-label';
-              changeLabel.textContent = '🔄️';
-              cardDiv.appendChild(changeLabel);
+            if (primary.isContinuation) {
+              const bar = document.createElement('div');
+              bar.className = 'continuation-bar';
+              bar.style.backgroundColor = bgColor;
+              bar.addEventListener('mouseenter', e => showTooltip(e, `Continúa: ${primary.moldeCompleto}`));
+              bar.addEventListener('mouseleave', hideTooltip);
+              contentArea.appendChild(bar);
+            } else {
+              const card = document.createElement('div');
+              card.className = 'mold-card';
+              card.style.backgroundColor = bgColor; card.style.color = txtColor;
+              const img = document.createElement('img'); img.className = 'mold-image';
+              img.src = getImageSrc(primary.baseName); img.alt = primary.moldeCompleto;
+              img.onerror = () => img.src = FALLBACK_IMG;
+              card.appendChild(img);
+              const base = document.createElement('div'); base.className = 'mold-base'; base.textContent = primary.baseName;
+              card.appendChild(base);
+              const num = document.createElement('div'); num.className = 'mold-number'; num.textContent = `Molde ${primary.number}`;
+              card.appendChild(num);
+              if (lastActiveMold && lastActiveMold !== primary.moldeCompleto) {
+                const ch = document.createElement('span'); ch.className = 'change-label'; ch.textContent = '🔄️';
+                card.appendChild(ch);
+              }
+              card.addEventListener('mouseenter', e => {
+                let html = `<strong>Real:</strong> ${primary.moldeCompleto}<br>`;
+                if (plans.length) html += `<strong>Plan:</strong> ${plans.map(p=>p.moldeCompleto).join(', ')}<br>`;
+                html += `<strong>Estado:</strong> ${comp.reason || comp.status}`;
+                showTooltip(e, html);
+              });
+              card.addEventListener('mouseleave', hideTooltip);
+              contentArea.appendChild(card);
+              lastActiveMold = primary.moldeCompleto;
             }
 
-            const barRow = document.createElement('div');
-            barRow.className = 'compliance-row';
-            const barH = document.createElement('div');
-            barH.className = `compliance-bar-h ${
-              comp.status === 'cumplido' ? 'green-bar' :
-              comp.status === 'parcial' ? 'orange-bar' :
-              comp.status === 'desvio' ? 'red-bar' : 'gray-bar'
-            }`;
-            barRow.appendChild(barH);
-            const emojiSpan = document.createElement('span');
-            emojiSpan.className = `compliance-emoji ${
-              comp.status === 'cumplido' ? 'green-emoji' :
-              comp.status === 'parcial' ? 'orange-emoji' :
-              comp.status === 'desvio' ? 'red-emoji' : 'gray-emoji'
-            }`;
-            emojiSpan.textContent = comp.status === 'cumplido' ? '✅' : comp.status === 'parcial' ? '⏳' : comp.status === 'desvio' ? '⚠️' : '📌';
-            barRow.appendChild(emojiSpan);
+            // Barra y emoji de cumplimiento (siempre visibles si hay real)
+            const barDiv = document.createElement('div');
+            barDiv.className = `compliance-bar ${comp.status==='cumplido'?'green-bar':comp.status==='parcial'?'orange-bar':comp.status==='desvio'?'red-bar':'gray-bar'}`;
+            const emoji = document.createElement('div');
+            emoji.className = 'compliance-emoji';
+            emoji.textContent = comp.status==='cumplido'?'✅':comp.status==='parcial'?'⏳':comp.status==='desvio'?'⚠️':'📌';
+            footerArea.appendChild(barDiv);
+            footerArea.appendChild(emoji);
 
-            cardDiv.addEventListener('mouseenter', (e) => {
-              let tooltipContent = `<strong>Producción Real:</strong> ${primary.moldeCompleto}<br>`;
-              if (plans.length > 0) {
-                tooltipContent += `<strong>Planificado:</strong> ${plans.map(p => p.moldeCompleto).join(', ')}<br>`;
-                tooltipContent += `<strong>Estado:</strong> ${comp.reason || comp.status}`;
-              } else {
-                tooltipContent += 'Sin planificación.';
-              }
-              showTooltip(e, tooltipContent);
+            // Pruebas reales (dentro del mismo turno)
+            tests.forEach(test => {
+              const tCard = document.createElement('div'); tCard.className = 'mold-card prueba';
+              tCard.style.backgroundColor = 'var(--prueba-bg)'; tCard.style.color = '#000';
+              const img = document.createElement('img'); img.className = 'mold-image';
+              img.src = getImageSrc(test.baseName); img.onerror = () => img.src = FALLBACK_IMG;
+              tCard.appendChild(img);
+              const b = document.createElement('div'); b.className = 'mold-base'; b.textContent = test.baseName;
+              tCard.appendChild(b);
+              const n = document.createElement('div'); n.className = 'mold-number'; n.textContent = `Molde ${test.number}`;
+              tCard.appendChild(n);
+              const pr = document.createElement('span'); pr.className = 'prueba-label'; pr.textContent = 'PR';
+              tCard.appendChild(pr);
+              contentArea.appendChild(tCard);
             });
-            cardDiv.addEventListener('mouseleave', hideTooltip);
-            cardDiv.addEventListener('mousemove', (e) => {
-              tooltip.style.left = (e.clientX + 15) + 'px';
-              tooltip.style.top = (e.clientY - 20) + 'px';
-            });
-
-            turnCol.appendChild(cardDiv);
-            turnCol.appendChild(barRow);
-            lastActiveMold = primary.moldeCompleto;
-          }
-
-          // Pruebas reales
-          tests.forEach(test => {
-            const testDiv = document.createElement('div');
-            testDiv.className = 'turn-task prueba';
-            testDiv.style.backgroundColor = 'var(--prueba-bg)';
-            testDiv.style.color = '#000';
-
-            const img = document.createElement('img');
-            img.className = 'mold-image';
-            img.src = getImageSrc(test.baseName);
-            img.alt = test.moldeCompleto;
-            img.onerror = () => { img.src = FALLBACK_IMG; };
-            testDiv.appendChild(img);
-
-            const baseSpan = document.createElement('span');
-            baseSpan.className = 'mold-base';
-            baseSpan.textContent = test.baseName;
-            testDiv.appendChild(baseSpan);
-
-            const numberSpan = document.createElement('span');
-            numberSpan.className = 'mold-number';
-            numberSpan.textContent = `Molde ${test.number}`;
-            testDiv.appendChild(numberSpan);
-
-            const pruebaLabel = document.createElement('span');
-            pruebaLabel.className = 'prueba-label';
-            pruebaLabel.textContent = 'PR';
-            testDiv.appendChild(pruebaLabel);
-
-            turnCol.appendChild(testDiv);
-          });
-        } else {
-          // Sin real: planificación
-          if (plans.length === 0) {
-            const emptyText = document.createElement('span');
-            emptyText.className = 'empty-turn';
-            emptyText.textContent = '—';
-            turnCol.appendChild(emptyText);
-          } else {
-            const prodTasks = plans.filter(p => p.tarea === 'Producción');
-            const testTasks = plans.filter(p => p.tarea === 'Prueba');
-
-            prodTasks.forEach(task => {
-              const moldKey = task.moldeCompleto;
-              const showDetail = task.esInicio || !lastPlanMoldGlobal || lastPlanMoldGlobal !== moldKey;
-              if (showDetail) {
-                const bgColor = getBrickColor(task.baseName, task.number);
-                const textColor = pickTextColorBasedOnBgColor(bgColor);
-                const taskDiv = document.createElement('div');
-                taskDiv.className = 'turn-task';
-                taskDiv.style.backgroundColor = bgColor;
-                taskDiv.style.color = textColor;
-
-                const img = document.createElement('img');
-                img.className = 'mold-image';
-                img.src = getImageSrc(task.baseName);
-                img.alt = task.moldeCompleto;
-                img.onerror = () => { img.src = FALLBACK_IMG; };
-                taskDiv.appendChild(img);
-
-                const baseSpan = document.createElement('span');
-                baseSpan.className = 'mold-base';
-                baseSpan.textContent = task.baseName;
-                taskDiv.appendChild(baseSpan);
-
-                const numberSpan = document.createElement('span');
-                numberSpan.className = 'mold-number';
-                numberSpan.textContent = `Molde ${task.number}`;
-                taskDiv.appendChild(numberSpan);
-
-                if (lastPlanMoldGlobal && lastPlanMoldGlobal !== moldKey) {
-                  const changeLabel = document.createElement('span');
-                  changeLabel.className = 'change-label';
-                  changeLabel.textContent = '🔄️';
-                  taskDiv.appendChild(changeLabel);
+          } else if (showPlan && plans.length > 0) {
+            const prod = plans.filter(p => p.tarea==='Producción');
+            const test = plans.filter(p => p.tarea==='Prueba');
+            prod.forEach(task => {
+              const isStart = task.esInicio || !lastPlanMold || lastPlanMold !== task.moldeCompleto;
+              if (isStart) {
+                const bg = getBrickColor(task.baseName, task.number);
+                const txt = pickTextColor(bg);
+                const card = document.createElement('div'); card.className = 'mold-card';
+                card.style.backgroundColor = bg; card.style.color = txt;
+                const img = document.createElement('img'); img.className = 'mold-image';
+                img.src = getImageSrc(task.baseName); img.onerror = () => img.src = FALLBACK_IMG;
+                card.appendChild(img);
+                const b = document.createElement('div'); b.className = 'mold-base'; b.textContent = task.baseName;
+                card.appendChild(b);
+                const n = document.createElement('div'); n.className = 'mold-number'; n.textContent = `Molde ${task.number}`;
+                card.appendChild(n);
+                if (lastPlanMold && lastPlanMold !== task.moldeCompleto) {
+                  const ch = document.createElement('span'); ch.className = 'change-label'; ch.textContent = '🔄️';
+                  card.appendChild(ch);
                 }
-
-                taskDiv.addEventListener('mouseenter', (e) => {
-                  showTooltip(e, `<strong>Plan:</strong> ${task.moldeCompleto}<br>
-                    <strong>Inicio:</strong> ${task.fechaInicio} ${task.turnoInicio}<br>
-                    <strong>Fin:</strong> ${task.fechaFin} ${task.turnoFin}`);
-                });
-                taskDiv.addEventListener('mouseleave', hideTooltip);
-                taskDiv.addEventListener('mousemove', (e) => {
-                  tooltip.style.left = (e.clientX + 15) + 'px';
-                  tooltip.style.top = (e.clientY - 20) + 'px';
-                });
-
-                turnCol.appendChild(taskDiv);
-                lastPlanMoldGlobal = moldKey;
+                card.addEventListener('mouseenter', e => showTooltip(e, `Plan: ${task.moldeCompleto}<br>Inicio: ${task.fechaInicio} ${task.turnoInicio}<br>Fin: ${task.fechaFin} ${task.turnoFin}`));
+                card.addEventListener('mouseleave', hideTooltip);
+                contentArea.appendChild(card);
+                lastPlanMold = task.moldeCompleto;
               } else {
-                const barDiv = document.createElement('div');
-                barDiv.className = 'continuation-bar';
-                barDiv.style.backgroundColor = getBrickColor(task.baseName, task.number);
-                turnCol.appendChild(barDiv);
+                const bar = document.createElement('div'); bar.className = 'continuation-bar';
+                bar.style.backgroundColor = getBrickColor(task.baseName, task.number);
+                contentArea.appendChild(bar);
               }
             });
-
-            testTasks.forEach(task => {
-              const taskDiv = document.createElement('div');
-              taskDiv.className = 'turn-task prueba';
-              taskDiv.style.backgroundColor = 'var(--prueba-bg)';
-              taskDiv.style.color = '#000';
-
-              const img = document.createElement('img');
-              img.className = 'mold-image';
-              img.src = getImageSrc(task.baseName);
-              img.alt = task.moldeCompleto;
-              img.onerror = () => { img.src = FALLBACK_IMG; };
-              taskDiv.appendChild(img);
-
-              const baseSpan = document.createElement('span');
-              baseSpan.className = 'mold-base';
-              baseSpan.textContent = task.baseName;
-              taskDiv.appendChild(baseSpan);
-
-              const numberSpan = document.createElement('span');
-              numberSpan.className = 'mold-number';
-              numberSpan.textContent = `Molde ${task.number}`;
-              taskDiv.appendChild(numberSpan);
-
-              const pruebaLabel = document.createElement('span');
-              pruebaLabel.className = 'prueba-label';
-              pruebaLabel.textContent = 'PR';
-              taskDiv.appendChild(pruebaLabel);
-
-              turnCol.appendChild(taskDiv);
+            test.forEach(task => {
+              const card = document.createElement('div'); card.className = 'mold-card prueba';
+              card.style.backgroundColor = 'var(--prueba-bg)'; card.style.color = '#000';
+              const img = document.createElement('img'); img.className = 'mold-image';
+              img.src = getImageSrc(task.baseName); img.onerror = () => img.src = FALLBACK_IMG;
+              card.appendChild(img);
+              const b = document.createElement('div'); b.className = 'mold-base'; b.textContent = task.baseName;
+              card.appendChild(b);
+              const n = document.createElement('div'); n.className = 'mold-number'; n.textContent = `Molde ${task.number}`;
+              card.appendChild(n);
+              const pr = document.createElement('span'); pr.className = 'prueba-label'; pr.textContent = 'PR';
+              card.appendChild(pr);
+              contentArea.appendChild(card);
             });
+          } else {
+            const empty = document.createElement('span'); empty.className = 'empty-turn'; empty.textContent = '—';
+            contentArea.appendChild(empty);
           }
-        }
-        turnsContainer.appendChild(turnCol);
-      });
-      cell.appendChild(turnsContainer);
-      grid.appendChild(cell);
-    }
-  }
 
-  // ============ GANTT DIARIO ============
-  function abrirGantt(dateStr) {
-    const modal = document.getElementById('ganttModal');
-    document.getElementById('ganttTitulo').textContent = `Detalle del ${new Date(dateStr + 'T00:00:00').toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })}`;
-    const cont = document.getElementById('ganttDetalle');
-    cont.innerHTML = '';
-
-    const turnos = ['T1','T2','T3'];
-    turnos.forEach(turno => {
-      const k = key(dateStr, turno);
-      const plans = planData[k] || [];
-      const realInfo = realTasksByTurno[k];
-
-      const row = document.createElement('div');
-      row.className = 'gantt-row';
-      const turnoLabel = document.createElement('div');
-      turnoLabel.className = 'gantt-turno';
-      turnoLabel.textContent = turno;
-      row.appendChild(turnoLabel);
-
-      const barContainer = document.createElement('div');
-      barContainer.className = 'gantt-bar-container';
-
-      // Plan
-      plans.filter(p => p.tarea === 'Producción').forEach(p => {
-        const bar = document.createElement('div');
-        bar.className = 'gantt-bar';
-        bar.style.backgroundColor = getBrickColor(p.baseName, p.number);
-        bar.style.width = '100%';
-        bar.textContent = `Plan: ${p.moldeCompleto}`;
-        barContainer.appendChild(bar);
-      });
-
-      plans.filter(p => p.tarea === 'Prueba').forEach(p => {
-        const bar = document.createElement('div');
-        bar.className = 'gantt-bar';
-        bar.style.backgroundColor = '#f1c40f';
-        bar.style.color = '#000';
-        bar.style.width = '100%';
-        bar.textContent = `Prueba Plan: ${p.moldeCompleto}`;
-        barContainer.appendChild(bar);
-      });
-
-      // Real
-      if (realInfo) {
-        const { primary, tests } = realInfo;
-        const comp = getCompliance(primary.moldeCompleto, plans);
-        const bar = document.createElement('div');
-        bar.className = 'gantt-bar';
-        bar.style.backgroundColor = comp.status === 'cumplido' ? '#4caf50' : comp.status === 'parcial' ? '#ff9800' : comp.status === 'desvio' ? '#e53935' : '#9e9e9e';
-        bar.style.width = '100%';
-        bar.textContent = `Real: ${primary.moldeCompleto} (${comp.status})`;
-        barContainer.appendChild(bar);
-
-        tests.forEach(test => {
-          const tBar = document.createElement('div');
-          tBar.className = 'gantt-bar';
-          tBar.style.backgroundColor = '#f1c40f';
-          tBar.style.color = '#000';
-          tBar.style.width = '100%';
-          tBar.textContent = `Prueba Real: ${test.moldeCompleto}`;
-          barContainer.appendChild(tBar);
+          turnCol.appendChild(contentArea);
+          turnCol.appendChild(footerArea);
+          turnsContainer.appendChild(turnCol);
         });
+
+        cell.appendChild(turnsContainer);
+        grid.appendChild(cell);
       }
+    }
 
-      row.appendChild(barContainer);
-      cont.appendChild(row);
-    });
-
-    modal.style.display = 'flex';
-  }
-
-  function cerrarGantt() {
-    document.getElementById('ganttModal').style.display = 'none';
-  }
-
-  // Cerrar modal al hacer clic fuera
-  window.addEventListener('click', (e) => {
-    if (e.target === document.getElementById('ganttModal')) cerrarGantt();
-  });
-
-  // ============ RESUMEN ============
-  function renderResumen() {
-    const resumenDiv = document.getElementById('resumenMes');
-    const year = currentDate.getFullYear();
-    const month = currentDate.getMonth();
-    const daysInMonth = new Date(year, month+1, 0).getDate();
-
-    let diasConPlan = new Set();
-    let cambiosProgramados = 0;
-    let pruebasProgramadas = 0;
-    let cumplimientoTotal = 0;
-    let totalReal = 0;
-
-    for (let d = 1; d <= daysInMonth; d++) {
-      const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-      let tienePlanDia = false;
+    // ==================== GANTT ====================
+    function abrirGantt(dateStr) {
+      document.getElementById('ganttTitulo').textContent = new Date(dateStr+'T00:00:00').toLocaleDateString('es-AR',{weekday:'long', year:'numeric', month:'long', day:'numeric'});
+      const cont = document.getElementById('ganttDetalle');
+      cont.innerHTML = '';
       ['T1','T2','T3'].forEach(turno => {
         const k = key(dateStr, turno);
         const plans = planData[k] || [];
-        const real = realTasksByTurno[k]?.primary;
-        if (plans.length > 0) tienePlanDia = true;
-        if (real) {
-          totalReal++;
-          const comp = getCompliance(real.moldeCompleto, plans);
-          if (comp && comp.status === 'cumplido') cumplimientoTotal++;
+        const realInfo = realTasksByTurno[k];
+        const row = document.createElement('div'); row.className = 'gantt-row';
+        const tLabel = document.createElement('div'); tLabel.className = 'gantt-turno'; tLabel.textContent = turno;
+        row.appendChild(tLabel);
+        const container = document.createElement('div'); container.className = 'gantt-bar-container';
+
+        plans.filter(p=>p.tarea==='Producción').forEach(p => {
+          const bar = document.createElement('div'); bar.className = 'gantt-bar';
+          bar.style.backgroundColor = getBrickColor(p.baseName, p.number); bar.style.width = '100%';
+          bar.textContent = `Plan: ${p.moldeCompleto}`; container.appendChild(bar);
+        });
+        plans.filter(p=>p.tarea==='Prueba').forEach(p => {
+          const bar = document.createElement('div'); bar.className = 'gantt-bar';
+          bar.style.backgroundColor = '#f1c40f'; bar.style.color = '#000'; bar.style.width = '100%';
+          bar.textContent = `Prueba Plan: ${p.moldeCompleto}`; container.appendChild(bar);
+        });
+        if (realInfo) {
+          const comp = getCompliance(realInfo.primary.moldeCompleto, plans);
+          const bar = document.createElement('div'); bar.className = 'gantt-bar';
+          bar.style.backgroundColor = comp.status==='cumplido'?'#4caf50':comp.status==='parcial'?'#ff9800':comp.status==='desvio'?'#e53935':'#9e9e9e';
+          bar.style.width = '100%'; bar.textContent = `Real: ${realInfo.primary.moldeCompleto}`; container.appendChild(bar);
+          realInfo.tests.forEach(t => {
+            const tbar = document.createElement('div'); tbar.className = 'gantt-bar';
+            tbar.style.backgroundColor = '#f1c40f'; tbar.style.color = '#000'; tbar.style.width = '100%';
+            tbar.textContent = `Prueba Real: ${t.moldeCompleto}`; container.appendChild(tbar);
+          });
         }
-        const prods = plans.filter(p => p.tarea === 'Producción');
-        if (prods.length > 1) cambiosProgramados++;
-        const tests = plans.filter(p => p.tarea === 'Prueba');
-        pruebasProgramadas += tests.length;
+        row.appendChild(container);
+        cont.appendChild(row);
       });
-      if (tienePlanDia) diasConPlan.add(dateStr);
+      document.getElementById('ganttModal').style.display = 'flex';
+    }
+    function cerrarGantt() { document.getElementById('ganttModal').style.display = 'none'; }
+    window.addEventListener('click', e => { if (e.target === document.getElementById('ganttModal')) cerrarGantt(); });
+
+    // ==================== RESUMEN ====================
+    function renderResumen() { /* similar a antes, simplificado */ 
+      const div = document.getElementById('resumenMes');
+      const year = currentDate.getFullYear(), month = currentDate.getMonth();
+      let diasPlan = new Set(), cambios = 0, pruebasPlan = 0, cumple = 0, totalReal = 0;
+      for (let d=1; d<=new Date(year, month+1,0).getDate(); d++) {
+        const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        let tienePlan = false;
+        ['T1','T2','T3'].forEach(t => {
+          const k = key(ds,t);
+          if (planData[k] && planData[k].length) tienePlan = true;
+          if (realTasksByTurno[k]) {
+            totalReal++;
+            const comp = getCompliance(realTasksByTurno[k].primary.moldeCompleto, planData[k]||[]);
+            if (comp && comp.status==='cumplido') cumple++;
+          }
+          const prods = (planData[k]||[]).filter(p=>p.tarea==='Producción');
+          if (prods.length>1) cambios++;
+          pruebasPlan += (planData[k]||[]).filter(p=>p.tarea==='Prueba').length;
+        });
+        if (tienePlan) diasPlan.add(ds);
+      }
+      const pct = totalReal ? Math.round(cumple/totalReal*100) : 0;
+      div.innerHTML = `<div class="resumen-item"><div class="resumen-valor">${diasPlan.size}</div><div>Días plan</div></div>
+        <div class="resumen-item"><div class="resumen-valor">${cambios}</div><div>Cambios</div></div>
+        <div class="resumen-item"><div class="resumen-valor">${pruebasPlan}</div><div>Pruebas</div></div>
+        <div class="resumen-item"><div class="resumen-valor">${pct}%</div><div>Cumplimiento</div></div>`;
     }
 
-    const porcentajeCumplimiento = totalReal > 0 ? Math.round((cumplimientoTotal / totalReal) * 100) : 0;
-
-    resumenDiv.innerHTML = `
-      <div class="resumen-item">
-        <div class="resumen-valor">${diasConPlan.size}</div>
-        <div>Días con plan</div>
-      </div>
-      <div class="resumen-item">
-        <div class="resumen-valor">${cambiosProgramados}</div>
-        <div>Cambios de molde</div>
-      </div>
-      <div class="resumen-item">
-        <div class="resumen-valor">${pruebasProgramadas}</div>
-        <div>Pruebas programadas</div>
-      </div>
-      <div class="resumen-item">
-        <div class="resumen-valor">${porcentajeCumplimiento}%</div>
-        <div>Cumplimiento real</div>
-      </div>
-    `;
-  }
-
-  function cambiarMes(delta) {
-    currentDate.setMonth(currentDate.getMonth() + delta);
-    loadData();
-  }
-
-  function updateClock() {
-    const now = new Date();
-    document.getElementById('liveClock').textContent = 
-      now.toLocaleDateString('es-AR', { weekday:'short', year:'numeric', month:'short', day:'numeric' }) + 
-      ' · ' + now.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
-  }
-
-  window.addEventListener('load', () => {
-    updateClock();
-    setInterval(updateClock, 30000);
-    loadData();
-  });
-</script>
+    function cambiarMes(delta) { currentDate.setMonth(currentDate.getMonth()+delta); loadData(); }
+    function updateClock() {
+      const now = new Date();
+      document.getElementById('liveClock').textContent = 
+        now.toLocaleDateString('es-AR',{weekday:'short',year:'numeric',month:'short',day:'numeric'}) + ' · ' + 
+        now.toLocaleTimeString('es-AR',{hour:'2-digit', minute:'2-digit'});
+    }
+    window.addEventListener('load', ()=>{ updateClock(); setInterval(updateClock,30000); loadData(); });
+  </script>
 </body>
 </html>
