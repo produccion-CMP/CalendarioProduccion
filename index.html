@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Cronograma de Producción – Cerámica Marcos Paz</title>
-  <!-- Fuente moderna (Plus Jakarta Sans) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -19,16 +18,15 @@
       --text-muted: #98989d;
       --accent: #e07b4c;
       --accent-light: #f0a880;
-      --accent-soft: rgba(224,123,76,0.15);
       --green: #30d158;
       --orange: #ff9f0a;
       --red: #ff453a;
       --gray: #636366;
       --shadow: 0 2px 8px rgba(0,0,0,0.3);
       --radius: 14px;
-      --cell-height: 115px;
-      --prueba-bg: rgba(255,215,0,0.15);
+      --cell-h: 64px; /* altura fija de celdas */
       --font: 'Plus Jakarta Sans', system-ui, sans-serif;
+      --prueba-bg: rgba(255,215,0,0.2);
     }
 
     body.light-mode {
@@ -41,7 +39,7 @@
       --accent: #d96b3a;
       --accent-light: #c45a2c;
       --shadow: 0 2px 12px rgba(0,0,0,0.08);
-      --prueba-bg: rgba(255,215,0,0.25);
+      --prueba-bg: rgba(255,215,0,0.15);
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -54,7 +52,7 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* Header principal */
+    /* Header */
     .app-header {
       display: flex;
       justify-content: space-between;
@@ -74,7 +72,7 @@
     .live-clock { font-weight: 600; font-size: 0.9rem; color: var(--text-main); background: var(--bg-cell); padding: 8px 16px; border-radius: 30px; }
     .theme-btn { background: none; border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; }
 
-    /* Barra de vistas */
+    /* Vistas */
     .views-bar {
       display: flex;
       justify-content: center;
@@ -85,168 +83,116 @@
       border-radius: 30px;
       box-shadow: var(--shadow);
       width: fit-content;
-      margin-left: auto;
-      margin-right: auto;
+      margin-left: auto; margin-right: auto;
     }
     .view-btn {
-      background: transparent;
-      border: none;
-      padding: 10px 22px;
-      border-radius: 24px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      color: var(--text-muted);
-      transition: all 0.2s;
+      background: transparent; border: none; padding: 10px 22px;
+      border-radius: 24px; font-weight: 600; font-size: 0.85rem;
+      cursor: pointer; color: var(--text-muted); transition: all 0.2s;
     }
     .view-btn.active { background: var(--accent); color: #fff; }
 
-    /* Barra inferior minimalista */
+    /* Acciones */
     .actions-bar {
-      display: flex;
-      justify-content: flex-end;
-      gap: 12px;
-      margin-bottom: 20px;
+      display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 20px;
     }
     .action-btn {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 8px 16px;
-      border-radius: 24px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      transition: 0.2s;
-      text-decoration: none;
+      background: var(--bg-panel); border: 1px solid var(--border);
+      color: var(--text-main); padding: 8px 16px; border-radius: 24px;
+      font-weight: 600; font-size: 0.8rem; cursor: pointer;
+      display: flex; align-items: center; gap: 6px; transition: 0.2s; text-decoration: none;
     }
     .action-btn:hover { background: var(--accent-soft); }
     .action-btn.primary { background: var(--accent); color: #fff; border: none; }
 
-    /* Navegación del mes */
+    /* Navegación */
     .month-nav {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 20px;
-      margin-bottom: 20px;
+      display: flex; justify-content: center; align-items: center; gap: 20px; margin-bottom: 20px;
     }
     .month-nav button {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
-      color: var(--text-main);
-      padding: 8px 16px;
-      border-radius: 20px;
-      font-weight: 600;
-      cursor: pointer;
+      background: var(--bg-panel); border: 1px solid var(--border);
+      color: var(--text-main); padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer;
     }
     .month-title {
-      font-size: 1.1rem;
-      font-weight: 700;
-      text-transform: uppercase;
-      cursor: pointer;
-      border-bottom: 1px dashed var(--text-muted);
-      padding: 4px 8px;
+      font-size: 1.1rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
+      border-bottom: 1px dashed var(--text-muted); padding: 4px 8px;
     }
     .month-title:hover { color: var(--accent-light); }
 
-    /* Selector de mes/año (modal pequeño) */
+    /* Selector de mes */
     .month-selector {
-      display: none;
-      position: fixed;
-      top: 50%; left: 50%;
-      transform: translate(-50%, -50%);
-      background: var(--bg-panel);
-      padding: 24px;
-      border-radius: var(--radius);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-      z-index: 2000;
-      text-align: center;
+      display: none; position: fixed; top: 50%; left: 50%;
+      transform: translate(-50%, -50%); background: var(--bg-panel); padding: 24px;
+      border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2000; text-align: center;
     }
     .month-selector select, .month-selector input { margin: 10px; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); }
-    .overlay { display: none; position: fixed; top:0;left:0;width:100%;height:100%; background: rgba(0,0,0,0.5); z-index: 1500; }
+    .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1500; }
 
-    /* Calendario */
-    .calendar-wrapper { background: var(--bg-panel); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow); }
-    .weekdays { display: grid; grid-template-columns: repeat(7, 1fr); text-align: center; font-weight: 700; color: var(--text-muted); margin-bottom: 4px; font-size: 0.75rem; }
-    .weekdays div { padding: 6px 0; }
-    .days-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; }
-    .day-cell {
-      background: var(--bg-cell); border: 1px solid var(--border); border-radius: 10px;
-      display: flex; flex-direction: column; min-height: var(--cell-height); overflow: hidden;
-      cursor: pointer; transition: border-color 0.2s;
+    /* Tabla Gantt */
+    .gantt-wrapper {
+      background: var(--bg-panel); border-radius: var(--radius); padding: 8px;
+      box-shadow: var(--shadow); overflow-x: auto;
     }
-    .day-cell:hover { border-color: var(--accent); }
-    .day-header {
-      display: flex; align-items: center; justify-content: center; gap: 5px;
-      padding: 4px 0; font-weight: 600; font-size: 0.85rem;
+    .gantt-table {
+      width: 100%; border-collapse: collapse; table-layout: fixed;
     }
+    .gantt-table th, .gantt-table td {
+      border: 1px solid var(--border); height: var(--cell-h); padding: 4px;
+      text-align: center; vertical-align: middle; font-size: 0.75rem;
+      position: relative;
+    }
+    .gantt-table th {
+      background: var(--bg-cell); font-weight: 700; color: var(--accent-light);
+    }
+    .gantt-table td { cursor: pointer; transition: background 0.2s; }
+    .gantt-table td:hover { filter: brightness(1.1); }
+
+    .day-number { font-weight: 800; font-size: 0.9rem; }
     .day-indicator {
-      width: 7px; height: 7px; border-radius: 50%;
+      width: 8px; height: 8px; border-radius: 50%; display: inline-block; margin-right: 4px;
     }
     .day-indicator.plan { background: var(--orange); }
     .day-indicator.real { background: var(--green); }
     .day-indicator.today { background: #ffd700; box-shadow: 0 0 8px #ffd700; }
 
-    .turns-container { display: flex; flex: 1; flex-direction: row; }
-    .turn-column {
-      flex: 1; display: flex; flex-direction: column; align-items: center;
-      padding: 2px; border-right: 1px solid rgba(255,255,255,0.05);
-      font-size: 0.65rem;
+    .turn-label {
+      font-weight: 700; color: var(--accent-light); font-size: 0.85rem;
+      writing-mode: vertical-rl; text-orientation: mixed; margin: auto;
     }
-    .turn-column:last-child { border-right: none; }
-    .turn-label { font-weight: 700; font-size: 0.6rem; margin: 2px 0 1px; color: var(--accent-light); }
-    .turn-content { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; width: 100%; }
-    .turn-footer { width: 100%; margin-top: auto; }
 
-    .compliance-bar { width: 100%; height: 4px; border-radius: 2px; }
-    .compliance-emoji { text-align: center; font-size: 0.7rem; margin: 2px 0; }
+    /* Contenido de celda */
+    .cell-content {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      height: 100%; width: 100%;
+    }
+    .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 2px; }
+    .mold-base { font-weight: 700; font-size: 0.7rem; line-height: 1.1; }
+    .mold-number { font-size: 0.6rem; opacity: 0.8; }
+    .change-emoji { font-size: 0.9rem; margin: 2px 0; }
+    .prueba-badge {
+      background: #ffd700; color: #000; font-weight: 700; font-size: 0.6rem;
+      padding: 1px 4px; border-radius: 3px; margin-top: 2px;
+    }
+    .compliance-row {
+      display: flex; flex-direction: column; align-items: center; margin-top: 2px;
+    }
+    .compliance-bar { width: 100%; height: 3px; border-radius: 2px; }
+    .compliance-emoji { font-size: 0.7rem; }
     .green-bar { background: var(--green); }
     .orange-bar { background: var(--orange); }
     .red-bar { background: var(--red); }
     .gray-bar { background: var(--gray); }
 
-    .mold-card {
-      display: flex; flex-direction: column; align-items: center; padding: 2px;
-      border-radius: 4px; width: 100%; margin: 1px 0; cursor: pointer;
+    /* Pruebas info */
+    .pruebas-info {
+      margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius);
+      padding: 16px; box-shadow: var(--shadow); font-size: 0.8rem;
     }
-    .mold-image { width: 24px; height: 24px; object-fit: contain; border-radius: 3px; background: rgba(255,255,255,0.1); padding: 1px; }
-    .mold-base { font-weight: 700; font-size: 0.65rem; line-height: 1.1; }
-    .mold-number { font-size: 0.55rem; opacity: 0.8; }
-    .prueba-badge {
-      position: absolute; top: 2px; right: 2px; background: #ffd700; color: #000;
-      font-size: 0.5rem; font-weight: 700; padding: 0 2px; border-radius: 2px;
-    }
-    .turn-column { position: relative; }
+    .pruebas-info h3 { margin: 0 0 10px; color: var(--accent-light); }
+    .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+    .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 6px; }
 
-    .continuation-bar {
-      width: 100%; flex: 1; min-height: 16px; border-radius: 2px; opacity: 0.8; margin: 1px 0;
-    }
-
-    /* Sección de pruebas del mes */
-    .pruebas-section {
-      margin-top: 20px;
-      background: var(--bg-panel);
-      border-radius: var(--radius);
-      padding: 16px;
-      box-shadow: var(--shadow);
-      font-size: 0.8rem;
-    }
-    .pruebas-section h3 { margin: 0 0 10px; font-weight: 700; color: var(--accent-light); }
-    .pruebas-lista { display: flex; flex-wrap: wrap; gap: 12px; }
-    .prueba-item {
-      background: var(--bg-cell);
-      padding: 8px 12px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    /* Gantt modal */
+    /* Modal Gantt */
     .gantt-modal {
       position: fixed; top:0; left:0; width:100%; height:100%;
       background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center;
@@ -265,18 +211,16 @@
 
     @media print {
       body { background: white; color: black; padding: 0; font-size: 8px; }
-      .app-header, .views-bar, .actions-bar, .month-nav button, .month-selector, .gantt-modal, .pruebas-section,
+      .app-header, .views-bar, .actions-bar, .month-nav button, .month-selector, .gantt-modal, .pruebas-info,
       .live-clock, .theme-btn, .overlay { display: none !important; }
-      .calendar-wrapper { box-shadow: none; background: none; padding: 0; }
-      .day-cell { background: #fff; border: 1px solid #aaa; min-height: 60px; }
-      .mold-image { width: 16px; height: 16px; filter: none; }
-      .mold-base, .mold-number, .turn-label { color: black; }
+      .gantt-wrapper { box-shadow: none; background: none; padding: 0; }
+      .gantt-table th, .gantt-table td { border: 1px solid #aaa; height: 40px; }
+      .mold-image { width: 14px; height: 14px; filter: none; }
       @page { size: A4 landscape; margin: 0.3cm; }
     }
   </style>
 </head>
 <body>
-  <!-- Overlay y selector de mes -->
   <div class="overlay" id="overlay" onclick="cerrarSelectorMes()"></div>
   <div class="month-selector" id="monthSelector">
     <h3>Seleccionar mes y año</h3>
@@ -285,7 +229,6 @@
     <br><button onclick="irAMes()" style="margin-top:12px; padding:8px 16px; background:var(--accent); color:#fff; border:none; border-radius:6px; cursor:pointer;">Ir</button>
   </div>
 
-  <!-- Encabezado -->
   <header class="app-header">
     <div class="logo-container">
       <img src="img/logo CMP.png" alt="Cerámica Marcos Paz">
@@ -300,36 +243,27 @@
     </div>
   </header>
 
-  <!-- Vistas -->
   <div class="views-bar">
     <button class="view-btn" id="btnProd" onclick="setView('prod')">Producción</button>
     <button class="view-btn" id="btnPlan" onclick="setView('plan')">Planificación</button>
     <button class="view-btn active" id="btnCumpl" onclick="setView('cumpl')">Cumplimiento</button>
   </div>
 
-  <!-- Acciones minimalistas -->
   <div class="actions-bar">
     <button class="action-btn" onclick="window.print()">🖨️ Imprimir Plan</button>
     <a href="admin.html" class="action-btn primary">🧱 Nuevo Plan</a>
   </div>
 
-  <!-- Navegación -->
   <div class="month-nav">
     <button onclick="cambiarMes(-1)">◀</button>
     <span class="month-title" id="monthTitle" onclick="abrirSelectorMes()">Cargando...</span>
     <button onclick="cambiarMes(1)">▶</button>
   </div>
 
-  <!-- Calendario -->
-  <div class="calendar-wrapper">
-    <div class="weekdays"><div>Dom</div><div>Lun</div><div>Mar</div><div>Mié</div><div>Jue</div><div>Vie</div><div>Sáb</div></div>
-    <div class="days-grid" id="daysGrid"></div>
-  </div>
+  <div class="gantt-wrapper" id="ganttWrapper"></div>
 
-  <!-- Pruebas del mes -->
-  <div class="pruebas-section" id="pruebasSection"></div>
+  <div class="pruebas-info" id="pruebasInfo"></div>
 
-  <!-- Gantt modal -->
   <div class="gantt-modal" id="ganttModal">
     <div class="gantt-content">
       <button class="close-btn" onclick="cerrarGantt()">Cerrar</button>
@@ -346,14 +280,12 @@
     const FALLBACK_IMG = 'img/moldes/default.png';
     const TURNOS = ['T1','T2','T3'];
 
-    let planData = {};            // clave -> array de tareas plan
-    let realTasksByTurno = {};    // clave -> { primary, tests }
-    let allRealRecords = [];
-    let currentView = 'cumpl';    // 'prod', 'plan', 'cumpl'
+    let planData = {};
+    let realTasksByTurno = {};
+    let currentView = 'cumpl';
     let currentDate = new Date();
     let themeDark = true;
 
-    // Colores por tipo de ladrillo y molde
     const brickHueMap = new Map();
     function getBaseHue(baseName) {
       if (brickHueMap.has(baseName)) return brickHueMap.get(baseName);
@@ -366,16 +298,15 @@
     function getBrickColor(baseName, number) {
       const hue = getBaseHue(baseName);
       const sat = 55 + number * 5;
-      const light = 38 + number * 8;
+      const light = 42 + number * 8;
       return `hsl(${hue}, ${sat}%, ${light}%)`;
     }
     function pickTextColor(hslColor) {
       const m = hslColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
       if (!m) return '#000';
-      return parseInt(m[3]) > 55 ? '#000' : '#fff';
+      return parseInt(m[3]) > 60 ? '#000' : '#fff';
     }
 
-    // ==================== UTILIDADES ====================
     function formatYYYYMMDD(date) {
       const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0');
       return `${y}-${m}-${d}`;
@@ -394,8 +325,6 @@
 
     async function loadData() {
       const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
-
-      // Planificación (DatosProd)
       planData = {};
       planRows.forEach(row => {
         const molde = row['LADRILLO:']?.trim();
@@ -423,27 +352,24 @@
             if (!planData[k]) planData[k] = [];
             planData[k].push({
               moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde),
-              tarea, esInicio: d.getTime()===inicio.getTime(), esFin: d.getTime()===fin.getTime(),
-              fechaInicio: fi, turnoInicio: ti, fechaFin: ff, turnoFin: tf
+              tarea, esInicio: d.getTime()===inicio.getTime(), esFin: d.getTime()===fin.getTime()
             });
           });
         }
       });
 
-      // Producción real (ProduccionHistorica)
-      allRealRecords = [];
+      const allReal = [];
       realRows.forEach(row => {
         const dia = row['Día']?.trim(), turno = row['Turno']?.trim(), molde = row['Molde']?.trim();
         if (!dia || !turno || !molde) return;
         const p = dia.split('/'); if (p.length!==3) return;
         const fecha = new Date(p[2], p[1]-1, p[0]);
-        allRealRecords.push({ date: fecha, turno, moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde) });
+        allReal.push({ date: fecha, turno, moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde) });
       });
-      allRealRecords.sort((a,b)=>a.date-b.date || TURNOS.indexOf(a.turno)-TURNOS.indexOf(b.turno));
+      allReal.sort((a,b)=>a.date-b.date || TURNOS.indexOf(a.turno)-TURNOS.indexOf(b.turno));
 
-      // Agrupar por clave y calcular continuidad
       const grouped = new Map();
-      allRealRecords.forEach(r => {
+      allReal.forEach(r => {
         const k = key(formatYYYYMMDD(r.date), r.turno);
         if (!grouped.has(k)) grouped.set(k, []);
         grouped.get(k).push(r);
@@ -461,8 +387,7 @@
         lastActiveMold = primary.moldeCompleto;
       }
 
-      renderCalendar();
-      renderPruebasSection();
+      renderGantt();
     }
 
     function getCompliance(realMold, plans) {
@@ -475,189 +400,172 @@
       return prod.length>0 ? {status:'desvio'} : {status:'sinPlan'};
     }
 
+    // ==================== RENDER GANTT ====================
+    function renderGantt() {
+      const wrapper = document.getElementById('ganttWrapper');
+      const year = currentDate.getFullYear(), month = currentDate.getMonth();
+      const daysInMonth = new Date(year, month+1, 0).getDate();
+      const firstDay = new Date(year, month, 1).getDay(); // 0=Dom
+      const todayStr = formatYYYYMMDD(new Date());
+
+      document.getElementById('monthTitle').textContent = 
+        currentDate.toLocaleDateString('es-AR', {month:'long', year:'numeric'}).toUpperCase();
+
+      let html = '<table class="gantt-table"><thead><tr><th></th>';
+      // Encabezados de días con número e indicador
+      for (let d = 1; d <= daysInMonth; d++) {
+        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+        const hasReal = TURNOS.some(t => realTasksByTurno[key(dateStr, t)]);
+        const hasPlan = TURNOS.some(t => planData[key(dateStr, t)]);
+        const indClass = dateStr === todayStr ? 'today' : (hasReal ? 'real' : (hasPlan ? 'plan' : ''));
+        html += `<th>
+          <span class="day-indicator ${indClass}"></span><span class="day-number">${d}</span>
+        </th>`;
+      }
+      html += '</tr></thead><tbody>';
+
+      // Para cada turno, construir fila
+      TURNOS.forEach(turno => {
+        html += `<tr><td class="turn-label">${turno}</td>`;
+        let lastPlanMold = null, lastRealMold = null;
+
+        for (let d = 1; d <= daysInMonth; d++) {
+          const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+          const k = key(dateStr, turno);
+          const plans = planData[k] || [];
+          const realInfo = realTasksByTurno[k];
+
+          let cellContent = '';
+          let bgColor = 'transparent';
+          let txtColor = 'inherit';
+          let additionalClasses = '';
+
+          if (currentView === 'prod' && realInfo) {
+            const { primary, tests } = realInfo;
+            const color = getBrickColor(primary.baseName, primary.number);
+            if (primary.isContinuation && lastRealMold === primary.moldeCompleto) {
+              bgColor = color;
+              cellContent = ''; // solo color
+            } else {
+              bgColor = color;
+              txtColor = pickTextColor(color);
+              cellContent = `<div class="cell-content">
+                <img src="${getImageSrc(primary.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'">
+                <div class="mold-base">${primary.baseName}</div>
+                <div class="mold-number">Molde ${primary.number}</div>
+                ${lastRealMold && lastRealMold !== primary.moldeCompleto ? '<div class="change-emoji">🔄️</div>' : ''}
+              </div>`;
+              lastRealMold = primary.moldeCompleto;
+            }
+            // Pruebas reales como badge dentro de la misma celda (si hay)
+            tests.forEach(test => {
+              cellContent += `<div class="prueba-badge">PR ${test.baseName} ${test.number}</div>`;
+            });
+          } else if (currentView === 'plan' && plans.length > 0) {
+            const prod = plans.filter(p=>p.tarea==='Producción');
+            const test = plans.filter(p=>p.tarea==='Prueba');
+            if (prod.length > 0) {
+              const task = prod[0]; // solo una producción por turno en plan
+              const color = getBrickColor(task.baseName, task.number);
+              const showDetail = task.esInicio || !lastPlanMold || lastPlanMold !== task.moldeCompleto;
+              if (showDetail) {
+                bgColor = color;
+                txtColor = pickTextColor(color);
+                cellContent = `<div class="cell-content">
+                  <img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'">
+                  <div class="mold-base">${task.baseName}</div>
+                  <div class="mold-number">Molde ${task.number}</div>
+                  ${lastPlanMold && lastPlanMold !== task.moldeCompleto ? '<div class="change-emoji">🔄️</div>' : ''}
+                </div>`;
+                lastPlanMold = task.moldeCompleto;
+              } else {
+                bgColor = color;
+                cellContent = '';
+              }
+            }
+            test.forEach(task => {
+              cellContent += `<div class="prueba-badge">PR ${task.baseName} ${task.number}</div>`;
+            });
+          } else if (currentView === 'cumpl' && realInfo) {
+            const { primary, tests } = realInfo;
+            const comp = getCompliance(primary.moldeCompleto, plans);
+            const color = getBrickColor(primary.baseName, primary.number);
+            if (primary.isContinuation && lastRealMold === primary.moldeCompleto) {
+              bgColor = color;
+              cellContent = '';
+            } else {
+              bgColor = color;
+              txtColor = pickTextColor(color);
+              cellContent = `<div class="cell-content">
+                <img src="${getImageSrc(primary.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'">
+                <div class="mold-base">${primary.baseName}</div>
+                <div class="mold-number">Molde ${primary.number}</div>
+                ${lastRealMold && lastRealMold !== primary.moldeCompleto ? '<div class="change-emoji">🔄️</div>' : ''}
+              </div>`;
+              lastRealMold = primary.moldeCompleto;
+            }
+            // Barra de cumplimiento y emoji
+            const barClass = comp.status==='cumplido'?'green-bar':comp.status==='parcial'?'orange-bar':comp.status==='desvio'?'red-bar':'gray-bar';
+            const emoji = comp.status==='cumplido'?'✅':comp.status==='parcial'?'⏳':comp.status==='desvio'?'⚠️':'📌';
+            cellContent += `<div class="compliance-row"><div class="compliance-bar ${barClass}"></div><div class="compliance-emoji">${emoji}</div></div>`;
+            // Pruebas reales
+            tests.forEach(test => {
+              cellContent += `<div class="prueba-badge">PR ${test.baseName} ${test.number}</div>`;
+            });
+          }
+
+          html += `<td style="background-color:${bgColor}; color:${txtColor};" onclick="abrirGantt('${dateStr}')">${cellContent}</td>`;
+        }
+        html += '</tr>';
+      });
+
+      html += '</tbody></table>';
+      wrapper.innerHTML = html;
+
+      renderPruebasInfo();
+    }
+
+    // ==================== INFO DE PRUEBAS ====================
+    function renderPruebasInfo() {
+      const container = document.getElementById('pruebasInfo');
+      const year = currentDate.getFullYear(), month = currentDate.getMonth();
+      const pruebas = [];
+      for (let d=1; d<=new Date(year,month+1,0).getDate(); d++) {
+        const ds = formatYYYYMMDD(new Date(year,month,d));
+        TURNOS.forEach(t => {
+          const k = key(ds,t);
+          if (currentView === 'plan' || currentView === 'cumpl') {
+            (planData[k]||[]).filter(p=>p.tarea==='Prueba').forEach(p => pruebas.push({fecha:ds, turno:t, molde:p.moldeCompleto, tipo:'Plan'}));
+          }
+          if (currentView === 'prod' || currentView === 'cumpl') {
+            if (realTasksByTurno[k]) {
+              realTasksByTurno[k].tests.forEach(rt => pruebas.push({fecha:ds, turno:t, molde:rt.moldeCompleto, tipo:'Real'}));
+            }
+          }
+        });
+      }
+      if (pruebas.length === 0) {
+        container.innerHTML = '<h3>🔬 Pruebas del mes</h3><p style="color:var(--text-muted);">Sin pruebas en esta vista.</p>';
+        return;
+      }
+      let html = '<h3>🔬 Pruebas del mes</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th></tr></thead><tbody>';
+      pruebas.forEach(p => {
+        html += `<tr><td>${p.fecha}</td><td>${p.turno}</td><td>${p.molde}</td><td>${p.tipo}</td></tr>`;
+      });
+      html += '</tbody></table>';
+      container.innerHTML = html;
+    }
+
     // ==================== VISTAS ====================
     function setView(view) {
       currentView = view;
       document.getElementById('btnProd').classList.toggle('active', view==='prod');
       document.getElementById('btnPlan').classList.toggle('active', view==='plan');
       document.getElementById('btnCumpl').classList.toggle('active', view==='cumpl');
-      renderCalendar();
+      renderGantt();
     }
 
-    // ==================== RENDERIZADO ====================
-    function renderCalendar() {
-      const grid = document.getElementById('daysGrid');
-      grid.innerHTML = '';
-      const year = currentDate.getFullYear(), month = currentDate.getMonth();
-      const daysInMonth = new Date(year, month+1, 0).getDate();
-      const firstDay = new Date(year, month, 1).getDay();
-      const todayStr = formatYYYYMMDD(new Date());
-
-      document.getElementById('monthTitle').textContent = 
-        currentDate.toLocaleDateString('es-AR', {month:'long', year:'numeric'}).toUpperCase();
-
-      for (let i=0; i<firstDay; i++) { const e=document.createElement('div'); grid.appendChild(e); }
-
-      let lastPlanMold = null, lastRealMold = null;
-
-      for (let d=1; d<=daysInMonth; d++) {
-        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const cell = document.createElement('div'); cell.className = 'day-cell';
-        cell.onclick = () => abrirGantt(dateStr);
-
-        const hasReal = TURNOS.some(t=>realTasksByTurno[key(dateStr,t)]);
-        const hasPlan = TURNOS.some(t=>planData[key(dateStr,t)]);
-        const indClass = dateStr===todayStr ? 'today' : (hasReal ? 'real' : (hasPlan ? 'plan' : ''));
-
-        const dayHeader = document.createElement('div'); dayHeader.className = 'day-header';
-        if (indClass) { const ind = document.createElement('span'); ind.className = `day-indicator ${indClass}`; dayHeader.appendChild(ind); }
-        dayHeader.appendChild(document.createTextNode(d));
-        cell.appendChild(dayHeader);
-
-        const turnsContainer = document.createElement('div'); turnsContainer.className = 'turns-container';
-
-        TURNOS.forEach(turno => {
-          const k = key(dateStr, turno);
-          const realInfo = realTasksByTurno[k];
-          const plans = planData[k] || [];
-
-          const turnCol = document.createElement('div'); turnCol.className = 'turn-column';
-          turnCol.innerHTML = `<div class="turn-label">${turno}</div>`;
-          const contentArea = document.createElement('div'); contentArea.className = 'turn-content';
-          const footerArea = document.createElement('div'); footerArea.className = 'turn-footer';
-
-          // Lógica según vista
-          if (currentView === 'prod' && realInfo) {
-            const { primary, tests } = realInfo;
-            const bgColor = getBrickColor(primary.baseName, primary.number);
-            const txtColor = pickTextColor(bgColor);
-            if (primary.isContinuation) {
-              const bar = document.createElement('div'); bar.className = 'continuation-bar';
-              bar.style.backgroundColor = bgColor; contentArea.appendChild(bar);
-            } else {
-              const card = createMoldCard(primary, bgColor, txtColor, false);
-              if (lastRealMold && lastRealMold !== primary.moldeCompleto) addChangeBadge(card);
-              contentArea.appendChild(card);
-              lastRealMold = primary.moldeCompleto;
-            }
-            tests.forEach(test => {
-              const testCard = createMoldCard(test, 'var(--prueba-bg)', '#000', true);
-              contentArea.appendChild(testCard);
-            });
-          } else if (currentView === 'plan' && plans.length > 0) {
-            const prod = plans.filter(p=>p.tarea==='Producción');
-            const test = plans.filter(p=>p.tarea==='Prueba');
-            prod.forEach(task => {
-              const showDetail = task.esInicio || !lastPlanMold || lastPlanMold !== task.moldeCompleto;
-              if (showDetail) {
-                const bg = getBrickColor(task.baseName, task.number), txt = pickTextColor(bg);
-                const card = createMoldCard(task, bg, txt, false);
-                if (lastPlanMold && lastPlanMold !== task.moldeCompleto) addChangeBadge(card);
-                contentArea.appendChild(card);
-                lastPlanMold = task.moldeCompleto;
-              } else {
-                const bar = document.createElement('div'); bar.className = 'continuation-bar';
-                bar.style.backgroundColor = getBrickColor(task.baseName, task.number);
-                contentArea.appendChild(bar);
-              }
-            });
-            test.forEach(task => {
-              const card = createMoldCard(task, 'var(--prueba-bg)', '#000', true);
-              contentArea.appendChild(card);
-            });
-          } else if (currentView === 'cumpl' && realInfo) {
-            const { primary, tests } = realInfo;
-            const comp = getCompliance(primary.moldeCompleto, plans);
-            const bgColor = getBrickColor(primary.baseName, primary.number);
-            const txtColor = pickTextColor(bgColor);
-            if (primary.isContinuation) {
-              const bar = document.createElement('div'); bar.className = 'continuation-bar';
-              bar.style.backgroundColor = bgColor; contentArea.appendChild(bar);
-            } else {
-              const card = createMoldCard(primary, bgColor, txtColor, false);
-              if (lastRealMold && lastRealMold !== primary.moldeCompleto) addChangeBadge(card);
-              contentArea.appendChild(card);
-              lastRealMold = primary.moldeCompleto;
-            }
-            // Barra de cumplimiento
-            const barDiv = document.createElement('div');
-            barDiv.className = `compliance-bar ${comp.status==='cumplido'?'green-bar':comp.status==='parcial'?'orange-bar':comp.status==='desvio'?'red-bar':'gray-bar'}`;
-            footerArea.appendChild(barDiv);
-            const emoji = document.createElement('div'); emoji.className = 'compliance-emoji';
-            emoji.textContent = comp.status==='cumplido'?'✅':comp.status==='parcial'?'⏳':comp.status==='desvio'?'⚠️':'📌';
-            footerArea.appendChild(emoji);
-            // Pruebas reales
-            tests.forEach(test => {
-              const card = createMoldCard(test, 'var(--prueba-bg)', '#000', true);
-              contentArea.appendChild(card);
-            });
-          } else {
-            const empty = document.createElement('span'); empty.className = 'empty-turn'; empty.textContent = '—';
-            contentArea.appendChild(empty);
-          }
-
-          turnCol.appendChild(contentArea);
-          turnCol.appendChild(footerArea);
-          turnsContainer.appendChild(turnCol);
-        });
-        cell.appendChild(turnsContainer);
-        grid.appendChild(cell);
-      }
-    }
-
-    function createMoldCard(task, bgColor, txtColor, isPrueba) {
-      const card = document.createElement('div'); card.className = 'mold-card';
-      card.style.backgroundColor = bgColor; card.style.color = txtColor;
-      const img = document.createElement('img'); img.className = 'mold-image';
-      img.src = getImageSrc(task.baseName); img.alt = task.moldeCompleto;
-      img.onerror = () => img.src = FALLBACK_IMG;
-      card.appendChild(img);
-      const base = document.createElement('div'); base.className = 'mold-base'; base.textContent = task.baseName;
-      card.appendChild(base);
-      const num = document.createElement('div'); num.className = 'mold-number'; num.textContent = `Molde ${task.number}`;
-      card.appendChild(num);
-      if (isPrueba) {
-        const badge = document.createElement('span'); badge.className = 'prueba-badge'; badge.textContent = 'PR';
-        card.appendChild(badge);
-      }
-      return card;
-    }
-
-    function addChangeBadge(card) {
-      const change = document.createElement('span'); change.className = 'prueba-badge';
-      change.textContent = '🔄️'; change.style.background = 'var(--accent)'; change.style.color = '#fff';
-      card.appendChild(change);
-    }
-
-    // ==================== PRUEBAS DEL MES ====================
-    function renderPruebasSection() {
-      const section = document.getElementById('pruebasSection');
-      const year = currentDate.getFullYear(), month = currentDate.getMonth();
-      const pruebasList = [];
-      // Recolectar pruebas de plan y real dentro del mes
-      for (let d=1; d<=new Date(year,month+1,0).getDate(); d++) {
-        const ds = formatYYYYMMDD(new Date(year,month,d));
-        TURNOS.forEach(t => {
-          const k = key(ds,t);
-          (planData[k]||[]).filter(p=>p.tarea==='Prueba').forEach(p => pruebasList.push({fecha:ds, turno:t, molde:p.moldeCompleto, tipo:'Plan'}));
-          if (realTasksByTurno[k]) {
-            realTasksByTurno[k].tests.forEach(rt => pruebasList.push({fecha:ds, turno:t, molde:rt.moldeCompleto, tipo:'Real'}));
-          }
-        });
-      }
-      if (pruebasList.length===0) {
-        section.innerHTML = '<h3>🔬 Pruebas del mes</h3><p style="color:var(--text-muted);">No hay pruebas registradas.</p>';
-        return;
-      }
-      let html = '<h3>🔬 Pruebas del mes</h3><div class="pruebas-lista">';
-      pruebasList.forEach(p => {
-        html += `<div class="prueba-item"><span style="background:#ffd700;color:#000;padding:0 4px;border-radius:3px;font-weight:700;">PR</span> ${p.fecha} ${p.turno} – ${p.molde} (${p.tipo})</div>`;
-      });
-      html += '</div>';
-      section.innerHTML = html;
-    }
-
-    // ==================== GANTT ====================
+    // ==================== GANTT DIARIO (modal) ====================
     function abrirGantt(dateStr) {
       document.getElementById('ganttTitulo').textContent = new Date(dateStr+'T00:00:00').toLocaleDateString('es-AR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
       const cont = document.getElementById('ganttDetalle'); cont.innerHTML = '';
@@ -666,11 +574,9 @@
         const plans = planData[k] || [];
         const realInfo = realTasksByTurno[k];
         const row = document.createElement('div'); row.className = 'gantt-row';
-        const label = document.createElement('div'); label.className = 'gantt-turno'; label.textContent = turno;
-        row.appendChild(label);
-        const barsDiv = document.createElement('div'); barsDiv.className = 'gantt-bars';
+        row.innerHTML = `<div class="gantt-turno">${turno}</div><div class="gantt-bars"></div>`;
+        const barsDiv = row.querySelector('.gantt-bars');
 
-        // Plan (barras tenues)
         plans.filter(p=>p.tarea==='Producción').forEach(p => {
           const bar = document.createElement('div'); bar.className = 'gantt-bar gantt-plan';
           bar.style.backgroundColor = getBrickColor(p.baseName, p.number); bar.style.width = '100%';
@@ -682,7 +588,6 @@
           bar.textContent = `Prueba Plan: ${p.moldeCompleto}`; barsDiv.appendChild(bar);
         });
 
-        // Real (barras intensas)
         if (realInfo) {
           const comp = getCompliance(realInfo.primary.moldeCompleto, plans);
           const bar = document.createElement('div'); bar.className = 'gantt-bar';
@@ -694,8 +599,6 @@
             tbar.textContent = `Prueba Real: ${t.moldeCompleto}`; barsDiv.appendChild(tbar);
           });
         }
-
-        row.appendChild(barsDiv);
         cont.appendChild(row);
       });
       document.getElementById('ganttModal').style.display = 'flex';
@@ -703,14 +606,17 @@
     function cerrarGantt() { document.getElementById('ganttModal').style.display = 'none'; }
     window.addEventListener('click', e => { if (e.target === document.getElementById('ganttModal')) cerrarGantt(); });
 
-    // ==================== SELECTOR DE MES ====================
+    // ==================== SELECTOR MES ====================
     function abrirSelectorMes() {
       document.getElementById('overlay').style.display = 'block';
       document.getElementById('monthSelector').style.display = 'block';
-      const selMonth = document.getElementById('selMonth');
-      selMonth.innerHTML = '';
-      const meses = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
-      meses.forEach((m,i) => { const opt = document.createElement('option'); opt.value = i; opt.textContent = m; if (i===currentDate.getMonth()) opt.selected = true; selMonth.appendChild(opt); });
+      const sel = document.getElementById('selMonth');
+      sel.innerHTML = '';
+      ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'].forEach((m,i) => {
+        const opt = document.createElement('option'); opt.value = i; opt.textContent = m;
+        if (i === currentDate.getMonth()) opt.selected = true;
+        sel.appendChild(opt);
+      });
       document.getElementById('selYear').value = currentDate.getFullYear();
     }
     function cerrarSelectorMes() {
@@ -720,18 +626,15 @@
     function irAMes() {
       const m = parseInt(document.getElementById('selMonth').value);
       const y = parseInt(document.getElementById('selYear').value);
-      currentDate.setFullYear(y);
-      currentDate.setMonth(m);
+      currentDate.setFullYear(y); currentDate.setMonth(m);
       cerrarSelectorMes();
       loadData();
     }
-
     function cambiarMes(delta) { currentDate.setMonth(currentDate.getMonth()+delta); loadData(); }
 
     function updateClock() {
       const now = new Date();
-      document.getElementById('liveClock').textContent = 
-        now.toLocaleDateString('es-AR',{weekday:'short',year:'numeric',month:'short',day:'numeric'}) + ' · ' + now.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
+      document.getElementById('liveClock').textContent = now.toLocaleDateString('es-AR',{weekday:'short',year:'numeric',month:'short',day:'numeric'}) + ' · ' + now.toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'});
     }
 
     function toggleTheme() {
