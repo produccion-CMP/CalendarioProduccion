@@ -23,10 +23,9 @@
       --red: #ff453a;
       --gray: #636366;
       --shadow: 0 2px 8px rgba(0,0,0,0.3);
+      --shadow-3d: 0 4px 12px rgba(0,0,0,0.4);
       --radius: 14px;
       --cell-h: 68px;
-      --cell-w: 1fr;
-      --turno-w: 65px;
       --font: 'Plus Jakarta Sans', system-ui, sans-serif;
       --prueba-bg: rgba(255,215,0,0.2);
     }
@@ -41,6 +40,7 @@
       --accent: #d96b3a;
       --accent-light: #c45a2c;
       --shadow: 0 2px 12px rgba(0,0,0,0.08);
+      --shadow-3d: 0 4px 16px rgba(0,0,0,0.12);
       --prueba-bg: rgba(255,215,0,0.15);
     }
 
@@ -54,7 +54,7 @@
       transition: background 0.3s, color 0.3s;
     }
 
-    /* Header */
+    /* Encabezado */
     .app-header {
       display: flex;
       justify-content: space-between;
@@ -62,66 +62,138 @@
       padding: 16px 24px;
       background: var(--bg-panel);
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-3d);
       margin-bottom: 20px;
+      position: relative;
+      z-index: 10;
     }
     .logo-container { display: flex; align-items: center; gap: 16px; }
-    .logo-container img { height: 56px; }
+    .logo-container img { height: 56px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
     .title-block h1 { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--accent-light); }
     .title-block small { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
 
-    .header-right { display: flex; align-items: center; gap: 16px; }
+    .header-right {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 8px;
+    }
+    .header-top-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
     .live-clock { font-weight: 600; font-size: 0.9rem; color: var(--text-main); background: var(--bg-cell); padding: 8px 16px; border-radius: 30px; }
     .theme-btn { background: none; border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; }
+    .btn-new-plan {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: var(--shadow);
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-new-plan:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
 
     /* Controles de vista */
     .views-container {
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 12px;
+      justify-content: space-between;
       margin-bottom: 20px;
       flex-wrap: wrap;
+      gap: 15px;
+      background: var(--bg-panel);
+      padding: 10px 20px;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-3d);
     }
     .switch-group {
-      background: var(--bg-panel);
-      border-radius: 30px;
-      padding: 4px;
       display: flex;
-      box-shadow: var(--shadow);
+      align-items: center;
+      gap: 8px;
     }
-    .switch-btn {
-      background: transparent;
-      border: none;
-      padding: 10px 22px;
-      border-radius: 26px;
-      font-weight: 600;
-      font-size: 0.85rem;
+    .toggle-switch {
+      position: relative;
+      width: 180px;
+      height: 38px;
+      background: var(--bg-cell);
+      border-radius: 20px;
       cursor: pointer;
-      color: var(--text-muted);
-      transition: all 0.2s;
+      border: 2px solid var(--border);
+      overflow: hidden;
     }
-    .switch-btn.active {
+    .toggle-option {
+      position: absolute;
+      top: 0;
+      width: 50%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.8rem;
+      transition: all 0.3s;
+      z-index: 1;
+    }
+    .toggle-option.left { left: 0; color: var(--text-muted); }
+    .toggle-option.right { right: 0; color: var(--text-muted); }
+    .toggle-option.active { color: #fff; }
+    .toggle-slider {
+      position: absolute;
+      top: 2px;
+      width: 48%;
+      height: calc(100% - 4px);
       background: var(--accent);
-      color: #fff;
+      border-radius: 18px;
+      transition: left 0.3s;
+      z-index: 0;
     }
+    .toggle-slider.right { left: 50%; }
+    .toggle-slider.left { left: 2%; }
+
     .cumpl-btn {
-      background: var(--bg-panel);
-      border: 1px solid var(--border);
+      background: var(--bg-cell);
+      border: 2px solid var(--border);
       padding: 10px 22px;
       border-radius: 30px;
       font-weight: 600;
       font-size: 0.85rem;
       cursor: pointer;
       color: var(--text-main);
-      box-shadow: var(--shadow);
       transition: 0.2s;
     }
     .cumpl-btn.active {
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
+      box-shadow: 0 0 12px var(--accent);
     }
+
+    .action-btn {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 24px;
+      font-weight: 600;
+      font-size: 0.8rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: 0.2s;
+      text-decoration: none;
+    }
+    .action-btn:hover { background: var(--accent); color: #fff; }
 
     /* KPIs */
     .kpi-container {
@@ -135,149 +207,232 @@
       background: var(--bg-panel);
       border-radius: var(--radius);
       padding: 14px 20px;
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-3d);
       text-align: center;
       min-width: 100px;
-      transition: transform 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s;
+      transform: perspective(600px) rotateX(0deg);
     }
-    .kpi-card:hover { transform: translateY(-3px); }
+    .kpi-card:hover {
+      transform: perspective(600px) rotateX(2deg) translateY(-4px);
+      box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+    }
     .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--accent-light); }
     .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
 
-    /* Acciones */
-    .actions-bar {
-      display: flex; justify-content: flex-end; gap: 12px; margin-bottom: 20px;
-    }
-    .action-btn {
-      background: var(--bg-panel); border: 1px solid var(--border);
-      color: var(--text-main); padding: 8px 16px; border-radius: 24px;
-      font-weight: 600; font-size: 0.8rem; cursor: pointer;
-      display: flex; align-items: center; gap: 6px; transition: 0.2s; text-decoration: none;
-    }
-    .action-btn:hover { background: var(--accent-soft); }
-    .action-btn.primary { background: var(--accent); color: #fff; border: none; }
-
     /* Navegación */
     .month-nav {
-      display: flex; justify-content: center; align-items: center; gap: 16px; margin-bottom: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 20px;
     }
     .month-nav button {
-      background: var(--bg-panel); border: 1px solid var(--border);
-      color: var(--text-main); padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
     }
+    .month-nav button:hover { background: var(--accent); color: #fff; }
     .month-title {
-      font-size: 1.1rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
-      border-bottom: 1px dashed var(--text-muted); padding: 4px 8px;
+      font-size: 1.1rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      cursor: pointer;
+      border-bottom: 1px dashed var(--text-muted);
+      padding: 4px 8px;
+      transition: color 0.2s;
     }
     .month-title:hover { color: var(--accent-light); }
 
     /* Selector de mes */
     .month-selector {
-      display: none; position: fixed; top: 50%; left: 50%;
-      transform: translate(-50%, -50%); background: var(--bg-panel); padding: 24px;
-      border-radius: var(--radius); box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2000; text-align: center;
+      display: none;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: var(--bg-panel);
+      padding: 24px;
+      border-radius: var(--radius);
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 2000;
+      text-align: center;
     }
-    .month-selector select, .month-selector input { margin: 10px; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); }
+    .month-selector select, .month-selector input {
+      margin: 10px;
+      padding: 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--bg-cell);
+      color: var(--text-main);
+    }
     .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1500; }
 
     /* Tabla Gantt */
     .gantt-wrapper {
-      background: var(--bg-panel); border-radius: var(--radius); padding: 8px;
-      box-shadow: var(--shadow); overflow-x: auto;
+      background: var(--bg-panel);
+      border-radius: var(--radius);
+      padding: 8px;
+      box-shadow: var(--shadow-3d);
+      overflow-x: auto;
     }
     .gantt-table {
-      width: 100%; border-collapse: collapse; table-layout: fixed;
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
     }
     .gantt-table th, .gantt-table td {
-      border: 1px solid var(--border); height: var(--cell-h); padding: 2px;
-      text-align: center; vertical-align: middle; font-size: 0.75rem;
-      position: relative; transition: background 0.3s;
+      border: 1px solid var(--border);
+      height: var(--cell-h);
+      padding: 2px;
+      text-align: center;
+      vertical-align: middle;
+      font-size: 0.75rem;
+      position: relative;
+      transition: background 0.3s, transform 0.2s;
     }
     .gantt-table th {
-      background: var(--bg-cell); font-weight: 700; color: var(--accent-light);
+      background: var(--bg-cell);
+      font-weight: 700;
+      color: var(--accent-light);
     }
-    .gantt-table th .day-header {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
+    .gantt-table td {
+      cursor: pointer;
+      transform: perspective(400px) translateZ(0);
     }
-    .gantt-table td { cursor: pointer; }
-    .gantt-table td:hover { filter: brightness(1.05); }
+    .gantt-table td:hover {
+      transform: perspective(400px) translateZ(6px);
+      filter: brightness(1.05);
+      z-index: 5;
+    }
 
-    .day-number { font-weight: 800; font-size: 0.9rem; }
-    .day-indicator {
-      width: 8px; height: 8px; border-radius: 50%; margin-top: 2px;
-      display: inline-block; cursor: help;
+    .day-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.2;
     }
-    .day-indicator.plan { background: var(--orange); }
-    .day-indicator.real { background: var(--green); }
-    .day-indicator.today { background: #ffd700; box-shadow: 0 0 8px #ffd700; }
+    .day-name { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
+    .day-number { font-weight: 800; font-size: 0.9rem; }
 
     .turn-label {
-      font-weight: 700; color: var(--accent-light); font-size: 0.85rem;
-      writing-mode: vertical-rl; text-orientation: mixed; margin: auto;
+      font-weight: 700;
+      color: var(--accent-light);
+      font-size: 0.85rem;
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      margin: auto;
     }
 
     .cell-content {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      height: 100%; width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      width: 100%;
     }
     .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 2px; }
     .mold-base { font-weight: 700; font-size: 0.7rem; line-height: 1.1; }
     .mold-number { font-size: 0.6rem; opacity: 0.8; }
-    .change-emoji { font-size: 0.9rem; margin: 2px 0; }
+    .change-emoji { font-size: 0.9rem; margin: 2px 0; animation: pulse 1.5s infinite; }
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.2); }
+    }
     .prueba-badge {
-      background: #ffd700; color: #000; font-weight: 700; font-size: 0.6rem;
-      padding: 1px 4px; border-radius: 3px; margin-top: 2px;
+      background: #ffd700;
+      color: #000;
+      font-weight: 700;
+      font-size: 0.6rem;
+      padding: 1px 4px;
+      border-radius: 3px;
+      margin-top: 2px;
     }
-    .compliance-row {
-      display: flex; flex-direction: column; align-items: center; margin-top: 2px;
-    }
-    .compliance-bar {
-      width: 100%; height: 3px; border-radius: 2px;
-      background: var(--gray); /* default */
-      animation: complianceSlide 0.5s ease-out;
-    }
-    .compliance-emoji { font-size: 0.7rem; }
-    .green-bar { background: var(--green); }
-    .orange-bar { background: var(--orange); }
-    .red-bar { background: var(--red); }
-    .gray-bar { background: var(--gray); }
 
-    @keyframes complianceSlide {
+    /* Barra de cumplimiento debajo de cada celda */
+    .compliance-bar-cell {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      height: 4px;
+      border-radius: 0 0 3px 3px;
+      background: var(--gray);
+      animation: slideGrow 0.5s ease-out;
+    }
+    .compliance-bar-cell.green-bar { background: var(--green); }
+    .compliance-bar-cell.orange-bar { background: var(--orange); }
+    .compliance-bar-cell.red-bar { background: var(--red); }
+    @keyframes slideGrow {
       from { width: 0; }
       to { width: 100%; }
     }
 
+    .compliance-emoji-cell {
+      position: absolute;
+      bottom: 6px;
+      right: 4px;
+      font-size: 0.7rem;
+    }
+
     /* Línea divisoria entre turnos */
     .gantt-table tbody tr {
-      border-bottom: 2px solid var(--border);
+      border-bottom: 3px solid var(--border);
     }
     .gantt-table tbody tr:last-child {
       border-bottom: none;
     }
 
-    /* Día actual resaltado */
     td.today-cell {
-      box-shadow: inset 0 0 0 2px var(--accent);
+      box-shadow: inset 0 0 0 3px var(--accent);
+      animation: todayPulse 2s infinite;
+    }
+    @keyframes todayPulse {
+      0%, 100% { box-shadow: inset 0 0 0 3px var(--accent); }
+      50% { box-shadow: inset 0 0 0 5px var(--accent-light); }
     }
 
     /* Pruebas info */
     .pruebas-info {
-      margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius);
-      padding: 16px; box-shadow: var(--shadow); font-size: 0.8rem;
+      margin-top: 20px;
+      background: var(--bg-panel);
+      border-radius: var(--radius);
+      padding: 16px;
+      box-shadow: var(--shadow-3d);
+      font-size: 0.8rem;
     }
-    .pruebas-info h3 { margin: 0 0 10px; color: var(--accent-light); }
     .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
     .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 6px; }
 
-    /* Modal Gantt diario */
+    /* Modal Gantt */
     .gantt-modal {
-      position: fixed; top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center;
+      position: fixed;
+      top:0;
+      left:0;
+      width:100%;
+      height:100%;
+      background: rgba(0,0,0,0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
       z-index: 3000;
     }
     .gantt-content {
-      background: var(--bg-panel); border-radius: var(--radius);
-      padding: 24px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto;
+      background: var(--bg-panel);
+      border-radius: var(--radius);
+      padding: 24px;
+      max-width: 700px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
       animation: modalPop 0.3s ease;
     }
     @keyframes modalPop {
@@ -288,27 +443,33 @@
     .gantt-turno { width: 40px; font-weight: 700; font-size: 1rem; }
     .gantt-bars { flex:1; display: flex; flex-direction: column; gap: 6px; }
     .gantt-bar {
-      height: 28px; border-radius: 6px; padding-left: 12px;
-      font-size: 0.8rem; font-weight: 600; display: flex; align-items: center;
-      color: #fff; transition: transform 0.2s;
+      height: 28px;
+      border-radius: 6px;
+      padding-left: 12px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      color: #fff;
+      transition: transform 0.2s;
     }
     .gantt-bar:hover { transform: scale(1.02); }
     .gantt-bar img { width: 22px; height: 22px; margin-right: 8px; border-radius: 4px; }
     .gantt-plan { opacity: 0.7; }
-    .close-btn { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; float: right; }
-
-    /* Tooltips */
-    .custom-tooltip {
-      position: absolute; background: var(--bg-panel); border: 1px solid var(--accent);
-      border-radius: 6px; padding: 6px 10px; font-size: 0.75rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.6); z-index: 9999;
-      pointer-events: none; display: none; max-width: 160px;
+    .close-btn {
+      background: var(--accent);
+      color: #fff;
+      border: none;
+      padding: 6px 14px;
+      border-radius: 4px;
+      cursor: pointer;
+      float: right;
     }
 
     @media print {
       body { background: white; color: black; padding: 0; font-size: 8px; }
-      .app-header, .views-container, .actions-bar, .month-nav button, .month-selector, .gantt-modal, .pruebas-info,
-      .live-clock, .theme-btn, .overlay, .kpi-container { display: none !important; }
+      .app-header, .views-container, .kpi-container, .month-nav button, .month-selector, .gantt-modal, .pruebas-info,
+      .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn { display: none !important; }
       .gantt-wrapper { box-shadow: none; background: none; padding: 0; }
       .gantt-table th, .gantt-table td { border: 1px solid #aaa; height: 40px; }
       .mold-image { width: 14px; height: 14px; filter: none; }
@@ -334,32 +495,30 @@
       </div>
     </div>
     <div class="header-right">
-      <div class="live-clock" id="liveClock"></div>
-      <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+      <div class="header-top-row">
+        <div class="live-clock" id="liveClock"></div>
+        <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+      </div>
+      <a href="admin.html" class="btn-new-plan">🧱 Nuevo Plan</a>
     </div>
   </header>
 
-  <!-- Controles de vista -->
+  <!-- Vistas y acciones -->
   <div class="views-container">
     <div class="switch-group">
-      <button class="switch-btn active" id="btnProd" onclick="setView('prod')">Producción</button>
-      <button class="switch-btn" id="btnPlan" onclick="setView('plan')">Planificación</button>
+      <span style="font-weight:600; font-size:0.8rem; color:var(--text-muted);">Vista:</span>
+      <div class="toggle-switch" id="toggleSwitch" onclick="toggleProdPlan()">
+        <div class="toggle-option left" id="toggleProdLabel">Producción</div>
+        <div class="toggle-option right" id="togglePlanLabel">Planificación</div>
+        <div class="toggle-slider left" id="toggleSlider"></div>
+      </div>
     </div>
-    <button class="cumpl-btn" id="btnCumpl" onclick="setView('cumpl')">Cumplimiento</button>
+    <button class="cumpl-btn" id="btnCumpl" onclick="toggleCumplimiento()">📊 Cumplimiento</button>
+    <button class="action-btn" onclick="window.print()">🖨️ Imprimir Plan</button>
   </div>
 
   <!-- KPIs (solo visibles en cumplimiento) -->
-  <div class="kpi-container" id="kpiContainer" style="display:none;">
-    <div class="kpi-card"><div class="kpi-value" id="kpiDias">0</div><div class="kpi-label">Días con plan</div></div>
-    <div class="kpi-card"><div class="kpi-value" id="kpiCambios">0</div><div class="kpi-label">Cambios</div></div>
-    <div class="kpi-card"><div class="kpi-value" id="kpiPruebas">0</div><div class="kpi-label">Pruebas</div></div>
-    <div class="kpi-card"><div class="kpi-value" id="kpiCumpl">0%</div><div class="kpi-label">Cumplimiento</div></div>
-  </div>
-
-  <div class="actions-bar">
-    <button class="action-btn" onclick="window.print()">🖨️ Imprimir Plan</button>
-    <a href="admin.html" class="action-btn primary">🧱 Nuevo Plan</a>
-  </div>
+  <div class="kpi-container" id="kpiContainer" style="display:none;"></div>
 
   <div class="month-nav">
     <button onclick="cambiarMes(-1)">◀</button>
@@ -369,7 +528,6 @@
   </div>
 
   <div class="gantt-wrapper" id="ganttWrapper"></div>
-
   <div class="pruebas-info" id="pruebasInfo"></div>
 
   <div class="gantt-modal" id="ganttModal">
@@ -379,8 +537,6 @@
       <div id="ganttDetalle"></div>
     </div>
   </div>
-
-  <div class="custom-tooltip" id="customTooltip"></div>
 
   <script>
     // ==================== CONFIGURACIÓN ====================
@@ -396,7 +552,7 @@
     let currentDate = new Date();
     let themeDark = true;
 
-    // Colores por tipo de ladrillo
+    // Colores
     const brickHueMap = new Map();
     function getBaseHue(baseName) {
       if (brickHueMap.has(baseName)) return brickHueMap.get(baseName);
@@ -408,9 +564,7 @@
     }
     function getBrickColor(baseName, number) {
       const hue = getBaseHue(baseName);
-      const sat = 55 + number * 5;
-      const light = 42 + number * 8;
-      return `hsl(${hue}, ${sat}%, ${light}%)`;
+      return `hsl(${hue}, 55%, ${38 + number * 8}%)`;
     }
     function pickTextColor(hslColor) {
       const m = hslColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
@@ -428,16 +582,6 @@
     function getMoldNumber(molde) { const m = molde.match(/\((\d+)\)/); return m ? parseInt(m[1]) : 1; }
     function getImageSrc(base) { return `${IMG_PATH}${base}.png`; }
 
-    // Tooltip
-    const tooltip = document.getElementById('customTooltip');
-    function showTooltip(e, text) {
-      tooltip.textContent = text;
-      tooltip.style.display = 'block';
-      tooltip.style.left = (e.clientX + 15) + 'px';
-      tooltip.style.top = (e.clientY - 30) + 'px';
-    }
-    function hideTooltip() { tooltip.style.display = 'none'; }
-
     // ==================== CARGA DE DATOS ====================
     async function fetchCSV(url) {
       const r = await fetch(url);
@@ -447,8 +591,6 @@
 
     async function loadData() {
       const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
-
-      // Planificación
       planData = {};
       planRows.forEach(row => {
         const molde = row['LADRILLO:']?.trim();
@@ -482,7 +624,6 @@
         }
       });
 
-      // Producción real con lógica de continuidad y pruebas
       const allReal = [];
       realRows.forEach(row => {
         const dia = row['Día']?.trim(), turno = row['Turno']?.trim(), molde = row['Molde']?.trim();
@@ -493,7 +634,6 @@
       });
       allReal.sort((a,b)=>a.date-b.date || TURNOS.indexOf(a.turno)-TURNOS.indexOf(b.turno));
 
-      // Agrupar por clave
       const grouped = new Map();
       allReal.forEach(r => {
         const k = key(formatYYYYMMDD(r.date), r.turno);
@@ -501,60 +641,38 @@
         grouped.get(k).push(r);
       });
 
-      // Determinar continuidad considerando pruebas vs cambios
       realTasksByTurno = {};
       let lastActiveMold = null;
-      let lastActiveDate = null;
-      const sortedKeys = Array.from(grouped.keys()).sort();
-
-      // Primera pasada para asignar primary y tests básicos
       for (const [clave, regs] of grouped) {
-        let primary = regs.find(r => r.moldeCompleto === lastActiveMold);
-        if (!primary) {
-          // Si el molde activo no está presente, podría ser que finalizó o hubo un cambio.
-          // Buscar si algún molde de este grupo continúa en el futuro como activo.
-          // Simplificación: tomamos el primer molde como primary.
-          primary = regs[0];
-        }
+        let primary = regs.find(r => r.moldeCompleto === lastActiveMold) || regs[0];
         let tests = regs.filter(r => r !== primary);
         realTasksByTurno[clave] = {
           primary: { ...primary, isContinuation: (lastActiveMold === primary.moldeCompleto) },
           tests: tests.map(t => ({...t, isTest:true}))
         };
         lastActiveMold = primary.moldeCompleto;
-        lastActiveDate = clave;
       }
 
-      // Segunda pasada para refinar pruebas: si un molde aparece como primary pero luego vuelve el molde anterior, se marca como prueba y no cambia la continuidad.
-      // Recorremos en orden cronológico las claves para ajustar.
+      // Ajuste de pruebas intrusivas
       let runningMold = null;
-      const allKeys = Array.from(grouped.keys()).sort();
-      allKeys.forEach(clave => {
+      const sortedKeys = Array.from(grouped.keys()).sort();
+      sortedKeys.forEach((clave, idx) => {
         const info = realTasksByTurno[clave];
         if (!info) return;
         if (runningMold === null) {
           runningMold = info.primary.moldeCompleto;
         } else {
           if (info.primary.moldeCompleto !== runningMold) {
-            // ¿El molde running vuelve a aparecer más adelante?
-            const futureKeys = allKeys.slice(allKeys.indexOf(clave)+1);
+            const futureKeys = sortedKeys.slice(idx+1);
             const willReturn = futureKeys.some(fk => {
-              const futureInfo = realTasksByTurno[fk];
-              return futureInfo && futureInfo.primary.moldeCompleto === runningMold;
+              const fi = realTasksByTurno[fk];
+              return fi && fi.primary && fi.primary.moldeCompleto === runningMold;
             });
             if (willReturn) {
-              // Es una prueba: el actual primary se convierte en test, y el primary debería ser el runningMold (aunque no esté en este turno)
-              // Pero no tenemos registro de runningMold en este turno. Lo más simple es mantener el primary actual pero tratarlo visualmente como prueba.
-              // Marcamos isTest=true en el primary y lo movemos a tests, y creamos un primary ficticio con runningMold? No, porque no hay registro real de runningMold.
-              // En su lugar, en el renderizado si currentView es prod o cumpl, mostraremos el primary actual como prueba (badge PR) y el fondo lo dejamos con el color de runningMold? 
-              // Mejor: dejamos que el renderizado maneje la visualización. Marcamos este turno como "prueba" a nivel de datos.
-              info.isPruebaIntrusiva = true;
-              info.primary.isTest = true; // Lo tratamos como test
-              // Quitamos primary y lo ponemos como test principal, no hay primary real.
+              info.primary.isTest = true;
               info.tests.unshift(info.primary);
-              info.primary = null; // No hay producción principal en este turno
+              info.primary = null;
             } else {
-              // Cambio real: runningMold se actualiza
               runningMold = info.primary.moldeCompleto;
             }
           }
@@ -579,40 +697,41 @@
       const wrapper = document.getElementById('ganttWrapper');
       const year = currentDate.getFullYear(), month = currentDate.getMonth();
       const daysInMonth = new Date(year, month+1, 0).getDate();
+      const firstDayOffset = new Date(year, month, 1).getDay(); // 0=Dom
       const todayStr = formatYYYYMMDD(new Date());
 
       document.getElementById('monthTitle').textContent = 
         currentDate.toLocaleDateString('es-AR', {month:'long', year:'numeric'}).toUpperCase();
 
-      // Mostrar KPIs solo en cumplimiento
       const kpiContainer = document.getElementById('kpiContainer');
       kpiContainer.style.display = currentView === 'cumpl' ? 'flex' : 'none';
+      if (currentView === 'cumpl') actualizarKPIs();
 
-      let html = '<table class="gantt-table"><thead><tr><th style="width:' + getTurnoWidth() + 'px;"></th>';
-      const colWidth = `calc((100% - ${getTurnoWidth()}px) / ${daysInMonth})`;
+      const turnoWidth = 65;
+      const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
+
+      let html = `<table class="gantt-table"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
+      const dayNames = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
       for (let d = 1; d <= daysInMonth; d++) {
-        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        const hasReal = TURNOS.some(t => realTasksByTurno[key(dateStr, t)]);
-        const hasPlan = TURNOS.some(t => planData[key(dateStr, t)]);
-        const indClass = dateStr === todayStr ? 'today' : (hasReal ? 'real' : (hasPlan ? 'plan' : ''));
-        html += `<th style="width:${colWidth};">
+        const date = new Date(year, month, d);
+        const dayName = dayNames[date.getDay()];
+        const dateStr = formatYYYYMMDD(date);
+        const isToday = dateStr === todayStr;
+        html += `<th style="width:${colWidthCalc};" class="${isToday ? 'today-cell' : ''}">
           <div class="day-header">
+            <span class="day-name">${dayName}</span>
             <span class="day-number">${d}</span>
-            <span class="day-indicator ${indClass}" 
-                  onmouseover="showTooltip(event, '${indClass==='today'?'Hoy':indClass==='real'?'Producción real':indClass==='plan'?'Planificación':'Sin actividad'}')" 
-                  onmouseout="hideTooltip()"></span>
           </div>
         </th>`;
       }
       html += '</tr></thead><tbody>';
 
-      // Variables para seguimiento de continuidad
       let lastPlanMold = null;
       let lastRealMold = null;
+      let lastRealColor = null;
 
-      TURNOS.forEach((turno, idx) => {
-        html += `<tr>`;
-        html += `<td class="turn-label" style="width:${getTurnoWidth()}px;">${turno}</td>`;
+      TURNOS.forEach(turno => {
+        html += `<tr><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
         let currentPlanMold = null;
         let currentRealMold = null;
         let currentRealColor = null;
@@ -626,7 +745,8 @@
           let cellContent = '';
           let bgColor = 'transparent';
           let txtColor = 'inherit';
-          let isToday = (dateStr === todayStr);
+          let extraClass = '';
+          const isToday = dateStr === todayStr;
 
           if (currentView === 'prod' && realInfo) {
             if (realInfo.primary) {
@@ -634,30 +754,25 @@
               const color = getBrickColor(primary.baseName, primary.number);
               if (primary.isContinuation && currentRealMold === primary.moldeCompleto) {
                 bgColor = color;
-                cellContent = '';
               } else {
                 bgColor = color;
                 txtColor = pickTextColor(color);
-                cellContent = createMoldHTML(primary.baseName, primary.number, primary.moldeCompleto, false);
+                cellContent = createMoldHTML(primary.baseName, primary.number);
                 if (currentRealMold && currentRealMold !== primary.moldeCompleto) {
                   cellContent += '<div class="change-emoji">🔄️</div>';
                 }
                 currentRealMold = primary.moldeCompleto;
                 currentRealColor = color;
               }
-              // Agregar badges de pruebas si hay tests
               realInfo.tests.forEach(test => {
                 cellContent += `<div class="prueba-badge">PR ${test.baseName} ${test.number}</div>`;
               });
             } else if (realInfo.tests.length > 0) {
-              // Solo pruebas (intrusivas), sin primary
-              // Fondo: mantenemos el color del molde activo anterior si existe, si no, gris claro.
               bgColor = currentRealColor || 'var(--bg-cell)';
               txtColor = currentRealColor ? pickTextColor(currentRealColor) : 'inherit';
               realInfo.tests.forEach(test => {
                 cellContent += `<div class="prueba-badge">PR ${test.baseName} ${test.number}</div>`;
               });
-              // La continuidad del molde activo no se rompe (no cambiamos currentRealMold)
             }
           } else if (currentView === 'plan' && plans.length > 0) {
             const prod = plans.filter(p=>p.tarea==='Producción');
@@ -669,14 +784,13 @@
               if (showDetail) {
                 bgColor = color;
                 txtColor = pickTextColor(color);
-                cellContent = createMoldHTML(task.baseName, task.number, task.moldeCompleto, false);
+                cellContent = createMoldHTML(task.baseName, task.number);
                 if (currentPlanMold && currentPlanMold !== task.moldeCompleto) {
                   cellContent += '<div class="change-emoji">🔄️</div>';
                 }
                 currentPlanMold = task.moldeCompleto;
               } else {
                 bgColor = color;
-                cellContent = '';
               }
             }
             test.forEach(task => {
@@ -689,21 +803,20 @@
               const color = getBrickColor(primary.baseName, primary.number);
               if (primary.isContinuation && currentRealMold === primary.moldeCompleto) {
                 bgColor = color;
-                cellContent = '';
               } else {
                 bgColor = color;
                 txtColor = pickTextColor(color);
-                cellContent = createMoldHTML(primary.baseName, primary.number, primary.moldeCompleto, false);
+                cellContent = createMoldHTML(primary.baseName, primary.number);
                 if (currentRealMold && currentRealMold !== primary.moldeCompleto) {
                   cellContent += '<div class="change-emoji">🔄️</div>';
                 }
                 currentRealMold = primary.moldeCompleto;
                 currentRealColor = color;
               }
-              // Barra de cumplimiento
+              // Barra de cumplimiento debajo
               const barClass = comp.status==='cumplido'?'green-bar':comp.status==='parcial'?'orange-bar':comp.status==='desvio'?'red-bar':'gray-bar';
               const emoji = comp.status==='cumplido'?'✅':comp.status==='parcial'?'⏳':comp.status==='desvio'?'⚠️':'📌';
-              cellContent += `<div class="compliance-row"><div class="compliance-bar ${barClass}"></div><div class="compliance-emoji">${emoji}</div></div>`;
+              cellContent += `<div class="compliance-bar-cell ${barClass}"></div><div class="compliance-emoji-cell">${emoji}</div>`;
               realInfo.tests.forEach(test => {
                 cellContent += `<div class="prueba-badge">PR ${test.baseName} ${test.number}</div>`;
               });
@@ -720,40 +833,32 @@
             cellContent = '<span style="color:var(--text-muted);">—</span>';
           }
 
-          html += `<td style="background-color:${bgColor}; color:${txtColor}; width:${colWidth};" 
-                        class="${isToday ? 'today-cell' : ''}"
-                        onclick="abrirGantt('${dateStr}')">${cellContent}</td>`;
+          html += `<td style="background-color:${bgColor}; color:${txtColor}; width:${colWidthCalc};" 
+                       class="${isToday ? 'today-cell' : ''}"
+                       onclick="abrirGantt('${dateStr}')">${cellContent}</td>`;
         }
         html += '</tr>';
       });
 
       html += '</tbody></table>';
       wrapper.innerHTML = html;
-
-      // Actualizar KPIs y pruebas
-      if (currentView === 'cumpl') {
-        actualizarKPIs();
-      }
       renderPruebasInfo();
     }
 
-    function getTurnoWidth() {
-      return 65; // ancho fijo para columna de turno
-    }
-
-    function createMoldHTML(baseName, number, moldeCompleto, isPrueba) {
+    function createMoldHTML(baseName, number) {
       return `<div class="cell-content">
-        <img src="${getImageSrc(baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${moldeCompleto}">
+        <img src="${getImageSrc(baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${baseName}">
         <div class="mold-base">${baseName}</div>
         <div class="mold-number">Molde ${number}</div>
       </div>`;
     }
 
-    // ==================== KPI ====================
+    // ==================== KPIs ====================
     function actualizarKPIs() {
       const year = currentDate.getFullYear(), month = currentDate.getMonth();
       const daysInMonth = new Date(year, month+1, 0).getDate();
-      let diasPlan = new Set(), cambios = 0, pruebasCount = 0, cumplidas = 0, totalReal = 0;
+      let diasPlan = new Set(), cambios = 0, pruebasPlan = 0, cumplidas = 0, totalReal = 0;
+      const moldesSet = new Set();
 
       for (let d=1; d<=daysInMonth; d++) {
         const ds = formatYYYYMMDD(new Date(year, month, d));
@@ -765,20 +870,27 @@
           if (plans.some(p=>p.tarea==='Producción')) tienePlanDia = true;
           const prods = plans.filter(p=>p.tarea==='Producción');
           if (prods.length > 1) cambios++;
-          pruebasCount += plans.filter(p=>p.tarea==='Prueba').length;
+          pruebasPlan += plans.filter(p=>p.tarea==='Prueba').length;
+          prods.forEach(p => moldesSet.add(p.moldeCompleto));
           if (realInfo && realInfo.primary) {
             totalReal++;
             const comp = getCompliance(realInfo.primary.moldeCompleto, plans);
             if (comp && comp.status === 'cumplido') cumplidas++;
+            moldesSet.add(realInfo.primary.moldeCompleto);
           }
         });
         if (tienePlanDia) diasPlan.add(ds);
       }
       const pct = totalReal > 0 ? Math.round((cumplidas/totalReal)*100) : 0;
-      document.getElementById('kpiDias').textContent = diasPlan.size;
-      document.getElementById('kpiCambios').textContent = cambios;
-      document.getElementById('kpiPruebas').textContent = pruebasCount;
-      document.getElementById('kpiCumpl').textContent = pct + '%';
+
+      const container = document.getElementById('kpiContainer');
+      container.innerHTML = `
+        <div class="kpi-card"><div class="kpi-value">${diasPlan.size}</div><div class="kpi-label">Días con plan</div></div>
+        <div class="kpi-card"><div class="kpi-value">${cambios}</div><div class="kpi-label">Cambios</div></div>
+        <div class="kpi-card"><div class="kpi-value">${pruebasPlan}</div><div class="kpi-label">Pruebas</div></div>
+        <div class="kpi-card"><div class="kpi-value">${pct}%</div><div class="kpi-label">Cumplimiento</div></div>
+        <div class="kpi-card"><div class="kpi-value">${moldesSet.size}</div><div class="kpi-label">Tipos de ladrillo</div></div>
+      `;
     }
 
     // ==================== PRUEBAS INFO ====================
@@ -789,40 +901,35 @@
 
       for (let d=1; d<=new Date(year, month+1, 0).getDate(); d++) {
         const ds = formatYYYYMMDD(new Date(year, month, d));
+        // Agrupar pruebas del día (independiente de turno)
+        const dayPlanTests = [];
+        const dayRealTests = [];
         TURNOS.forEach(t => {
           const k = key(ds, t);
-          // Plan pruebas
-          (planData[k]||[]).filter(p=>p.tarea==='Prueba').forEach(p => {
-            // Buscar si hubo real en ese día (no importa turno) para esa prueba
-            const hayRealEseDia = TURNOS.some(t2 => {
-              const rk = key(ds, t2);
-              const ri = realTasksByTurno[rk];
-              return ri && (ri.primary && ri.primary.moldeCompleto === p.moldeCompleto || ri.tests.some(rt => rt.moldeCompleto === p.moldeCompleto));
-            });
-            let estadoEmoji = hayRealEseDia ? '✅' : '❓'; // plan sin real = ❓
-            // Ajuste: si hay real de ese molde en el día, ✅, si no, ⚠️ (porque no se ejecutó)
-            estadoEmoji = hayRealEseDia ? '✅' : '⚠️';
-            pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Plan', estado: estadoEmoji });
-          });
-          // Real pruebas
+          (planData[k]||[]).filter(p=>p.tarea==='Prueba').forEach(p => dayPlanTests.push(p.moldeCompleto));
           if (realTasksByTurno[k] && realTasksByTurno[k].tests.length > 0) {
-            realTasksByTurno[k].tests.forEach(rt => {
-              const huboPlan = (planData[k]||[]).some(p => p.tarea==='Prueba' && p.moldeCompleto === rt.moldeCompleto);
-              const estadoEmoji = huboPlan ? '✅' : '📌';
-              pruebas.push({ fecha: ds, turno: t, molde: rt.moldeCompleto, tipo: 'Real', estado: estadoEmoji });
-            });
+            realTasksByTurno[k].tests.forEach(rt => dayRealTests.push(rt.moldeCompleto));
+          }
+        });
+        // Procesar planificadas vs reales
+        dayPlanTests.forEach(molde => {
+          const cumplida = dayRealTests.includes(molde);
+          pruebas.push({ fecha: ds, molde, tipo: 'Plan', estado: cumplida ? '✅' : '⚠️' });
+        });
+        dayRealTests.forEach(molde => {
+          if (!dayPlanTests.includes(molde)) {
+            pruebas.push({ fecha: ds, molde, tipo: 'Real', estado: '📌' });
           }
         });
       }
 
-      // Agrupar por día y molde? Mostramos lista.
       if (pruebas.length === 0) {
         container.innerHTML = '<h3>🔬 Pruebas del mes</h3><p style="color:var(--text-muted);">Sin pruebas en esta vista.</p>';
         return;
       }
-      let html = '<h3>🔬 Pruebas del mes</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>';
+      let html = '<h3>🔬 Pruebas del mes</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>';
       pruebas.forEach(p => {
-        html += `<tr><td>${p.fecha}</td><td>${p.turno}</td><td>${p.molde}</td><td>${p.tipo}</td><td>${p.estado}</td></tr>`;
+        html += `<tr><td>${p.fecha}</td><td>${p.molde}</td><td>${p.tipo}</td><td>${p.estado}</td></tr>`;
       });
       html += '</tbody></table>';
       container.innerHTML = html;
@@ -831,114 +938,123 @@
     // ==================== VISTAS ====================
     function setView(view) {
       currentView = view;
-      document.getElementById('btnProd').classList.toggle('active', view === 'prod');
-      document.getElementById('btnPlan').classList.toggle('active', view === 'plan');
       document.getElementById('btnCumpl').classList.toggle('active', view === 'cumpl');
+      const slider = document.getElementById('toggleSlider');
+      const prodLabel = document.getElementById('toggleProdLabel');
+      const planLabel = document.getElementById('togglePlanLabel');
+      if (view === 'prod') {
+        slider.className = 'toggle-slider left';
+        prodLabel.classList.add('active');
+        planLabel.classList.remove('active');
+      } else if (view === 'plan') {
+        slider.className = 'toggle-slider right';
+        planLabel.classList.add('active');
+        prodLabel.classList.remove('active');
+      } else {
+        // cumpl: ambos inactivos visualmente
+        prodLabel.classList.remove('active');
+        planLabel.classList.remove('active');
+        slider.className = 'toggle-slider left'; // mantener posición
+      }
       renderGantt();
+    }
+
+    function toggleProdPlan() {
+      if (currentView === 'cumpl') {
+        setView('prod');
+      } else {
+        setView(currentView === 'prod' ? 'plan' : 'prod');
+      }
+    }
+
+    function toggleCumplimiento() {
+      setView(currentView === 'cumpl' ? 'prod' : 'cumpl');
     }
 
     // ==================== GANTT DIARIO (modal) ====================
     function abrirGantt(dateStr) {
-      const modal = document.getElementById('ganttModal');
-      document.getElementById('ganttTitulo').textContent = 
-        new Date(dateStr + 'T00:00:00').toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-      const cont = document.getElementById('ganttDetalle');
-      cont.innerHTML = '';
-
+      document.getElementById('ganttTitulo').textContent = new Date(dateStr+'T00:00:00').toLocaleDateString('es-AR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+      const cont = document.getElementById('ganttDetalle'); cont.innerHTML = '';
       TURNOS.forEach(turno => {
         const k = key(dateStr, turno);
         const plans = planData[k] || [];
         const realInfo = realTasksByTurno[k];
+        const row = document.createElement('div'); row.className = 'gantt-row';
+        row.innerHTML = `<div class="gantt-turno">${turno}</div><div class="gantt-bars"></div>`;
+        const barsDiv = row.querySelector('.gantt-bars');
 
-        const row = document.createElement('div');
-        row.className = 'gantt-row';
-
-        const turnoDiv = document.createElement('div');
-        turnoDiv.className = 'gantt-turno';
-        turnoDiv.textContent = turno;
-        row.appendChild(turnoDiv);
-
-        const barsDiv = document.createElement('div');
-        barsDiv.className = 'gantt-bars';
-
-        // Planificación (barras tenues)
-        plans.filter(p => p.tarea === 'Producción').forEach(p => {
-          const bar = document.createElement('div');
-          bar.className = 'gantt-bar gantt-plan';
+        plans.filter(p=>p.tarea==='Producción').forEach(p => {
+          const bar = document.createElement('div'); bar.className = 'gantt-bar gantt-plan';
           bar.style.backgroundColor = getBrickColor(p.baseName, p.number);
           bar.innerHTML = `<img src="${getImageSrc(p.baseName)}" onerror="this.style.display='none'"> ${p.moldeCompleto}`;
           barsDiv.appendChild(bar);
         });
-        plans.filter(p => p.tarea === 'Prueba').forEach(p => {
-          const bar = document.createElement('div');
-          bar.className = 'gantt-bar gantt-plan';
-          bar.style.backgroundColor = '#ffd700';
-          bar.style.color = '#000';
+        plans.filter(p=>p.tarea==='Prueba').forEach(p => {
+          const bar = document.createElement('div'); bar.className = 'gantt-bar gantt-plan';
+          bar.style.backgroundColor = '#ffd700'; bar.style.color = '#000';
           bar.innerHTML = `<img src="${getImageSrc(p.baseName)}" onerror="this.style.display='none'"> ${p.moldeCompleto} (PR)`;
           barsDiv.appendChild(bar);
         });
 
-        // Producción real (barras sólidas con emoji de cumplimiento)
-        if (realInfo) {
-          if (realInfo.primary) {
-            const comp = getCompliance(realInfo.primary.moldeCompleto, plans);
-            const bar = document.createElement('div');
-            bar.className = 'gantt-bar';
-            bar.style.backgroundColor = comp.status === 'cumplido' ? '#30d158' : comp.status === 'parcial' ? '#ff9f0a' : comp.status === 'desvio' ? '#ff453a' : '#636366';
-            const emoji = comp.status === 'cumplido' ? '✅' : comp.status === 'parcial' ? '⏳' : comp.status === 'desvio' ? '⚠️' : '📌';
-            bar.innerHTML = `<img src="${getImageSrc(realInfo.primary.baseName)}" onerror="this.style.display='none'"> ${realInfo.primary.moldeCompleto} ${emoji}`;
-            barsDiv.appendChild(bar);
-          }
+        if (realInfo && realInfo.primary) {
+          const comp = getCompliance(realInfo.primary.moldeCompleto, plans);
+          const bar = document.createElement('div'); bar.className = 'gantt-bar';
+          bar.style.backgroundColor = comp.status==='cumplido'?'#30d158':comp.status==='parcial'?'#ff9f0a':comp.status==='desvio'?'#ff453a':'#636366';
+          const emoji = comp.status==='cumplido'?'✅':comp.status==='parcial'?'⏳':comp.status==='desvio'?'⚠️':'📌';
+          bar.innerHTML = `<img src="${getImageSrc(realInfo.primary.baseName)}" onerror="this.style.display='none'"> ${realInfo.primary.moldeCompleto} ${emoji}`;
+          barsDiv.appendChild(bar);
+        }
+        if (realInfo && realInfo.tests.length > 0) {
           realInfo.tests.forEach(test => {
-            const bar = document.createElement('div');
-            bar.className = 'gantt-bar';
-            bar.style.backgroundColor = '#ffd700';
-            bar.style.color = '#000';
+            const bar = document.createElement('div'); bar.className = 'gantt-bar';
+            bar.style.backgroundColor = '#ffd700'; bar.style.color = '#000';
             bar.innerHTML = `<img src="${getImageSrc(test.baseName)}" onerror="this.style.display='none'"> ${test.moldeCompleto} (PR)`;
             barsDiv.appendChild(bar);
           });
         }
-
-        // Si no hay nada, mostrar mensaje
         if (barsDiv.children.length === 0) {
-          const empty = document.createElement('div');
-          empty.style.color = 'var(--text-muted)';
-          empty.style.fontSize = '0.8rem';
-          empty.textContent = 'Sin actividad';
-          barsDiv.appendChild(empty);
+          barsDiv.innerHTML = '<span style="color:var(--text-muted);">Sin actividad</span>';
         }
-
-        row.appendChild(barsDiv);
         cont.appendChild(row);
       });
-
-      modal.style.display = 'flex';
+      document.getElementById('ganttModal').style.display = 'flex';
     }
+    function cerrarGantt() { document.getElementById('ganttModal').style.display = 'none'; }
+    window.addEventListener('click', e => { if (e.target === document.getElementById('ganttModal')) cerrarGantt(); });
 
-    function cerrarGantt() {
-      document.getElementById('ganttModal').style.display = 'none';
+    // ==================== NAVEGACIÓN ====================
+    function abrirSelectorMes() {
+      document.getElementById('overlay').style.display = 'block';
+      document.getElementById('monthSelector').style.display = 'block';
+      const sel = document.getElementById('selMonth');
+      sel.innerHTML = '';
+      ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'].forEach((m,i) => {
+        const opt = document.createElement('option'); opt.value = i; opt.textContent = m;
+        if (i === currentDate.getMonth()) opt.selected = true;
+        sel.appendChild(opt);
+      });
+      document.getElementById('selYear').value = currentDate.getFullYear();
     }
-    window.addEventListener('click', (e) => {
-      if (e.target === document.getElementById('ganttModal')) cerrarGantt();
-    });
-
-    // ==================== SELECTOR MES ====================
-    function abrirSelectorMes() { /* igual que antes */ }
-    function cerrarSelectorMes() { /* igual */ }
-    function irAMes() { /* igual */ }
-    function cambiarMes(delta) { currentDate.setMonth(currentDate.getMonth() + delta); loadData(); }
-    function irAHoy() {
-      currentDate = new Date();
+    function cerrarSelectorMes() {
+      document.getElementById('overlay').style.display = 'none';
+      document.getElementById('monthSelector').style.display = 'none';
+    }
+    function irAMes() {
+      const m = parseInt(document.getElementById('selMonth').value);
+      const y = parseInt(document.getElementById('selYear').value);
+      currentDate.setFullYear(y); currentDate.setMonth(m);
+      cerrarSelectorMes();
       loadData();
     }
+    function cambiarMes(delta) { currentDate.setMonth(currentDate.getMonth()+delta); loadData(); }
+    function irAHoy() { currentDate = new Date(); loadData(); }
 
     function updateClock() {
       const now = new Date();
       document.getElementById('liveClock').textContent = 
-        now.toLocaleDateString('es-AR', { weekday:'short', year:'numeric', month:'short', day:'numeric' }) +
-        ' · ' + now.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit' });
+        now.toLocaleDateString('es-AR', {weekday:'short',year:'numeric',month:'short',day:'numeric'}) + ' · ' + 
+        now.toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'});
     }
-
     function toggleTheme() {
       themeDark = !themeDark;
       document.body.classList.toggle('light-mode', !themeDark);
@@ -946,26 +1062,9 @@
     }
 
     window.addEventListener('load', () => {
-      if (localStorage.getItem('theme') === 'light') {
-        document.body.classList.add('light-mode');
-        themeDark = false;
-      }
-      updateClock();
-      setInterval(updateClock, 30000);
+      if (localStorage.getItem('theme')==='light') { document.body.classList.add('light-mode'); themeDark = false; }
+      updateClock(); setInterval(updateClock, 30000);
       loadData();
-    });
-
-    // Tooltip para indicadores
-    document.addEventListener('mouseover', (e) => {
-      if (e.target.classList.contains('day-indicator')) {
-        const clase = e.target.classList.contains('today') ? 'Hoy' :
-                      e.target.classList.contains('real') ? 'Producción real' :
-                      e.target.classList.contains('plan') ? 'Planificación' : 'Sin actividad';
-        showTooltip(e, clase);
-      }
-    });
-    document.addEventListener('mouseout', (e) => {
-      if (e.target.classList.contains('day-indicator')) hideTooltip();
     });
   </script>
 </body>
