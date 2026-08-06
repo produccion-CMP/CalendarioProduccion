@@ -28,7 +28,9 @@
       --cell-h: 78px;
       --font: 'Plus Jakarta Sans', system-ui, sans-serif;
       --prueba-bg: rgba(255,215,0,0.2);
-      --sunday-bg: rgba(255,255,255,0.03);
+      --sunday-bg: rgba(255,255,255,0.06);
+      --day-border: #5a5a5e;
+      --turn-border: #3a3a3c;
     }
 
     body.light-mode {
@@ -43,7 +45,9 @@
       --shadow: 0 2px 12px rgba(0,0,0,0.08);
       --shadow-3d: 0 4px 16px rgba(0,0,0,0.12);
       --prueba-bg: rgba(255,215,0,0.15);
-      --sunday-bg: rgba(0,0,0,0.02);
+      --sunday-bg: rgba(0,0,0,0.04);
+      --day-border: #d0d0d5;
+      --turn-border: #e5e5ea;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -173,7 +177,7 @@
     }
     .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1500; }
 
-    /* Tabla Gantt */
+    /* ============ TABLA GANTT ============ */
     .gantt-wrapper {
       background: var(--bg-panel); border-radius: var(--radius); padding: 8px;
       box-shadow: var(--shadow-3d); overflow-x: auto;
@@ -182,15 +186,38 @@
       width: 100%; border-collapse: collapse; table-layout: fixed;
     }
     .gantt-table th, .gantt-table td {
-      border: 1px solid var(--border); height: var(--cell-h); padding: 2px;
+      border: none; height: var(--cell-h); padding: 2px;
       text-align: center; vertical-align: middle; font-size: 0.75rem;
       position: relative; overflow: hidden;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
     }
     .gantt-table th {
       background: var(--bg-cell); font-weight: 700; color: var(--accent-light);
+      border-bottom: 3px solid var(--day-border);
     }
-    .gantt-table td { cursor: pointer; }
-    .gantt-table td:hover { filter: brightness(1.05); }
+    .gantt-table td {
+      cursor: pointer;
+      border-bottom: 1px solid var(--turn-border);
+      border-right: 1px solid var(--turn-border);
+    }
+    /* Bordes entre días: cada 3 filas (T1, T2, T3) una línea más gruesa */
+    .gantt-table tbody tr:nth-child(3n) td {
+      border-bottom: 3px solid var(--day-border);
+    }
+    .gantt-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+    /* Última columna sin borde derecho */
+    .gantt-table td:last-child {
+      border-right: none;
+    }
+
+    /* Efecto hover: zoom en toda la columna */
+    .gantt-table td:hover {
+      transform: scale(1.03);
+      z-index: 5;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+    }
 
     .day-header { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
     .day-name { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
@@ -200,21 +227,39 @@
     }
 
     .turn-label {
-      font-weight: 700; color: var(--accent-light); font-size: 0.85rem;
+      font-weight: 700; color: var(--accent-light); font-size: 0.8rem;
       writing-mode: vertical-rl; text-orientation: mixed; margin: auto;
+      position: relative;
+    }
+    /* Flecha indicadora de flujo entre turnos */
+    .turn-label::after {
+      content: "↓";
+      position: absolute;
+      bottom: 2px;
+      right: 50%;
+      transform: translateX(50%);
+      font-size: 0.7rem;
+      writing-mode: horizontal-tb;
+      color: var(--accent);
+    }
+    .gantt-table tbody tr:last-child .turn-label::after {
+      content: "↓\A siguiente día";
+      white-space: pre;
+      font-size: 0.5rem;
+      bottom: 0;
     }
 
     .cell-content {
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      height: 100%; width: 100%; overflow: hidden;
+      height: 100%; width: 100%; overflow-y: auto;
     }
-    .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 1px; }
-    .mold-base { font-weight: 700; font-size: 0.7rem; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+    .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 1px; flex-shrink: 0; }
+    .mold-base { font-weight: 700; font-size: 0.65rem; line-height: 1.1; white-space: nowrap; }
     .mold-label-text { font-size: 0.5rem; font-weight: 600; opacity: 0.7; text-transform: uppercase; }
-    .mold-number { font-size: 0.65rem; font-weight: 700; }
+    .mold-number { font-size: 0.6rem; font-weight: 700; }
     .prueba-badge {
       background: #ffd700; color: #000; font-weight: 700; font-size: 0.6rem;
-      padding: 1px 4px; border-radius: 3px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+      padding: 1px 4px; border-radius: 3px; margin-top: 2px; white-space: nowrap;
     }
 
     .continuation-bar {
@@ -235,14 +280,21 @@
       position: absolute; bottom: 6px; right: 4px; font-size: 0.7rem;
     }
 
+    /* Día actual */
     td.today-cell {
       box-shadow: inset 0 0 0 3px var(--accent);
     }
 
-    td.sunday-cell {
+    /* Domingo */
+    td.sunday-cell, th.sunday-cell {
       background-color: var(--sunday-bg) !important;
     }
+    .day-name.sunday-label {
+      color: #ff6b6b;
+      font-weight: 700;
+    }
 
+    /* Pruebas info */
     .pruebas-info {
       margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius);
       padding: 16px; box-shadow: var(--shadow-3d); font-size: 0.8rem;
@@ -251,6 +303,7 @@
     .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 6px; vertical-align: middle; }
     .pruebas-table img { width: 24px; height: 24px; object-fit: contain; border-radius: 4px; margin-right: 6px; vertical-align: middle; }
 
+    /* Modal Gantt */
     .gantt-modal {
       position: fixed; top:0; left:0; width:100%; height:100%;
       background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center;
@@ -274,15 +327,58 @@
     .gantt-plan { opacity: 0.7; }
     .close-btn { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; float: right; }
 
+    /* ============ IMPRESIÓN ============ */
     @media print {
-      body { background: white; color: black; padding: 0; font-size: 8px; }
-      .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal, .pruebas-info,
-      .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn { display: none !important; }
-      .gantt-wrapper { box-shadow: none; background: none; padding: 0; }
-      .gantt-table th, .gantt-table td { border: 1px solid #aaa; height: 40px; }
+      body {
+        background: white !important;
+        color: black !important;
+        padding: 10px;
+        font-size: 7px;
+      }
+      .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal,
+      .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, .compliance-bar-cell,
+      .compliance-emoji-cell, .change-indicator, .prueba-badge {
+        display: none !important;
+      }
+      .gantt-wrapper {
+        box-shadow: none;
+        background: none;
+        padding: 0;
+      }
+      .gantt-table th, .gantt-table td {
+        background: #fff !important;
+        border: 1px solid #aaa !important;
+        height: 35px;
+        color: black !important;
+        box-shadow: none !important;
+        transform: none !important;
+      }
+      .gantt-table th {
+        background: #f0f0f0 !important;
+      }
       .mold-image { width: 14px; height: 14px; filter: none; }
-      @page { size: A4 landscape; margin: 0.3cm; }
+      .continuation-bar { opacity: 0.6; }
+      .turn-label { color: black !important; }
+      .turn-label::after { display: none; }
+      .day-name { color: #555 !important; }
+      .sunday-cell { background: #fff5f5 !important; }
+
+      /* Mostrar solo planificación */
+      .prod-only, .cumpl-only { display: none !important; }
+
+      /* Sección de pruebas en impresión */
+      .pruebas-info {
+        display: block !important;
+        box-shadow: none;
+        background: none;
+        page-break-before: always;
+      }
+      .pruebas-table { font-size: 7px; }
+      @page { size: A4 landscape; margin: 0.5cm; }
     }
+
+    /* Clases auxiliares para impresión */
+    .prod-only, .cumpl-only { /* solo visibles en pantalla */ }
   </style>
 </head>
 <body>
@@ -434,7 +530,7 @@
           }
         });
 
-        // Producción real (con columna Zorr. Carg.)
+        // Producción real
         const allReal = [];
         realRows.forEach(row => {
           const dia = row['Día']?.trim();
@@ -444,11 +540,8 @@
 
           const zorrasStr = row['Zorr. Carg.']?.trim();
           let zorras = parseInt(zorrasStr);
-          // Si el campo está vacío o no es número, asumimos que hubo producción (zorras > 0)
-          if (zorrasStr === '' || isNaN(zorras)) {
-            zorras = 1; // valor ficticio positivo para que no se excluya
-          }
-          if (zorras === 0) return;   // solo excluir si es exactamente 0
+          if (zorrasStr === '' || isNaN(zorras)) zorras = 1;
+          if (zorras === 0) return;
 
           const p = dia.split('/');
           if (p.length !== 3) return;
@@ -461,7 +554,6 @@
         });
         allReal.sort((a,b) => a.date - b.date || TURNOS.indexOf(a.turno) - TURNOS.indexOf(b.turno));
 
-        // Agrupar por clave
         const grouped = new Map();
         allReal.forEach(r => {
           const k = key(formatYYYYMMDD(r.date), r.turno);
@@ -469,7 +561,6 @@
           grouped.get(k).push(r);
         });
 
-        // Orden cronológico
         const entries = [];
         for (const [clave, regs] of grouped.entries()) {
           const [fechaStr, turno] = clave.split('_');
@@ -477,7 +568,6 @@
         }
         entries.sort((a,b) => a.fecha - b.fecha || TURNOS.indexOf(a.turno) - TURNOS.indexOf(b.turno));
 
-        // Determinar producciones y pruebas
         realTasksByTurno = {};
         for (let i = 0; i < entries.length; i++) {
           const entry = entries[i];
@@ -498,7 +588,6 @@
             if (score >= 1) {
               productions.push({ ...r, isContinuation: prevMolds.includes(r.moldeCompleto) });
             } else {
-              // Sin continuidad: si zorras <= 2 es prueba, sino producción corta
               if (r.zorras <= 2) {
                 tests.push({ ...r, isTest: true });
               } else {
@@ -542,7 +631,7 @@
       const turnoWidth = 65;
       const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
 
-      // Días con cambio (donde algún molde no es continuación)
+      // Días con cambio
       const changeDays = new Set();
       for (let d = 1; d <= daysInMonth; d++) {
         const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
@@ -566,7 +655,7 @@
         const showChangeIcon = changeDays.has(dateStr);
         html += `<th style="width:${colWidthCalc};" class="${isToday ? 'today-cell' : ''} ${isSunday ? 'sunday-cell' : ''}">
           <div class="day-header">
-            <span class="day-name">${dayName}</span>
+            <span class="day-name ${isSunday ? 'sunday-label' : ''}">${dayName}</span>
             <span class="day-number">${d}</span>
             <span class="change-indicator">${showChangeIcon ? '🔄️' : ''}</span>
           </div>
@@ -574,10 +663,9 @@
       }
       html += '</tr></thead><tbody>';
 
-      // Seguimiento de último molde activo por turno
       let lastRealMolds = new Map();
 
-      TURNOS.forEach(turno => {
+      TURNOS.forEach((turno, tIdx) => {
         html += `<tr><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
 
         for (let d = 1; d <= daysInMonth; d++) {
@@ -601,16 +689,16 @@
               const prevMold = lastRealMolds.get(turno);
               const showDetail = !prod.isContinuation || prevMold !== prod.moldeCompleto;
               if (showDetail) {
-                cellContent += `<div style="background-color:${color}; color:${textColor}; border-radius:4px; padding:2px;" class="turn-task">
+                cellContent += `<div style="background-color:${color}; color:${textColor}; border-radius:4px; padding:2px; min-height:100%; display:flex; align-items:center; justify-content:center;" class="turn-task prod-only">
                   ${createMoldHTML(prod.baseName, prod.number)}
                 </div>`;
               } else {
-                cellContent += `<div class="continuation-bar" style="background-color:${color};"></div>`;
+                cellContent += `<div class="continuation-bar prod-only" style="background-color:${color};"></div>`;
               }
               lastRealMolds.set(turno, prod.moldeCompleto);
             });
             tests.forEach(test => {
-              cellContent += `<div class="prueba-badge" title="${test.moldeCompleto} (${test.zorras} zorras)">PR ${test.baseName} ${test.number}</div>`;
+              cellContent += `<div class="prueba-badge prod-only" title="${test.moldeCompleto} (${test.zorras} zorras)">PR ${test.baseName} ${test.number}</div>`;
             });
           } else if (currentView === 'plan' && plans.length > 0) {
             const prod = plans.filter(p=>p.tarea==='Producción');
@@ -620,7 +708,7 @@
               const color = getBrickColor(task.baseName, task.number);
               const showDetail = task.esInicio;
               if (showDetail) {
-                cellContent += `<div style="background-color:${color}; color:${pickTextColor(color)}; border-radius:4px; padding:2px;" class="turn-task">
+                cellContent += `<div style="background-color:${color}; color:${pickTextColor(color)}; border-radius:4px; padding:2px; min-height:100%; display:flex; align-items:center; justify-content:center;" class="turn-task">
                   ${createMoldHTML(task.baseName, task.number)}
                 </div>`;
               } else {
@@ -639,19 +727,19 @@
               const prevMold = lastRealMolds.get(turno);
               const showDetail = !prod.isContinuation || prevMold !== prod.moldeCompleto;
               if (showDetail) {
-                cellContent += `<div style="background-color:${color}; color:${textColor}; border-radius:4px; padding:2px;" class="turn-task">
+                cellContent += `<div style="background-color:${color}; color:${textColor}; border-radius:4px; padding:2px; min-height:100%; display:flex; align-items:center; justify-content:center;" class="turn-task cumpl-only">
                   ${createMoldHTML(prod.baseName, prod.number)}
                 </div>`;
               } else {
-                cellContent += `<div class="continuation-bar" style="background-color:${color};"></div>`;
+                cellContent += `<div class="continuation-bar cumpl-only" style="background-color:${color};"></div>`;
               }
               lastRealMolds.set(turno, prod.moldeCompleto);
               const barClass = comp.status==='cumplido'?'green-bar':comp.status==='parcial'?'orange-bar':comp.status==='desvio'?'red-bar':'gray-bar';
               const emoji = comp.status==='cumplido'?'✅':comp.status==='parcial'?'⏳':comp.status==='desvio'?'⚠️':'📌';
-              cellContent += `<div class="compliance-bar-cell ${barClass}"></div><div class="compliance-emoji-cell">${emoji}</div>`;
+              cellContent += `<div class="compliance-bar-cell ${barClass} cumpl-only"></div><div class="compliance-emoji-cell cumpl-only">${emoji}</div>`;
             });
             tests.forEach(test => {
-              cellContent += `<div class="prueba-badge">PR ${test.baseName} ${test.number}</div>`;
+              cellContent += `<div class="prueba-badge cumpl-only">PR ${test.baseName} ${test.number}</div>`;
             });
           }
 
