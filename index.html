@@ -184,12 +184,15 @@
     .gantt-table th, .gantt-table td {
       border: 1px solid var(--border); height: var(--cell-h); padding: 2px;
       text-align: center; vertical-align: middle; font-size: 0.75rem;
-      position: relative; overflow: hidden;
+      position: relative; transition: background 0.3s;
+      overflow: hidden;
     }
     .gantt-table th {
       background: var(--bg-cell); font-weight: 700; color: var(--accent-light);
     }
-    .gantt-table td { cursor: pointer; }
+    .gantt-table td {
+      cursor: pointer;
+    }
     .gantt-table td:hover { filter: brightness(1.05); }
 
     .day-header { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
@@ -217,10 +220,12 @@
       padding: 1px 4px; border-radius: 3px; margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
     }
 
+    /* Continuación bar */
     .continuation-bar {
       width: 100%; flex: 1; min-height: 20px; border-radius: 2px; opacity: 0.85; margin: 1px 0;
     }
 
+    /* Barra de cumplimiento */
     .compliance-bar-cell {
       position: absolute; bottom: 0; left: 0; width: 100%; height: 4px;
       border-radius: 0 0 3px 3px; background: var(--gray);
@@ -235,14 +240,17 @@
       position: absolute; bottom: 6px; right: 4px; font-size: 0.7rem;
     }
 
+    /* Día actual */
     td.today-cell {
       box-shadow: inset 0 0 0 3px var(--accent);
     }
 
+    /* Domingo */
     td.sunday-cell {
       background-color: var(--sunday-bg) !important;
     }
 
+    /* Pruebas info */
     .pruebas-info {
       margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius);
       padding: 16px; box-shadow: var(--shadow-3d); font-size: 0.8rem;
@@ -251,6 +259,7 @@
     .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 6px; vertical-align: middle; }
     .pruebas-table img { width: 24px; height: 24px; object-fit: contain; border-radius: 4px; margin-right: 6px; vertical-align: middle; }
 
+    /* Modal Gantt */
     .gantt-modal {
       position: fixed; top:0; left:0; width:100%; height:100%;
       background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center;
@@ -360,7 +369,7 @@
     let currentDate = new Date();
     let themeDark = true;
 
-    // Colores por tipo de ladrillo
+    // Colores
     const brickHueMap = new Map();
     function getBaseHue(baseName) {
       if (brickHueMap.has(baseName)) return brickHueMap.get(baseName);
@@ -380,6 +389,7 @@
       return parseInt(m[3]) > 60 ? '#000' : '#fff';
     }
 
+    // Utilidades
     function formatYYYYMMDD(date) {
       const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0');
       return `${y}-${m}-${d}`;
@@ -397,123 +407,113 @@
     }
 
     async function loadData() {
-      try {
-        const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
+      const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
 
-        // Planificación
-        planData = {};
-        planRows.forEach(row => {
-          const molde = row['LADRILLO:']?.trim();
-          const tarea = row['TAREA:']?.trim();
-          const fi = row['FECHA INICIO:']?.trim(), ff = row['FECHA FIN:']?.trim();
-          const ti = row['TURNO INICIO:']?.trim(), tf = row['TURNO FIN:']?.trim();
-          if (!molde || !fi || !ff) return;
-          const inicio = new Date(fi+'T00:00:00'), fin = new Date(ff+'T00:00:00');
-          if (isNaN(inicio) || isNaN(fin)) return;
-          for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate()+1)) {
-            const ds = formatYYYYMMDD(d);
-            let tDia = [];
-            if (d.getTime()===inicio.getTime() && d.getTime()===fin.getTime()) {
-              const i1=TURNOS.indexOf(ti), i2=TURNOS.indexOf(tf);
-              for (let i=i1;i<=i2;i++) tDia.push(TURNOS[i]);
-            } else if (d.getTime()===inicio.getTime()) {
-              const i1=TURNOS.indexOf(ti);
-              for (let i=i1;i<3;i++) tDia.push(TURNOS[i]);
-            } else if (d.getTime()===fin.getTime()) {
-              const i2=TURNOS.indexOf(tf);
-              for (let i=0;i<=i2;i++) tDia.push(TURNOS[i]);
-            } else tDia = [...TURNOS];
-            tDia.forEach(t => {
-              const k = key(ds,t);
-              if (!planData[k]) planData[k] = [];
-              planData[k].push({
-                moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde),
-                tarea, esInicio: d.getTime()===inicio.getTime(), esFin: d.getTime()===fin.getTime()
-              });
+      // Planificación
+      planData = {};
+      planRows.forEach(row => {
+        const molde = row['LADRILLO:']?.trim();
+        const tarea = row['TAREA:']?.trim();
+        const fi = row['FECHA INICIO:']?.trim(), ff = row['FECHA FIN:']?.trim();
+        const ti = row['TURNO INICIO:']?.trim(), tf = row['TURNO FIN:']?.trim();
+        if (!molde || !fi || !ff) return;
+        const inicio = new Date(fi+'T00:00:00'), fin = new Date(ff+'T00:00:00');
+        if (isNaN(inicio) || isNaN(fin)) return;
+        for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate()+1)) {
+          const ds = formatYYYYMMDD(d);
+          let tDia = [];
+          if (d.getTime()===inicio.getTime() && d.getTime()===fin.getTime()) {
+            const i1=TURNOS.indexOf(ti), i2=TURNOS.indexOf(tf);
+            for (let i=i1;i<=i2;i++) tDia.push(TURNOS[i]);
+          } else if (d.getTime()===inicio.getTime()) {
+            const i1=TURNOS.indexOf(ti);
+            for (let i=i1;i<3;i++) tDia.push(TURNOS[i]);
+          } else if (d.getTime()===fin.getTime()) {
+            const i2=TURNOS.indexOf(tf);
+            for (let i=0;i<=i2;i++) tDia.push(TURNOS[i]);
+          } else tDia = [...TURNOS];
+          tDia.forEach(t => {
+            const k = key(ds,t);
+            if (!planData[k]) planData[k] = [];
+            planData[k].push({
+              moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde),
+              tarea, esInicio: d.getTime()===inicio.getTime(), esFin: d.getTime()===fin.getTime()
             });
-          }
-        });
-
-        // Producción real (con columna Zorr. Carg.)
-        const allReal = [];
-        realRows.forEach(row => {
-          const dia = row['Día']?.trim();
-          const turno = row['Turno']?.trim();
-          const molde = row['L. carga (N° de molde)']?.trim();
-          if (!dia || !turno || !molde) return;
-
-          const zorrasStr = row['Zorr. Carg.']?.trim();
-          let zorras = parseInt(zorrasStr);
-          // Si el campo está vacío o no es número, asumimos que hubo producción (zorras > 0)
-          if (zorrasStr === '' || isNaN(zorras)) {
-            zorras = 1; // valor ficticio positivo para que no se excluya
-          }
-          if (zorras === 0) return;   // solo excluir si es exactamente 0
-
-          const p = dia.split('/');
-          if (p.length !== 3) return;
-          const fecha = new Date(p[2], p[1]-1, p[0]);
-          allReal.push({
-            date: fecha, turno, moldeCompleto: molde,
-            baseName: getBaseName(molde), number: getMoldNumber(molde),
-            zorras
           });
-        });
-        allReal.sort((a,b) => a.date - b.date || TURNOS.indexOf(a.turno) - TURNOS.indexOf(b.turno));
-
-        // Agrupar por clave
-        const grouped = new Map();
-        allReal.forEach(r => {
-          const k = key(formatYYYYMMDD(r.date), r.turno);
-          if (!grouped.has(k)) grouped.set(k, []);
-          grouped.get(k).push(r);
-        });
-
-        // Orden cronológico
-        const entries = [];
-        for (const [clave, regs] of grouped.entries()) {
-          const [fechaStr, turno] = clave.split('_');
-          entries.push({ clave, fecha: new Date(fechaStr + 'T00:00:00'), turno, regs });
         }
-        entries.sort((a,b) => a.fecha - b.fecha || TURNOS.indexOf(a.turno) - TURNOS.indexOf(b.turno));
+      });
 
-        // Determinar producciones y pruebas
-        realTasksByTurno = {};
-        for (let i = 0; i < entries.length; i++) {
-          const entry = entries[i];
-          const prevEntry = i > 0 ? entries[i-1] : null;
-          const nextEntry = i < entries.length - 1 ? entries[i+1] : null;
+      // Producción real con columna Zorr. Carg.
+      const allReal = [];
+      realRows.forEach(row => {
+        const dia = row['Día']?.trim();
+        const turno = row['Turno']?.trim();
+        const molde = row['L. carga (N° de molde)']?.trim(); // columna E
+        const zorras = parseInt(row['Zorr. Carg.']) || 0;
+        if (!dia || !turno || !molde || zorras === 0) return; // ignorar zorras=0
+        const p = dia.split('/');
+        if (p.length !== 3) return;
+        const fecha = new Date(p[2], p[1]-1, p[0]);
+        allReal.push({
+          date: fecha, turno, moldeCompleto: molde,
+          baseName: getBaseName(molde), number: getMoldNumber(molde),
+          zorras
+        });
+      });
+      allReal.sort((a,b) => a.date - b.date || TURNOS.indexOf(a.turno) - TURNOS.indexOf(b.turno));
 
-          const prevMolds = prevEntry ? prevEntry.regs.map(r => r.moldeCompleto) : [];
-          const nextMolds = nextEntry ? nextEntry.regs.map(r => r.moldeCompleto) : [];
+      // Agrupar por clave
+      const grouped = new Map();
+      allReal.forEach(r => {
+        const k = key(formatYYYYMMDD(r.date), r.turno);
+        if (!grouped.has(k)) grouped.set(k, []);
+        grouped.get(k).push(r);
+      });
 
-          const productions = [];
-          const tests = [];
-
-          entry.regs.forEach(r => {
-            let score = 0;
-            if (prevMolds.includes(r.moldeCompleto)) score += 1;
-            if (nextMolds.includes(r.moldeCompleto)) score += 1;
-
-            if (score >= 1) {
-              productions.push({ ...r, isContinuation: prevMolds.includes(r.moldeCompleto) });
-            } else {
-              // Sin continuidad: si zorras <= 2 es prueba, sino producción corta
-              if (r.zorras <= 2) {
-                tests.push({ ...r, isTest: true });
-              } else {
-                productions.push({ ...r, isContinuation: false });
-              }
-            }
-          });
-
-          realTasksByTurno[entry.clave] = { productions, tests };
-        }
-
-        renderGantt();
-      } catch (error) {
-        console.error('Error cargando datos:', error);
+      // Orden cronológico
+      const entries = [];
+      for (const [clave, regs] of grouped.entries()) {
+        const [fechaStr, turno] = clave.split('_');
+        entries.push({ clave, fecha: new Date(fechaStr + 'T00:00:00'), turno, regs });
       }
+      entries.sort((a,b) => a.fecha - b.fecha || TURNOS.indexOf(a.turno) - TURNOS.indexOf(b.turno));
+
+      // Determinar producciones y pruebas con puntuación y zorras
+      realTasksByTurno = {};
+      for (let i = 0; i < entries.length; i++) {
+        const entry = entries[i];
+        const prevEntry = i > 0 ? entries[i-1] : null;
+        const nextEntry = i < entries.length - 1 ? entries[i+1] : null;
+
+        const prevMolds = prevEntry ? prevEntry.regs.map(r => r.moldeCompleto) : [];
+        const nextMolds = nextEntry ? nextEntry.regs.map(r => r.moldeCompleto) : [];
+
+        const productions = [];
+        const tests = [];
+
+        entry.regs.forEach(r => {
+          let score = 0;
+          if (prevMolds.includes(r.moldeCompleto)) score += 1;
+          if (nextMolds.includes(r.moldeCompleto)) score += 1;
+
+          if (score >= 1) {
+            // Producción
+            productions.push({ ...r, isContinuation: prevMolds.includes(r.moldeCompleto) });
+          } else {
+            // Score 0: verificar zorras para decidir prueba o producción corta
+            if (r.zorras <= 2) {
+              tests.push({ ...r, isTest: true });
+            } else {
+              // producción corta (más de 2 zorras, aunque no tenga continuidad)
+              productions.push({ ...r, isContinuation: false });
+            }
+          }
+        });
+
+        realTasksByTurno[entry.clave] = { productions, tests };
+      }
+
+      renderGantt();
     }
 
     function getCompliance(realMold, plans) {
@@ -542,8 +542,9 @@
       const turnoWidth = 65;
       const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
 
-      // Días con cambio (donde algún molde no es continuación)
-      const changeDays = new Set();
+      // Determinar indicadores de cambio por día (si en algún turno de ese día comienza un molde nuevo)
+      const changeDays = new Set(); // almacena dateStr donde hay cambio
+      // Recorremos de nuevo para marcar días con cambio (cuando un molde no es continuación)
       for (let d = 1; d <= daysInMonth; d++) {
         const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
         TURNOS.forEach(turno => {
@@ -574,8 +575,8 @@
       }
       html += '</tr></thead><tbody>';
 
-      // Seguimiento de último molde activo por turno
-      let lastRealMolds = new Map();
+      // Seguimiento de último molde activo por turno para mostrar detalle solo al inicio
+      let lastRealMolds = new Map(); // turno -> moldeCompleto
 
       TURNOS.forEach(turno => {
         html += `<tr><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
@@ -595,11 +596,13 @@
 
           if (currentView === 'prod' && realInfo) {
             const { productions, tests } = realInfo;
+            // Dibujar producciones
             productions.forEach(prod => {
               const color = getBrickColor(prod.baseName, prod.number);
               const textColor = pickTextColor(color);
+              const isNew = !prod.isContinuation;
               const prevMold = lastRealMolds.get(turno);
-              const showDetail = !prod.isContinuation || prevMold !== prod.moldeCompleto;
+              const showDetail = isNew || prevMold !== prod.moldeCompleto;
               if (showDetail) {
                 cellContent += `<div style="background-color:${color}; color:${textColor}; border-radius:4px; padding:2px;" class="turn-task">
                   ${createMoldHTML(prod.baseName, prod.number)}
@@ -609,16 +612,19 @@
               }
               lastRealMolds.set(turno, prod.moldeCompleto);
             });
+            // Pruebas
             tests.forEach(test => {
               cellContent += `<div class="prueba-badge" title="${test.moldeCompleto} (${test.zorras} zorras)">PR ${test.baseName} ${test.number}</div>`;
             });
           } else if (currentView === 'plan' && plans.length > 0) {
+            // Plan: similar lógica de continuidad
             const prod = plans.filter(p=>p.tarea==='Producción');
             const test = plans.filter(p=>p.tarea==='Prueba');
+            // Simplificamos: solo primera producción
             if (prod.length > 0) {
               const task = prod[0];
               const color = getBrickColor(task.baseName, task.number);
-              const showDetail = task.esInicio;
+              const showDetail = task.esInicio; // solo inicio
               if (showDetail) {
                 cellContent += `<div style="background-color:${color}; color:${pickTextColor(color)}; border-radius:4px; padding:2px;" class="turn-task">
                   ${createMoldHTML(task.baseName, task.number)}
@@ -636,8 +642,9 @@
               const comp = getCompliance(prod.moldeCompleto, plans);
               const color = getBrickColor(prod.baseName, prod.number);
               const textColor = pickTextColor(color);
+              const isNew = !prod.isContinuation;
               const prevMold = lastRealMolds.get(turno);
-              const showDetail = !prod.isContinuation || prevMold !== prod.moldeCompleto;
+              const showDetail = isNew || prevMold !== prod.moldeCompleto;
               if (showDetail) {
                 cellContent += `<div style="background-color:${color}; color:${textColor}; border-radius:4px; padding:2px;" class="turn-task">
                   ${createMoldHTML(prod.baseName, prod.number)}
@@ -646,6 +653,7 @@
                 cellContent += `<div class="continuation-bar" style="background-color:${color};"></div>`;
               }
               lastRealMolds.set(turno, prod.moldeCompleto);
+              // Barra y emoji de cumplimiento
               const barClass = comp.status==='cumplido'?'green-bar':comp.status==='parcial'?'orange-bar':comp.status==='desvio'?'red-bar':'gray-bar';
               const emoji = comp.status==='cumplido'?'✅':comp.status==='parcial'?'⏳':comp.status==='desvio'?'⚠️':'📌';
               cellContent += `<div class="compliance-bar-cell ${barClass}"></div><div class="compliance-emoji-cell">${emoji}</div>`;
@@ -655,7 +663,7 @@
             });
           }
 
-          if (cellContent === '') {
+          if (cellContent === '' && bgColor === 'transparent') {
             cellContent = '<span style="color:var(--text-muted);">—</span>';
           }
 
@@ -738,6 +746,7 @@
             realTasksByTurno[k].tests.forEach(rt => dayRealTests.push(rt));
           }
         });
+        // Procesar planificadas
         dayPlanTests.forEach(p => {
           const cumplida = dayRealTests.some(rt => rt.moldeCompleto === p.moldeCompleto);
           pruebas.push({
@@ -749,6 +758,7 @@
             estado: cumplida ? '✅ Realizada' : '⚠️ No realizada'
           });
         });
+        // Reales no planificadas
         dayRealTests.forEach(rt => {
           if (!dayPlanTests.some(p => p.moldeCompleto === rt.moldeCompleto)) {
             pruebas.push({
