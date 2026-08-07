@@ -190,18 +190,16 @@
             z-index: 10;
         }
 
-        .day-header { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; position: relative; }
+        .day-header { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; }
         .day-name { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
         .day-number { font-weight: 800; font-size: 0.9rem; }
-        .day-indicators {
-            display: flex; gap: 3px; align-items: center; justify-content: center; margin-top: 2px;
-        }
-        .change-indicator, .prueba-indicator {
-            font-size: 0.7rem; animation: pulse 1.5s infinite;
+        .change-indicator {
+            font-size: 0.8rem; min-height: 16px; line-height: 1; margin-top: 2px;
+            animation: pulse 1.5s infinite;
         }
         @keyframes pulse {
             0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.2); }
+            50% { transform: scale(1.3); }
         }
 
         .turn-label {
@@ -214,15 +212,16 @@
             height: 100%; width: 100%; overflow: hidden;
         }
         .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 1px; }
-        .mold-base { font-weight: 700; font-size: 0.7rem; line-height: 1.1; white-space: normal; word-break: break-word; max-width: 100%; }
+        .mold-base { font-weight: 700; font-size: 0.7rem; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
         .mold-label-text { font-size: 0.5rem; font-weight: 600; opacity: 0.7; text-transform: uppercase; }
         .mold-number { font-size: 0.65rem; font-weight: 700; }
 
-        /* Fin de producción (último turno) */
-        .end-indicator {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 3px;
-            background: linear-gradient(90deg, transparent, var(--accent), transparent);
-            opacity: 0.6;
+        /* Badge PR */
+        .prueba-badge {
+            background: #000; color: var(--prueba-bg); font-weight: 800; font-size: 0.6rem;
+            padding: 1px 4px; border-radius: 3px; margin: 2px 0;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
+            animation: pulse 1.5s infinite;
         }
 
         /* Barra de cumplimiento */
@@ -240,7 +239,7 @@
             position: absolute; bottom: 6px; right: 4px; font-size: 0.7rem;
         }
 
-        /* Recuadro del día actual */
+        /* Recuadro del día actual (HOY abajo) */
         td.today-col {
             border-left: 3px solid #000 !important;
             border-right: 3px solid #000 !important;
@@ -251,29 +250,41 @@
             border-top: 3px solid #000 !important;
             background: #000 !important;
             color: #fff !important;
+        }
+        tr:last-child td.today-col {
+            border-bottom: 3px solid #000 !important;
             position: relative;
         }
-        th.today-col .day-header::after {
+        tr:last-child td.today-col::after {
             content: "HOY";
             position: absolute;
-            bottom: -10px;
+            bottom: -18px;
             left: 50%;
             transform: translateX(-50%);
             background: var(--accent);
             color: #fff;
-            font-size: 0.6rem;
+            font-size: 0.7rem;
             font-weight: 800;
-            padding: 2px 8px;
+            padding: 2px 10px;
             border-radius: 10px;
-            z-index: 5;
+            z-index: 20;
             white-space: nowrap;
-        }
-        tr:last-child td.today-col {
-            border-bottom: 3px solid #000 !important;
         }
 
         td.sunday-cell {
             background-color: var(--sunday-bg) !important;
+        }
+
+        /* Fin de producción */
+        .end-marker {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 0;
+            height: 0;
+            border-style: solid;
+            border-width: 0 0 12px 12px;
+            border-color: transparent transparent var(--accent) transparent;
         }
 
         /* Pruebas info */
@@ -398,21 +409,21 @@
         let currentDate = new Date();
         let themeDark = true;
 
-        // Colores bien diferenciados
-        const brickHueMap = new Map();
-        function getBaseHue(baseName, number) {
+        // Generación de colores mejorada
+        const brickColorMap = new Map();
+        function getBrickColor(baseName, number) {
             const key = `${baseName}_${number}`;
-            if (brickHueMap.has(key)) return brickHueMap.get(key);
+            if (brickColorMap.has(key)) return brickColorMap.get(key);
             let hash = 0;
             for (let i = 0; i < baseName.length; i++) hash = baseName.charCodeAt(i) + ((hash << 5) - hash);
-            const hue = ((hash + number * 47) % 360 + 360) % 360; // número modifica el hue
-            brickHueMap.set(key, hue);
-            return hue;
+            const hue = (hash * 137 + baseName.length * 53) % 360;
+            const saturation = 65 + number * 5;
+            const lightness = 50 - number * 4;
+            const color = `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            brickColorMap.set(key, color);
+            return color;
         }
-        function getBrickColor(baseName, number) {
-            const hue = getBaseHue(baseName, number);
-            return `hsl(${hue}, 65%, ${42 + number * 6}%)`;
-        }
+
         function pickTextColor(hslColor) {
             const m = hslColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
             if (!m) return '#000';
@@ -504,12 +515,16 @@
 
         async function loadData() {
             try {
-                const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
+                const [planRows, realRows] = await Promise.all([
+                    fetchCSV(CSV_PLAN),
+                    fetchCSV(CSV_REAL)
+                ]);
                 planData = processData(planRows);
                 realData = processData(realRows);
                 renderGantt();
             } catch (error) {
-                console.error('Error cargando datos:', error);
+                console.error(error);
+                document.getElementById('ganttWrapper').innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
             }
         }
 
@@ -536,33 +551,32 @@
             const turnoWidth = 65;
             const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
 
-            // Determinar días con cambio y pruebas
-            const changeDays = new Set();
-            const testDays = new Set();
             const activeData = (currentView === 'plan') ? planData : realData;
-            let lastMoldByTurnoAux = new Map();
 
+            const changeDays = new Set();
+            const endDays = new Set();
+            let lastMoldByTurnoAux = new Map();
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                let hasTest = false;
                 TURNOS.forEach(turno => {
                     const k = key(dateStr, turno);
                     const tasks = activeData[k];
                     if (tasks) {
                         const prods = tasks.filter(t => t.tarea === 'Producción');
-                        const tests = tasks.filter(t => t.tarea === 'Prueba');
-                        if (tests.length > 0) hasTest = true;
-
                         prods.forEach(task => {
                             const prev = lastMoldByTurnoAux.get(turno);
                             if (prev && prev !== task.moldeCompleto && task.esInicio) {
                                 changeDays.add(dateStr);
+                                const prevDay = new Date(year, month, d);
+                                prevDay.setDate(prevDay.getDate() - 1);
+                                if (prevDay.getMonth() === month) {
+                                    endDays.add(formatYYYYMMDD(prevDay));
+                                }
                             }
                             lastMoldByTurnoAux.set(turno, task.moldeCompleto);
                         });
                     }
                 });
-                if (hasTest) testDays.add(dateStr);
             }
 
             let html = `<table class="gantt-table"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
@@ -573,16 +587,13 @@
                 const isSunday = date.getDay() === 0;
                 const dateStr = formatYYYYMMDD(date);
                 const isToday = dateStr === todayStr;
-                let thClass = '';
+                let thClass = isSunday ? 'sunday-cell' : '';
                 if (isToday) thClass += ' today-col';
                 html += `<th class="${thClass}" style="width:${colWidthCalc};">
                     <div class="day-header">
                         <span class="day-name">${dayName}</span>
                         <span class="day-number">${d}</span>
-                        <div class="day-indicators">
-                            ${changeDays.has(dateStr) ? '<span class="change-indicator">🔄️</span>' : ''}
-                            ${testDays.has(dateStr) ? '<span class="prueba-indicator">🔬</span>' : ''}
-                        </div>
+                        <span class="change-indicator">${changeDays.has(dateStr) ? '🔄️' : ''}</span>
                     </div>
                 </th>`;
             }
@@ -600,26 +611,22 @@
                     const isToday = dateStr === todayStr;
                     const k = key(dateStr, turno);
 
-                    const tasks = (currentView === 'plan') ? planData[k] : realData[k];
+                    const tasks = activeData[k];
                     const plansForComparison = planData[k] || [];
 
                     let cellContent = '';
                     let bgColor = 'transparent';
                     let txtColor = 'inherit';
                     let cellClasses = '';
+                    let endMarker = false;
 
+                    if (isSunday) cellClasses += ' sunday-cell';
                     if (isToday) cellClasses += ' today-col';
-
-                    // Solo colorear domingo si no hay datos
-                    if (isSunday && (!tasks || tasks.length === 0)) {
-                        cellClasses += ' sunday-cell';
-                    }
 
                     if (tasks && tasks.length > 0) {
                         const prod = tasks.filter(t => t.tarea === 'Producción');
                         const tests = tasks.filter(t => t.tarea === 'Prueba');
 
-                        // Producciones (una o más en transición)
                         prod.forEach(task => {
                             const color = getBrickColor(task.baseName, task.number);
                             const textColor = pickTextColor(color);
@@ -639,13 +646,11 @@
                                 bgColor = color;
                                 cellContent = '';
                             }
-
-                            // Marcar fin de producción si este es el último turno de ese molde
-                            if (task.esFin && !prod.some(p => p !== task && p.moldeCompleto === task.moldeCompleto && p.esInicio)) {
-                                cellContent += '<div class="end-indicator"></div>';
-                            }
-
                             lastMoldByTurno.set(turno, task.moldeCompleto);
+
+                            if (task.esFin && endDays.has(dateStr)) {
+                                endMarker = true;
+                            }
 
                             if (currentView === 'cumpl') {
                                 const comp = getCompliance(task.moldeCompleto, plansForComparison);
@@ -655,17 +660,15 @@
                             }
                         });
 
-                        // Pruebas: ya no se muestran en la celda, solo en indicadores
+                        tests.forEach(task => {
+                            cellContent += `<div class="prueba-badge">PR</div>`;
+                        });
                     } else {
-                        if (!isSunday) {
-                            cellContent = '<span style="color:var(--text-muted);">—</span>';
-                        } else {
-                            cellContent = ''; // domingo sin datos: vacío
-                        }
+                        cellContent = '<span style="color:var(--text-muted);">—</span>';
                     }
 
-                    if (cellContent === '' && bgColor === 'transparent' && !isSunday) {
-                        cellContent = '<span style="color:var(--text-muted);">—</span>';
+                    if (endMarker) {
+                        cellContent += '<div class="end-marker"></div>';
                     }
 
                     html += `<td class="${cellClasses}" style="background-color:${bgColor}; color:${txtColor}; width:${colWidthCalc};"
@@ -680,9 +683,6 @@
             renderPruebasInfo();
             renderPruebasPrint();
         }
-
-        // ... (resto de funciones sin cambios: KPIs, pruebas info, vistas, modal, navegación) ...
-        // Incluyo las funciones clave para que el código esté completo:
 
         function actualizarKPIs() {
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
@@ -722,49 +722,182 @@
         }
 
         function renderPruebasInfo() {
-            // solo para mostrar tabla de pruebas abajo
             const container = document.getElementById('pruebasInfo');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const pruebas = [];
             for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
+                const dayPlanTests = [], dayRealTests = [];
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
-                    (planData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Plan' }));
-                    (realData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Real' }));
+                    (planData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => dayPlanTests.push(p));
+                    (realData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => dayRealTests.push(p));
+                });
+                dayPlanTests.forEach(p => {
+                    const cumplida = dayRealTests.some(rt => rt.moldeCompleto === p.moldeCompleto);
+                    pruebas.push({ fecha: ds, molde: p.moldeCompleto, tipo: 'Plan', estado: cumplida ? '✅ Realizada' : '⚠️ No realizada' });
+                });
+                dayRealTests.forEach(rt => {
+                    if (!dayPlanTests.some(p => p.moldeCompleto === rt.moldeCompleto)) {
+                        pruebas.push({ fecha: ds, molde: rt.moldeCompleto, tipo: 'Real', estado: '📌 No planificada' });
+                    }
                 });
             }
             if (pruebas.length === 0) {
                 container.innerHTML = '<h3>🔬 Pruebas del mes</h3><p style="color:var(--text-muted);">Sin pruebas en esta vista.</p>';
             } else {
-                let html = '<h3>🔬 Pruebas del mes</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th></tr></thead><tbody>';
+                let html = '<h3>🔬 Pruebas del mes</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>';
                 pruebas.forEach(p => {
-                    html += `<tr><td>${p.fecha}</td><td>${p.turno}</td><td>${p.molde}</td><td>${p.tipo}</td></tr>`;
+                    html += `<tr><td>${p.fecha}</td><td>${p.molde}</td><td>${p.tipo}</td><td>${p.estado}</td></tr>`;
                 });
                 html += '</tbody></table>';
                 container.innerHTML = html;
             }
         }
 
-        function renderPruebasPrint() { /* ... */ }
+        function renderPruebasPrint() {
+            const printDiv = document.getElementById('pruebasPrint');
+            const year = currentDate.getFullYear(), month = currentDate.getMonth();
+            const pruebasPlan = [];
+            for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
+                const ds = formatYYYYMMDD(new Date(year, month, d));
+                TURNOS.forEach(t => {
+                    const k = key(ds, t);
+                    (planData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => pruebasPlan.push({ fecha: ds, molde: p.moldeCompleto }));
+                });
+            }
+            if (pruebasPlan.length === 0) {
+                printDiv.innerHTML = '<p>Sin pruebas planificadas.</p>';
+            } else {
+                let html = '<h3>Pruebas del Mes (Plan)</h3><table><thead><tr><th>Fecha</th><th>Molde</th></tr></thead><tbody>';
+                pruebasPlan.forEach(p => {
+                    html += `<tr><td>${p.fecha}</td><td>${p.molde}</td></tr>`;
+                });
+                html += '</tbody></table>';
+                printDiv.innerHTML = html;
+            }
+        }
 
-        function setView(view) { /* ... */ }
-        function toggleProdPlan() { /* ... */ }
-        function toggleCumplimiento() { /* ... */ }
+        function setView(view) {
+            currentView = view;
+            document.getElementById('btnCumpl').classList.toggle('active', view === 'cumpl');
+            const slider = document.getElementById('toggleSlider');
+            const prodLabel = document.getElementById('toggleProdLabel');
+            const planLabel = document.getElementById('togglePlanLabel');
+            if (view === 'prod') {
+                slider.className = 'toggle-slider left';
+                prodLabel.classList.add('active');
+                planLabel.classList.remove('active');
+            } else if (view === 'plan') {
+                slider.className = 'toggle-slider right';
+                planLabel.classList.add('active');
+                prodLabel.classList.remove('active');
+            } else {
+                prodLabel.classList.remove('active');
+                planLabel.classList.remove('active');
+                slider.className = 'toggle-slider left';
+            }
+            renderGantt();
+        }
 
-        function imprimirPlan() { setView('plan'); setTimeout(() => window.print(), 100); }
+        function toggleProdPlan() {
+            if (currentView === 'cumpl') setView('prod');
+            else setView(currentView === 'prod' ? 'plan' : 'prod');
+        }
+        function toggleCumplimiento() {
+            setView(currentView === 'cumpl' ? 'prod' : 'cumpl');
+        }
 
-        function abrirGantt(dateStr) { /* ... */ }
-        function cerrarGantt() { /* ... */ }
+        function imprimirPlan() {
+            setView('plan');
+            setTimeout(() => window.print(), 100);
+        }
 
-        function abrirSelectorMes() { /* ... */ }
-        function cerrarSelectorMes() { /* ... */ }
-        function irAMes() { /* ... */ }
+        function abrirGantt(dateStr) {
+            document.getElementById('ganttTitulo').textContent = new Date(dateStr + 'T00:00:00').toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const cont = document.getElementById('ganttDetalle'); cont.innerHTML = '';
+            TURNOS.forEach(turno => {
+                const k = key(dateStr, turno);
+                const plans = planData[k] || [];
+                const reals = realData[k] || [];
+                const row = document.createElement('div'); row.className = 'gantt-row';
+                row.innerHTML = `<div class="gantt-turno">${turno}</div><div class="gantt-bars"></div>`;
+                const barsDiv = row.querySelector('.gantt-bars');
+
+                plans.filter(p => p.tarea === 'Producción').forEach(p => {
+                    const bar = document.createElement('div'); bar.className = 'gantt-bar gantt-plan';
+                    bar.style.backgroundColor = getBrickColor(p.baseName, p.number);
+                    bar.textContent = `Plan: ${p.moldeCompleto}`;
+                    barsDiv.appendChild(bar);
+                });
+                plans.filter(p => p.tarea === 'Prueba').forEach(p => {
+                    const bar = document.createElement('div'); bar.className = 'gantt-bar gantt-plan';
+                    bar.style.backgroundColor = '#ffd700'; bar.style.color = '#000';
+                    bar.textContent = `PR ${p.moldeCompleto}`;
+                    barsDiv.appendChild(bar);
+                });
+
+                reals.filter(r => r.tarea === 'Producción').forEach(r => {
+                    const comp = getCompliance(r.moldeCompleto, plans);
+                    const bar = document.createElement('div'); bar.className = 'gantt-bar';
+                    bar.style.backgroundColor = comp.status === 'cumplido' ? '#30d158' : comp.status === 'parcial' ? '#ff9f0a' : comp.status === 'desvio' ? '#ff453a' : '#636366';
+                    bar.textContent = `Real: ${r.moldeCompleto} ${comp.status === 'cumplido' ? '✅' : comp.status === 'parcial' ? '⏳' : comp.status === 'desvio' ? '⚠️' : '📌'}`;
+                    barsDiv.appendChild(bar);
+                });
+                reals.filter(r => r.tarea === 'Prueba').forEach(r => {
+                    const bar = document.createElement('div'); bar.className = 'gantt-bar';
+                    bar.style.backgroundColor = '#ffd700'; bar.style.color = '#000';
+                    bar.textContent = `PR ${r.moldeCompleto}`;
+                    barsDiv.appendChild(bar);
+                });
+
+                if (barsDiv.children.length === 0) {
+                    barsDiv.innerHTML = '<span style="color:var(--text-muted);">Sin actividad</span>';
+                }
+                cont.appendChild(row);
+            });
+            document.getElementById('ganttModal').style.display = 'flex';
+        }
+        function cerrarGantt() { document.getElementById('ganttModal').style.display = 'none'; }
+        window.addEventListener('click', e => { if (e.target === document.getElementById('ganttModal')) cerrarGantt(); });
+
+        function abrirSelectorMes() {
+            document.getElementById('overlay').style.display = 'block';
+            document.getElementById('monthSelector').style.display = 'block';
+            const sel = document.getElementById('selMonth');
+            sel.innerHTML = '';
+            ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'].forEach((m,i) => {
+                const opt = document.createElement('option'); opt.value = i; opt.textContent = m;
+                if (i === currentDate.getMonth()) opt.selected = true;
+                sel.appendChild(opt);
+            });
+            document.getElementById('selYear').value = currentDate.getFullYear();
+        }
+        function cerrarSelectorMes() {
+            document.getElementById('overlay').style.display = 'none';
+            document.getElementById('monthSelector').style.display = 'none';
+        }
+        function irAMes() {
+            const m = parseInt(document.getElementById('selMonth').value);
+            const y = parseInt(document.getElementById('selYear').value);
+            currentDate.setFullYear(y); currentDate.setMonth(m);
+            cerrarSelectorMes();
+            loadData();
+        }
         function cambiarMes(delta) { currentDate.setMonth(currentDate.getMonth() + delta); loadData(); }
         function irAHoy() { currentDate = new Date(); loadData(); }
 
-        function updateClock() { /* ... */ }
-        function toggleTheme() { /* ... */ }
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('liveClock').textContent =
+                now.toLocaleDateString('es-AR', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) + ' · ' +
+                now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
+        }
+        function toggleTheme() {
+            themeDark = !themeDark;
+            document.body.classList.toggle('light-mode', !themeDark);
+            localStorage.setItem('theme', themeDark ? 'dark' : 'light');
+        }
 
         window.addEventListener('load', () => {
             if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeDark = false; }
