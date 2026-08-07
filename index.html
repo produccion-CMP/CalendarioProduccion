@@ -1,884 +1,796 @@
 <!DOCTYPE html>
-<html lang="es">
+<html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Cronograma de Producción – Cerámica Marcos Paz</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <base target="_top">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>GMP Insumos</title>
+
+  <!-- Meta PWA -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GMP Insumos">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/2965/2965567.png">
+
+  <script>
+    const manifest = {
+      name: "GMP Insumos",
+      short_name: "GMP",
+      start_url: window.location.href,
+      display: "standalone",
+      background_color: "#f0f4f8",
+      theme_color: "#007bff",
+      icons: [{
+        src: "https://cdn-icons-png.flaticon.com/512/2965/2965567.png",
+        sizes: "512x512",
+        type: "image/png"
+      }]
+    };
+    const blob = new Blob([JSON.stringify(manifest)], {type: 'application/json'});
+    const link = document.createElement('link');
+    link.rel = 'manifest';
+    link.href = URL.createObjectURL(blob);
+    document.head.appendChild(link);
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    :root {
-      --bg-body: #0f0f0f;
-      --bg-panel: #1c1c1e;
-      --bg-cell: #2c2c2e;
-      --border: #3a3a3c;
-      --text-main: #f5f5f7;
-      --text-muted: #98989d;
-      --accent: #e07b4c;
-      --accent-light: #f0a880;
-      --green: #30d158;
-      --orange: #ff9f0a;
-      --red: #ff453a;
-      --gray: #636366;
-      --shadow: 0 2px 8px rgba(0,0,0,0.3);
-      --shadow-3d: 0 4px 12px rgba(0,0,0,0.4);
-      --radius: 14px;
-      --cell-h: 78px; /* Altura fija para todas las celdas */
-      --font: 'Plus Jakarta Sans', system-ui, sans-serif;
-      --prueba-bg: rgba(255,215,0,0.25);
-      --sunday-bg: rgba(255,255,255,0.04);
-    }
-
-    body.light-mode {
-      --bg-body: #f2f2f7;
-      --bg-panel: #ffffff;
-      --bg-cell: #fafafa;
-      --border: #e5e5ea;
-      --text-main: #1c1c1e;
-      --text-muted: #6e6e73;
-      --accent: #d96b3a;
-      --accent-light: #c45a2c;
-      --shadow: 0 2px 12px rgba(0,0,0,0.08);
-      --shadow-3d: 0 4px 16px rgba(0,0,0,0.12);
-      --prueba-bg: rgba(255,215,0,0.2);
-      --sunday-bg: rgba(0,0,0,0.03);
-    }
-
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
-      font-family: var(--font);
-      background: var(--bg-body);
-      color: var(--text-main);
-      padding: 24px;
-      min-height: 100vh;
-      transition: background 0.3s, color 0.3s;
+      font-family: 'Inter', sans-serif;
+      background: #f0f4f8;
+      display: flex; justify-content: center; align-items: center;
+      min-height: 100vh; padding: 20px;
     }
+    .app-container {
+      width: 100%; max-width: 420px; background: #fff;
+      border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+      overflow: hidden; position: relative;
+    }
+    .pantalla {
+      display: none; padding: 30px 25px; text-align: center;
+    }
+    .pantalla.activa { display: block; }
 
-    /* Header (sin cambios) */
-    .app-header {
-      display: flex; justify-content: space-between; align-items: center; padding: 16px 24px;
-      background: var(--bg-panel); border-radius: var(--radius); box-shadow: var(--shadow-3d); margin-bottom: 20px;
-    }
-    .logo-container { display: flex; align-items: center; gap: 16px; }
-    .logo-container img { height: 56px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-    .title-block h1 { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--accent-light); }
-    .title-block small { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
-    .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-    .header-top-row { display: flex; align-items: center; gap: 12px; }
-    .live-clock { font-weight: 600; font-size: 0.9rem; color: var(--text-main); background: var(--bg-cell); padding: 8px 16px; border-radius: 30px; }
-    .theme-btn { background: none; border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; }
-    .btn-new-plan {
-      background: var(--accent); color: #fff; border: none; padding: 8px 16px; border-radius: 20px;
-      font-weight: 600; font-size: 0.8rem; cursor: pointer; text-decoration: none; display: flex; align-items: center; gap: 6px;
-      box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s;
-    }
-    .btn-new-plan:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
+    h2 { margin-bottom: 15px; color: #1a3b5d; font-weight: 600; }
+    .subtitulo { font-size: 14px; color: #666; margin-bottom: 20px; }
 
-    /* Controles de vista */
-    .views-container {
-      display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
-      gap: 15px; background: var(--bg-panel); padding: 10px 20px; border-radius: var(--radius);
-      box-shadow: var(--shadow-3d); margin-bottom: 20px;
+    input, select, button, .btn {
+      width: 100%; padding: 12px 15px; margin: 10px 0;
+      border: 1px solid #d1d9e0; border-radius: 10px;
+      font-size: 16px; transition: 0.2s;
+      font-family: inherit;
     }
-    .switch-group { display: flex; align-items: center; gap: 8px; }
-    .toggle-switch {
-      position: relative; width: 180px; height: 38px; background: var(--bg-cell);
-      border-radius: 20px; cursor: pointer; border: 2px solid var(--border); overflow: hidden;
-    }
-    .toggle-option {
-      position: absolute; top: 0; width: 50%; height: 100%;
-      display: flex; align-items: center; justify-content: center;
-      font-weight: 600; font-size: 0.8rem; transition: all 0.3s; z-index: 1;
-    }
-    .toggle-option.left { left: 0; color: var(--text-muted); }
-    .toggle-option.right { right: 0; color: var(--text-muted); }
-    .toggle-option.active { color: #fff; }
-    .toggle-slider {
-      position: absolute; top: 2px; width: 48%; height: calc(100% - 4px);
-      background: var(--accent); border-radius: 18px; transition: left 0.3s; z-index: 0;
-    }
-    .toggle-slider.right { left: 50%; }
-    .toggle-slider.left { left: 2%; }
-    .cumpl-btn {
-      background: var(--bg-cell); border: 2px solid var(--border); padding: 10px 22px;
-      border-radius: 30px; font-weight: 600; font-size: 0.85rem; cursor: pointer;
-      color: var(--text-main); transition: 0.2s;
-    }
-    .cumpl-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 0 12px var(--accent); }
-    .action-btn {
-      background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main);
-      padding: 8px 16px; border-radius: 24px; font-weight: 600; font-size: 0.8rem;
-      cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; text-decoration: none;
-    }
-    .action-btn:hover { background: var(--accent); color: #fff; }
+    input:focus, select:focus { border-color: #007bff; outline: none; }
 
-    /* KPIs */
-    .kpi-container { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
-    .kpi-card {
-      background: var(--bg-panel); border-radius: var(--radius); padding: 14px 20px;
-      box-shadow: var(--shadow-3d); text-align: center; min-width: 100px;
-      transition: transform 0.2s, box-shadow 0.2s;
+    .btn {
+      background: #007bff; color: white; font-weight: 600;
+      border: none; cursor: pointer; display: inline-block;
     }
-    .kpi-card:hover { transform: perspective(600px) rotateX(2deg) translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.3); }
-    .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--accent-light); }
-    .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
+    .btn:hover { background: #0056b3; }
+    .btn-outline {
+      background: white; color: #007bff; border: 2px solid #007bff;
+      font-weight: 600;
+    }
+    .btn-outline:hover { background: #e7f1ff; }
+    .btn-success { background: #28a745; }
+    .btn-success:hover { background: #1e7e34; }
 
-    /* Navegación */
-    .month-nav { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; }
-    .month-nav-row { display: flex; justify-content: center; align-items: center; gap: 16px; }
-    .month-nav button {
-      background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main);
-      padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s;
+    .card-grid {
+      display: flex; flex-wrap: wrap; gap: 15px; justify-content: center;
+      margin: 25px 0;
     }
-    .month-nav button:hover { background: var(--accent); color: #fff; }
-    .month-title {
-      font-size: 1.1rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
-      border-bottom: 1px dashed var(--text-muted); padding: 4px 8px;
+    .card {
+      flex: 1 1 120px; background: #f8fafc; border: 2px solid #e2e8f0;
+      border-radius: 16px; padding: 20px 10px; cursor: pointer;
+      transition: 0.2s; text-align: center;
     }
-    .month-title:hover { color: var(--accent-light); }
-    .btn-today { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer; }
+    .card:hover, .card.selected { border-color: #007bff; background: #e6f0ff; }
+    .card .icono { font-size: 32px; margin-bottom: 8px; }
+    .card .label { font-weight: 600; font-size: 14px; }
 
-    /* Selector de mes */
-    .month-selector {
-      display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
-      background: var(--bg-panel); padding: 24px; border-radius: var(--radius);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2000; text-align: center;
-    }
-    .month-selector select, .month-selector input {
-      margin: 10px; padding: 8px; border-radius: 6px; border: 1px solid var(--border);
-      background: var(--bg-cell); color: var(--text-main);
-    }
-    .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1500; }
+    .readonly-input { background-color: #e9ecef; }
+    .hint { font-size: 13px; color: #dc3545; margin-top: -5px; margin-bottom: 10px; display: block; text-align: left; }
 
-    /* ========== Tabla Gantt ========== */
-    .gantt-wrapper {
-      background: var(--bg-panel); border-radius: var(--radius); padding: 8px;
-      box-shadow: var(--shadow-3d); overflow-x: auto;
+    #scanner-container {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: #000; z-index: 1000; display: none; flex-direction: column;
+      align-items: center; justify-content: center;
     }
-    .gantt-table {
-      width: 100%; border-collapse: collapse; table-layout: fixed;
+    #video-scanner {
+      width: 100%; height: auto; max-height: 80vh;
     }
-    .gantt-table th, .gantt-table td {
-      border: 1px solid var(--border);
-      height: var(--cell-h);          /* Altura fija */
-      padding: 0;                     /* Sin relleno extra para que ocupe todo */
-      text-align: center;
-      vertical-align: middle;
-      font-size: 0.75rem;
-      position: relative;
-      overflow: hidden;
+    .scanner-botones {
+      position: absolute; bottom: 30px; left: 0; right: 0;
+      display: flex; justify-content: center; gap: 20px;
     }
-    .gantt-table th {
-      background: var(--bg-cell); font-weight: 700; color: var(--accent-light);
+    .scanner-botones button {
+      width: 60px; height: 60px; border-radius: 50%; font-size: 24px;
+      border: 2px solid white; background: rgba(255,255,255,0.2); color: white;
     }
-    .gantt-table td { cursor: pointer; }
+    #capturar-btn { background: white; color: black; }
 
-    /* Encabezado del día */
-    .day-header { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; height: 100%; }
-    .day-name { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
-    .day-number { font-weight: 800; font-size: 0.9rem; }
-    .change-indicator { font-size: 0.8rem; min-height: 16px; line-height: 1; margin-top: 2px; }
+    #cameraError {
+      position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      background: rgba(0,0,0,0.85); color: white; padding: 25px;
+      border-radius: 15px; text-align: center; width: 90%;
+    }
+    #cameraError p { margin: 15px 0; }
+    #cameraError button { width: auto; padding: 10px 20px; }
 
-    .turn-label {
-      font-weight: 700; color: var(--accent-light); font-size: 0.85rem;
-      writing-mode: vertical-rl; text-orientation: mixed; margin: auto;
+    .ocr-campo { background: white; border: 1px solid #ced4da; }
+    #scanMensaje { font-weight: bold; margin-top: 10px; }
+    #previewScan, #previewFoto {
+      max-width: 100%; margin-top: 10px; border-radius: 10px; display: none;
     }
-
-    /* Contenido de celda (con o sin información) */
-    .cell-content {
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      height: 100%; width: 100%;
-    }
-    .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 1px; }
-    .mold-base { font-weight: 700; font-size: 0.7rem; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-    .mold-label-text { font-size: 0.5rem; font-weight: 600; opacity: 0.7; text-transform: uppercase; }
-    .mold-number { font-size: 0.65rem; font-weight: 700; }
-
-    /* Tarjeta de prueba (sin imagen) */
-    .prueba-card {
-      background: var(--prueba-bg); color: var(--text-main); border-radius: 4px; padding: 2px;
-      display: flex; flex-direction: column; align-items: center; justify-content: center;
-      width: 100%; height: 100%;
-      border: 1px solid #ffd700;
-    }
-    .prueba-card .pr-label {
-      font-size: 0.6rem; font-weight: 800; background: #ffd700; color: #000;
-      padding: 0 3px; border-radius: 2px; margin-bottom: 2px;
-    }
-    .prueba-card .mold-base { color: var(--text-main); }
-    .prueba-card .mold-number { color: var(--text-main); }
-
-    /* Barra de continuación (ocupa toda la celda) */
-    .continuation-bar {
-      width: 100%; height: 100%; /* Ocupa todo el alto de la celda */
-      min-height: auto;
-      border-radius: 0;
-      opacity: 0.9;
-    }
-
-    /* Barra de cumplimiento (dentro de celda) */
-    .compliance-bar-cell {
-      position: absolute; bottom: 0; left: 0; width: 100%; height: 4px;
-      border-radius: 0 0 3px 3px; background: var(--gray);
-    }
-    .compliance-bar-cell.green-bar { background: var(--green); }
-    .compliance-bar-cell.orange-bar { background: var(--orange); }
-    .compliance-bar-cell.red-bar { background: var(--red); }
-
-    .compliance-emoji-cell {
-      position: absolute; bottom: 6px; right: 4px; font-size: 0.7rem;
-    }
-
-    /* Línea divisoria entre días (después de T3) */
-    .gantt-table tbody tr.turn-last td {
-      border-bottom: 3px solid var(--accent-light);
-    }
-
-    /* Domingo */
-    td.sunday-cell { background-color: var(--sunday-bg) !important; }
-
-    /* Modal Gantt diario */
-    .gantt-modal {
-      position: fixed; top:0; left:0; width:100%; height:100%;
-      background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center; z-index: 3000;
-    }
-    .gantt-content {
-      background: var(--bg-panel); border-radius: var(--radius); padding: 24px;
-      max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto;
-      animation: modalPop 0.3s ease;
-    }
-    @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-    .gantt-row { display: flex; align-items: center; margin: 14px 0; gap: 12px; }
-    .gantt-turno { width: 40px; font-weight: 700; font-size: 1rem; }
-    .gantt-bars { flex:1; display: flex; flex-direction: column; gap: 6px; }
-    .gantt-bar {
-      height: 28px; border-radius: 6px; padding-left: 12px; font-size: 0.8rem;
-      font-weight: 600; display: flex; align-items: center; color: #fff; transition: transform 0.2s;
-    }
-    .gantt-bar:hover { transform: scale(1.02); }
-    .gantt-bar img { width: 22px; height: 22px; margin-right: 8px; border-radius: 4px; }
-    .gantt-plan { opacity: 0.7; }
-    .close-btn { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; float: right; }
-
-    /* Pruebas info */
-    .pruebas-info {
-      margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius);
-      padding: 16px; box-shadow: var(--shadow-3d); font-size: 0.8rem;
-    }
-    .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
-    .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 6px; vertical-align: middle; }
-    .pruebas-table img { width: 24px; height: 24px; object-fit: contain; border-radius: 4px; margin-right: 6px; vertical-align: middle; }
-
-    @media print {
-      body { background: white; color: black; padding: 0; font-size: 8px; }
-      .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal,
-      .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, .pruebas-info { display: none !important; }
-      .gantt-wrapper { box-shadow: none; background: none; padding: 0; }
-      .gantt-table th, .gantt-table td { border: 1px solid #aaa; height: 40px; }
-      .mold-image { width: 14px; height: 14px; filter: none; }
-      @page { size: A4 landscape; margin: 0.3cm; }
-    }
+    .flex-row { display: flex; gap: 10px; align-items: center; }
   </style>
 </head>
 <body>
-  <div class="overlay" id="overlay" onclick="cerrarSelectorMes()"></div>
-  <div class="month-selector" id="monthSelector">
-    <h3>Seleccionar mes y año</h3>
-    <select id="selMonth"></select>
-    <input type="number" id="selYear" min="2020" max="2030" style="width:80px;">
-    <br><button onclick="irAMes()" style="margin-top:12px; padding:8px 16px; background:var(--accent); color:#fff; border:none; border-radius:6px; cursor:pointer;">Ir</button>
+<div class="app-container">
+
+  <!-- LOGIN -->
+  <div id="loginScreen" class="pantalla activa">
+    <h2>🔐 Acceso Producción</h2>
+    <p class="subtitulo">Ingresá la contraseña para continuar</p>
+    <input type="password" id="password" placeholder="Contraseña" autofocus>
+    <button class="btn" onclick="verificarLogin()">Ingresar</button>
+    <p id="loginError" style="color:red;"></p>
   </div>
 
-  <header class="app-header">
-    <div class="logo-container">
-      <img src="img/logo CMP.png" alt="Cerámica Marcos Paz">
-      <div class="title-block">
-        <h1>Cronograma de Producción</h1>
-        <small>Cerámica Marcos Paz – Planta CEVIL</small>
+  <!-- MENÚ -->
+  <div id="menuScreen" class="pantalla">
+    <h2>¿Qué deseas hacer?</h2>
+    <div class="card-grid">
+      <div class="card" onclick="seleccionarMovimiento('Ingreso')">
+        <div class="icono">📥</div><div class="label">Ingreso de insumos</div>
+      </div>
+      <div class="card" onclick="seleccionarMovimiento('Envio')">
+        <div class="icono">📤</div><div class="label">Envío de insumos</div>
       </div>
     </div>
-    <div class="header-right">
-      <div class="header-top-row">
-        <div class="live-clock" id="liveClock"></div>
-        <button class="theme-btn" onclick="toggleTheme()">🌓</button>
-      </div>
-      <a href="admin.html" class="btn-new-plan">🧱 Nuevo Plan</a>
-    </div>
-  </header>
+  </div>
 
-  <div class="views-container">
-    <div class="switch-group">
-      <span style="font-weight:600; font-size:0.8rem; color:var(--text-muted);">Vista:</span>
-      <div class="toggle-switch" id="toggleSwitch" onclick="toggleProdPlan()">
-        <div class="toggle-option left" id="toggleProdLabel">Producción</div>
-        <div class="toggle-option right" id="togglePlanLabel">Planificación</div>
-        <div class="toggle-slider left" id="toggleSlider"></div>
+  <!-- TIPO -->
+  <div id="tipoScreen" class="pantalla">
+    <h2 id="tipoTitulo"></h2>
+    <div class="card-grid">
+      <div class="card" onclick="seleccionarTipo('Tarimas')">
+        <div class="icono">🟫</div><div class="label">Tarimas</div>
+      </div>
+      <div class="card" onclick="seleccionarTipo('Stretch')">
+        <div class="icono">🌀</div><div class="label">Stretch</div>
       </div>
     </div>
-    <button class="cumpl-btn" id="btnCumpl" onclick="toggleCumplimiento()">📊 Cumplimiento</button>
-    <button class="action-btn" onclick="window.print()">🖨️ Imprimir Plan</button>
+    <button class="btn-outline" onclick="volver('menu')">← Volver</button>
   </div>
 
-  <div class="kpi-container" id="kpiContainer" style="display:none;"></div>
-
-  <div class="month-nav">
-    <div class="month-nav-row">
-      <button onclick="cambiarMes(-1)">◀</button>
-      <span class="month-title" id="monthTitle" onclick="abrirSelectorMes()">Cargando...</span>
-      <button onclick="cambiarMes(1)">▶</button>
+  <!-- ESCANEO (NUEVA POSICIÓN: DESPUÉS DE TIPO) -->
+  <div id="scanScreen" class="pantalla">
+    <h2>📷 Escanear Remito</h2>
+    <p class="subtitulo">Tomá una foto del remito o subila de la galería</p>
+    <div class="flex-row">
+      <button class="btn" onclick="abrirEscaner()">📸 Cámara</button>
+      <button class="btn-outline" onclick="document.getElementById('archivoInputScan').click()">📁 Galería</button>
     </div>
-    <button class="btn-today" onclick="irAHoy()">📅 Hoy</button>
-  </div>
-
-  <div class="gantt-wrapper" id="ganttWrapper"></div>
-  <div class="pruebas-info" id="pruebasInfo"></div>
-
-  <div class="gantt-modal" id="ganttModal">
-    <div class="gantt-content">
-      <button class="close-btn" onclick="cerrarGantt()">Cerrar</button>
-      <h3 id="ganttTitulo"></h3>
-      <div id="ganttDetalle"></div>
+    <input type="file" id="archivoInputScan" accept="image/*" capture="environment" style="display:none;" onchange="manejarArchivoScan(this.files[0])">
+    <img id="previewScan">
+    <button id="btnExtraer" class="btn" style="display:none;" onclick="extraerTextoTesseract()">🔍 Extraer datos</button>
+    <div id="ocrResultados" style="display:none; text-align:left; background:#f8f9fa; padding:15px; border-radius:10px; margin-top:15px;">
+      <label>Nº Remito:</label><input type="text" id="ocrRemito" class="ocr-campo">
+      <label>Fecha:</label><input type="text" id="ocrFecha" class="ocr-campo" placeholder="dd/mm/aaaa">
+      <label id="lblCantTarimas" style="display:none;">Cantidad Tarimas:</label><input type="number" id="ocrCantTarimas" class="ocr-campo" style="display:none;">
+      <label id="lblKg" style="display:none;">Kg Stretch:</label><input type="number" id="ocrKg" step="0.01" class="ocr-campo" style="display:none;">
+      <label id="lblBobinas" style="display:none;">Bobinas:</label><input type="number" id="ocrBobinas" step="0.01" class="ocr-campo" style="display:none;">
+      <button id="btnConfirmarScan" class="btn btn-success" style="margin-top:15px; display:none;" onclick="confirmarDatosOCR()">✅ Usar estos datos</button>
     </div>
+    <button class="btn-outline" onclick="omitirEscaneo()" style="margin-top:15px;">Saltar escaneo →</button>
+    <button class="btn-outline" onclick="volver('tipo')">← Volver</button>
+    <div id="scanMensaje"></div>
   </div>
 
-  <script>
-    // ==================== CONFIGURACIÓN ====================
-    const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';
-    const CSV_REAL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=1774340358&single=true&output=csv';
-    const IMG_PATH = 'img/moldes/';
-    const FALLBACK_IMG = 'img/moldes/default.png';
-    const TURNOS = ['T1','T2','T3'];
+  <!-- PROVEEDOR (solo ingreso, se muestra si no se detectó automático) -->
+  <div id="proveedorScreen" class="pantalla">
+    <h2>Proveedor</h2>
+    <div id="provTarimas" style="display:none;">
+      <div class="card-grid">
+        <div class="card" onclick="setProveedorTarimas('TucumanChivilisco')">
+          <div class="icono">🏭</div><div class="label">Tucumán Pallet / Chivilisco</div>
+        </div>
+        <div class="card" onclick="setProveedorTarimas('Gianni')">
+          <div class="icono">👤</div><div class="label">Gianni</div>
+        </div>
+        <div class="card" onclick="setProveedorTarimas('Otro')">
+          <div class="icono">➕</div><div class="label">Otro</div>
+        </div>
+      </div>
+      <div id="subSelectTarimas" style="display:none; margin-top:15px;">
+        <select id="selectTarimas"></select>
+      </div>
+    </div>
+    <div id="provStretch" style="display:none;">
+      <div class="card-grid">
+        <div class="card" onclick="setProveedorStretch('Urflex')">
+          <div class="icono">📦</div><div class="label">Urflex</div>
+        </div>
+        <div class="card" onclick="setProveedorStretch('Otro')">
+          <div class="icono">➕</div><div class="label">Otro</div>
+        </div>
+      </div>
+      <div id="subSelectStretch" style="display:none; margin-top:15px;">
+        <select id="selectStretch"></select>
+        <div class="flex-row" style="margin-top:10px;">
+          <input type="text" id="nuevoProvStretch" placeholder="Nuevo proveedor" style="flex:2;">
+          <button class="btn" style="flex:1;" onclick="agregarNuevoStretch()">Agregar</button>
+        </div>
+      </div>
+    </div>
+    <button class="btn-outline" onclick="volver('scan')">← Volver</button>
+    <button id="btnContinuarProv" class="btn" style="display:none;" onclick="irAFormulario()">Continuar</button>
+  </div>
 
-    let planData = {};
-    let realTasksByTurno = {};
-    let currentView = 'prod';
-    let currentDate = new Date();
-    let themeDark = true;
+  <!-- FORMULARIO FINAL -->
+  <div id="formScreen" class="pantalla">
+    <h2 id="formTitulo"></h2>
+    <span id="proveedorMostrado" style="font-weight:bold; display:block; margin-bottom:10px;"></span>
+    <label>Fecha:</label>
+    <input type="date" id="fecha">
 
-    // Colores diferenciados
-    const brickHueMap = new Map();
-    function getBaseHue(baseName) {
-      if (brickHueMap.has(baseName)) return brickHueMap.get(baseName);
-      let hash = 0;
-      for (let i = 0; i < baseName.length; i++) hash = baseName.charCodeAt(i) + ((hash << 5) - hash);
-      const hue = (hash * 137 + baseName.length * 53) % 360;
-      brickHueMap.set(baseName, hue);
-      return hue;
+    <div id="camposTarimas">
+      <label>Cantidad (Tarimas):</label>
+      <input type="number" id="cantTarimas" placeholder="Ej: 50" min="1">
+    </div>
+    <div id="camposStretch" style="display:none;">
+      <label>Kg Stretch:</label>
+      <input type="number" id="kgStretch" step="0.01" oninput="calcularKgBob()">
+      <label>Bobinas:</label>
+      <input type="number" id="bobStretch" step="0.01" oninput="calcularKgBob()">
+      <label>Kg/Bobina (auto):</label>
+      <input type="number" id="kgBob" class="readonly-input" readonly>
+    </div>
+
+    <label>Número de Remito:</label>
+    <input type="text" id="numRemito" inputmode="numeric" pattern="[0-9]*">
+    <span id="remitoHint" class="hint"></span>
+
+    <label>Observaciones:</label>
+    <input type="text" id="obs">
+
+    <label>Foto del remito:</label>
+    <div class="flex-row">
+      <button class="btn-outline" style="flex:1;" onclick="abrirEscaner()">📷 Escanear</button>
+      <button class="btn-outline" style="flex:1;" onclick="document.getElementById('archivoInputForm').click()">📁 Galería</button>
+    </div>
+    <input type="file" id="archivoInputForm" accept="image/*,application/pdf" capture="environment" style="display:none;" onchange="manejarArchivoForm(this.files[0])">
+    <img id="previewFoto">
+
+    <button id="btnGuardar" class="btn btn-success" onclick="enviarDatos()">Guardar Movimiento</button>
+    <button class="btn-outline" onclick="volver('scan')">← Volver</button>
+    <p id="mensaje"></p>
+  </div>
+
+</div>
+
+<!-- ESCÁNER -->
+<div id="scanner-container">
+  <video id="video-scanner" autoplay playsinline></video>
+  <div class="scanner-botones">
+    <button onclick="cerrarEscaner()">✖️</button>
+    <button id="capturar-btn" onclick="capturarFoto()">📸</button>
+  </div>
+  <div id="cameraError" style="display:none;">
+    <p id="cameraErrorMsg"></p>
+    <button onclick="reintentarCamara()" class="btn">🔄 Reintentar cámara</button>
+    <button onclick="cerrarEscaner()" class="btn-outline" style="margin-top:10px;">Cerrar</button>
+  </div>
+  <canvas id="scanner-canvas" style="display:none;"></canvas>
+</div>
+
+<script src="https://docs.opencv.org/4.x/opencv.js" onload="onOpenCvReady()" onerror="console.warn('OpenCV no se cargó')"></script>
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+  // ESTADO GLOBAL
+  let movimientoActual = "";  // "Ingreso" o "Envio"
+  let tipoActual = "";        // "Tarimas" o "Stretch"
+  let proveedorSeleccionado = "";
+  let listasProveedores = { tarimas: [], stretch: [] };
+  let fotoData = null;
+  let openCvReady = false;
+  window._scanImageData = null;
+
+  // Pantallas
+  const pantallas = {
+    login:    document.getElementById('loginScreen'),
+    menu:     document.getElementById('menuScreen'),
+    tipo:     document.getElementById('tipoScreen'),
+    scan:     document.getElementById('scanScreen'),
+    proveedor: document.getElementById('proveedorScreen'),
+    form:     document.getElementById('formScreen')
+  };
+
+  function mostrarPantalla(id) {
+    Object.values(pantallas).forEach(p => p.classList.remove('activa'));
+    pantallas[id].classList.add('activa');
+  }
+
+  function volver(id) {
+    mostrarPantalla(id);
+  }
+
+  // LOGIN
+  document.getElementById('password').addEventListener('keypress', (e) => {
+    if (e.key === 'Enter') verificarLogin();
+  });
+
+  function verificarLogin() {
+    if (document.getElementById('password').value.trim() === "GMP2026") {
+      mostrarPantalla('menu');
+      document.getElementById('loginError').innerText = "";
+    } else {
+      document.getElementById('loginError').innerText = "Contraseña incorrecta";
     }
-    function getBrickColor(baseName, number) {
-      const hue = getBaseHue(baseName);
-      return `hsl(${hue}, 65%, ${42 + number * 6}%)`;
+  }
+
+  // MENÚ
+  function seleccionarMovimiento(mov) {
+    movimientoActual = mov;
+    document.getElementById('tipoTitulo').innerText = mov === "Ingreso" ? "Ingreso de insumos" : "Envío de insumos";
+    mostrarPantalla('tipo');
+  }
+
+  // TIPO → ahora va a ESCANEO
+  function seleccionarTipo(tipo) {
+    tipoActual = tipo;
+    prepararPantallaScan();
+    mostrarPantalla('scan');
+  }
+
+  // -------------------- ESCANEO --------------------
+  function prepararPantallaScan() {
+    document.getElementById('previewScan').style.display = 'none';
+    document.getElementById('ocrResultados').style.display = 'none';
+    document.getElementById('btnExtraer').style.display = 'none';
+    document.getElementById('btnConfirmarScan').style.display = 'none';
+    document.getElementById('scanMensaje').innerText = '';
+    window._scanImageData = null;
+
+    if (tipoActual === 'Tarimas') {
+      document.getElementById('lblCantTarimas').style.display = 'block';
+      document.getElementById('ocrCantTarimas').style.display = 'block';
+      document.getElementById('lblKg').style.display = 'none';
+      document.getElementById('ocrKg').style.display = 'none';
+      document.getElementById('lblBobinas').style.display = 'none';
+      document.getElementById('ocrBobinas').style.display = 'none';
+    } else {
+      document.getElementById('lblCantTarimas').style.display = 'none';
+      document.getElementById('ocrCantTarimas').style.display = 'none';
+      document.getElementById('lblKg').style.display = 'block';
+      document.getElementById('ocrKg').style.display = 'block';
+      document.getElementById('lblBobinas').style.display = 'block';
+      document.getElementById('ocrBobinas').style.display = 'block';
     }
-    function pickTextColor(hslColor) {
-      const m = hslColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
-      if (!m) return '#000';
-      return parseInt(m[3]) > 55 ? '#000' : '#fff';
-    }
+    // limpiar campos
+    ['ocrRemito','ocrFecha','ocrCantTarimas','ocrKg','ocrBobinas'].forEach(id => document.getElementById(id).value = '');
+  }
 
-    function formatYYYYMMDD(date) {
-      const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0');
-      return `${y}-${m}-${d}`;
-    }
-    function key(fecha, turno) { return `${fecha}_${turno}`; }
-    function getBaseName(molde) { return molde.split(' (')[0].trim().split(/[xX]/)[0].trim(); }
-    function getMoldNumber(molde) { const m = molde.match(/\((\d+)\)/); return m ? parseInt(m[1]) : 1; }
-    function getImageSrc(base) { return `${IMG_PATH}${base}.png`; }
+  function manejarArchivoScan(archivo) {
+    if (!archivo) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('previewScan').src = e.target.result;
+      document.getElementById('previewScan').style.display = 'block';
+      document.getElementById('btnExtraer').style.display = 'inline-block';
+      document.getElementById('ocrResultados').style.display = 'none';
+      window._scanImageData = e.target.result;
+    };
+    reader.readAsDataURL(archivo);
+  }
 
-    // ==================== CARGA DE DATOS ====================
-    async function fetchCSV(url) {
-      const r = await fetch(url);
-      const t = await r.text();
-      return new Promise(resolve => Papa.parse(t, {header:true, skipEmptyLines:true, complete: res => resolve(res.data)}));
-    }
+  function dataURLtoFile(dataurl, filename) {
+    const arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+          bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+    while(n--) u8arr[n] = bstr.charCodeAt(n);
+    return new File([u8arr], filename, {type:mime});
+  }
 
-    async function loadData() {
-      try {
-        const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
+  function imagenListaParaOCR(dataURL) {
+    manejarArchivoScan(dataURLtoFile(dataURL, "remito_escaneado.jpg"));
+  }
 
-        // Planificación
-        planData = {};
-        planRows.forEach(row => {
-          const molde = row['LADRILLO:']?.trim();
-          const tarea = row['TAREA:']?.trim();
-          const fi = row['FECHA INICIO:']?.trim(), ff = row['FECHA FIN:']?.trim();
-          const ti = row['TURNO INICIO:']?.trim(), tf = row['TURNO FIN:']?.trim();
-          if (!molde || !fi || !ff) return;
-          const inicio = new Date(fi+'T00:00:00'), fin = new Date(ff+'T00:00:00');
-          if (isNaN(inicio) || isNaN(fin)) return;
-          for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate()+1)) {
-            const ds = formatYYYYMMDD(d);
-            let tDia = [];
-            if (d.getTime()===inicio.getTime() && d.getTime()===fin.getTime()) {
-              const i1=TURNOS.indexOf(ti), i2=TURNOS.indexOf(tf);
-              for (let i=i1;i<=i2;i++) tDia.push(TURNOS[i]);
-            } else if (d.getTime()===inicio.getTime()) {
-              const i1=TURNOS.indexOf(ti);
-              for (let i=i1;i<3;i++) tDia.push(TURNOS[i]);
-            } else if (d.getTime()===fin.getTime()) {
-              const i2=TURNOS.indexOf(tf);
-              for (let i=0;i<=i2;i++) tDia.push(TURNOS[i]);
-            } else tDia = [...TURNOS];
-            tDia.forEach(t => {
-              const k = key(ds,t);
-              if (!planData[k]) planData[k] = [];
-              planData[k].push({
-                moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde),
-                tarea, esInicio: d.getTime()===inicio.getTime(), esFin: d.getTime()===fin.getTime()
-              });
-            });
-          }
-        });
-
-        // Producción real (con columna Zorr. Carg.)
-        const allReal = [];
-        realRows.forEach(row => {
-          const dia = row['Día']?.trim();
-          const turno = row['Turno']?.trim();
-          const molde = row['L. carga (N° de molde)']?.trim();
-          if (!dia || !turno || !molde) return;
-          const zorrasStr = row['Zorr. Carg.']?.trim();
-          let zorras = parseInt(zorrasStr);
-          if (zorrasStr === '' || isNaN(zorras)) zorras = 1;
-          if (zorras === 0) return;
-          const p = dia.split('/');
-          if (p.length !== 3) return;
-          const fecha = new Date(p[2], p[1]-1, p[0]);
-          allReal.push({
-            date: fecha, turno, moldeCompleto: molde,
-            baseName: getBaseName(molde), number: getMoldNumber(molde),
-            zorras
-          });
-        });
-        allReal.sort((a,b) => a.date - b.date || TURNOS.indexOf(a.turno) - TURNOS.indexOf(b.turno));
-
-        const grouped = new Map();
-        allReal.forEach(r => {
-          const k = key(formatYYYYMMDD(r.date), r.turno);
-          if (!grouped.has(k)) grouped.set(k, []);
-          grouped.get(k).push(r);
-        });
-
-        const entries = [];
-        for (const [clave, regs] of grouped.entries()) {
-          const [fechaStr, turno] = clave.split('_');
-          entries.push({ clave, fecha: new Date(fechaStr + 'T00:00:00'), turno, regs });
-        }
-        entries.sort((a,b) => a.fecha - b.fecha || TURNOS.indexOf(a.turno) - TURNOS.indexOf(b.turno));
-
-        realTasksByTurno = {};
-        for (let i = 0; i < entries.length; i++) {
-          const entry = entries[i];
-          const prevEntry = i > 0 ? entries[i-1] : null;
-          const nextEntry = i < entries.length - 1 ? entries[i+1] : null;
-          const prevMolds = prevEntry ? prevEntry.regs.map(r => r.moldeCompleto) : [];
-          const nextMolds = nextEntry ? nextEntry.regs.map(r => r.moldeCompleto) : [];
-
-          const productions = [];
-          const tests = [];
-
-          entry.regs.forEach(r => {
-            let score = 0;
-            if (prevMolds.includes(r.moldeCompleto)) score += 1;
-            if (nextMolds.includes(r.moldeCompleto)) score += 1;
-            if (score >= 1) {
-              productions.push({ ...r, isContinuation: prevMolds.includes(r.moldeCompleto) });
-            } else {
-              if (r.zorras <= 2) {
-                tests.push({ ...r, isTest: true });
-              } else {
-                productions.push({ ...r, isContinuation: false });
-              }
-            }
-          });
-          realTasksByTurno[entry.clave] = { productions, tests };
-        }
-
-        renderGantt();
-      } catch (error) {
-        console.error('Error cargando datos:', error);
-      }
-    }
-
-    function getCompliance(realMold, plans) {
-      if (!realMold) return null;
-      const prod = plans.filter(p=>p.tarea==='Producción');
-      const test = plans.filter(p=>p.tarea==='Prueba');
-      const match = prod.find(p=>p.moldeCompleto===realMold);
-      if (prod.length===0 && test.length>0) return {status:'desvio'};
-      if (match) return test.length>0 ? {status:'parcial'} : {status:'cumplido'};
-      return prod.length>0 ? {status:'desvio'} : {status:'sinPlan'};
-    }
-
-    // ==================== RENDER GANTT ====================
-    function renderGantt() {
-      const wrapper = document.getElementById('ganttWrapper');
-      const year = currentDate.getFullYear(), month = currentDate.getMonth();
-      const daysInMonth = new Date(year, month+1, 0).getDate();
-      const todayStr = formatYYYYMMDD(new Date());
-
-      document.getElementById('monthTitle').textContent = currentDate.toLocaleDateString('es-AR', {month:'long', year:'numeric'}).toUpperCase();
-      document.getElementById('kpiContainer').style.display = currentView === 'cumpl' ? 'flex' : 'none';
-      if (currentView === 'cumpl') actualizarKPIs();
-
-      const turnoWidth = 65;
-      const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
-
-      // Días con cambio (donde algún molde no es continuación)
-      const changeDays = new Set();
-      for (let d = 1; d <= daysInMonth; d++) {
-        const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-        TURNOS.forEach(turno => {
-          const k = key(dateStr, turno);
-          const info = realTasksByTurno[k];
-          if (info && info.productions.some(p => !p.isContinuation)) changeDays.add(dateStr);
-        });
-      }
-
-      let html = `<table class="gantt-table"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
-      const dayNames = ['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
-      for (let d = 1; d <= daysInMonth; d++) {
-        const date = new Date(year, month, d);
-        const dayName = dayNames[date.getDay()];
-        const isSunday = date.getDay() === 0;
-        const dateStr = formatYYYYMMDD(date);
-        const isToday = dateStr === todayStr;
-        html += `<th style="width:${colWidthCalc};" class="${isSunday ? 'sunday-cell' : ''}">`;
-        html += `<div class="day-header"><span class="day-name">${dayName}</span><span class="day-number">${d}</span>`;
-        html += `<span class="change-indicator">${changeDays.has(dateStr) ? '🔄️' : ''}</span></div></th>`;
-      }
-      html += '</tr></thead><tbody>';
-
-      // Seguimiento de último molde activo por turno
-      let lastRealMolds = new Map();   // turno -> moldeCompleto
-
-      TURNOS.forEach((turno, turnoIdx) => {
-        const isLastTurn = (turno === 'T3');
-        html += `<tr class="${isLastTurn ? 'turn-last' : ''}"><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
-
-        for (let d = 1; d <= daysInMonth; d++) {
-          const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-          const dateObj = new Date(year, month, d);
-          const isSunday = dateObj.getDay() === 0;
-          const isToday = dateStr === todayStr;
-          const k = key(dateStr, turno);
-          const plans = planData[k] || [];
-          const realInfo = realTasksByTurno[k];
-
-          let cellContent = '';
-          let bgColor = 'transparent';
-          let txtColor = 'inherit';
-
-          if (currentView === 'prod' && realInfo) {
-            const { productions, tests } = realInfo;
-            // Producciones
-            productions.forEach(prod => {
-              const color = getBrickColor(prod.baseName, prod.number);
-              const textColor = pickTextColor(color);
-              const prevMold = lastRealMolds.get(turno);
-              // Mostrar detalle solo si es el primer turno de este molde en este turno (no continuación)
-              const showDetail = !prod.isContinuation || prevMold !== prod.moldeCompleto;
-              if (showDetail) {
-                // Celda con información completa
-                cellContent += `<div style="background-color:${color}; color:${textColor}; border-radius:4px; width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-                  ${createMoldHTML(prod.baseName, prod.number)}
-                </div>`;
-              } else {
-                // Solo color (barra de continuación)
-                cellContent += `<div class="continuation-bar" style="background-color:${color};"></div>`;
-              }
-              lastRealMolds.set(turno, prod.moldeCompleto);
-            });
-            // Pruebas
-            tests.forEach(test => {
-              cellContent += createTestCardHTML(test.baseName, test.number);
-            });
-          } else if (currentView === 'plan' && plans.length > 0) {
-            const prod = plans.filter(p=>p.tarea==='Producción');
-            const test = plans.filter(p=>p.tarea==='Prueba');
-            if (prod.length > 0) {
-              const task = prod[0];
-              const color = getBrickColor(task.baseName, task.number);
-              const showDetail = task.esInicio;
-              if (showDetail) {
-                cellContent += `<div style="background-color:${color}; color:${pickTextColor(color)}; border-radius:4px; width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-                  ${createMoldHTML(task.baseName, task.number)}
-                </div>`;
-              } else {
-                cellContent += `<div class="continuation-bar" style="background-color:${color};"></div>`;
-              }
-            }
-            test.forEach(task => {
-              cellContent += createTestCardHTML(task.baseName, task.number);
-            });
-          } else if (currentView === 'cumpl' && realInfo) {
-            const { productions, tests } = realInfo;
-            productions.forEach(prod => {
-              const comp = getCompliance(prod.moldeCompleto, plans);
-              const color = getBrickColor(prod.baseName, prod.number);
-              const textColor = pickTextColor(color);
-              const prevMold = lastRealMolds.get(turno);
-              const showDetail = !prod.isContinuation || prevMold !== prod.moldeCompleto;
-              if (showDetail) {
-                cellContent += `<div style="background-color:${color}; color:${textColor}; border-radius:4px; width:100%; height:100%; display:flex; align-items:center; justify-content:center;">
-                  ${createMoldHTML(prod.baseName, prod.number)}
-                </div>`;
-              } else {
-                cellContent += `<div class="continuation-bar" style="background-color:${color};"></div>`;
-              }
-              lastRealMolds.set(turno, prod.moldeCompleto);
-              // Barra de cumplimiento
-              const barClass = comp.status==='cumplido'?'green-bar':comp.status==='parcial'?'orange-bar':comp.status==='desvio'?'red-bar':'gray-bar';
-              const emoji = comp.status==='cumplido'?'✅':comp.status==='parcial'?'⏳':comp.status==='desvio'?'⚠️':'📌';
-              cellContent += `<div class="compliance-bar-cell ${barClass}"></div><div class="compliance-emoji-cell">${emoji}</div>`;
-            });
-            tests.forEach(test => {
-              cellContent += createTestCardHTML(test.baseName, test.number);
-            });
-          }
-
-          // Si no hay contenido, mostrar guión
-          if (cellContent === '') {
-            cellContent = '<span style="color:var(--text-muted);">—</span>';
-          }
-
-          // Clases adicionales para domingo y hoy
-          let cellClass = '';
-          if (isSunday) cellClass += ' sunday-cell';
-          // (El indicador de hoy se maneja con borde en la columna, no en cada celda)
-
-          html += `<td class="${cellClass}" style="background-color:${bgColor}; color:${txtColor}; width:${colWidthCalc};" 
-                       onclick="abrirGantt('${dateStr}')">${cellContent}</td>`;
-        }
-        html += '</tr>';
-      });
-
-      html += '</tbody></table>';
-      wrapper.innerHTML = html;
-      renderPruebasInfo();
-    }
-
-    function createMoldHTML(baseName, number) {
-      return `<div class="cell-content">
-        <img src="${getImageSrc(baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${baseName}">
-        <span class="mold-base">${baseName}</span>
-        <span class="mold-label-text">Molde</span>
-        <span class="mold-number">${number}</span>
-      </div>`;
-    }
-
-    function createTestCardHTML(baseName, number) {
-      // Sin imagen, solo texto PR, tipo y número
-      return `<div class="prueba-card">
-        <span class="pr-label">PR</span>
-        <span class="mold-base">${baseName}</span>
-        <span class="mold-number">${number}</span>
-      </div>`;
-    }
-
-    function actualizarKPIs() {
-      const year = currentDate.getFullYear(), month = currentDate.getMonth();
-      const daysInMonth = new Date(year, month+1, 0).getDate();
-      let diasPlan = new Set(), cambios = 0, pruebasPlan = 0, cumplidas = 0, totalReal = 0;
-      const moldesSet = new Set();
-      for (let d=1; d<=daysInMonth; d++) {
-        const ds = formatYYYYMMDD(new Date(year, month, d));
-        let tienePlanDia = false;
-        TURNOS.forEach(t => {
-          const k = key(ds, t);
-          const plans = planData[k] || [];
-          const realInfo = realTasksByTurno[k];
-          if (plans.some(p=>p.tarea==='Producción')) tienePlanDia = true;
-          const prods = plans.filter(p=>p.tarea==='Producción');
-          if (prods.length > 1) cambios++;
-          pruebasPlan += plans.filter(p=>p.tarea==='Prueba').length;
-          prods.forEach(p => moldesSet.add(p.moldeCompleto));
-          if (realInfo && realInfo.productions.length > 0) {
-            realInfo.productions.forEach(prod => {
-              totalReal++;
-              const comp = getCompliance(prod.moldeCompleto, plans);
-              if (comp && comp.status === 'cumplido') cumplidas++;
-              moldesSet.add(prod.moldeCompleto);
-            });
-          }
-        });
-        if (tienePlanDia) diasPlan.add(ds);
-      }
-      const pct = totalReal > 0 ? Math.round((cumplidas/totalReal)*100) : 0;
-      document.getElementById('kpiContainer').innerHTML = `
-        <div class="kpi-card"><div class="kpi-value">${diasPlan.size}</div><div class="kpi-label">Días con plan</div></div>
-        <div class="kpi-card"><div class="kpi-value">${cambios}</div><div class="kpi-label">Cambios</div></div>
-        <div class="kpi-card"><div class="kpi-value">${pruebasPlan}</div><div class="kpi-label">Pruebas</div></div>
-        <div class="kpi-card"><div class="kpi-value">${pct}%</div><div class="kpi-label">Cumplimiento</div></div>
-        <div class="kpi-card"><div class="kpi-value">${moldesSet.size}</div><div class="kpi-label">Tipos de ladrillo</div></div>
-      `;
-    }
-
-    function renderPruebasInfo() {
-      const container = document.getElementById('pruebasInfo');
-      const year = currentDate.getFullYear(), month = currentDate.getMonth();
-      const pruebas = [];
-      for (let d=1; d<=new Date(year, month+1, 0).getDate(); d++) {
-        const ds = formatYYYYMMDD(new Date(year, month, d));
-        const dayPlanTests = [], dayRealTests = [];
-        TURNOS.forEach(t => {
-          const k = key(ds, t);
-          (planData[k]||[]).filter(p=>p.tarea==='Prueba').forEach(p => dayPlanTests.push(p));
-          if (realTasksByTurno[k] && realTasksByTurno[k].tests.length > 0) {
-            realTasksByTurno[k].tests.forEach(rt => dayRealTests.push(rt));
-          }
-        });
-        dayPlanTests.forEach(p => {
-          const cumplida = dayRealTests.some(rt => rt.moldeCompleto === p.moldeCompleto);
-          pruebas.push({fecha: ds, molde: p.moldeCompleto, baseName: p.baseName, number: p.number, tipo: 'Planificada', estado: cumplida ? '✅ Realizada' : '⚠️ No realizada'});
-        });
-        dayRealTests.forEach(rt => {
-          if (!dayPlanTests.some(p => p.moldeCompleto === rt.moldeCompleto)) {
-            pruebas.push({fecha: ds, molde: rt.moldeCompleto, baseName: rt.baseName, number: rt.number, tipo: 'Prueba Realizada', estado: '📌 No planificada'});
-          }
-        });
-      }
-      if (pruebas.length === 0) {
-        container.innerHTML = '<h3>🔬 Pruebas del mes</h3><p style="color:var(--text-muted);">Sin pruebas en esta vista.</p>';
+  async function extraerTextoTesseract() {
+    const img = document.getElementById('previewScan');
+    if (!img.src) return;
+    document.getElementById('scanMensaje').innerText = 'Procesando OCR...';
+    document.getElementById('btnExtraer').disabled = true;
+    try {
+      const { data: { text } } = await Tesseract.recognize(img, 'spa', { logger: m => console.log(m) });
+      console.log('OCR:', text);
+      const datos = parsearTextoRemito(text);
+      document.getElementById('ocrRemito').value = datos.remito || '';
+      document.getElementById('ocrFecha').value = datos.fecha || '';
+      if (tipoActual === 'Tarimas') {
+        document.getElementById('ocrCantTarimas').value = datos.cantTarimas || '';
       } else {
-        let html = '<h3>🔬 Pruebas del mes</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Imagen</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>';
-        pruebas.forEach(p => {
-          html += `<tr><td>${p.fecha}</td><td><img src="${getImageSrc(p.baseName)}" onerror="this.src='${FALLBACK_IMG}'" alt=""></td><td>${p.molde}</td><td>${p.tipo}</td><td>${p.estado}</td></tr>`;
-        });
-        html += '</tbody></table>';
-        container.innerHTML = html;
+        document.getElementById('ocrKg').value = datos.kg || '';
+        document.getElementById('ocrBobinas').value = datos.bobinas || '';
+      }
+      document.getElementById('ocrResultados').style.display = 'block';
+      document.getElementById('btnConfirmarScan').style.display = 'inline-block';
+      document.getElementById('scanMensaje').innerText = 'Verificá los datos.';
+    } catch (err) {
+      document.getElementById('scanMensaje').innerText = 'Error al leer. Intentá con otra imagen.';
+    } finally {
+      document.getElementById('btnExtraer').disabled = false;
+    }
+  }
+
+  function parsearTextoRemito(texto) {
+    const t = texto.toLowerCase().replace(/\n/g, ' ').replace(/\s+/g, ' ');
+    const res = {};
+    const remitoMatch = t.match(/remito\s*(n°|nro|no|número|num)?\s*[:#]?\s*(\d{1,10})/i);
+    if (remitoMatch) res.remito = remitoMatch[2];
+    else {
+      const soloNum = t.match(/\b(\d{5,10})\b/);
+      if (soloNum) res.remito = soloNum[1];
+    }
+    const fechaMatch = t.match(/(\d{1,2}[/-]\d{1,2}[/-]\d{2,4})/);
+    if (fechaMatch) res.fecha = fechaMatch[1].replace(/-/g, '/');
+    const tarimasMatch = t.match(/(\d+)\s*(tarimas|pallets|pallet)/i);
+    if (tarimasMatch) res.cantTarimas = tarimasMatch[1];
+    const kgMatch = t.match(/(\d+[\.,]?\d*)\s*(kg|kilos)/i);
+    if (kgMatch) res.kg = kgMatch[1].replace(',', '.');
+    const bobMatch = t.match(/(\d+)\s*(bobinas|bob\.?)/i);
+    if (bobMatch) res.bobinas = bobMatch[1];
+    return res;
+  }
+
+  // Confirmar OCR: precargar formulario e intentar auto‑proveedor
+  function confirmarDatosOCR() {
+    // Pasar datos al formulario
+    document.getElementById('numRemito').value = document.getElementById('ocrRemito').value.trim();
+    const fechaStr = document.getElementById('ocrFecha').value.trim();
+    if (fechaStr) {
+      const partes = fechaStr.split(/[/-]/);
+      if (partes.length === 3) {
+        let [d, m, y] = partes;
+        if (y.length === 2) y = '20' + y;
+        const f = new Date(`${y}-${m}-${d}`);
+        if (!isNaN(f)) document.getElementById('fecha').valueAsDate = f;
       }
     }
+    if (tipoActual === 'Tarimas') {
+      document.getElementById('cantTarimas').value = document.getElementById('ocrCantTarimas').value;
+    } else {
+      document.getElementById('kgStretch').value = document.getElementById('ocrKg').value;
+      document.getElementById('bobStretch').value = document.getElementById('ocrBobinas').value;
+      calcularKgBob();
+    }
+    if (window._scanImageData) {
+      fotoData = { dataURL: window._scanImageData, nombre: 'remito_escaneado.jpg', mime: 'image/jpeg' };
+      document.getElementById('previewFoto').src = window._scanImageData;
+      document.getElementById('previewFoto').style.display = 'block';
+    }
 
-    // ==================== VISTAS ====================
-    function setView(view) {
-      currentView = view;
-      document.getElementById('btnCumpl').classList.toggle('active', view === 'cumpl');
-      const slider = document.getElementById('toggleSlider');
-      const prodLabel = document.getElementById('toggleProdLabel');
-      const planLabel = document.getElementById('togglePlanLabel');
-      if (view === 'prod') {
-        slider.className = 'toggle-slider left';
-        prodLabel.classList.add('active');
-        planLabel.classList.remove('active');
-      } else if (view === 'plan') {
-        slider.className = 'toggle-slider right';
-        planLabel.classList.add('active');
-        prodLabel.classList.remove('active');
+    // Intentar detectar proveedor en el texto extraído
+    const textoCompleto = document.getElementById('ocrRemito').value + ' ' +
+                          document.getElementById('ocrFecha').value + ' ' +
+                          (tipoActual==='Tarimas' ? document.getElementById('ocrCantTarimas').value : 
+                           document.getElementById('ocrKg').value + ' ' + document.getElementById('ocrBobinas').value);
+    const provDetectado = detectarProveedor(textoCompleto.toLowerCase());
+    if (movimientoActual === 'Envio') {
+      proveedorSeleccionado = 'Envío';
+      irAFormularioDirecto();
+    } else if (provDetectado) {
+      proveedorSeleccionado = provDetectado;
+      irAFormularioDirecto();
+    } else {
+      // No se detectó proveedor → ir a pantalla de selección manual
+      prepararPantallaProveedor();
+      mostrarPantalla('proveedor');
+    }
+  }
+
+  function detectarProveedor(texto) {
+    const lista = tipoActual === 'Tarimas' ? listasProveedores.tarimas : listasProveedores.stretch;
+    for (let prov of lista) {
+      if (texto.includes(prov.toLowerCase())) return prov;
+    }
+    return null;
+  }
+
+  function omitirEscaneo() {
+    // Saltar escaneo → ir a proveedor (si es ingreso) o directo a formulario si es envío
+    if (movimientoActual === 'Envio') {
+      proveedorSeleccionado = 'Envío';
+      irAFormularioDirecto();
+    } else {
+      prepararPantallaProveedor();
+      mostrarPantalla('proveedor');
+    }
+  }
+
+  // -------------------- PROVEEDOR --------------------
+  function prepararPantallaProveedor() {
+    document.getElementById('subSelectTarimas').style.display = 'none';
+    document.getElementById('subSelectStretch').style.display = 'none';
+    document.getElementById('btnContinuarProv').style.display = 'none';
+
+    document.getElementById('provTarimas').style.display = (tipoActual === 'Tarimas') ? 'block' : 'none';
+    document.getElementById('provStretch').style.display = (tipoActual === 'Stretch') ? 'block' : 'none';
+
+    // Resetear selección
+    proveedorSeleccionado = '';
+  }
+
+  window.setProveedorTarimas = function(opcion) {
+    document.getElementById('subSelectTarimas').style.display = 'none';
+    document.getElementById('btnContinuarProv').style.display = 'inline-block';
+    if (opcion === 'Gianni') {
+      proveedorSeleccionado = 'Gianni';
+    } else if (opcion === 'TucumanChivilisco') {
+      llenarSelectTarimasTucuman();
+      document.getElementById('subSelectTarimas').style.display = 'block';
+      proveedorSeleccionado = document.getElementById('selectTarimas').value;
+    } else if (opcion === 'Otro') {
+      llenarSelectTarimasOtros();
+      document.getElementById('subSelectTarimas').style.display = 'block';
+      proveedorSeleccionado = document.getElementById('selectTarimas').value;
+    }
+  };
+
+  document.addEventListener('change', e => {
+    if (e.target.id === 'selectTarimas') proveedorSeleccionado = e.target.value;
+    if (e.target.id === 'selectStretch') proveedorSeleccionado = e.target.value;
+  });
+
+  function llenarSelectTarimasTucuman() {
+    const select = document.getElementById('selectTarimas');
+    select.innerHTML = "";
+    listasProveedores.tarimas.filter(p => p === "Tucumán Pallet" || p === "Chivilisco")
+      .forEach(p => select.innerHTML += `<option value="${p}">${p}</option>`);
+  }
+
+  function llenarSelectTarimasOtros() {
+    const select = document.getElementById('selectTarimas');
+    select.innerHTML = "";
+    listasProveedores.tarimas.filter(p => !["Envío", "Tucumán Pallet", "Chivilisco", "Gianni"].includes(p))
+      .forEach(p => select.innerHTML += `<option value="${p}">${p}</option>`);
+  }
+
+  window.setProveedorStretch = function(opcion) {
+    document.getElementById('subSelectStretch').style.display = 'none';
+    document.getElementById('btnContinuarProv').style.display = 'inline-block';
+    if (opcion === 'Urflex') {
+      proveedorSeleccionado = 'Urflex';
+    } else if (opcion === 'Otro') {
+      llenarSelectStretchOtros();
+      document.getElementById('subSelectStretch').style.display = 'block';
+      proveedorSeleccionado = document.getElementById('selectStretch').value;
+    }
+  };
+
+  function llenarSelectStretchOtros() {
+    const select = document.getElementById('selectStretch');
+    select.innerHTML = "";
+    listasProveedores.stretch.filter(p => !["Envío", "Urflex"].includes(p))
+      .forEach(p => select.innerHTML += `<option value="${p}">${p}</option>`);
+  }
+
+  async function agregarNuevoStretch() {
+    const nombre = document.getElementById('nuevoProvStretch').value.trim();
+    if (!nombre) return alert("Ingresá un nombre");
+    const resp = await google.script.run.withSuccessHandler(r => {
+      if (r.exito) {
+        listasProveedores.stretch.push(nombre);
+        llenarSelectStretchOtros();
+        document.getElementById('nuevoProvStretch').value = "";
+      }
+    }).agregarProveedorStretch(nombre);
+  }
+
+  function irAFormulario() {
+    prepararFormularioVisual();
+    mostrarPantalla('form');
+  }
+
+  function irAFormularioDirecto() {
+    prepararFormularioVisual();
+    mostrarPantalla('form');
+  }
+
+  // -------------------- FORMULARIO --------------------
+  function prepararFormularioVisual() {
+    document.getElementById('formTitulo').innerText = movimientoActual + ' de ' + tipoActual;
+    document.getElementById('proveedorMostrado').innerText = 'Proveedor: ' + proveedorSeleccionado;
+    if (tipoActual === 'Tarimas') {
+      document.getElementById('camposTarimas').style.display = 'block';
+      document.getElementById('camposStretch').style.display = 'none';
+    } else {
+      document.getElementById('camposTarimas').style.display = 'none';
+      document.getElementById('camposStretch').style.display = 'block';
+    }
+    actualizarValidacionRemito();
+  }
+
+  function actualizarValidacionRemito() {
+    const hint = document.getElementById('remitoHint');
+    if (tipoActual === 'Tarimas' && movimientoActual === 'Ingreso') {
+      if (proveedorSeleccionado === 'Gianni') hint.innerText = '* Gianni: exactamente 6 dígitos.';
+      else if (proveedorSeleccionado === 'Tucumán Pallet' || proveedorSeleccionado === 'Chivilisco') hint.innerText = '* ' + proveedorSeleccionado + ': entre 1 y 4 dígitos.';
+      else hint.innerText = '';
+    } else hint.innerText = '';
+  }
+
+  function calcularKgBob() {
+    const kg = parseFloat(document.getElementById('kgStretch').value) || 0;
+    const bob = parseFloat(document.getElementById('bobStretch').value) || 0;
+    document.getElementById('kgBob').value = bob > 0 ? (kg / bob).toFixed(2) : '';
+  }
+
+  function manejarArchivoForm(file) {
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      fotoData = { dataURL: e.target.result, nombre: file.name, mime: file.type };
+      document.getElementById('previewFoto').src = e.target.result;
+      document.getElementById('previewFoto').style.display = 'block';
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // -------------------- CÁMARA (con ayuda de permisos) --------------------
+  let scannerStream = null;
+  function onOpenCvReady() { openCvReady = true; }
+
+  async function abrirEscaner() {
+    document.getElementById('cameraError').style.display = 'none';
+    if (!navigator.mediaDevices?.getUserMedia) {
+      mostrarErrorCamara("Tu navegador no soporta cámara. Usá Galería.");
+      return;
+    }
+    document.getElementById('scanner-container').style.display = 'flex';
+    const video = document.getElementById('video-scanner');
+    try {
+      scannerStream = await navigator.mediaDevices.getUserMedia({
+        video: { facingMode: { ideal: 'environment' }, width: { ideal: 1920 }, height: { ideal: 1080 } }
+      });
+      video.srcObject = scannerStream;
+    } catch (err) {
+      cerrarEscaner();
+      let mensaje = "";
+      if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+        mensaje = "Permiso de cámara denegado.\n\n🔧 En Android: Ajustes > Aplicaciones > Chrome > Permisos > Cámara.\n🔧 En iPhone: Ajustes > Safari > Cámara.\nLuego volvé a intentar.";
+      } else if (err.name === 'NotFoundError') {
+        mensaje = "No se encontró cámara en el dispositivo.";
       } else {
-        prodLabel.classList.remove('active');
-        planLabel.classList.remove('active');
-        slider.className = 'toggle-slider left';
+        mensaje = "Error: " + err.message;
       }
-      renderGantt();
+      mostrarErrorCamara(mensaje);
     }
+  }
 
-    function toggleProdPlan() {
-      if (currentView === 'cumpl') setView('prod');
-      else setView(currentView === 'prod' ? 'plan' : 'prod');
+  function mostrarErrorCamara(mensaje) {
+    document.getElementById('cameraErrorMsg').innerText = mensaje;
+    document.getElementById('cameraError').style.display = 'block';
+  }
+
+  function reintentarCamara() {
+    document.getElementById('cameraError').style.display = 'none';
+    cerrarEscaner();
+    abrirEscaner(); // vuelve a pedir permiso
+  }
+
+  function cerrarEscaner() {
+    if (scannerStream) {
+      scannerStream.getTracks().forEach(t => t.stop());
+      scannerStream = null;
     }
-    function toggleCumplimiento() {
-      setView(currentView === 'cumpl' ? 'prod' : 'cumpl');
-    }
+    document.getElementById('scanner-container').style.display = 'none';
+    document.getElementById('cameraError').style.display = 'none';
+  }
 
-    // ==================== GANTT DIARIO ====================
-    function abrirGantt(dateStr) {
-      document.getElementById('ganttTitulo').textContent = new Date(dateStr+'T00:00:00').toLocaleDateString('es-AR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
-      const cont = document.getElementById('ganttDetalle'); cont.innerHTML = '';
-      TURNOS.forEach(turno => {
-        const k = key(dateStr, turno);
-        const plans = planData[k] || [];
-        const realInfo = realTasksByTurno[k];
-        const row = document.createElement('div'); row.className = 'gantt-row';
-        row.innerHTML = `<div class="gantt-turno">${turno}</div><div class="gantt-bars"></div>`;
-        const barsDiv = row.querySelector('.gantt-bars');
+  function capturarFoto() {
+    if (!openCvReady) { alert("Cargando escáner..."); return; }
+    const video = document.getElementById('video-scanner');
+    const canvas = document.getElementById('scanner-canvas');
+    canvas.width = video.videoWidth;
+    canvas.height = video.videoHeight;
+    canvas.getContext('2d').drawImage(video, 0, 0);
+    procesarImagen(canvas);
+  }
 
-        plans.filter(p=>p.tarea==='Producción').forEach(p => {
-          const bar = document.createElement('div'); bar.className = 'gantt-bar gantt-plan';
-          bar.style.backgroundColor = getBrickColor(p.baseName, p.number);
-          bar.innerHTML = `<img src="${getImageSrc(p.baseName)}" onerror="this.style.display='none'"> ${p.moldeCompleto}`;
-          barsDiv.appendChild(bar);
-        });
-        plans.filter(p=>p.tarea==='Prueba').forEach(p => {
-          const bar = document.createElement('div'); bar.className = 'gantt-bar gantt-plan';
-          bar.style.backgroundColor = '#ffd700'; bar.style.color = '#000';
-          bar.innerHTML = `${p.moldeCompleto} (PR)`;
-          barsDiv.appendChild(bar);
-        });
-
-        if (realInfo && realInfo.productions.length > 0) {
-          realInfo.productions.forEach(prod => {
-            const comp = getCompliance(prod.moldeCompleto, plans);
-            const bar = document.createElement('div'); bar.className = 'gantt-bar';
-            bar.style.backgroundColor = comp.status==='cumplido'?'#30d158':comp.status==='parcial'?'#ff9f0a':comp.status==='desvio'?'#ff453a':'#636366';
-            const emoji = comp.status==='cumplido'?'✅':comp.status==='parcial'?'⏳':comp.status==='desvio'?'⚠️':'📌';
-            bar.innerHTML = `<img src="${getImageSrc(prod.baseName)}" onerror="this.style.display='none'"> ${prod.moldeCompleto} ${emoji}`;
-            barsDiv.appendChild(bar);
-          });
+  function procesarImagen(canvas) {
+    try {
+      const src = cv.imread(canvas);
+      const gray = new cv.Mat(); cv.cvtColor(src, gray, cv.COLOR_RGBA2GRAY);
+      const blur = new cv.Mat(); cv.GaussianBlur(gray, blur, { width: 5, height: 5 }, 0);
+      const edges = new cv.Mat(); cv.Canny(blur, edges, 75, 200);
+      const contours = new cv.MatVector(), hierarchy = new cv.Mat();
+      cv.findContours(edges, contours, hierarchy, cv.RETR_EXTERNAL, cv.CHAIN_APPROX_SIMPLE);
+      let maxArea = 0, maxContour = null;
+      for (let i = 0; i < contours.size(); i++) {
+        const cnt = contours.get(i);
+        const area = cv.contourArea(cnt);
+        if (area > maxArea && area > 5000) { maxArea = area; maxContour = cnt; }
+      }
+      if (maxContour) {
+        const approx = new cv.Mat();
+        cv.approxPolyDP(maxContour, approx, 0.02 * cv.arcLength(maxContour, true), true);
+        if (approx.rows === 4) {
+          const pts = [];
+          for (let i = 0; i < 4; i++) pts.push({ x: approx.data32S[i*2], y: approx.data32S[i*2+1] });
+          const sorted = ordenarPuntos(pts);
+          const width = Math.max(Math.hypot(sorted[1].x-sorted[0].x, sorted[1].y-sorted[0].y),
+                                Math.hypot(sorted[2].x-sorted[3].x, sorted[2].y-sorted[3].y));
+          const height = Math.max(Math.hypot(sorted[3].x-sorted[0].x, sorted[3].y-sorted[0].y),
+                                 Math.hypot(sorted[2].x-sorted[1].x, sorted[2].y-sorted[1].y));
+          const dstPts = cv.matFromArray(4, 1, cv.CV_32FC2, [0,0, width-1,0, width-1,height-1, 0,height-1]);
+          const srcPts = cv.matFromArray(4, 1, cv.CV_32FC2, sorted.map(p => [p.x, p.y]).flat());
+          const M = cv.getPerspectiveTransform(srcPts, dstPts);
+          const warped = new cv.Mat();
+          cv.warpPerspective(src, warped, M, { width: Math.floor(width), height: Math.floor(height) });
+          cv.imshow('scanner-canvas', warped);
+          const dataURL = document.getElementById('scanner-canvas').toDataURL('image/jpeg', 0.9);
+          cerrarEscaner();
+          (pantallas.scan.classList.contains('activa') ? imagenListaParaOCR : dataURL => manejarArchivoForm(dataURLtoFile(dataURL,'foto.jpg')))(dataURL);
+          [src,gray,blur,edges,contours,hierarchy,approx,M,warped,dstPts,srcPts].forEach(m => m.delete());
+          return;
         }
-        if (realInfo && realInfo.tests.length > 0) {
-          realInfo.tests.forEach(test => {
-            const bar = document.createElement('div'); bar.className = 'gantt-bar';
-            bar.style.backgroundColor = '#ffd700'; bar.style.color = '#000';
-            bar.innerHTML = `${test.moldeCompleto} (PR)`;
-            barsDiv.appendChild(bar);
-          });
-        }
-        if (barsDiv.children.length === 0) {
-          barsDiv.innerHTML = '<span style="color:var(--text-muted);">Sin actividad</span>';
-        }
-        cont.appendChild(row);
-      });
-      document.getElementById('ganttModal').style.display = 'flex';
+        approx.delete();
+      }
+      // fallback
+      const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+      cerrarEscaner();
+      (pantallas.scan.classList.contains('activa') ? imagenListaParaOCR : dataURL => manejarArchivoForm(dataURLtoFile(dataURL,'foto.jpg')))(dataURL);
+      [src,gray,blur,edges,contours,hierarchy].forEach(m => m.delete());
+    } catch(e) {
+      console.error(e);
+      const dataURL = canvas.toDataURL('image/jpeg', 0.9);
+      cerrarEscaner();
+      (pantallas.scan.classList.contains('activa') ? imagenListaParaOCR : dataURL => manejarArchivoForm(dataURLtoFile(dataURL,'foto.jpg')))(dataURL);
     }
-    function cerrarGantt() { document.getElementById('ganttModal').style.display = 'none'; }
-    window.addEventListener('click', e => { if (e.target === document.getElementById('ganttModal')) cerrarGantt(); });
+  }
 
-    // ==================== NAVEGACIÓN ====================
-    function abrirSelectorMes() {
-      document.getElementById('overlay').style.display = 'block';
-      document.getElementById('monthSelector').style.display = 'block';
-      const sel = document.getElementById('selMonth');
-      sel.innerHTML = '';
-      ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'].forEach((m,i) => {
-        const opt = document.createElement('option'); opt.value = i; opt.textContent = m;
-        if (i === currentDate.getMonth()) opt.selected = true;
-        sel.appendChild(opt);
-      });
-      document.getElementById('selYear').value = currentDate.getFullYear();
-    }
-    function cerrarSelectorMes() {
-      document.getElementById('overlay').style.display = 'none';
-      document.getElementById('monthSelector').style.display = 'none';
-    }
-    function irAMes() {
-      const m = parseInt(document.getElementById('selMonth').value);
-      const y = parseInt(document.getElementById('selYear').value);
-      currentDate.setFullYear(y); currentDate.setMonth(m);
-      cerrarSelectorMes();
-      loadData();
-    }
-    function cambiarMes(delta) { currentDate.setMonth(currentDate.getMonth()+delta); loadData(); }
-    function irAHoy() { currentDate = new Date(); loadData(); }
+  function ordenarPuntos(points) {
+    const c = points.reduce((acc, p) => ({ x: acc.x + p.x/4, y: acc.y + p.y/4 }), {x:0, y:0});
+    return points.sort((a,b) => Math.atan2(a.y-c.y, a.x-c.x) - Math.atan2(b.y-c.y, b.x-c.x));
+  }
 
-    function updateClock() {
-      const now = new Date();
-      document.getElementById('liveClock').textContent =
-        now.toLocaleDateString('es-AR', {weekday:'short',year:'numeric',month:'short',day:'numeric'}) + ' · ' +
-        now.toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'});
+  // -------------------- GUARDAR --------------------
+  async function enviarDatos() {
+    const numRemito = document.getElementById('numRemito').value.trim();
+    if (!numRemito) return alert("Ingresá el número de remito.");
+    if (movimientoActual === 'Ingreso' && tipoActual === 'Tarimas') {
+      if (proveedorSeleccionado === 'Gianni' && !/^\d{6}$/.test(numRemito)) return alert("Remito Gianni: 6 dígitos.");
+      if ((proveedorSeleccionado === 'Tucumán Pallet' || proveedorSeleccionado === 'Chivilisco') && !/^\d{1,4}$/.test(numRemito))
+        return alert("Remito " + proveedorSeleccionado + ": 1-4 dígitos.");
     }
-    function toggleTheme() {
-      themeDark = !themeDark;
-      document.body.classList.toggle('light-mode', !themeDark);
-      localStorage.setItem('theme', themeDark ? 'dark' : 'light');
-    }
+    const btn = document.getElementById('btnGuardar');
+    btn.disabled = true; btn.innerText = "Guardando...";
+    const datos = {
+      password: document.getElementById('password').value,
+      movimiento: movimientoActual,
+      tipo: tipoActual,
+      proveedor: proveedorSeleccionado,
+      fecha: document.getElementById('fecha').value,
+      numRemito, cantTarimas: document.getElementById('cantTarimas').value || 0,
+      kgStretch: document.getElementById('kgStretch').value || 0,
+      bobStretch: document.getElementById('bobStretch').value || 0,
+      kgBob: document.getElementById('kgBob').value || 0,
+      obs: document.getElementById('obs').value,
+    };
+    if (fotoData) Object.assign(datos, { archivoData: fotoData.dataURL, archivoNombre: fotoData.nombre, archivoMime: fotoData.mime });
+    google.script.run.withSuccessHandler(resp => {
+      document.getElementById('mensaje').style.color = resp.exito ? 'green' : 'red';
+      document.getElementById('mensaje').innerText = resp.mensaje;
+      if (resp.exito) setTimeout(() => location.reload(), 2000);
+      else { btn.disabled = false; btn.innerText = "Guardar Movimiento"; }
+    }).procesarCarga(datos);
+  }
 
-    window.addEventListener('load', () => {
-      if (localStorage.getItem('theme')==='light') { document.body.classList.add('light-mode'); themeDark = false; }
-      updateClock(); setInterval(updateClock, 30000);
-      loadData();
-    });
-  </script>
+  window.onload = () => google.script.run.withSuccessHandler(l => listasProveedores = l).getProveedores();
+</script>
 </body>
 </html>
