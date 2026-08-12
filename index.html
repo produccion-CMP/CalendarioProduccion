@@ -56,6 +56,7 @@
             transition: background 0.3s, color 0.3s;
         }
 
+        /* ========== HEADER ========== */
         .app-header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 16px 24px; background: var(--bg-panel); border-radius: var(--radius);
@@ -77,6 +78,7 @@
         }
         .btn-new-plan:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
 
+        /* ========== CONTROLES DE VISTA ========== */
         .views-container {
             display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
             gap: 15px; background: var(--bg-panel); padding: 10px 20px;
@@ -117,6 +119,7 @@
         }
         .action-btn:hover { background: var(--accent); color: #fff; }
 
+        /* ========== KPI ========== */
         .kpi-container {
             display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;
         }
@@ -129,6 +132,7 @@
         .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--accent-light); }
         .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
 
+        /* ========== NAVEGACIÓN ========== */
         .month-nav {
             display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px;
         }
@@ -150,6 +154,7 @@
             border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer;
         }
 
+        /* ========== SELECTOR MES ========== */
         .month-selector {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: var(--bg-panel); padding: 24px; border-radius: var(--radius);
@@ -161,6 +166,7 @@
         }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1500; }
 
+        /* ========== TABLA GANTT ========== */
         .gantt-wrapper {
             background: var(--bg-panel); border-radius: var(--radius); padding: 8px;
             box-shadow: var(--shadow-3d); overflow-x: auto;
@@ -194,7 +200,7 @@
             font-size: 0.9rem; animation: pulse 1.2s ease-in-out infinite;
         }
         .indicator-pr {
-            font-size: 0.55rem; font-weight: 800; background: var(--prueba-bg); color: #000;
+            font-size: 0.55rem; font-weight: 800; background: #ffd700; color: #000;
             padding: 0 3px; border-radius: 3px; line-height: 1.2;
             animation: pulse 1.5s ease-in-out infinite;
         }
@@ -216,26 +222,30 @@
         .mold-base { font-weight: 700; font-size: 0.7rem; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
         .mold-label-text { font-size: 0.5rem; font-weight: 600; opacity: 0.7; text-transform: uppercase; }
         .mold-number { font-size: 0.65rem; font-weight: 700; }
-
-        /* Marcador de fin de producción (esquina superior izquierda) */
-        .end-marker {
-            position: absolute; top: 0; left: 0; width: 0; height: 0;
-            border-style: solid;
-            border-width: 10px 10px 0 0;
-            border-color: var(--accent) transparent transparent transparent;
-            opacity: 0.9;
-            z-index: 2;
+        .prueba-badge {
+            background: #ffd700; color: #000; font-weight: 700; font-size: 0.6rem;
+            padding: 1px 4px; border-radius: 3px; margin: 2px 0;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%;
         }
 
-        /* Marcador de prueba (esquina superior derecha) */
-        .prueba-marker {
+        /* Esquina superior derecha para PR */
+        .corner-pr {
             position: absolute; top: 0; right: 0; width: 0; height: 0;
             border-style: solid;
-            border-width: 0 10px 10px 0;
+            border-width: 0 12px 12px 0;
             border-color: transparent #000 transparent transparent;
-            z-index: 2;
+            opacity: 0.9;
         }
 
+        /* Esquina superior izquierda para cambio de molde */
+        .corner-change {
+            position: absolute; top: 0; left: 0; width: 0; height: 0;
+            border-style: solid;
+            border-width: 12px 12px 0 0;
+            border-color: var(--previous-color, #e07b4c) transparent transparent transparent;
+        }
+
+        /* Barra de cumplimiento */
         .compliance-bar-cell {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 4px;
             border-radius: 0 0 3px 3px; background: var(--gray);
@@ -250,6 +260,7 @@
             position: absolute; bottom: 6px; right: 4px; font-size: 0.7rem;
         }
 
+        /* Recuadro HOY */
         td.today-col {
             border-left: 3px solid #000 !important;
             border-right: 3px solid #000 !important;
@@ -280,10 +291,12 @@
             border-bottom: 3px solid #000 !important;
         }
 
+        /* Domingo: solo se aplica si no hay color de molde */
         td.sunday-cell {
-            /* Solo se aplica si no hay producción */
+            background-color: var(--sunday-bg) !important;
         }
 
+        /* Pruebas info */
         .pruebas-info {
             margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius);
             padding: 16px; box-shadow: var(--shadow-3d); font-size: 0.8rem;
@@ -399,36 +412,42 @@
         const FALLBACK_IMG = 'img/moldes/default.png';
         const TURNOS = ['T1','T2','T3'];
 
-        // Paleta de colores fija por tipo de ladrillo (tono base)
-        const TYPE_BASE_COLORS = {
-            'H8': 0, 'H12': 30, 'H18': 60, 'P12': 120, 'P18': 150,
-            'L12': 200, 'L16': 230, 'DM20': 270, 'DM27': 300, 'KB': 340
-        };
-
         let planData = {};
         let realData = {};
         let currentView = 'prod';
         let currentDate = new Date();
         let themeDark = true;
 
+        // ============ COLORES MEJORADOS ============
+        // Asignación de tonos únicos para cada tipo de ladrillo
+        const typeHueMap = {
+            'H8': 0,
+            'H12': 30,
+            'H18': 60,
+            'P12': 120,
+            'P18': 150,
+            'L12': 190,
+            'L16': 220,
+            'DM20': 260,
+            'DM27': 290,
+            'KB': 330,
+            'CMP': 10
+        };
+
         function getBaseHue(baseName) {
-            if (TYPE_BASE_COLORS.hasOwnProperty(baseName)) return TYPE_BASE_COLORS[baseName];
-            // Fallback para tipos no listados: generar a partir del nombre pero evitando colores cercanos a los definidos
+            if (typeHueMap.hasOwnProperty(baseName)) return typeHueMap[baseName];
             let hash = 0;
             for (let i = 0; i < baseName.length; i++) hash = baseName.charCodeAt(i) + ((hash << 5) - hash);
-            // Desplazar lejos de los tonos ya usados
-            const usedHues = Object.values(TYPE_BASE_COLORS);
-            let hue = Math.abs(hash) % 360;
-            // Ajuste simple para evitar solapamiento (opcional)
-            return hue;
+            return Math.abs(hash) % 360;
         }
 
+        // Colores bien diferenciados y variación de intensidad por número de molde
         function getBrickColor(baseName, number) {
             const hue = getBaseHue(baseName);
-            // Intensidad según número de molde: más alto, más saturado y ligeramente más oscuro
-            const saturation = 60 + number * 8;  // 68, 76, 84
-            const lightness = 48 - number * 4;   // 44, 40, 36
-            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
+            // Intensidad creciente con el número de molde
+            const sat = 60 + number * 5;        // 1=65%, 2=70%, 3=75%
+            const light = 45 - number * 3;      // 1=42%, 2=39%, 3=36%
+            return `hsl(${hue}, ${sat}%, ${light}%)`;
         }
 
         function pickTextColor(hslColor) {
@@ -540,6 +559,28 @@
             return prod.length > 0 ? { status: 'desvio' } : { status: 'sinPlan' };
         }
 
+        // Función para construir una celda de molde con detalles y esquinas indicadoras
+        function createMoldCellHTML(task, previousMoldColor, isChange, isTestDay) {
+            let html = '';
+            const color = getBrickColor(task.baseName, task.number);
+            const textColor = pickTextColor(color);
+            html += `<div style="background-color:${color}; color:${textColor}; width:100%; height:100%; display:flex; flex-direction:column; align-items:center; justify-content:center; border-radius:4px; position:relative;">`;
+            html += `<img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" style="width:28px;height:28px;object-fit:contain;border-radius:4px;background:rgba(255,255,255,0.1);margin-bottom:1px;">`;
+            html += `<span class="mold-base">${task.baseName}</span>`;
+            html += `<span class="mold-label-text">Molde</span>`;
+            html += `<span class="mold-number">${task.number}</span>`;
+            // Esquina superior izquierda para cambio
+            if (isChange && previousMoldColor) {
+                html += `<div style="position:absolute; top:0; left:0; width:0; height:0; border-style:solid; border-width:12px 12px 0 0; border-color:${previousMoldColor} transparent transparent transparent;"></div>`;
+            }
+            // Esquina superior derecha para PR
+            if (isTestDay) {
+                html += `<div style="position:absolute; top:0; right:0; width:0; height:0; border-style:solid; border-width:0 12px 12px 0; border-color:transparent #000 transparent transparent;"></div>`;
+            }
+            html += `</div>`;
+            return html;
+        }
+
         function renderGantt() {
             const wrapper = document.getElementById('ganttWrapper');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
@@ -554,11 +595,11 @@
             const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
 
             const activeData = (currentView === 'plan') ? planData : realData;
+
+            // Determinar días con cambio y con pruebas
             const changeDays = new Set();
             const testDays = new Set();
             let lastMoldByTurnoAux = new Map();
-
-            // Primera pasada para detectar días con cambio y pruebas
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 TURNOS.forEach(turno => {
@@ -566,10 +607,13 @@
                     const tasks = activeData[k];
                     if (tasks) {
                         tasks.forEach(task => {
-                            if (task.tarea === 'Prueba') testDays.add(dateStr);
-                            else if (task.tarea === 'Producción') {
+                            if (task.tarea === 'Prueba') {
+                                testDays.add(dateStr);
+                            } else if (task.tarea === 'Producción') {
                                 const prev = lastMoldByTurnoAux.get(turno);
-                                if (prev && prev !== task.moldeCompleto && task.esInicio) changeDays.add(dateStr);
+                                if (prev && prev !== task.moldeCompleto && task.esInicio) {
+                                    changeDays.add(dateStr);
+                                }
                                 lastMoldByTurnoAux.set(turno, task.moldeCompleto);
                             }
                         });
@@ -585,15 +629,14 @@
                 const isSunday = date.getDay() === 0;
                 const dateStr = formatYYYYMMDD(date);
                 const isToday = dateStr === todayStr;
-                let thClass = '';
+                let thClass = isSunday ? 'sunday-cell' : '';
                 if (isToday) thClass += ' today-col';
-                if (isSunday && !activeData[key(dateStr, 'T1')] && !activeData[key(dateStr, 'T2')] && !activeData[key(dateStr, 'T3')]) {
-                    thClass += ' sunday-cell';
-                }
+
                 const indicators = [];
                 if (changeDays.has(dateStr)) indicators.push('<span class="indicator-change">🔄️</span>');
                 if (testDays.has(dateStr)) indicators.push('<span class="indicator-pr">PR</span>');
                 const indicatorHTML = indicators.length ? `<div class="day-indicators">${indicators.join('')}</div>` : '';
+
                 html += `<th class="${thClass}" style="width:${colWidthCalc};">
                     <div class="day-header">
                         <span class="day-name">${dayName}</span>
@@ -604,69 +647,59 @@
             }
             html += '</tr></thead><tbody>';
 
+            // Seguimiento de último molde por turno
             let lastMoldByTurno = new Map();
+            let lastColorByTurno = new Map();
 
             TURNOS.forEach(turno => {
                 html += `<tr><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
+
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                     const dateObj = new Date(year, month, d);
                     const isSunday = dateObj.getDay() === 0;
                     const isToday = dateStr === todayStr;
                     const k = key(dateStr, turno);
-                    const tasks = (currentView === 'plan') ? planData[k] : realData[k];
+                    const tasks = activeData[k];
                     const plansForComparison = planData[k] || [];
 
                     let cellContent = '';
                     let bgColor = 'transparent';
                     let txtColor = 'inherit';
                     let cellClasses = '';
-                    let extraMarkers = '';
 
-                    if (isToday) cellClasses += ' today-col';
-
-                    // Determinar si hay producción(es) y pruebas
-                    const prodTasks = tasks ? tasks.filter(t => t.tarea === 'Producción') : [];
-                    const testTasks = tasks ? tasks.filter(t => t.tarea === 'Prueba') : [];
-
-                    // Solo aplicar fondo de domingo si no hay producción ni pruebas
-                    if (isSunday && prodTasks.length === 0 && testTasks.length === 0) {
+                    // El domingo solo se distingue si no hay color de molde
+                    if (isSunday && (!tasks || tasks.length === 0)) {
                         cellClasses += ' sunday-cell';
                     }
+                    if (isToday) cellClasses += ' today-col';
 
-                    if (prodTasks.length > 0) {
-                        // Procesar cada producción (normalmente una, pero puede haber cambio en el mismo turno)
-                        prodTasks.forEach((task, idx) => {
+                    if (tasks && tasks.length > 0) {
+                        const prod = tasks.filter(t => t.tarea === 'Producción');
+                        const tests = tasks.filter(t => t.tarea === 'Prueba');
+                        const hasTest = tests.length > 0;
+
+                        prod.forEach(task => {
                             const color = getBrickColor(task.baseName, task.number);
                             const textColor = pickTextColor(color);
                             const prevMold = lastMoldByTurno.get(turno);
+                            const prevColor = lastColorByTurno.get(turno) || null;
                             const showDetail = task.esInicio || prevMold !== task.moldeCompleto;
 
                             if (showDetail) {
                                 bgColor = color;
                                 txtColor = textColor;
-                                cellContent += `<div class="cell-content">
-                                    <img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${task.baseName}">
-                                    <span class="mold-base">${task.baseName}</span>
-                                    <span class="mold-label-text">Molde</span>
-                                    <span class="mold-number">${task.number}</span>
-                                </div>`;
-                                // Si hay un molde anterior diferente y esta tarea es inicio, marcar fin del anterior
-                                if (prevMold && prevMold !== task.moldeCompleto && task.esInicio) {
-                                    // Buscar el color del molde anterior para el marcador
-                                    const prevTask = prodTasks.find(t => t.moldeCompleto === prevMold && t.esFin);
-                                    if (prevTask) {
-                                        const prevColor = getBrickColor(prevTask.baseName, prevTask.number);
-                                        extraMarkers += `<div class="end-marker" style="border-color: ${prevColor} transparent transparent transparent;"></div>`;
-                                    }
-                                }
+                                const isChange = prevMold && prevMold !== task.moldeCompleto;
+                                cellContent = createMoldCellHTML(task, prevColor, isChange, hasTest);
                             } else {
-                                // Solo color, sin contenido
                                 bgColor = color;
                                 cellContent = '';
                             }
-                            lastMoldByTurno.set(turno, task.moldeCompleto);
 
+                            lastMoldByTurno.set(turno, task.moldeCompleto);
+                            lastColorByTurno.set(turno, color);
+
+                            // Para vista cumplimiento agregar barra y emoji
                             if (currentView === 'cumpl') {
                                 const comp = getCompliance(task.moldeCompleto, plansForComparison);
                                 const barClass = comp.status === 'cumplido' ? 'green-bar' : comp.status === 'parcial' ? 'orange-bar' : comp.status === 'desvio' ? 'red-bar' : 'gray-bar';
@@ -674,25 +707,29 @@
                                 cellContent += `<div class="compliance-bar-cell ${barClass}"></div><div class="compliance-emoji-cell">${emoji}</div>`;
                             }
                         });
+
+                        // Para pruebas, si no se mostraron en una celda de producción, agregar marcador
+                        if (hasTest && !prod.some(p => p.esInicio)) {
+                            // Agregamos el triángulo negro en esquina superior derecha
+                            cellContent += `<div class="corner-pr"></div>`;
+                        }
+                    } else {
+                        cellContent = '<span style="color:var(--text-muted);">—</span>';
                     }
 
-                    // Marcador de prueba en la esquina superior derecha
-                    if (testTasks.length > 0) {
-                        extraMarkers += '<div class="prueba-marker"></div>';
-                    }
-
-                    if (cellContent === '' && bgColor === 'transparent' && extraMarkers === '') {
+                    if (cellContent === '' && bgColor === 'transparent') {
                         cellContent = '<span style="color:var(--text-muted);">—</span>';
                     }
 
                     html += `<td class="${cellClasses}" style="background-color:${bgColor}; color:${txtColor}; width:${colWidthCalc};"
-                                 onclick="abrirGantt('${dateStr}')">${cellContent}${extraMarkers}</td>`;
+                                 onclick="abrirGantt('${dateStr}')">${cellContent}</td>`;
                 }
                 html += '</tr>';
             });
 
             html += '</tbody></table>';
             wrapper.innerHTML = html;
+
             renderPruebasInfo();
             renderPruebasPrint();
         }
@@ -777,19 +814,25 @@
                     (planData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => pruebasPlan.push({ fecha: ds, molde: p.moldeCompleto }));
                 });
             }
-            printDiv.innerHTML = pruebasPlan.length ? '<h3>Pruebas Plan</h3><table>' + pruebasPlan.map(p => `<tr><td>${p.fecha}</td><td>${p.molde}</td></tr>`).join('') + '</table>' : '';
+            if (pruebasPlan.length === 0) {
+                printDiv.innerHTML = '<p>Sin pruebas planificadas.</p>';
+            } else {
+                let html = '<h3>Pruebas del Mes (Plan)</h3><table><thead><tr><th>Fecha</th><th>Molde</th></tr></thead><tbody>';
+                pruebasPlan.forEach(p => html += `<tr><td>${p.fecha}</td><td>${p.molde}</td></tr>`);
+                html += '</tbody></table>';
+                printDiv.innerHTML = html;
+            }
         }
 
         function setView(view) {
             currentView = view;
             document.getElementById('btnCumpl').classList.toggle('active', view === 'cumpl');
-            const slider = document.getElementById('toggleSlider');
             document.getElementById('toggleProdLabel').classList.toggle('active', view === 'prod');
             document.getElementById('togglePlanLabel').classList.toggle('active', view === 'plan');
+            const slider = document.getElementById('toggleSlider');
             slider.className = 'toggle-slider ' + (view === 'plan' ? 'right' : 'left');
             renderGantt();
         }
-
         function toggleProdPlan() {
             setView(currentView === 'prod' ? 'plan' : 'prod');
         }
