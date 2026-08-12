@@ -166,7 +166,7 @@
         }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1500; }
 
-        /* Tabla Gantt (con nuevas marcas) */
+        /* Tabla Gantt */
         .gantt-wrapper {
             background: var(--bg-panel); border-radius: var(--radius); padding: 8px;
             box-shadow: var(--shadow-3d); overflow-x: auto;
@@ -223,33 +223,28 @@
         .mold-label-text { font-size: 0.5rem; font-weight: 600; opacity: 0.7; text-transform: uppercase; }
         .mold-number { font-size: 0.65rem; font-weight: 700; }
 
-        /* Marcas de esquina */
-        .corner-prev-mold {
-            position: absolute; top: 0; left: 0;
-            width: 0; height: 0;
-            border-style: solid;
-            border-width: 10px 10px 0 0;
-            border-color: var(--prev-mold-color) transparent transparent transparent;
-            z-index: 2;
-        }
-        .corner-prueba {
-            position: absolute; top: 0; right: 0;
-            width: 0; height: 0;
-            border-style: solid;
-            border-width: 0 10px 10px 0;
-            border-color: transparent #000 transparent transparent;
-            z-index: 2;
+        /* Esquina de cambio de molde (superior izquierda) */
+        .corner-marker {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 8px;
+            height: 8px;
+            border-radius: 0 0 4px 0;
         }
 
-        .end-marker {
-            position: absolute; bottom: 0; right: 0; width: 0; height: 0;
-            border-style: solid;
-            border-width: 0 0 8px 8px;
-            border-color: transparent transparent var(--accent) transparent;
-            opacity: 0.7;
+        /* Marcador de prueba (superior derecha) */
+        .test-marker {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 6px;
+            height: 6px;
+            background: #000;
+            border-radius: 0 0 0 4px;
         }
 
-        /* Barra de cumplimiento (sin cambios) */
+        /* Barra de cumplimiento (solo en vista cumplimiento) */
         .compliance-bar-cell {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 4px;
             border-radius: 0 0 3px 3px; background: var(--gray);
@@ -264,7 +259,7 @@
             position: absolute; bottom: 6px; right: 4px; font-size: 0.7rem;
         }
 
-        /* Día actual (sin cambios) */
+        /* Recuadro del día actual (negro con cartel HOY) */
         td.today-col {
             border-left: 3px solid #000 !important;
             border-right: 3px solid #000 !important;
@@ -295,11 +290,11 @@
             border-bottom: 3px solid #000 !important;
         }
 
+        /* Domingo solo cuando no hay producción (clase se quita si hay datos) */
         td.sunday-cell {
-            background-color: var(--sunday-bg) !important;
+            background-color: var(--sunday-bg);
         }
 
-        /* Pruebas info (sin cambios) */
         .pruebas-info {
             margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius);
             padding: 16px; box-shadow: var(--shadow-3d); font-size: 0.8rem;
@@ -421,22 +416,22 @@
         let currentDate = new Date();
         let themeDark = true;
 
-        // Paleta de colores mejorada: cada tipo base un hue distinto, molde afecta intensidad
-        const typeColorMap = {
-            'H8': 10, 'H12': 35, 'H18': 60, 'P12': 120, 'P18': 145,
-            'L12': 190, 'L16': 215, 'DM20': 260, 'DM27': 285, 'KB': 330
+        // Paleta fija con colores muy diferenciados por tipo de ladrillo
+        const typeHueMap = {
+            'H8': 0, 'H12': 30, 'H18': 60, 'P12': 120, 'P18': 150,
+            'L12': 190, 'L16': 220, 'DM20': 270, 'DM27': 300, 'KB': 330
         };
         function getBaseHue(baseName) {
-            if (typeColorMap.hasOwnProperty(baseName)) return typeColorMap[baseName];
+            if (typeHueMap.hasOwnProperty(baseName)) return typeHueMap[baseName];
             let hash = 0;
             for (let i = 0; i < baseName.length; i++) hash = baseName.charCodeAt(i) + ((hash << 5) - hash);
             return Math.abs(hash) % 360;
         }
         function getBrickColor(baseName, number) {
             const hue = getBaseHue(baseName);
-            // A mayor número de molde, mayor saturación y menor luminosidad (más intenso)
-            const sat = 65 + number * 5;
-            const light = 50 - number * 4;
+            // Molde 1: más claro, 2: medio, 3: más saturado/oscuro
+            const sat = 55 + number * 5;        // 60,65,70
+            const light = 50 - number * 4;      // 46,42,38
             return `hsl(${hue}, ${sat}%, ${light}%)`;
         }
         function pickTextColor(hslColor) {
@@ -565,6 +560,7 @@
             const changeDays = new Set();
             const testDays = new Set();
             let lastMoldByTurnoAux = new Map();
+
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 TURNOS.forEach(turno => {
@@ -591,7 +587,7 @@
                 const isSunday = date.getDay() === 0;
                 const dateStr = formatYYYYMMDD(date);
                 const isToday = dateStr === todayStr;
-                let thClass = isSunday ? 'sunday-cell' : '';
+                let thClass = '';
                 if (isToday) thClass += ' today-col';
                 const indicators = [];
                 if (changeDays.has(dateStr)) indicators.push('<span class="indicator-change">🔄️</span>');
@@ -608,6 +604,7 @@
             html += '</tr></thead><tbody>';
 
             let lastMoldByTurno = new Map();
+
             TURNOS.forEach(turno => {
                 html += `<tr><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
                 for (let d = 1; d <= daysInMonth; d++) {
@@ -623,72 +620,94 @@
                     let bgColor = 'transparent';
                     let txtColor = 'inherit';
                     let cellClasses = '';
-                    let extraCorners = '';
-
-                    if (isSunday) cellClasses += ' sunday-cell';
-                    if (isToday) cellClasses += ' today-col';
+                    let cornerHtml = '';
+                    let testMarkerHtml = '';
 
                     if (tasks && tasks.length > 0) {
-                        const prod = tasks.filter(t => t.tarea === 'Producción');
-                        const tests = tasks.filter(t => t.tarea === 'Prueba');
+                        const prodTasks = tasks.filter(t => t.tarea === 'Producción');
+                        const testTasks = tasks.filter(t => t.tarea === 'Prueba');
+
+                        // Marcadores de prueba (esquina superior derecha)
+                        testTasks.forEach(() => { testMarkerHtml += '<div class="test-marker"></div>'; });
 
                         // Procesar producciones
-                        prod.forEach(task => {
-                            const color = getBrickColor(task.baseName, task.number);
+                        const startTasks = prodTasks.filter(t => t.esInicio && !t.esFin);
+                        const endTasks = prodTasks.filter(t => t.esFin && !t.esInicio);
+                        const singleTasks = prodTasks.filter(t => t.esInicio && t.esFin);
+                        const midTasks = prodTasks.filter(t => !t.esInicio && !t.esFin);
+
+                        let primaryTask = null;
+                        let cornerColor = null;
+
+                        if (startTasks.length > 0) {
+                            primaryTask = startTasks[0];
+                            if (endTasks.length > 0) {
+                                const ending = endTasks[0];
+                                cornerColor = getBrickColor(ending.baseName, ending.number);
+                                // La tarea que finaliza no se dibuja (se reemplaza por la nueva)
+                            }
+                        } else if (singleTasks.length > 0) {
+                            primaryTask = singleTasks[0];
+                        } else {
+                            // Sin inicio nuevo: pueden ser tareas intermedias o finales sin inicio (continuación)
+                            if (midTasks.length > 0 || endTasks.length > 0) {
+                                // Tomamos la primera tarea (mid o end) como representante de la continuidad
+                                primaryTask = (midTasks.length > 0) ? midTasks[0] : endTasks[0];
+                            }
+                        }
+
+                        if (primaryTask) {
+                            const color = getBrickColor(primaryTask.baseName, primaryTask.number);
                             const textColor = pickTextColor(color);
                             const prevMold = lastMoldByTurno.get(turno);
-                            const showDetail = task.esInicio || prevMold !== task.moldeCompleto;
+                            const showDetail = primaryTask.esInicio || prevMold !== primaryTask.moldeCompleto;
 
                             if (showDetail) {
                                 bgColor = color;
                                 txtColor = textColor;
                                 cellContent = `<div class="cell-content">
-                                    <img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${task.baseName}">
-                                    <span class="mold-base">${task.baseName}</span>
+                                    <img src="${getImageSrc(primaryTask.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${primaryTask.baseName}">
+                                    <span class="mold-base">${primaryTask.baseName}</span>
                                     <span class="mold-label-text">Molde</span>
-                                    <span class="mold-number">${task.number}</span>
+                                    <span class="mold-number">${primaryTask.number}</span>
                                 </div>`;
-                                // Marca de molde anterior si hay cambio
-                                if (prevMold && prevMold !== task.moldeCompleto) {
-                                    const prevBase = getBaseName(prevMold);
-                                    const prevNum = getMoldNumber(prevMold);
-                                    const prevColor = getBrickColor(prevBase, prevNum);
-                                    extraCorners += `<div class="corner-prev-mold" style="--prev-mold-color:${prevColor};"></div>`;
-                                }
                             } else {
                                 bgColor = color;
                                 cellContent = '';
                             }
-                            lastMoldByTurno.set(turno, task.moldeCompleto);
+                            lastMoldByTurno.set(turno, primaryTask.moldeCompleto);
 
-                            // Marca de fin de producción
-                            if (task.esFin) {
-                                extraCorners += '<div class="end-marker"></div>';
+                            // Esquina de cambio si corresponde
+                            if (cornerColor) {
+                                cornerHtml = `<div class="corner-marker" style="background-color:${cornerColor};"></div>`;
                             }
 
-                            // Barra de cumplimiento
                             if (currentView === 'cumpl') {
-                                const comp = getCompliance(task.moldeCompleto, plansForComparison);
+                                const comp = getCompliance(primaryTask.moldeCompleto, plansForComparison);
                                 const barClass = comp.status === 'cumplido' ? 'green-bar' : comp.status === 'parcial' ? 'orange-bar' : comp.status === 'desvio' ? 'red-bar' : 'gray-bar';
                                 const emoji = comp.status === 'cumplido' ? '✅' : comp.status === 'parcial' ? '⏳' : comp.status === 'desvio' ? '⚠️' : '📌';
                                 cellContent += `<div class="compliance-bar-cell ${barClass}"></div><div class="compliance-emoji-cell">${emoji}</div>`;
                             }
-                        });
-
-                        // Marca de prueba en esquina superior derecha (si hay pruebas en este turno)
-                        if (tests.length > 0) {
-                            extraCorners += '<div class="corner-prueba"></div>';
+                        } else {
+                            // Solo pruebas, sin producción
+                            cellContent = '<span style="color:var(--text-muted);">—</span>';
                         }
                     } else {
                         cellContent = '<span style="color:var(--text-muted);">—</span>';
                     }
+
+                    // Aplicar clase domingo solo si no hay contenido de producción
+                    if (isSunday && bgColor === 'transparent') {
+                        cellClasses += ' sunday-cell';
+                    }
+                    if (isToday) cellClasses += ' today-col';
 
                     if (cellContent === '' && bgColor === 'transparent') {
                         cellContent = '<span style="color:var(--text-muted);">—</span>';
                     }
 
                     html += `<td class="${cellClasses}" style="background-color:${bgColor}; color:${txtColor}; width:${colWidthCalc};"
-                                 onclick="abrirGantt('${dateStr}')">${cellContent}${extraCorners}</td>`;
+                                 onclick="abrirGantt('${dateStr}')">${cellContent}${cornerHtml}${testMarkerHtml}</td>`;
                 }
                 html += '</tr>';
             });
@@ -792,9 +811,16 @@
             renderGantt();
         }
 
-        function toggleProdPlan() { setView(currentView === 'prod' ? 'plan' : 'prod'); }
-        function toggleCumplimiento() { setView(currentView === 'cumpl' ? 'prod' : 'cumpl'); }
-        function imprimirPlan() { setView('plan'); setTimeout(() => window.print(), 100); }
+        function toggleProdPlan() {
+            setView(currentView === 'prod' ? 'plan' : 'prod');
+        }
+        function toggleCumplimiento() {
+            setView(currentView === 'cumpl' ? 'prod' : 'cumpl');
+        }
+        function imprimirPlan() {
+            setView('plan');
+            setTimeout(() => window.print(), 100);
+        }
 
         function abrirGantt(dateStr) {
             document.getElementById('ganttTitulo').textContent = new Date(dateStr + 'T00:00:00').toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
