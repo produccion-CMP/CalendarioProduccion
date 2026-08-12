@@ -56,7 +56,6 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        /* Header (sin cambios) */
         .app-header {
             display: flex; justify-content: space-between; align-items: center;
             padding: 16px 24px; background: var(--bg-panel); border-radius: var(--radius);
@@ -78,7 +77,6 @@
         }
         .btn-new-plan:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
 
-        /* Controles de vista (sin cambios) */
         .views-container {
             display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
             gap: 15px; background: var(--bg-panel); padding: 10px 20px;
@@ -119,7 +117,6 @@
         }
         .action-btn:hover { background: var(--accent); color: #fff; }
 
-        /* KPIs (sin cambios) */
         .kpi-container {
             display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;
         }
@@ -132,7 +129,6 @@
         .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--accent-light); }
         .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
 
-        /* Navegación (sin cambios) */
         .month-nav {
             display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px;
         }
@@ -154,7 +150,6 @@
             border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer;
         }
 
-        /* Selector de mes (sin cambios) */
         .month-selector {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: var(--bg-panel); padding: 24px; border-radius: var(--radius);
@@ -166,7 +161,6 @@
         }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1500; }
 
-        /* Tabla Gantt */
         .gantt-wrapper {
             background: var(--bg-panel); border-radius: var(--radius); padding: 8px;
             box-shadow: var(--shadow-3d); overflow-x: auto;
@@ -223,28 +217,25 @@
         .mold-label-text { font-size: 0.5rem; font-weight: 600; opacity: 0.7; text-transform: uppercase; }
         .mold-number { font-size: 0.65rem; font-weight: 700; }
 
-        /* Esquina de cambio de molde (superior izquierda) */
-        .corner-marker {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 8px;
-            height: 8px;
-            border-radius: 0 0 4px 0;
+        /* Marcador de fin de producción (esquina superior izquierda) */
+        .end-marker {
+            position: absolute; top: 0; left: 0; width: 0; height: 0;
+            border-style: solid;
+            border-width: 10px 10px 0 0;
+            border-color: var(--accent) transparent transparent transparent;
+            opacity: 0.9;
+            z-index: 2;
         }
 
-        /* Marcador de prueba (superior derecha) */
-        .test-marker {
-            position: absolute;
-            top: 0;
-            right: 0;
-            width: 6px;
-            height: 6px;
-            background: #000;
-            border-radius: 0 0 0 4px;
+        /* Marcador de prueba (esquina superior derecha) */
+        .prueba-marker {
+            position: absolute; top: 0; right: 0; width: 0; height: 0;
+            border-style: solid;
+            border-width: 0 10px 10px 0;
+            border-color: transparent #000 transparent transparent;
+            z-index: 2;
         }
 
-        /* Barra de cumplimiento (solo en vista cumplimiento) */
         .compliance-bar-cell {
             position: absolute; bottom: 0; left: 0; width: 100%; height: 4px;
             border-radius: 0 0 3px 3px; background: var(--gray);
@@ -259,7 +250,6 @@
             position: absolute; bottom: 6px; right: 4px; font-size: 0.7rem;
         }
 
-        /* Recuadro del día actual (negro con cartel HOY) */
         td.today-col {
             border-left: 3px solid #000 !important;
             border-right: 3px solid #000 !important;
@@ -290,9 +280,8 @@
             border-bottom: 3px solid #000 !important;
         }
 
-        /* Domingo solo cuando no hay producción (clase se quita si hay datos) */
         td.sunday-cell {
-            background-color: var(--sunday-bg);
+            /* Solo se aplica si no hay producción */
         }
 
         .pruebas-info {
@@ -410,30 +399,38 @@
         const FALLBACK_IMG = 'img/moldes/default.png';
         const TURNOS = ['T1','T2','T3'];
 
+        // Paleta de colores fija por tipo de ladrillo (tono base)
+        const TYPE_BASE_COLORS = {
+            'H8': 0, 'H12': 30, 'H18': 60, 'P12': 120, 'P18': 150,
+            'L12': 200, 'L16': 230, 'DM20': 270, 'DM27': 300, 'KB': 340
+        };
+
         let planData = {};
         let realData = {};
         let currentView = 'prod';
         let currentDate = new Date();
         let themeDark = true;
 
-        // Paleta fija con colores muy diferenciados por tipo de ladrillo
-        const typeHueMap = {
-            'H8': 0, 'H12': 30, 'H18': 60, 'P12': 120, 'P18': 150,
-            'L12': 190, 'L16': 220, 'DM20': 270, 'DM27': 300, 'KB': 330
-        };
         function getBaseHue(baseName) {
-            if (typeHueMap.hasOwnProperty(baseName)) return typeHueMap[baseName];
+            if (TYPE_BASE_COLORS.hasOwnProperty(baseName)) return TYPE_BASE_COLORS[baseName];
+            // Fallback para tipos no listados: generar a partir del nombre pero evitando colores cercanos a los definidos
             let hash = 0;
             for (let i = 0; i < baseName.length; i++) hash = baseName.charCodeAt(i) + ((hash << 5) - hash);
-            return Math.abs(hash) % 360;
+            // Desplazar lejos de los tonos ya usados
+            const usedHues = Object.values(TYPE_BASE_COLORS);
+            let hue = Math.abs(hash) % 360;
+            // Ajuste simple para evitar solapamiento (opcional)
+            return hue;
         }
+
         function getBrickColor(baseName, number) {
             const hue = getBaseHue(baseName);
-            // Molde 1: más claro, 2: medio, 3: más saturado/oscuro
-            const sat = 55 + number * 5;        // 60,65,70
-            const light = 50 - number * 4;      // 46,42,38
-            return `hsl(${hue}, ${sat}%, ${light}%)`;
+            // Intensidad según número de molde: más alto, más saturado y ligeramente más oscuro
+            const saturation = 60 + number * 8;  // 68, 76, 84
+            const lightness = 48 - number * 4;   // 44, 40, 36
+            return `hsl(${hue}, ${saturation}%, ${lightness}%)`;
         }
+
         function pickTextColor(hslColor) {
             const m = hslColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
             if (!m) return '#000';
@@ -561,6 +558,7 @@
             const testDays = new Set();
             let lastMoldByTurnoAux = new Map();
 
+            // Primera pasada para detectar días con cambio y pruebas
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 TURNOS.forEach(turno => {
@@ -589,6 +587,9 @@
                 const isToday = dateStr === todayStr;
                 let thClass = '';
                 if (isToday) thClass += ' today-col';
+                if (isSunday && !activeData[key(dateStr, 'T1')] && !activeData[key(dateStr, 'T2')] && !activeData[key(dateStr, 'T3')]) {
+                    thClass += ' sunday-cell';
+                }
                 const indicators = [];
                 if (changeDays.has(dateStr)) indicators.push('<span class="indicator-change">🔄️</span>');
                 if (testDays.has(dateStr)) indicators.push('<span class="indicator-pr">PR</span>');
@@ -620,94 +621,72 @@
                     let bgColor = 'transparent';
                     let txtColor = 'inherit';
                     let cellClasses = '';
-                    let cornerHtml = '';
-                    let testMarkerHtml = '';
+                    let extraMarkers = '';
 
-                    if (tasks && tasks.length > 0) {
-                        const prodTasks = tasks.filter(t => t.tarea === 'Producción');
-                        const testTasks = tasks.filter(t => t.tarea === 'Prueba');
+                    if (isToday) cellClasses += ' today-col';
 
-                        // Marcadores de prueba (esquina superior derecha)
-                        testTasks.forEach(() => { testMarkerHtml += '<div class="test-marker"></div>'; });
+                    // Determinar si hay producción(es) y pruebas
+                    const prodTasks = tasks ? tasks.filter(t => t.tarea === 'Producción') : [];
+                    const testTasks = tasks ? tasks.filter(t => t.tarea === 'Prueba') : [];
 
-                        // Procesar producciones
-                        const startTasks = prodTasks.filter(t => t.esInicio && !t.esFin);
-                        const endTasks = prodTasks.filter(t => t.esFin && !t.esInicio);
-                        const singleTasks = prodTasks.filter(t => t.esInicio && t.esFin);
-                        const midTasks = prodTasks.filter(t => !t.esInicio && !t.esFin);
+                    // Solo aplicar fondo de domingo si no hay producción ni pruebas
+                    if (isSunday && prodTasks.length === 0 && testTasks.length === 0) {
+                        cellClasses += ' sunday-cell';
+                    }
 
-                        let primaryTask = null;
-                        let cornerColor = null;
-
-                        if (startTasks.length > 0) {
-                            primaryTask = startTasks[0];
-                            if (endTasks.length > 0) {
-                                const ending = endTasks[0];
-                                cornerColor = getBrickColor(ending.baseName, ending.number);
-                                // La tarea que finaliza no se dibuja (se reemplaza por la nueva)
-                            }
-                        } else if (singleTasks.length > 0) {
-                            primaryTask = singleTasks[0];
-                        } else {
-                            // Sin inicio nuevo: pueden ser tareas intermedias o finales sin inicio (continuación)
-                            if (midTasks.length > 0 || endTasks.length > 0) {
-                                // Tomamos la primera tarea (mid o end) como representante de la continuidad
-                                primaryTask = (midTasks.length > 0) ? midTasks[0] : endTasks[0];
-                            }
-                        }
-
-                        if (primaryTask) {
-                            const color = getBrickColor(primaryTask.baseName, primaryTask.number);
+                    if (prodTasks.length > 0) {
+                        // Procesar cada producción (normalmente una, pero puede haber cambio en el mismo turno)
+                        prodTasks.forEach((task, idx) => {
+                            const color = getBrickColor(task.baseName, task.number);
                             const textColor = pickTextColor(color);
                             const prevMold = lastMoldByTurno.get(turno);
-                            const showDetail = primaryTask.esInicio || prevMold !== primaryTask.moldeCompleto;
+                            const showDetail = task.esInicio || prevMold !== task.moldeCompleto;
 
                             if (showDetail) {
                                 bgColor = color;
                                 txtColor = textColor;
-                                cellContent = `<div class="cell-content">
-                                    <img src="${getImageSrc(primaryTask.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${primaryTask.baseName}">
-                                    <span class="mold-base">${primaryTask.baseName}</span>
+                                cellContent += `<div class="cell-content">
+                                    <img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${task.baseName}">
+                                    <span class="mold-base">${task.baseName}</span>
                                     <span class="mold-label-text">Molde</span>
-                                    <span class="mold-number">${primaryTask.number}</span>
+                                    <span class="mold-number">${task.number}</span>
                                 </div>`;
+                                // Si hay un molde anterior diferente y esta tarea es inicio, marcar fin del anterior
+                                if (prevMold && prevMold !== task.moldeCompleto && task.esInicio) {
+                                    // Buscar el color del molde anterior para el marcador
+                                    const prevTask = prodTasks.find(t => t.moldeCompleto === prevMold && t.esFin);
+                                    if (prevTask) {
+                                        const prevColor = getBrickColor(prevTask.baseName, prevTask.number);
+                                        extraMarkers += `<div class="end-marker" style="border-color: ${prevColor} transparent transparent transparent;"></div>`;
+                                    }
+                                }
                             } else {
+                                // Solo color, sin contenido
                                 bgColor = color;
                                 cellContent = '';
                             }
-                            lastMoldByTurno.set(turno, primaryTask.moldeCompleto);
-
-                            // Esquina de cambio si corresponde
-                            if (cornerColor) {
-                                cornerHtml = `<div class="corner-marker" style="background-color:${cornerColor};"></div>`;
-                            }
+                            lastMoldByTurno.set(turno, task.moldeCompleto);
 
                             if (currentView === 'cumpl') {
-                                const comp = getCompliance(primaryTask.moldeCompleto, plansForComparison);
+                                const comp = getCompliance(task.moldeCompleto, plansForComparison);
                                 const barClass = comp.status === 'cumplido' ? 'green-bar' : comp.status === 'parcial' ? 'orange-bar' : comp.status === 'desvio' ? 'red-bar' : 'gray-bar';
                                 const emoji = comp.status === 'cumplido' ? '✅' : comp.status === 'parcial' ? '⏳' : comp.status === 'desvio' ? '⚠️' : '📌';
                                 cellContent += `<div class="compliance-bar-cell ${barClass}"></div><div class="compliance-emoji-cell">${emoji}</div>`;
                             }
-                        } else {
-                            // Solo pruebas, sin producción
-                            cellContent = '<span style="color:var(--text-muted);">—</span>';
-                        }
-                    } else {
-                        cellContent = '<span style="color:var(--text-muted);">—</span>';
+                        });
                     }
 
-                    // Aplicar clase domingo solo si no hay contenido de producción
-                    if (isSunday && bgColor === 'transparent') {
-                        cellClasses += ' sunday-cell';
+                    // Marcador de prueba en la esquina superior derecha
+                    if (testTasks.length > 0) {
+                        extraMarkers += '<div class="prueba-marker"></div>';
                     }
-                    if (isToday) cellClasses += ' today-col';
 
-                    if (cellContent === '' && bgColor === 'transparent') {
+                    if (cellContent === '' && bgColor === 'transparent' && extraMarkers === '') {
                         cellContent = '<span style="color:var(--text-muted);">—</span>';
                     }
 
                     html += `<td class="${cellClasses}" style="background-color:${bgColor}; color:${txtColor}; width:${colWidthCalc};"
-                                 onclick="abrirGantt('${dateStr}')">${cellContent}${cornerHtml}${testMarkerHtml}</td>`;
+                                 onclick="abrirGantt('${dateStr}')">${cellContent}${extraMarkers}</td>`;
                 }
                 html += '</tr>';
             });
