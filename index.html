@@ -14,6 +14,7 @@
             --bg-panel: #1c1c1e;
             --bg-cell: #2c2c2e;
             --border: #3a3a3c;
+            --border-strong: #111111;
             --text-main: #f5f5f7;
             --text-muted: #98989d;
             --accent: #e07b4c;
@@ -22,9 +23,8 @@
             --orange: #ff9f0a;
             --red: #ff453a;
             --gray: #636366;
-            --shadow: 0 2px 8px rgba(0,0,0,0.3);
-            --shadow-3d: 0 4px 12px rgba(0,0,0,0.4);
-            --shadow-hover: 0 8px 20px rgba(0,0,0,0.5);
+            --shadow: 0 2px 8px rgba(0,0,0,0.4);
+            --shadow-3d: 0 4px 12px rgba(0,0,0,0.5);
             --radius: 14px;
             --cell-h: 78px;
             --font: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -36,14 +36,14 @@
             --bg-body: #f2f2f7;
             --bg-panel: #ffffff;
             --bg-cell: #fafafa;
-            --border: #e5e5ea;
+            --border: #d1d1d6;
+            --border-strong: #a1a1a6;
             --text-main: #1c1c1e;
             --text-muted: #6e6e73;
             --accent: #d96b3a;
             --accent-light: #c45a2c;
-            --shadow: 0 2px 12px rgba(0,0,0,0.08);
-            --shadow-3d: 0 4px 16px rgba(0,0,0,0.12);
-            --shadow-hover: 0 8px 25px rgba(0,0,0,0.2);
+            --shadow: 0 2px 12px rgba(0,0,0,0.1);
+            --shadow-3d: 0 4px 16px rgba(0,0,0,0.15);
             --prueba-bg: #ffd700;
             --sunday-bg: rgba(0,0,0,0.03);
         }
@@ -62,23 +62,22 @@
             display: flex; justify-content: space-between; align-items: center;
             padding: 16px 24px; background: var(--bg-panel); border-radius: var(--radius);
             box-shadow: var(--shadow-3d); margin-bottom: 20px;
-            transition: box-shadow 0.3s;
         }
         .logo-container { display: flex; align-items: center; gap: 16px; }
         .logo-container img { height: 56px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-        .title-block h1 { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--accent-light); }
+        .title-block h1 { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--accent-light); text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .title-block small { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
         .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
         .header-top-row { display: flex; align-items: center; gap: 12px; }
-        .live-clock { font-weight: 600; font-size: 0.9rem; color: var(--text-main); background: var(--bg-cell); padding: 8px 16px; border-radius: 30px; box-shadow: var(--shadow); }
-        .theme-btn { background: none; border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; box-shadow: var(--shadow); transition: box-shadow 0.2s; }
+        .live-clock { font-weight: 600; font-size: 0.9rem; color: var(--text-main); background: var(--bg-cell); padding: 8px 16px; border-radius: 30px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
+        .theme-btn { background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; box-shadow: var(--shadow); }
         .btn-new-plan {
             background: var(--accent); color: #fff; border: none; padding: 8px 16px;
             border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer;
             text-decoration: none; display: flex; align-items: center; gap: 6px;
             box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s;
         }
-        .btn-new-plan:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+        .btn-new-plan:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
 
         .views-container {
             display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
@@ -89,7 +88,7 @@
         .toggle-switch {
             position: relative; width: 180px; height: 38px; background: var(--bg-cell);
             border-radius: 20px; cursor: pointer; border: 2px solid var(--border); overflow: hidden;
-            box-shadow: var(--shadow);
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.4);
         }
         .toggle-option {
             position: absolute; top: 0; width: 50%; height: 100%;
@@ -98,10 +97,11 @@
         }
         .toggle-option.left { left: 0; color: var(--text-muted); }
         .toggle-option.right { right: 0; color: var(--text-muted); }
-        .toggle-option.active { color: #fff; }
+        .toggle-option.active { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
         .toggle-slider {
             position: absolute; top: 2px; width: 48%; height: calc(100% - 4px);
             background: var(--accent); border-radius: 18px; transition: left 0.3s; z-index: 0;
+            box-shadow: var(--shadow);
         }
         .toggle-slider.right { left: 50%; }
         .toggle-slider.left { left: 2%; }
@@ -111,7 +111,7 @@
             border-radius: 30px; font-weight: 600; font-size: 0.85rem; cursor: pointer;
             color: var(--text-main); transition: 0.2s; box-shadow: var(--shadow);
         }
-        .cumpl-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 0 12px var(--accent); }
+        .cumpl-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 0 16px rgba(224, 123, 76, 0.6); }
 
         .action-btn {
             background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main);
@@ -119,7 +119,7 @@
             cursor: pointer; display: flex; align-items: center; gap: 6px;
             transition: 0.2s; text-decoration: none; box-shadow: var(--shadow);
         }
-        .action-btn:hover { background: var(--accent); color: #fff; box-shadow: var(--shadow-hover); }
+        .action-btn:hover { background: var(--accent); color: #fff; }
 
         .kpi-container {
             display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;
@@ -129,42 +129,35 @@
             box-shadow: var(--shadow-3d); text-align: center; min-width: 100px;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .kpi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
-        .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--accent-light); }
+        .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.3); }
+        .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--accent-light); text-shadow: 0 2px 4px rgba(0,0,0,0.2); }
         .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
 
-        .month-nav {
-            display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px;
-        }
-        .month-nav-row {
-            display: flex; justify-content: center; align-items: center; gap: 16px;
-        }
+        .month-nav { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; }
+        .month-nav-row { display: flex; justify-content: center; align-items: center; gap: 16px; }
         .month-nav button {
             background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main);
             padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s;
             box-shadow: var(--shadow);
         }
-        .month-nav button:hover { background: var(--accent); color: #fff; box-shadow: var(--shadow-hover); }
+        .month-nav button:hover { background: var(--accent); color: #fff; }
         .month-title {
             font-size: 1.1rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
             border-bottom: 1px dashed var(--text-muted); padding: 4px 8px;
         }
         .month-title:hover { color: var(--accent-light); }
-        .btn-today {
-            background: var(--accent); color: #fff; border: none; padding: 6px 14px;
-            border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer; box-shadow: var(--shadow);
-        }
+        .btn-today { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer; box-shadow: var(--shadow); }
 
         .month-selector {
             display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
             background: var(--bg-panel); padding: 24px; border-radius: var(--radius);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5); z-index: 2000; text-align: center;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 2000; text-align: center;
         }
         .month-selector select, .month-selector input {
             margin: 10px; padding: 8px; border-radius: 6px; border: 1px solid var(--border);
-            background: var(--bg-cell); color: var(--text-main);
+            background: var(--bg-cell); color: var(--text-main); font-family: var(--font);
         }
-        .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); z-index: 1500; }
+        .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(2px); z-index: 1500; }
 
         .gantt-wrapper {
             background: var(--bg-panel); border-radius: var(--radius); padding: 8px;
@@ -173,130 +166,113 @@
         .gantt-table {
             width: 100%; border-collapse: collapse; table-layout: fixed;
         }
+        
+        /* Sistema de Cuadrícula con Dirección de Flujo */
         .gantt-table th, .gantt-table td {
-            border: 1px solid var(--border); height: var(--cell-h); padding: 2px;
+            height: var(--cell-h); padding: 2px;
             text-align: center; vertical-align: middle; font-size: 0.75rem;
             position: relative; overflow: hidden;
             transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
+            border-right: 2px solid var(--border-strong);
         }
-        .gantt-table th {
-            background: var(--bg-cell); font-weight: 700; color: var(--accent-light);
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        /* Línea horizontal punteada entre turnos del mismo día */
+        .gantt-table td {
+            border-bottom: 1px dashed var(--border);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.15); /* Sombra base para celdas vacías */
         }
+        /* Línea horizontal gruesa para cerrar el bloque del día */
+        .gantt-table tr:last-child td {
+            border-bottom: 2px solid var(--border-strong);
+        }
+
+        .gantt-table th { background: var(--bg-cell); font-weight: 700; color: var(--accent-light); box-shadow: inset 0 -4px 6px rgba(0,0,0,0.1); border-bottom: 2px solid var(--border-strong); }
         .gantt-table td { cursor: pointer; }
         .gantt-table td:hover {
-            transform: scale(1.03);
-            box-shadow: var(--shadow-hover);
+            transform: scale(1.04);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.5);
             z-index: 10;
         }
 
         .day-header { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; position: relative; }
         .day-name { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
-        .day-number { font-weight: 800; font-size: 0.9rem; }
-        .day-indicators {
-            display: flex; gap: 3px; min-height: 18px; align-items: center; justify-content: center;
-        }
-        .indicator-change {
-            font-size: 0.9rem; animation: pulse 1.2s ease-in-out infinite;
-        }
+        .day-number { font-weight: 800; font-size: 1rem; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+        .day-indicators { display: flex; gap: 3px; min-height: 18px; align-items: center; justify-content: center; }
+        .indicator-change { font-size: 0.9rem; animation: pulse 1.2s ease-in-out infinite; filter: drop-shadow(0 2px 2px rgba(0,0,0,0.4)); }
         .indicator-pr {
             font-size: 0.55rem; font-weight: 800; background: var(--prueba-bg); color: #000;
             padding: 0 3px; border-radius: 3px; line-height: 1.2;
-            animation: pulse 1.5s ease-in-out infinite;
+            animation: pulse 1.5s ease-in-out infinite; box-shadow: 0 2px 4px rgba(0,0,0,0.4);
         }
-        @keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
-        }
+        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
 
+        /* Indicador direccional de turno */
         .turn-label {
-            font-weight: 700; color: var(--accent-light); font-size: 0.85rem;
+            font-weight: 800; color: var(--accent-light); font-size: 0.85rem;
             writing-mode: vertical-rl; text-orientation: mixed; margin: auto;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3); display: flex; align-items: center; justify-content: center; gap: 4px;
         }
+        .turn-label::before { content: '↓'; font-size: 0.7rem; color: var(--text-muted); opacity: 0.7; }
+        tr:last-child .turn-label::before { content: '⤶'; font-size: 0.9rem; margin-top: 4px; }
 
-        .cell-content {
-            display: flex; flex-direction: column; align-items: center; justify-content: center;
-            height: 100%; width: 100%; overflow: hidden;
-        }
-        .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 1px; }
-        .mold-base { font-weight: 700; font-size: 0.7rem; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
-        .mold-label-text { font-size: 0.5rem; font-weight: 600; opacity: 0.7; text-transform: uppercase; }
-        .mold-number { font-size: 0.65rem; font-weight: 700; }
+        .cell-content { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; overflow: hidden; }
+        .mold-image { width: 30px; height: 30px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.2); margin-bottom: 1px; box-shadow: 0 3px 6px rgba(0,0,0,0.5); }
+        .mold-base { font-weight: 800; font-size: 0.75rem; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
+        .mold-label-text { font-size: 0.5rem; font-weight: 600; opacity: 0.8; text-transform: uppercase; }
+        .mold-number { font-size: 0.7rem; font-weight: 800; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
 
-        .change-marker {
-            position: absolute; top: 0; left: 0;
-            width: 0; height: 0;
-            border-top: 18px solid;
-            border-right: 18px solid transparent;
-            z-index: 5;
-        }
+        .change-marker { position: absolute; top: 0; left: 0; width: 0; height: 0; border-top: 18px solid; border-right: 18px solid transparent; z-index: 5; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.3)); }
+        .test-marker { position: absolute; top: 0; right: 0; width: 0; height: 0; border-top: 18px solid #000; border-left: 18px solid transparent; z-index: 5; filter: drop-shadow(-2px 2px 2px rgba(0,0,0,0.3)); }
+        .end-marker { position: absolute; bottom: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 0 10px 10px; border-color: transparent transparent var(--accent) transparent; opacity: 0.9; }
 
-        .test-marker {
-            position: absolute; top: 0; right: 0;
-            width: 0; height: 0;
-            border-top: 18px solid #000;
-            border-left: 18px solid transparent;
-            z-index: 5;
-        }
-
+        /* Mejora en Visualización de Cumplimiento */
         .compliance-bar-cell {
-            position: absolute; bottom: 0; left: 0; width: 100%; height: 4px;
+            position: absolute; bottom: 0; left: 0; width: 100%; height: 6px;
             border-radius: 0 0 3px 3px; background: var(--gray);
-            animation: slideGrow 0.5s ease-out;
+            animation: slideGrow 0.5s ease-out; z-index: 6;
         }
-        .compliance-bar-cell.green-bar { background: var(--green); }
-        .compliance-bar-cell.orange-bar { background: var(--orange); }
-        .compliance-bar-cell.red-bar { background: var(--red); }
+        .compliance-bar-cell.green-bar { background: var(--green); box-shadow: 0 -2px 10px var(--green); }
+        .compliance-bar-cell.orange-bar { background: var(--orange); box-shadow: 0 -2px 10px var(--orange); }
+        .compliance-bar-cell.red-bar { background: var(--red); box-shadow: 0 -2px 10px var(--red); }
         @keyframes slideGrow { from { width: 0; } to { width: 100%; } }
 
         .compliance-emoji-cell {
-            position: absolute; bottom: 6px; right: 4px; font-size: 0.7rem;
+            position: absolute; bottom: 8px; right: 4px; font-size: 1.1rem;
+            background: rgba(0,0,0,0.5); padding: 2px; border-radius: 50%;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.6); z-index: 7;
         }
 
-        td.today-col { border-left: 3px solid #000 !important; border-right: 3px solid #000 !important; }
-        th.today-col {
-            border-left: 3px solid #000 !important; border-right: 3px solid #000 !important;
-            border-top: 3px solid #000 !important; background: #111 !important; color: #fff !important;
-            position: relative;
-        }
+        td.today-col, th.today-col { border-left: 3px solid #000 !important; border-right: 3px solid #000 !important; }
+        th.today-col { border-top: 3px solid #000 !important; background: #111 !important; color: #fff !important; }
         th.today-col .day-header::after {
             content: "HOY"; position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
             background: var(--accent); color: #fff; font-size: 0.6rem; font-weight: 800; padding: 2px 8px;
-            border-radius: 10px; z-index: 5;
+            border-radius: 10px; z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
         tr:last-child td.today-col { border-bottom: 3px solid #000 !important; }
         td.sunday-cell { background-color: var(--sunday-bg); }
 
-        .pruebas-info {
-            margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius);
-            padding: 16px; box-shadow: var(--shadow-3d); font-size: 0.8rem;
-        }
+        .pruebas-info { margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-3d); font-size: 0.8rem; }
         .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
         .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 6px; vertical-align: middle; text-align: center; }
         .pruebas-table th { background: var(--bg-cell); font-weight: 700; color: var(--accent-light); }
 
         .gantt-modal {
             position: fixed; top:0; left:0; width:100%; height:100%;
-            background: rgba(0,0,0,0.7); display: none; justify-content: center; align-items: center;
-            z-index: 3000;
+            background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); display: none; justify-content: center; align-items: center; z-index: 3000;
         }
-        .gantt-content {
-            background: var(--bg-panel); border-radius: var(--radius); padding: 24px;
-            max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto;
-            animation: modalPop 0.3s ease;
-        }
+        .gantt-content { background: var(--bg-panel); border-radius: var(--radius); padding: 24px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto; animation: modalPop 0.3s ease; box-shadow: 0 10px 40px rgba(0,0,0,0.7); }
         @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .gantt-row { display: flex; align-items: center; margin: 14px 0; gap: 12px; }
         .gantt-turno { width: 40px; font-weight: 700; font-size: 1rem; }
         .gantt-bars { flex:1; display: flex; flex-direction: column; gap: 6px; }
         .gantt-bar {
             height: 28px; border-radius: 6px; padding-left: 12px; font-size: 0.8rem;
-            font-weight: 600; display: flex; align-items: center; color: #fff; transition: transform 0.2s;
+            font-weight: 600; display: flex; align-items: center; color: #fff; transition: transform 0.2s; box-shadow: var(--shadow);
         }
         .gantt-bar:hover { transform: scale(1.02); }
-        .gantt-bar img { width: 22px; height: 22px; margin-right: 8px; border-radius: 4px; }
+        .gantt-bar img { width: 22px; height: 22px; margin-right: 8px; border-radius: 4px; box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
         .gantt-plan { opacity: 0.7; }
-        .close-btn { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; float: right; }
+        .close-btn { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; float: right; box-shadow: var(--shadow); }
 
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
@@ -305,17 +281,19 @@
             .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal,
             .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn { display: none !important; }
             .gantt-wrapper { box-shadow: none; background: none; padding: 0; overflow: visible; margin-bottom: 20px; }
-            .gantt-table { width: 100%; border-collapse: collapse; }
-            .gantt-table th, .gantt-table td { border: 1px solid #444; height: 35px; }
-            .mold-image { width: 14px; height: 14px; filter: none; }
-            .turn-label { font-size: 0.7rem; }
-            .day-number { font-size: 0.7rem; }
+            .gantt-table { width: 100%; border-collapse: collapse; border: 2px solid #000; }
+            .gantt-table th, .gantt-table td { border-right: 1px solid #444; border-bottom: 1px dotted #888; height: 35px; box-shadow: none; }
+            .gantt-table tr:last-child td { border-bottom: 1px solid #444; }
+            .mold-image { width: 14px; height: 14px; filter: none; box-shadow: none; }
+            .turn-label { font-size: 0.7rem; text-shadow: none; }
+            .turn-label::before { display: none; }
+            .day-number { font-size: 0.7rem; text-shadow: none; }
             .day-name { font-size: 0.5rem; }
             .pruebas-info { margin-top: 0; background: none; box-shadow: none; border-radius: 0; padding: 0; }
             .pruebas-table { font-size: 0.7rem; margin-top: 10px; border-collapse: collapse; width: 100%; }
             .pruebas-table th, .pruebas-table td { border: 1px solid #444; padding: 4px; color: black !important; }
             .pruebas-table th { background-color: #eee !important; color: black !important; }
-            h1 { font-size: 1.2rem; margin: 0 0 5px 0; color: black !important; text-align: center; }
+            h1 { font-size: 1.2rem; margin: 0 0 5px 0; color: black !important; text-align: center; text-shadow: none; }
             h3 { font-size: 0.9rem; margin: 0 0 5px 0; }
         }
     </style>
@@ -356,7 +334,7 @@
             </div>
         </div>
         <button class="cumpl-btn" id="btnCumpl" onclick="toggleCumplimiento()">📊 Cumplimiento</button>
-        <button class="action-btn" onclick="imprimirPlan()">🖨️ Imprimir</button>
+        <button class="action-btn" onclick="imprimirPlan()">🖨️ Imprimir Plan</button>
     </div>
 
     <div class="kpi-container" id="kpiContainer" style="display:none;"></div>
@@ -458,13 +436,27 @@
         function processData(rows) {
             const data = {};
             rows.forEach(row => {
-                const molde = (row['LADRILLO:'] || '').trim();
-                let tarea = (row['TAREA:'] || '').trim();
+                const keys = Object.keys(row);
+                
+                // Función de Extracción Heurística: Nombre Exacto > Coincidencia > Índice
+                const getVal = (exact, kw, idx) => {
+                    if (row[exact] !== undefined) return row[exact];
+                    const fk = keys.find(k => k.toUpperCase().includes(kw));
+                    if (fk) return row[fk];
+                    return row[keys[idx]];
+                };
+
+                // Detecta si la primera columna es de sistema (ej. Google Forms) para desplazar índices
+                const offset = (keys[0] && keys[0].toUpperCase().includes('MARCA')) ? 1 : 0;
+
+                const molde = (getVal('LADRILLO:', 'LADRILLO', 0 + offset) || '').trim();
+                let tarea = (getVal('TAREA:', 'TAREA', 1 + offset) || '').trim();
                 tarea = normalizarTarea(tarea);
-                const fi = (row['FECHA INICIO:'] || '').trim();
-                const ti = (row['TURNO INICIO:'] || '').trim();
-                const ff = (row['FECHA FIN:'] || '').trim();
-                const tf = (row['TURNO FIN:'] || '').trim();
+                const fi = (getVal('FECHA INICIO:', 'FECHA INICIO', 2 + offset) || '').trim();
+                const ti = (getVal('TURNO INICIO:', 'TURNO INICIO', 3 + offset) || '').trim();
+                const ff = (getVal('FECHA FIN:', 'FECHA FIN', 4 + offset) || '').trim();
+                const tf = (getVal('TURNO FIN:', 'TURNO FIN', 5 + offset) || '').trim();
+                
                 if (!molde || !fi || !ff) return;
 
                 const inicio = parseFlexibleDate(fi);
@@ -514,7 +506,7 @@
                 renderGantt();
             } catch (error) {
                 console.error(error);
-                document.getElementById('ganttWrapper').innerHTML = '<p style="color:red;">Error al cargar datos.</p>';
+                document.getElementById('ganttWrapper').innerHTML = '<p style="color:red; padding: 20px;">Error al cargar o analizar los datos. Verifica la estructura del CSV.</p>';
             }
         }
 
@@ -535,7 +527,7 @@
             const todayStr = formatYYYYMMDD(new Date());
 
             document.getElementById('monthTitle').textContent = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
-            document.getElementById('printHeaderTitle').textContent = `Cronograma de Producción - ${document.getElementById('monthTitle').textContent}`;
+            document.getElementById('printHeaderTitle').textContent = `Cronograma de ${currentView === 'plan' ? 'Planificación' : 'Producción'} - ${document.getElementById('monthTitle').textContent}`;
             
             document.getElementById('kpiContainer').style.display = currentView === 'cumpl' ? 'flex' : 'none';
             if (currentView === 'cumpl') actualizarKPIs();
@@ -556,20 +548,16 @@
                     const k = key(dateStr, turno);
 
                     const tasksPlan = planData[k] || [];
-                    const prodPlan = tasksPlan.filter(t => t.tarea === 'Producción')
-                                              .sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
+                    const prodPlan = tasksPlan.filter(t => t.tarea === 'Producción').sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
                     const testPlan = tasksPlan.filter(t => t.tarea === 'Prueba');
                     
                     if (prodPlan.length > 0) {
                         const currentMold = prodPlan[0].moldeCompleto;
                         const isChange = currentMold !== prevMoldPlan;
                         precalc['plan_' + k] = {
-                            mold: currentMold,
-                            baseName: prodPlan[0].baseName,
-                            number: prodPlan[0].number,
-                            showDetail: isChange,
-                            prevProps: (isChange && prevMoldPlan) ? { baseName: prevBaseNamePlan, number: prevNumberPlan } : null,
-                            hasTest: testPlan.length > 0
+                            mold: currentMold, baseName: prodPlan[0].baseName, number: prodPlan[0].number,
+                            showDetail: isChange, prevProps: (isChange && prevMoldPlan) ? { baseName: prevBaseNamePlan, number: prevNumberPlan } : null,
+                            hasTest: testPlan.length > 0, esFin: prodPlan[0].esFin
                         };
                         if (isChange && currentView === 'plan') changeDays.add(dateStr);
                         prevMoldPlan = currentMold; prevBaseNamePlan = prodPlan[0].baseName; prevNumberPlan = prodPlan[0].number;
@@ -580,20 +568,16 @@
                     if (testPlan.length > 0 && currentView === 'plan') testDays.add(dateStr);
 
                     const tasksReal = realData[k] || [];
-                    const prodReal = tasksReal.filter(t => t.tarea === 'Producción')
-                                              .sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
+                    const prodReal = tasksReal.filter(t => t.tarea === 'Producción').sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
                     const testReal = tasksReal.filter(t => t.tarea === 'Prueba');
                     
                     if (prodReal.length > 0) {
                         const currentMold = prodReal[0].moldeCompleto;
                         const isChange = currentMold !== prevMoldReal;
                         precalc['real_' + k] = {
-                            mold: currentMold,
-                            baseName: prodReal[0].baseName,
-                            number: prodReal[0].number,
-                            showDetail: isChange,
-                            prevProps: (isChange && prevMoldReal) ? { baseName: prevBaseNameReal, number: prevNumberReal } : null,
-                            hasTest: testReal.length > 0
+                            mold: currentMold, baseName: prodReal[0].baseName, number: prodReal[0].number,
+                            showDetail: isChange, prevProps: (isChange && prevMoldReal) ? { baseName: prevBaseNameReal, number: prevNumberReal } : null,
+                            hasTest: testReal.length > 0, esFin: prodReal[0].esFin
                         };
                         if (isChange && currentView !== 'plan') changeDays.add(dateStr);
                         prevMoldReal = currentMold; prevBaseNameReal = prodReal[0].baseName; prevNumberReal = prodReal[0].number;
@@ -642,6 +626,7 @@
                     let txtColor = 'inherit';
                     let cellClasses = '';
                     let markers = '';
+                    let tooltipText = '';
 
                     if (dateObj.getDay() === 0) cellClasses += ' sunday-cell';
                     if (dateStr === todayStr) cellClasses += ' today-col';
@@ -649,6 +634,7 @@
                     if (pre.mold) {
                         bgColor = getBrickColor(pre.baseName, pre.number);
                         txtColor = pickTextColor(bgColor);
+                        tooltipText = `Ladrillo: ${pre.mold} | Tarea: Producción${pre.hasTest ? ' + Prueba' : ''}\nFecha: ${dateStr} [${turno}]`;
 
                         if (pre.showDetail) {
                             cellContent = `
@@ -664,6 +650,7 @@
                                 markers += `<div class="change-marker" style="border-top-color: ${prevColor};"></div>`;
                             }
                         }
+                        if (pre.esFin) markers += '<div class="end-marker"></div>';
 
                         if (currentView === 'cumpl') {
                             const comp = getCompliance(pre.mold, planData[k] || []);
@@ -671,18 +658,20 @@
                             const emoji = comp.status === 'cumplido' ? '✅' : comp.status === 'parcial' ? '⏳' : comp.status === 'desvio' ? '⚠️' : '📌';
                             markers += `<div class="compliance-bar-cell ${barClass}"></div><div class="compliance-emoji-cell">${emoji}</div>`;
                         }
-                    } else if (!pre.hasTest) {
+                    } else if (pre.hasTest) {
                         cellContent = '<span style="color:var(--text-muted);">—</span>';
+                        tooltipText = `Tarea: Prueba\nFecha: ${dateStr} [${turno}]`;
                     } else {
                         cellContent = '<span style="color:var(--text-muted);">—</span>';
+                        tooltipText = `Sin actividad planificada/registrada\nFecha: ${dateStr} [${turno}]`;
                     }
 
                     if (pre.hasTest) markers += `<div class="test-marker"></div>`;
 
                     let inlineStyles = `color:${txtColor}; width:${colWidthCalc};`;
-                    if (bgColor !== 'transparent') inlineStyles += ` background-color:${bgColor};`;
+                    if (bgColor !== 'transparent') inlineStyles += ` background-color:${bgColor}; box-shadow: inset 0 0 0 rgba(0,0,0,0);`;
 
-                    html += `<td class="${cellClasses}" style="${inlineStyles}" onclick="abrirGantt('${dateStr}')">${markers}${cellContent}</td>`;
+                    html += `<td class="${cellClasses}" style="${inlineStyles}" title="${tooltipText}" onclick="abrirGantt('${dateStr}')">${markers}${cellContent}</td>`;
                 }
                 html += '</tr>';
             });
@@ -782,7 +771,7 @@
         function toggleProdPlan() { setView(currentView === 'prod' ? 'plan' : 'prod'); }
         function toggleCumplimiento() { setView(currentView === 'cumpl' ? 'prod' : 'cumpl'); }
         function imprimirPlan() {
-            setView(currentView);
+            setView(currentView); 
             setTimeout(() => window.print(), 200);
         }
 
