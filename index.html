@@ -57,7 +57,7 @@
         .loader-container h2 { color: var(--accent-light); margin-bottom: 8px; font-weight: 800; letter-spacing: -0.5px;}
         .loader-container p { color: var(--text-muted); font-size: 0.9rem; }
 
-        /* Encabezados Exclusivos */
+        /* Encabezados Exclusivos Impresión */
         #printHeader { display: none; } 
 
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--bg-panel); border-radius: var(--radius); box-shadow: var(--shadow-3d); margin-bottom: 20px; }
@@ -66,7 +66,7 @@
         .title-block h1 { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--accent-light); }
         .title-block small { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
         .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-        .header-top-row { display: flex; align-items: center; gap: 12px; }
+        .header-top-row { display: flex; align-items: center; gap: 12px; width: 100%; justify-content: flex-end; }
         .live-clock { font-weight: 600; font-size: 0.9rem; background: var(--bg-cell); padding: 8px 16px; border-radius: 30px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
         .theme-btn { background: var(--bg-cell); border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 10px; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.2s; }
         .theme-btn:hover { transform: scale(1.05); }
@@ -91,7 +91,7 @@
 
         /* KPIs */
         .kpi-container { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
-        .kpi-card { background: var(--bg-panel); border-radius: var(--radius); padding: 16px 24px; box-shadow: var(--shadow-3d); text-align: center; min-width: 120px; border-top: 3px solid var(--accent); }
+        .kpi-card { background: var(--bg-panel); border-radius: var(--radius); padding: 16px 24px; box-shadow: var(--shadow-3d); text-align: center; min-width: 120px; border-top: 3px solid var(--accent); flex: 1 1 auto; }
         .kpi-value { font-size: 2rem; font-weight: 800; color: var(--text-main); letter-spacing: -1px; }
         .kpi-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; }
 
@@ -108,7 +108,7 @@
         .month-selector select, .month-selector input { margin: 10px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); font-family: var(--font); font-weight: 600; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1500; }
 
-        /* Grid Principal */
+        /* Grid Principal (Desktop/Default) */
         .gantt-wrapper { background: var(--bg-panel); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow-3d); overflow-x: auto; }
         .gantt-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
         .gantt-table th, .gantt-table td { border-bottom: 1px dashed var(--border); border-right: 2px solid var(--border); height: var(--cell-h); padding: 4px; text-align: center; vertical-align: middle; position: relative; overflow: hidden; transition: 0.2s; }
@@ -147,7 +147,7 @@
         .mold-label-text { font-size: 0.55rem; font-weight: 700; opacity: 0.85; text-transform: uppercase; margin-top: 1px;}
         .mold-number { font-size: 0.7rem; font-weight: 800; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
 
-        /* Flecha Avance Ajustada (Más pequeña y sutil) */
+        /* Flecha Avance Ajustada (Sutil 13px) */
         .flow-arrow-container { display: flex; justify-content: center; align-items: center; height: 100%; width: 100%; }
         .flow-arrow { width: 13px; height: 13px; opacity: 0.35; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); animation: moveDown 2s infinite ease-in-out; }
         @keyframes moveDown { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(2px); } }
@@ -192,54 +192,87 @@
         .mg-cell.empty { background: var(--bg-cell); box-shadow: none; border: 1px dashed var(--border); color: var(--text-muted); }
         .mg-comp { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; border-radius: 10px; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); color: #fff; }
 
+        /* ================= RESPONSIVE MÓVIL (VISTA VERTICAL) ================= */
+        @media (max-width: 768px) {
+            body { padding: 12px; }
+            .app-header { flex-direction: column; text-align: center; gap: 16px; padding: 16px; }
+            .header-right { width: 100%; align-items: stretch; }
+            .header-top-row { justify-content: space-between; margin-bottom: 8px; }
+            .btn-new-plan { justify-content: center; width: 100%; }
+            
+            .views-container { flex-direction: column; align-items: stretch; gap: 12px; }
+            .switch-group, .toggle-switch, .cumpl-btn, .action-btn { width: 100%; justify-content: center; }
+            
+            .kpi-container { gap: 10px; }
+            .kpi-card { min-width: 40%; padding: 12px 8px; }
+            
+            .month-nav-row { width: 100%; justify-content: space-between; }
+            
+            /* Ajustes Gantt Móvil - Días como Filas */
+            .mobile-gantt { width: 100%; table-layout: fixed; }
+            .mobile-gantt th, .mobile-gantt td { 
+                border-bottom: 2px solid var(--border) !important; 
+                border-right: 1px dashed var(--border) !important; 
+                padding: 4px;
+            }
+            .mobile-gantt th:first-child, .mobile-gantt td:first-child { border-right: 2px solid var(--border) !important; }
+            .mobile-gantt th:last-child, .mobile-gantt td:last-child { border-right: none !important; }
+            .mobile-gantt th { border-bottom: 2px solid var(--border) !important; }
+            
+            body.view-cumpl .mobile-gantt tr.day-row td { border-bottom: 1px dashed var(--border) !important; }
+            body.view-cumpl .mobile-gantt tr.comp-row td { border-bottom: 2px solid var(--border) !important; }
+
+            .mobile-gantt .day-header { grid-template-rows: auto auto auto; gap: 4px; }
+            
+            /* Flecha Lateral Móvil */
+            .mobile-gantt .flow-arrow {
+                animation: moveRightMobile 2s infinite ease-in-out !important;
+            }
+            @keyframes moveRightMobile {
+                0%, 100% { transform: rotate(-90deg) translateY(-2px); }
+                50% { transform: rotate(-90deg) translateY(2px); }
+            }
+
+            /* Highlight Hoy Móvil */
+            .mobile-gantt tr.today-row th, .mobile-gantt tr.today-row td { border-top: 3px solid #000 !important; border-bottom: 3px solid #000 !important; }
+            .mobile-gantt tr.today-row th { background: #000 !important; color: #fff !important; }
+            .mobile-gantt tr.today-row th .day-number { color: var(--accent); font-size: 1.3rem; }
+            
+            .modal-grid { grid-template-columns: 70px repeat(3, 1fr); gap: 6px; }
+            .mg-header { font-size: 0.85rem; padding: 6px; }
+            .mg-row-label { font-size: 0.65rem; padding-right: 4px; }
+            .mg-cell { padding: 4px; min-height: 70px; }
+            .mg-cell img { width: 24px !important; height: 24px !important; }
+            .mg-cell span { font-size: 0.65rem !important; }
+            .mg-comp { font-size: 0.9rem; padding: 4px; }
+        }
+
         /* ================= MEDIA PRINT (ÓPTIMA PARA A4) ================= */
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: A4 landscape; margin: 8mm; }
             
-            body { 
-                background: white; color: black; padding: 0; font-family: sans-serif; 
-                height: 100vh; display: flex; flex-direction: column; overflow: hidden;
-            }
+            body { background: white; color: black; padding: 0; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
             
-            /* Ocultar Interfaz */
-            .app-header, .views-container, .kpi-container, .month-nav, .month-selector, 
-            .gantt-modal, .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, 
-            #loader, #legendContainer { display: none !important; }
+            .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal, .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, #loader, #legendContainer { display: none !important; }
             
-            /* Encabezado Exclusivo Impresión */
             #printHeader { display: block !important; flex: 0 0 auto; text-align: center; margin-bottom: 8px; }
             #printTitleMain { font-size: 1.4rem; font-weight: 800; margin: 0 0 2px 0; color: #000 !important; text-transform: uppercase; }
             #printTitleSub { font-size: 1rem; font-weight: 600; margin: 0; color: #444 !important; text-transform: uppercase; letter-spacing: 1px;}
             
-            /* Gantt Extendido */
-            .gantt-wrapper { 
-                flex: 1 1 auto; display: flex; flex-direction: column; overflow: hidden; 
-                box-shadow: none; background: none; padding: 0; margin-bottom: 8px; border: none;
-            }
+            .gantt-wrapper { flex: 1 1 auto; display: flex; flex-direction: column; overflow: hidden; box-shadow: none; background: none; padding: 0; margin-bottom: 8px; border: none;}
             .gantt-table { height: 100%; width: 100%; border-collapse: collapse; }
             
-            /* Líneas de Cuadrícula Claras: Columnas continuas, Filas intra-día punteadas */
-            .gantt-table th, .gantt-table td { 
-                border-top: none !important;
-                border-left: none !important;
-                border-right: 2px solid #222 !important; 
-                border-bottom: 1px dashed #777 !important; 
-                height: auto !important; 
-            }
+            .gantt-table th, .gantt-table td { border-top: none !important; border-left: none !important; border-right: 2px solid #222 !important; border-bottom: 1px dashed #777 !important; height: auto !important; }
             .gantt-table th { border-bottom: 2px solid #222 !important; }
             .gantt-table th:first-child, .gantt-table td:first-child { border-left: 2px solid #222 !important; }
-            
-            /* Cierre de día (Turno 3 o Fila Cumplimiento) */
             .gantt-table tr.t3-row td { border-bottom: 2px solid #222 !important; }
             
-            /* Fila de Cumplimiento Condicional */
             .comp-row { display: none !important; }
             body.view-cumpl .comp-row { display: table-row !important; }
             body.view-cumpl .comp-row td { height: 25px !important; border-bottom: 2px solid #222 !important; }
             body.view-cumpl .gantt-table tr.t3-row td { border-bottom: 1px dashed #777 !important; }
             
-            /* Ajustes Visuales Menores */
             .mold-image { width: 14px; height: 14px; filter: none !important; }
             .mold-base { font-size: 0.65rem; text-shadow: none !important; }
             .mold-number { font-size: 0.6rem; text-shadow: none !important; }
@@ -247,11 +280,9 @@
             .day-number { font-size: 0.75rem; }
             .day-name { font-size: 0.55rem; }
             
-            /* Flecha Sutil (Sin movimiento ni sombra) */
             .flow-arrow-container { display: flex !important; } 
             .flow-arrow { opacity: 0.5 !important; animation: none !important; filter: none !important; }
             
-            /* Pruebas */
             .pruebas-info { flex: 0 0 auto; margin-top: 0; background: none; box-shadow: none; border-radius: 0; padding: 0; }
             .pruebas-table { font-size: 0.75rem; border: 1px solid #000; width: 100%; margin-top: 4px; border-collapse: collapse; }
             .pruebas-table th, .pruebas-table td { border: 1px solid #000; color: #000 !important; padding: 4px; }
@@ -261,11 +292,13 @@
     </style>
 </head>
 <body>
+    <!-- Encabezado Físico (Solo Impresión) -->
     <div id="printHeader">
         <h1 id="printTitleMain">Cronograma de Producción</h1>
         <h2 id="printTitleSub">Vista</h2>
     </div>
 
+    <!-- Loader -->
     <div id="loader" class="loader-container">
         <div class="spinner"></div>
         <h2>Sincronizando...</h2>
@@ -347,6 +380,7 @@
         let currentDate = new Date(2026, 7, 13); // Simulando 13 de Agosto
         let actualSystemDate = new Date(); 
         let themeDark = true;
+        let isMobileState = window.innerWidth <= 768;
 
         const typeColorMap = { 'H8': 15, 'H12': 35, 'H18': 55, 'P12': 195, 'P18': 225, 'L12': 275, 'L16': 315, 'DM20': 110, 'DM27': 150, 'KB': 0 };
 
@@ -468,7 +502,7 @@
             document.getElementById('monthTitle').textContent = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
             document.getElementById('kpiContainer').style.display = currentView === 'cumpl' ? 'flex' : 'none';
 
-            const turnoWidth = 70;
+            const turnoWidth = isMobileState ? 65 : 70;
             const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
 
             const precalc = {}; const changeDays = new Set(); const testDays = new Set();
@@ -524,81 +558,165 @@
 
             if (currentView === 'cumpl') actualizarKPIs(dayRealTestsMap, daysInMonth, year, month, todayStr);
 
-            let html = `<table class="gantt-table"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
-            const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-            for (let d = 1; d <= daysInMonth; d++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const date = new Date(year, month, d);
-                let thClass = date.getDay() === 0 ? 'sunday-cell' : '';
-                if (dateStr === todayStr) thClass += ' today-col';
-                let indHtml = '';
-                if (changeDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-change">🔄️</span></div>'; else indHtml += '<div class="indicator-row"></div>';
-                if (testDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-pr">PR</span></div>'; else indHtml += '<div class="indicator-row"></div>';
-                html += `<th class="${thClass}" style="width:${colWidthCalc};"><div class="day-header"><div class="day-name">${dayNames[date.getDay()]}</div><div class="day-number">${d}</div>${indHtml}</div></th>`;
-            }
-            html += '</tr></thead><tbody>';
+            let html = '';
+            
+            // ================= LOGICA RENDER MOBILE (VISTA VERTICAL) =================
+            if (isMobileState) {
+                html += `<table class="gantt-table mobile-gantt"><thead><tr><th style="width:${turnoWidth}px; z-index:30;">DÍA</th>`;
+                TURNOS.forEach(t => html += `<th>${t}</th>`);
+                html += `</tr></thead><tbody>`;
 
-            TURNOS.forEach(turno => {
-                const isT3 = turno === 'T3';
-                html += `<tr class="${isT3 ? 't3-row' : ''}"><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                     const dateObj = new Date(year, month, d);
-                    const k = key(dateStr, turno);
-                    const pre = (currentView === 'plan') ? precalc['plan_' + k] : precalc['real_' + k];
+                    const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+                    let trClass = dateStr === todayStr ? 'today-row' : '';
+                    if (dateObj.getDay() === 0) trClass += ' sunday-row';
 
-                    let cellContent = ''; let bgColor = 'transparent'; let txtColor = 'inherit';
-                    let cellClasses = ''; let markers = '';
-                    let tooltip = `📅 ${dayNames[dateObj.getDay()]} ${d}/${month+1}/${year} - ${turno}\n`;
+                    let indHtml = '';
+                    if (changeDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-change">🔄️</span></div>'; else indHtml += '<div class="indicator-row"></div>';
+                    if (testDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-pr">PR</span></div>'; else indHtml += '<div class="indicator-row"></div>';
 
-                    if (dateObj.getDay() === 0) cellClasses += ' sunday-cell';
-                    if (dateStr === todayStr) cellClasses += ' today-col';
+                    html += `<tr class="day-row ${trClass}">`;
+                    let thClass = dateStr === todayStr ? 'today-col' : (dateObj.getDay() === 0 ? 'sunday-cell' : '');
+                    
+                    html += `<th class="${thClass}">
+                        <div class="day-header">
+                            <div class="day-name">${dayNames[dateObj.getDay()]}</div>
+                            <div class="day-number">${d}</div>
+                            ${indHtml}
+                        </div>
+                    </th>`;
 
-                    if (pre.mold) {
-                        visibleBases.add(pre.baseName); 
-                        bgColor = getBrickColor(pre.baseName, pre.number); txtColor = pickTextColor(bgColor);
+                    TURNOS.forEach(turno => {
+                        const k = key(dateStr, turno);
+                        const pre = (currentView === 'plan') ? precalc['plan_' + k] : precalc['real_' + k];
+                        let cellContent = ''; let bgColor = 'transparent'; let txtColor = 'inherit';
+                        let cellClasses = dateObj.getDay() === 0 ? 'sunday-cell' : ''; 
+                        let markers = '';
+                        let tooltip = `📅 ${dayNames[dateObj.getDay()]} ${d}/${month+1}/${year} - ${turno}\n`;
 
-                        if (pre.showDetail) {
-                            cellContent = `<div class="cell-content"><img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}"><span class="mold-base">${pre.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${pre.number}</span></div>`;
-                            if (pre.prevProps) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
-                        } else { 
-                            cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`; 
+                        if (pre.mold) {
+                            visibleBases.add(pre.baseName); 
+                            bgColor = getBrickColor(pre.baseName, pre.number); txtColor = pickTextColor(bgColor);
+                            if (pre.showDetail) {
+                                cellContent = `<div class="cell-content"><img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}"><span class="mold-base">${pre.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${pre.number}</span></div>`;
+                                if (pre.prevProps) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
+                            } else { 
+                                cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`; 
+                            }
+                            if (pre.esFin) markers += '<div class="end-marker"></div>';
                         }
-                        if (pre.esFin) markers += '<div class="end-marker"></div>';
-                    }
+                        if (pre.hasTest) markers += `<div class="test-marker"></div>`;
 
-                    if (pre.hasTest) markers += `<div class="test-marker"></div>`;
+                        const comp = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
+                        if (currentView === 'plan') { tooltip += `📋 Plan: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
+                        else if (currentView === 'prod') { tooltip += `🏭 Real: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
+                        else { tooltip += `📋 Plan: ${planData[k]?.find(x=>x.tarea==='Producción')?.moldeCompleto || '-'}\n🏭 Real: ${pre.mold || '-'}\n📊 Estado: ${comp.msg} ${comp.emoji}`; }
 
-                    const comp = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
-                    if (currentView === 'plan') { tooltip += `📋 Plan: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
-                    else if (currentView === 'prod') { tooltip += `🏭 Real: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
-                    else { tooltip += `📋 Plan: ${planData[k]?.find(x=>x.tarea==='Producción')?.moldeCompleto || '-'}\n🏭 Real: ${pre.mold || '-'}\n📊 Estado: ${comp.msg} ${comp.emoji}`; }
+                        let inlineStyles = `color:${txtColor};`;
+                        if (bgColor !== 'transparent') inlineStyles += ` background-color:${bgColor};`;
+                        html += `<td class="${cellClasses}" style="${inlineStyles}" title="${tooltip}" onclick="abrirGantt('${dateStr}')">${markers}${cellContent}</td>`;
+                    });
+                    html += `</tr>`;
 
-                    let inlineStyles = `color:${txtColor}; width:${colWidthCalc};`;
-                    if (bgColor !== 'transparent') inlineStyles += ` background-color:${bgColor};`;
-
-                    html += `<td class="${cellClasses}" style="${inlineStyles}" title="${tooltip}" onclick="abrirGantt('${dateStr}')">${markers}${cellContent}</td>`;
+                    html += `<tr class="comp-row ${trClass}">`;
+                    html += `<td class="comp-label-text ${thClass}" style="text-align:center;">CUMPL</td>`;
+                    TURNOS.forEach(turno => {
+                        const k = key(dateStr, turno);
+                        let compCellClass = ''; let compEmoji = '';
+                        if (dateStr === todayStr) {} 
+                        else if (planData[k] && planData[k].length > 0) {
+                            const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
+                            compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
+                        } else { compCellClass = 'ci-vacio'; }
+                        let tdClass = dateObj.getDay() === 0 ? 'sunday-cell' : '';
+                        html += `<td class="${tdClass}"><div class="comp-indicator ${compCellClass}">${compEmoji}</div></td>`;
+                    });
+                    html += `</tr>`;
                 }
-                html += '</tr>';
-
-                // Fila Cumplimiento
-                html += `<tr class="comp-row"><td class="comp-label-text" style="width:${turnoWidth}px; text-align:center;">CUMPL</td>`;
+                html += `</tbody></table>`;
+            } 
+            // ================= LOGICA RENDER DESKTOP (VISTA HORIZONTAL) =================
+            else {
+                html += `<table class="gantt-table"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
+                const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                    const k = key(dateStr, turno);
-                    let compCellClass = ''; let compEmoji = '';
-                    if (dateStr === todayStr) {} 
-                    else if (planData[k] && planData[k].length > 0) {
-                        const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
-                        compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
-                    } else { compCellClass = 'ci-vacio'; }
-                    let tdClass = new Date(year, month, d).getDay() === 0 ? 'sunday-cell' : '';
-                    if (dateStr === todayStr) tdClass += ' today-col';
-                    html += `<td class="${tdClass}"><div class="comp-indicator ${compCellClass}">${compEmoji}</div></td>`;
+                    const date = new Date(year, month, d);
+                    let thClass = date.getDay() === 0 ? 'sunday-cell' : '';
+                    if (dateStr === todayStr) thClass += ' today-col';
+                    let indHtml = '';
+                    if (changeDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-change">🔄️</span></div>'; else indHtml += '<div class="indicator-row"></div>';
+                    if (testDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-pr">PR</span></div>'; else indHtml += '<div class="indicator-row"></div>';
+                    html += `<th class="${thClass}" style="width:${colWidthCalc};"><div class="day-header"><div class="day-name">${dayNames[date.getDay()]}</div><div class="day-number">${d}</div>${indHtml}</div></th>`;
                 }
-                html += '</tr>';
-            });
-            html += '</tbody></table>';
+                html += '</tr></thead><tbody>';
+
+                TURNOS.forEach(turno => {
+                    const isT3 = turno === 'T3';
+                    const rowClass = isT3 ? 't3-row' : '';
+                    html += `<tr class="${rowClass}"><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
+                    for (let d = 1; d <= daysInMonth; d++) {
+                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                        const dateObj = new Date(year, month, d);
+                        const k = key(dateStr, turno);
+                        const pre = (currentView === 'plan') ? precalc['plan_' + k] : precalc['real_' + k];
+
+                        let cellContent = ''; let bgColor = 'transparent'; let txtColor = 'inherit';
+                        let cellClasses = ''; let markers = '';
+                        let tooltip = `📅 ${dayNames[dateObj.getDay()]} ${d}/${month+1}/${year} - ${turno}\n`;
+
+                        if (dateObj.getDay() === 0) cellClasses += ' sunday-cell';
+                        if (dateStr === todayStr) cellClasses += ' today-col';
+
+                        if (pre.mold) {
+                            visibleBases.add(pre.baseName); 
+                            bgColor = getBrickColor(pre.baseName, pre.number); txtColor = pickTextColor(bgColor);
+
+                            if (pre.showDetail) {
+                                cellContent = `<div class="cell-content"><img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}"><span class="mold-base">${pre.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${pre.number}</span></div>`;
+                                if (pre.prevProps) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
+                            } else { 
+                                cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`; 
+                            }
+                            if (pre.esFin) markers += '<div class="end-marker"></div>';
+                        }
+
+                        if (pre.hasTest) markers += `<div class="test-marker"></div>`;
+
+                        const comp = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
+                        if (currentView === 'plan') { tooltip += `📋 Plan: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
+                        else if (currentView === 'prod') { tooltip += `🏭 Real: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
+                        else { tooltip += `📋 Plan: ${planData[k]?.find(x=>x.tarea==='Producción')?.moldeCompleto || '-'}\n🏭 Real: ${pre.mold || '-'}\n📊 Estado: ${comp.msg} ${comp.emoji}`; }
+
+                        let inlineStyles = `color:${txtColor}; width:${colWidthCalc};`;
+                        if (bgColor !== 'transparent') inlineStyles += ` background-color:${bgColor};`;
+
+                        html += `<td class="${cellClasses}" style="${inlineStyles}" title="${tooltip}" onclick="abrirGantt('${dateStr}')">${markers}${cellContent}</td>`;
+                    }
+                    html += '</tr>';
+
+                    // Fila Cumplimiento
+                    html += `<tr class="comp-row"><td class="comp-label-text" style="width:${turnoWidth}px; text-align:center;">CUMPL</td>`;
+                    for (let d = 1; d <= daysInMonth; d++) {
+                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                        const k = key(dateStr, turno);
+                        let compCellClass = ''; let compEmoji = '';
+                        if (dateStr === todayStr) {} 
+                        else if (planData[k] && planData[k].length > 0) {
+                            const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
+                            compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
+                        } else { compCellClass = 'ci-vacio'; }
+                        let tdClass = new Date(year, month, d).getDay() === 0 ? 'sunday-cell' : '';
+                        if (dateStr === todayStr) tdClass += ' today-col';
+                        html += `<td class="${tdClass}"><div class="comp-indicator ${compCellClass}">${compEmoji}</div></td>`;
+                    }
+                    html += '</tr>';
+                });
+                html += '</tbody></table>';
+            }
+
             wrapper.innerHTML = html;
             
             const legendContainer = document.getElementById('legendContainer');
@@ -614,14 +732,16 @@
             } else { legendContainer.style.display = 'none'; legendContainer.innerHTML = ''; }
 
             const table = wrapper.querySelector('.gantt-table');
-            table.addEventListener('mouseover', e => {
-                const td = e.target.closest('td, th'); if (!td || td.cellIndex === 0) return;
-                const idx = td.cellIndex; Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.add('hover-col'); });
-            });
-            table.addEventListener('mouseout', e => {
-                const td = e.target.closest('td, th'); if (!td || td.cellIndex === 0) return;
-                const idx = td.cellIndex; Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.remove('hover-col'); });
-            });
+            if (!isMobileState) {
+                table.addEventListener('mouseover', e => {
+                    const td = e.target.closest('td, th'); if (!td || td.cellIndex === 0) return;
+                    const idx = td.cellIndex; Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.add('hover-col'); });
+                });
+                table.addEventListener('mouseout', e => {
+                    const td = e.target.closest('td, th'); if (!td || td.cellIndex === 0) return;
+                    const idx = td.cellIndex; Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.remove('hover-col'); });
+                });
+            }
 
             renderPruebasInfo(dayRealTestsMap, todayStr);
         }
@@ -728,7 +848,20 @@
             else if(currentView === 'cumpl') subText = "Análisis de Cumplimiento";
             document.getElementById('printTitleSub').textContent = subText;
 
-            setTimeout(() => window.print(), 300); 
+            // Forzar Vista Escritorio para impresión si se toca desde Móvil
+            const tempMobile = isMobileState;
+            if (isMobileState) {
+                isMobileState = false;
+                renderGantt();
+            }
+
+            setTimeout(() => {
+                window.print();
+                if (tempMobile) {
+                    isMobileState = true;
+                    renderGantt();
+                }
+            }, 300); 
         }
 
         function renderModalBlock(task) {
@@ -789,7 +922,18 @@
 
         window.addEventListener('load', () => {
             if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeDark = false; }
-            updateClock(); setInterval(updateClock, 30000); loadData();
+            updateClock(); setInterval(updateClock, 30000); 
+            
+            // Listener Responsivo
+            window.addEventListener('resize', () => {
+                const currentIsMobile = window.innerWidth <= 768;
+                if (currentIsMobile !== isMobileState) {
+                    isMobileState = currentIsMobile;
+                    renderGantt();
+                }
+            });
+
+            loadData();
         });
     </script>
 </body>
