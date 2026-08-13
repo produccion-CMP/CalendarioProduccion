@@ -192,8 +192,10 @@
         .mg-cell.empty { background: var(--bg-cell); box-shadow: none; border: 1px dashed var(--border); color: var(--text-muted); }
         .mg-comp { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; border-radius: 10px; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); color: #fff; }
 
-        /* ================= RESPONSIVE MÓVIL (VISTA VERTICAL) ================= */
-        @media (max-width: 768px) {
+        /* ================= RESPONSIVE MÓVIL (VISTA VERTICAL) ================= 
+           Nota: "screen and" asegura que esta vista JAMÁS se aplique al imprimir.
+        */
+        @media screen and (max-width: 768px) {
             body { padding: 12px; }
             .app-header { flex-direction: column; text-align: center; gap: 16px; padding: 16px; }
             .header-right { width: 100%; align-items: stretch; }
@@ -225,15 +227,12 @@
             .mobile-gantt .day-header { grid-template-rows: auto auto auto; gap: 4px; }
             
             /* Flecha Lateral Móvil */
-            .mobile-gantt .flow-arrow {
-                animation: moveRightMobile 2s infinite ease-in-out !important;
-            }
+            .mobile-gantt .flow-arrow { animation: moveRightMobile 2s infinite ease-in-out !important; }
             @keyframes moveRightMobile {
                 0%, 100% { transform: rotate(-90deg) translateY(-2px); }
                 50% { transform: rotate(-90deg) translateY(2px); }
             }
 
-            /* Highlight Hoy Móvil */
             .mobile-gantt tr.today-row th, .mobile-gantt tr.today-row td { border-top: 3px solid #000 !important; border-bottom: 3px solid #000 !important; }
             .mobile-gantt tr.today-row th { background: #000 !important; color: #fff !important; }
             .mobile-gantt tr.today-row th .day-number { color: var(--accent); font-size: 1.3rem; }
@@ -247,7 +246,7 @@
             .mg-comp { font-size: 0.9rem; padding: 4px; }
         }
 
-        /* ================= MEDIA PRINT (ÓPTIMA PARA A4) ================= */
+        /* ================= MEDIA PRINT (ÓPTIMA PARA A4 ESCRITORIO SIEMPRE) ================= */
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: A4 landscape; margin: 8mm; }
@@ -263,6 +262,7 @@
             .gantt-wrapper { flex: 1 1 auto; display: flex; flex-direction: column; overflow: hidden; box-shadow: none; background: none; padding: 0; margin-bottom: 8px; border: none;}
             .gantt-table { height: 100%; width: 100%; border-collapse: collapse; }
             
+            /* Líneas de Cuadrícula Impresión */
             .gantt-table th, .gantt-table td { border-top: none !important; border-left: none !important; border-right: 2px solid #222 !important; border-bottom: 1px dashed #777 !important; height: auto !important; }
             .gantt-table th { border-bottom: 2px solid #222 !important; }
             .gantt-table th:first-child, .gantt-table td:first-child { border-left: 2px solid #222 !important; }
@@ -280,6 +280,7 @@
             .day-number { font-size: 0.75rem; }
             .day-name { font-size: 0.55rem; }
             
+            /* Flecha Sutil Impresa */
             .flow-arrow-container { display: flex !important; } 
             .flow-arrow { opacity: 0.5 !important; animation: none !important; filter: none !important; }
             
@@ -780,6 +781,7 @@
             `;
         }
 
+        // Filtro Inteligente de Pruebas según Vista Actual
         function renderPruebasInfo(dayRealTestsMap, todayStr) {
             const container = document.getElementById('pruebasInfo');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
@@ -848,20 +850,23 @@
             else if(currentView === 'cumpl') subText = "Análisis de Cumplimiento";
             document.getElementById('printTitleSub').textContent = subText;
 
-            // Forzar Vista Escritorio para impresión si se toca desde Móvil
+            // Forzar Vista Escritorio (Horizontal) si se imprime desde celular
             const tempMobile = isMobileState;
-            if (isMobileState) {
+            if (tempMobile) {
                 isMobileState = false;
                 renderGantt();
             }
 
+            // Timeout ajustado para que el navegador re-dibuje el DOM antes de invocar la impresora
             setTimeout(() => {
                 window.print();
+                
+                // Retornar a la vista celular después de que se cierre el menú de impresión
                 if (tempMobile) {
                     isMobileState = true;
                     renderGantt();
                 }
-            }, 300); 
+            }, 400); 
         }
 
         function renderModalBlock(task) {
