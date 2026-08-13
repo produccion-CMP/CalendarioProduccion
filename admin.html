@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Cronograma de Producción – Cerámica Marcos Paz</title>
+    <title>Carga de Producción – Planta CEVIL</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
     <style>
         :root {
@@ -18,855 +18,349 @@
             --text-muted: #98989d;
             --accent: #e07b4c;
             --accent-light: #f0a880;
-            --green: #30d158;
-            --orange: #ff9f0a;
-            --red: #ff453a;
-            --gray: #636366;
-            --shadow: 0 2px 8px rgba(0,0,0,0.3);
-            --shadow-3d: 0 6px 16px rgba(0,0,0,0.5);
-            --radius: 14px;
-            --cell-h: 78px;
+            --radius: 16px;
             --font: 'Plus Jakarta Sans', system-ui, sans-serif;
-            --prueba-bg: #ffd700;
-            --sunday-bg: rgba(255,255,255,0.04);
-        }
-
-        body.light-mode {
-            --bg-body: #f2f2f7;
-            --bg-panel: #ffffff;
-            --bg-cell: #fafafa;
-            --border: #e5e5ea;
-            --text-main: #1c1c1e;
-            --text-muted: #6e6e73;
-            --accent: #d96b3a;
-            --accent-light: #c45a2c;
-            --shadow: 0 2px 12px rgba(0,0,0,0.08);
-            --shadow-3d: 0 8px 24px rgba(0,0,0,0.12);
-            --prueba-bg: #ffd700;
-            --sunday-bg: rgba(0,0,0,0.03);
+            --shadow-3d: 0 8px 24px rgba(0,0,0,0.6);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: var(--font); background: var(--bg-body); color: var(--text-main); padding: 24px; min-height: 100vh; transition: background 0.3s, color 0.3s; }
+        body { font-family: var(--font); background: var(--bg-body); color: var(--text-main); display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+        
+        .wizard-container { background: var(--bg-panel); width: 100%; max-width: 500px; border-radius: var(--radius); padding: 30px; box-shadow: var(--shadow-3d); border: 1px solid var(--border); position: relative; overflow: hidden; }
+        .step { display: none; animation: slideIn 0.3s ease forwards; }
+        .step.active { display: block; }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(20px); } to { opacity: 1; transform: translateX(0); } }
 
-        /* --- Loader Screen --- */
-        .loader-container {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: var(--bg-body); z-index: 9999;
-            display: flex; flex-direction: column; justify-content: center; align-items: center;
-            transition: opacity 0.6s ease, visibility 0.6s ease;
-        }
-        .spinner {
-            width: 50px; height: 50px; border: 4px solid var(--border);
-            border-top-color: var(--accent); border-radius: 50%;
-            animation: spin 1s linear infinite; margin-bottom: 20px;
-            box-shadow: 0 0 15px rgba(224, 123, 76, 0.4);
-        }
+        h2 { color: var(--accent-light); font-weight: 800; font-size: 1.5rem; text-align: center; margin-bottom: 24px; }
+        h3 { color: var(--text-main); font-weight: 700; font-size: 1.1rem; text-align: center; margin-bottom: 20px; }
+
+        .btn-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
+        .btn-grid.grid-2 { grid-template-columns: 1fr 1fr; }
+        
+        button.option-btn { background: var(--bg-cell); border: 2px solid var(--border); color: var(--text-main); padding: 16px; border-radius: 12px; font-family: var(--font); font-weight: 700; font-size: 1rem; cursor: pointer; transition: 0.2s; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; }
+        button.option-btn:hover { border-color: var(--accent); background: rgba(224, 123, 76, 0.1); transform: translateY(-2px); }
+        button.option-btn img { width: 40px; height: 40px; object-fit: contain; filter: drop-shadow(0 4px 6px rgba(0,0,0,0.5)); }
+
+        .input-group { margin-bottom: 16px; text-align: left; }
+        .input-group label { display: block; font-size: 0.85rem; font-weight: 700; color: var(--text-muted); margin-bottom: 6px; text-transform: uppercase; }
+        .input-group input, .input-group select { width: 100%; padding: 12px; border-radius: 8px; background: var(--bg-body); border: 1px solid var(--border); color: var(--text-main); font-family: var(--font); font-weight: 600; font-size: 1rem; }
+        .input-group input:focus, .input-group select:focus { outline: none; border-color: var(--accent); }
+
+        button.primary-btn { background: var(--accent); border: none; color: #fff; width: 100%; padding: 14px; border-radius: 10px; font-weight: 800; font-size: 1.1rem; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 12px rgba(224, 123, 76, 0.4); margin-top: 10px; }
+        button.primary-btn:hover { transform: translateY(-2px); box-shadow: 0 6px 16px rgba(224, 123, 76, 0.6); }
+        button.secondary-btn { background: transparent; border: 1px solid var(--border); color: var(--text-muted); width: 100%; padding: 12px; border-radius: 10px; font-weight: 700; cursor: pointer; margin-top: 12px; transition: 0.2s; }
+        button.secondary-btn:hover { color: var(--text-main); border-color: var(--text-main); }
+
+        .header-status { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); border-bottom: 1px solid var(--border); padding-bottom: 10px; }
+        .loader { width: 40px; height: 40px; border: 4px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        .loader-container.hidden { opacity: 0; visibility: hidden; }
-        .loader-container h2 { color: var(--accent-light); margin-bottom: 8px; }
-        .loader-container p { color: var(--text-muted); font-size: 0.9rem; }
-        /* --------------------- */
-
-        .app-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--bg-panel); border-radius: var(--radius); box-shadow: var(--shadow-3d); margin-bottom: 20px; }
-        .logo-container { display: flex; align-items: center; gap: 16px; }
-        .logo-container img { height: 56px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
-        .title-block h1 { font-size: 1.5rem; font-weight: 800; margin: 0; color: var(--accent-light); }
-        .title-block small { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
-        .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
-        .header-top-row { display: flex; align-items: center; gap: 12px; }
-        .live-clock { font-weight: 600; font-size: 0.9rem; color: var(--text-main); background: var(--bg-cell); padding: 8px 16px; border-radius: 30px; box-shadow: var(--shadow); }
-        .theme-btn { background: var(--bg-cell); border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; box-shadow: var(--shadow); }
-        .btn-new-plan {
-            background: var(--accent); color: #fff; border: none; padding: 8px 16px;
-            border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer;
-            text-decoration: none; display: flex; align-items: center; gap: 6px;
-            box-shadow: var(--shadow-3d); transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .btn-new-plan:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(224, 123, 76, 0.4); }
-
-        .views-container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; background: var(--bg-panel); padding: 10px 20px; border-radius: var(--radius); box-shadow: var(--shadow-3d); margin-bottom: 20px; }
-        .switch-group { display: flex; align-items: center; gap: 8px; }
-        .toggle-switch { position: relative; width: 180px; height: 38px; background: var(--bg-cell); border-radius: 20px; cursor: pointer; border: 2px solid var(--border); overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
-        .toggle-option { position: absolute; top: 0; width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 0.8rem; transition: all 0.3s; z-index: 1; }
-        .toggle-option.left { left: 0; color: var(--text-muted); }
-        .toggle-option.right { right: 0; color: var(--text-muted); }
-        .toggle-option.active { color: #fff; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
-        .toggle-slider { position: absolute; top: 2px; width: 48%; height: calc(100% - 4px); background: var(--accent); border-radius: 18px; transition: left 0.3s cubic-bezier(0.4, 0.0, 0.2, 1); z-index: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.3); }
-        .toggle-slider.right { left: 50%; }
-        .toggle-slider.left { left: 2%; }
-
-        .cumpl-btn { background: var(--bg-cell); border: 2px solid var(--border); padding: 10px 22px; border-radius: 30px; font-weight: 600; font-size: 0.85rem; cursor: pointer; color: var(--text-main); transition: 0.2s; box-shadow: var(--shadow); }
-        .cumpl-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 0 16px rgba(224, 123, 76, 0.5); }
-
-        .action-btn { background: var(--bg-cell); border: 1px solid var(--border); color: var(--text-main); padding: 8px 16px; border-radius: 24px; font-weight: 600; font-size: 0.8rem; cursor: pointer; display: flex; align-items: center; gap: 6px; transition: 0.2s; text-decoration: none; box-shadow: var(--shadow); }
-        .action-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); }
-
-        .kpi-container { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
-        .kpi-card { background: var(--bg-panel); border-radius: var(--radius); padding: 14px 20px; box-shadow: var(--shadow-3d); text-align: center; min-width: 100px; transition: transform 0.2s, box-shadow 0.2s; }
-        .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.4); }
-        .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--accent-light); }
-        .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
-
-        .month-nav { display: flex; flex-direction: column; align-items: center; gap: 10px; margin-bottom: 20px; }
-        .month-nav-row { display: flex; justify-content: center; align-items: center; gap: 16px; }
-        .month-nav button { background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main); padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow); }
-        .month-nav button:hover { background: var(--accent); color: #fff; }
-        .month-title { font-size: 1.1rem; font-weight: 700; text-transform: uppercase; cursor: pointer; border-bottom: 1px dashed var(--text-muted); padding: 4px 8px; }
-        .month-title:hover { color: var(--accent-light); }
-        .btn-today { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer; box-shadow: var(--shadow); }
-
-        .month-selector { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: var(--bg-panel); padding: 24px; border-radius: var(--radius); box-shadow: 0 10px 40px rgba(0,0,0,0.6); z-index: 2000; text-align: center; }
-        .month-selector select, .month-selector input { margin: 10px; padding: 8px; border-radius: 6px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); }
-        .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(3px); z-index: 1500; }
-
-        .gantt-wrapper { background: var(--bg-panel); border-radius: var(--radius); padding: 8px; box-shadow: var(--shadow-3d); overflow-x: auto; }
         
-        .gantt-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+        .feedback { text-align: center; font-weight: 700; margin-top: 15px; }
+        .feedback.error { color: #ff453a; }
+        .feedback.success { color: #30d158; }
         
-        .gantt-table th, .gantt-table td { border-right: 2px solid var(--border); }
-        .gantt-table th:first-child, .gantt-table td:first-child { border-left: 2px solid var(--border); }
-        
-        .gantt-table td {
-            border-bottom: 1px dashed var(--border); height: var(--cell-h); padding: 2px;
-            text-align: center; vertical-align: middle; font-size: 0.75rem;
-            position: relative; overflow: hidden; transition: transform 0.2s, box-shadow 0.2s, background 0.2s; cursor: pointer;
-        }
-        
-        /* Ajuste para filas con Emoji (Cumplimiento) */
-        tr.has-emoji td { border-bottom: none !important; }
-        tr.emoji-row td {
-            height: 22px !important; padding: 0 !important; border-top: none !important;
-            background: rgba(0,0,0,0.15); font-size: 0.85rem; border-bottom: 1px dashed var(--border) !important;
-        }
-        .gantt-table tr:last-child td { border-bottom: 2px solid var(--border) !important; }
-
-        .gantt-table th { background: var(--bg-cell); font-weight: 700; color: var(--accent-light); border-bottom: 2px solid var(--border); padding: 8px 4px; }
-        .gantt-table td:not(:first-child):hover { transform: scale(1.03); box-shadow: var(--shadow-3d); z-index: 10; }
-
-        .day-header { display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.2; position: relative; }
-        .day-name { font-size: 0.6rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; }
-        .day-number { font-weight: 800; font-size: 0.9rem; }
-        .day-indicators { display: flex; gap: 3px; min-height: 18px; align-items: center; justify-content: center; margin-top: 2px;}
-        .indicator-change { font-size: 0.9rem; animation: pulse 1.2s ease-in-out infinite; }
-        .indicator-pr { font-size: 0.55rem; font-weight: 800; background: var(--prueba-bg); color: #000; padding: 0 3px; border-radius: 3px; line-height: 1.2; animation: pulse 1.5s ease-in-out infinite; }
-        @keyframes pulse { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.15); } }
-
-        .turn-label { font-weight: 700; color: var(--accent-light); font-size: 0.85rem; writing-mode: vertical-rl; text-orientation: mixed; margin: auto; }
-
-        .cell-content { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; overflow: hidden; }
-        .mold-image { width: 28px; height: 28px; object-fit: contain; border-radius: 4px; background: rgba(255,255,255,0.1); margin-bottom: 1px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); }
-        .mold-base { font-weight: 800; font-size: 0.75rem; line-height: 1.1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
-        .mold-label-text { font-size: 0.5rem; font-weight: 600; opacity: 0.8; text-transform: uppercase; }
-        .mold-number { font-size: 0.65rem; font-weight: 700; text-shadow: 0 1px 2px rgba(0,0,0,0.4); }
-
-        .change-marker { position: absolute; top: 0; left: 0; width: 0; height: 0; border-top: 18px solid; border-right: 18px solid transparent; z-index: 5; filter: drop-shadow(1px 1px 1px rgba(0,0,0,0.3)); }
-        .test-marker { position: absolute; top: 0; right: 0; width: 0; height: 0; border-top: 18px solid #000; border-left: 18px solid transparent; z-index: 5; }
-        .end-marker { position: absolute; bottom: 0; right: 0; width: 0; height: 0; border-style: solid; border-width: 0 0 8px 8px; border-color: transparent transparent var(--accent) transparent; opacity: 0.7; }
-
-        .compliance-bar-cell { position: absolute; bottom: 0; left: 0; width: 100%; height: 4px; border-radius: 0 0 3px 3px; background: var(--gray); animation: slideGrow 0.5s ease-out; }
-        .compliance-bar-cell.green-bar { background: var(--green); }
-        .compliance-bar-cell.orange-bar { background: var(--orange); }
-        .compliance-bar-cell.red-bar { background: var(--red); }
-        
-        .comp-cumplido { box-shadow: inset 0 0 0 2px var(--green) !important; }
-        .comp-parcial { box-shadow: inset 0 0 0 2px var(--orange) !important; }
-        .comp-desvio { box-shadow: inset 0 0 0 3px var(--red) !important; }
-        @keyframes slideGrow { from { width: 0; } to { width: 100%; } }
-
-        td.today-col { border-left: 3px solid #000 !important; border-right: 3px solid #000 !important; }
-        th.today-col { border-left: 3px solid #000 !important; border-right: 3px solid #000 !important; border-top: 3px solid #000 !important; background: #111 !important; color: #fff !important; position: relative; }
-        th.today-col .day-header::after { content: "HOY"; position: absolute; bottom: -18px; left: 50%; transform: translateX(-50%); background: var(--accent); color: #fff; font-size: 0.6rem; font-weight: 800; padding: 2px 8px; border-radius: 10px; z-index: 5; box-shadow: 0 2px 4px rgba(0,0,0,0.4); }
-        tr:last-child td.today-col { border-bottom: 3px solid #000 !important; }
-        td.sunday-cell { background-color: var(--sunday-bg) !important; }
-
-        .pruebas-info { margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius); padding: 16px; box-shadow: var(--shadow-3d); font-size: 0.8rem; }
-        .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; margin-top: 10px; }
-        .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 8px; vertical-align: middle; text-align: center; }
-        .pruebas-table th { background: var(--bg-cell); font-weight: 700; color: var(--accent-light); }
-        .pruebas-table tbody tr:hover { background: var(--bg-cell); }
-
-        .gantt-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(4px); display: none; justify-content: center; align-items: center; z-index: 3000; }
-        .gantt-content { background: var(--bg-panel); border-radius: var(--radius); padding: 24px; max-width: 750px; width: 95%; max-height: 85vh; overflow-y: auto; box-shadow: 0 10px 40px rgba(0,0,0,0.8); animation: modalPop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        @keyframes modalPop { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-        .close-btn { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; float: right; box-shadow: var(--shadow); transition: 0.2s; }
-        .close-btn:hover { background: var(--accent-light); }
-        
-        /* Modal Gantt Grid */
-        .modal-gantt-grid { display: grid; grid-template-columns: 120px 1fr 1fr 1fr; gap: 8px; margin-top: 20px; }
-        .mg-header { font-weight: 800; text-align: center; color: var(--text-muted); font-size: 0.9rem; border-bottom: 2px solid var(--border); padding-bottom: 6px; }
-        .mg-label { font-weight: 700; color: var(--accent-light); display: flex; align-items: center; justify-content: flex-end; padding-right: 12px; font-size: 0.85rem; text-align: right; line-height: 1.2; }
-        .mg-cell {
-            background: var(--bg-cell); border-radius: 8px; height: 65px; display: flex; align-items: center; justify-content: center;
-            border: 1px solid var(--border); position: relative; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.2); padding: 4px;
-        }
-        .mg-content { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; }
-        .mg-content img { width: 34px; height: 34px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); border-radius: 4px; background: rgba(255,255,255,0.1); padding: 2px; }
-        .mg-details { display: flex; flex-direction: column; align-items: flex-start; overflow: hidden; white-space: nowrap; }
-        .mg-comp-emoji { position: absolute; bottom: 4px; right: 6px; font-size: 1rem; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); }
-
-        @media print {
-            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            @page { size: A4 landscape; margin: 1cm; }
-            body { background: white; color: black; padding: 0; font-family: sans-serif; font-size: 9px; }
-            .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal,
-            .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, #loader { display: none !important; }
-            .gantt-wrapper { box-shadow: none; background: none; padding: 0; overflow: visible; margin-bottom: 20px; }
-            .gantt-table { width: 100%; border-collapse: collapse; }
-            .gantt-table th, .gantt-table td { border: 1px solid #444; height: 35px; }
-            .mold-image { width: 14px; height: 14px; filter: none; }
-            .turn-label { font-size: 0.7rem; }
-            .day-number { font-size: 0.7rem; }
-            .day-name { font-size: 0.5rem; }
-            tr.emoji-row td { height: 16px !important; border: 1px solid #444 !important; }
-            .pruebas-info { margin-top: 0; background: none; box-shadow: none; border-radius: 0; padding: 0; }
-            .pruebas-table { font-size: 0.7rem; margin-top: 10px; border-collapse: collapse; width: 100%; }
-            .pruebas-table th, .pruebas-table td { border: 1px solid #444; padding: 4px; color: black !important; }
-            .pruebas-table th { background-color: #eee !important; color: black !important; }
-            h1 { font-size: 1.2rem; margin: 0 0 5px 0; color: black !important; text-align: center; }
-            h3 { font-size: 0.9rem; margin: 0 0 5px 0; }
-        }
+        #summaryText { background: var(--bg-body); padding: 12px; border-radius: 8px; font-size: 0.9rem; color: var(--accent-light); margin-bottom: 20px; text-align: center; border: 1px dashed var(--border); }
     </style>
 </head>
 <body>
-    <div id="loader" class="loader-container">
-        <div class="spinner"></div>
-        <h2>Cargando Cronograma...</h2>
-        <p>Sincronizando base de datos central Planta CEVIL</p>
-    </div>
 
-    <div class="overlay" id="overlay" onclick="cerrarSelectorMes()"></div>
-    <div class="month-selector" id="monthSelector">
-        <h3>Seleccionar mes y año</h3>
-        <select id="selMonth"></select>
-        <input type="number" id="selYear" min="2020" max="2030" style="width:80px;">
-        <br><button onclick="irAMes()" style="margin-top:12px; padding:8px 16px; background:var(--accent); color:#fff; border:none; border-radius:6px; cursor:pointer;">Ir</button>
-    </div>
+    <div class="wizard-container">
+        <!-- Loader Inicial -->
+        <div id="step-loading" class="step active">
+            <div class="loader"></div>
+            <h3>Sincronizando base de datos...</h3>
+        </div>
 
-    <header class="app-header">
-        <div class="logo-container">
-            <img src="img/logo CMP.png" alt="Cerámica Marcos Paz">
-            <div class="title-block">
-                <h1 id="printHeaderTitle">Cronograma de Producción</h1>
-                <small>Cerámica Marcos Paz – Planta CEVIL</small>
+        <!-- Autenticación -->
+        <div id="step-auth" class="step">
+            <h2>🔐 Control de Acceso</h2>
+            <div class="input-group">
+                <input type="password" id="pwdInput" placeholder="Ingrese su contraseña">
+            </div>
+            <button class="primary-btn" onclick="verificarPassword()">Ingresar</button>
+            <div id="authMsg" class="feedback error"></div>
+            <a href="index.html" style="display:block; text-align:center; color:var(--accent); text-decoration:none; margin-top:20px; font-size:0.9rem;">← Volver al Cronograma</a>
+        </div>
+
+        <!-- 1. Tarea -->
+        <div id="step-tarea" class="step">
+            <div class="header-status">Paso 1 de 5 <span onclick="resetWizard()" style="cursor:pointer;">⟲ Reiniciar</span></div>
+            <h2>Tipo de Asignación</h2>
+            <div class="btn-grid">
+                <button class="option-btn" onclick="selectTarea('Producción')">🏭 Producción</button>
+                <button class="option-btn" onclick="selectTarea('Prueba')">🔬 Prueba</button>
             </div>
         </div>
-        <div class="header-right">
-            <div class="header-top-row">
-                <div class="live-clock" id="liveClock"></div>
-                <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+
+        <!-- 2. Familia -->
+        <div id="step-familia" class="step">
+            <div class="header-status">Paso 2 de 5 <button class="secondary-btn" style="width:auto; padding:4px 8px; margin:0;" onclick="goBack('step-tarea')">Atrás</button></div>
+            <h2>Seleccionar Familia</h2>
+            <div id="familia-container" class="btn-grid grid-2"></div>
+        </div>
+
+        <!-- 3. Tipo de Ladrillo -->
+        <div id="step-lad" class="step">
+            <div class="header-status">Paso 3 de 5 <button class="secondary-btn" style="width:auto; padding:4px 8px; margin:0;" onclick="goBack('step-familia')">Atrás</button></div>
+            <h2>Tipo de Ladrillo</h2>
+            <div id="lad-container" class="btn-grid grid-2"></div>
+        </div>
+
+        <!-- 4. N° Molde -->
+        <div id="step-num" class="step">
+            <div class="header-status">Paso 4 de 5 <button class="secondary-btn" style="width:auto; padding:4px 8px; margin:0;" onclick="goBack('step-lad')">Atrás</button></div>
+            <h2>Número de Molde</h2>
+            <div id="num-container" class="btn-grid grid-2"></div>
+        </div>
+
+        <!-- 5. Fechas y Envío -->
+        <div id="step-fechas" class="step">
+            <div class="header-status">Paso 5 de 5 <button class="secondary-btn" style="width:auto; padding:4px 8px; margin:0;" onclick="goBack('step-num')">Atrás</button></div>
+            <h2>Configurar Fechas</h2>
+            <div id="summaryText"></div>
+            
+            <div class="input-group">
+                <label>Fecha de Inicio</label>
+                <input type="date" id="fInicio">
             </div>
-            <a href="admin.html" class="btn-new-plan">🧱 Nuevo Plan</a>
-        </div>
-    </header>
-
-    <div class="views-container">
-        <div class="switch-group">
-            <span style="font-weight:600; font-size:0.8rem; color:var(--text-muted);">Vista:</span>
-            <div class="toggle-switch" id="toggleSwitch" onclick="toggleProdPlan()">
-                <div class="toggle-option left" id="toggleProdLabel">Producción</div>
-                <div class="toggle-option right" id="togglePlanLabel">Planificación</div>
-                <div class="toggle-slider left" id="toggleSlider"></div>
+            <div class="input-group">
+                <label>Turno de Inicio</label>
+                <select id="tInicio">
+                    <option value="T1">Turno 1</option>
+                    <option value="T2">Turno 2</option>
+                    <option value="T3">Turno 3</option>
+                </select>
             </div>
+
+            <div id="bloque-fin">
+                <div class="input-group">
+                    <label>Fecha de Fin</label>
+                    <input type="date" id="fFin">
+                </div>
+                <div class="input-group">
+                    <label>Turno de Fin</label>
+                    <select id="tFin">
+                        <option value="T1">Turno 1</option>
+                        <option value="T2">Turno 2</option>
+                        <option value="T3">Turno 3</option>
+                    </select>
+                </div>
+            </div>
+
+            <button class="primary-btn" id="btnSubmit" onclick="enviarDatos()">📤 Confirmar Asignación</button>
+            <div id="submitMsg" class="feedback"></div>
         </div>
-        <button class="cumpl-btn" id="btnCumpl" onclick="toggleCumplimiento()">📊 Cumplimiento</button>
-        <button class="action-btn" onclick="imprimirPlan()">🖨️ Imprimir Plan</button>
-    </div>
 
-    <div class="kpi-container" id="kpiContainer" style="display:none;"></div>
-
-    <div class="month-nav">
-        <div class="month-nav-row">
-            <button onclick="cambiarMes(-1)">◀</button>
-            <span class="month-title" id="monthTitle" onclick="abrirSelectorMes()">Cargando...</span>
-            <button onclick="cambiarMes(1)">▶</button>
-        </div>
-        <button class="btn-today" onclick="irAHoy()">📅 Hoy</button>
-    </div>
-
-    <div class="gantt-wrapper" id="ganttWrapper"></div>
-    <div class="pruebas-info" id="pruebasInfo"></div>
-
-    <div class="gantt-modal" id="ganttModal">
-        <div class="gantt-content">
-            <button class="close-btn" onclick="cerrarGantt()">Cerrar</button>
-            <h3 id="ganttTitulo" style="margin-bottom: 5px; font-size: 1.4rem;"></h3>
-            <div id="ganttDetalle"></div>
-        </div>
     </div>
 
     <script>
-        const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';
-        const CSV_REAL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=307264581&single=true&output=csv';
+        // =========================================================================
+        // CONFIGURACIÓN (Reemplazar URL_SCRIPT con la URL generada en Apps Script)
+        // =========================================================================
+        const URL_SCRIPT = 'URL_DE_TU_APPS_SCRIPT_AQUI'; 
+        const CSV_MOLDES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=164840916&single=true&output=csv';
         const IMG_PATH = 'img/moldes/';
         const FALLBACK_IMG = 'img/moldes/default.png';
-        const TURNOS = ['T1','T2','T3'];
 
-        let planData = {};
-        let realData = {};
-        let currentView = 'prod';
-        let currentDate = new Date();
-        let themeDark = true;
+        // Estado global de la carga
+        let db = {}; // Jerarquía: Familia -> Lad -> N° -> Molde completo
+        let historyStack = [];
+        let state = { tarea: '', familia: '', lad: '', num: '', moldeCompleto: '' };
 
-        const typeColorMap = {
-            'H8': 15, 'H12': 35, 'H18': 55, 'P12': 195, 'P18': 225,
-            'L12': 275, 'L16': 315, 'DM20': 110, 'DM27': 150, 'KB': 0
+        // Inicialización
+        window.onload = async () => {
+            try {
+                const res = await fetch(CSV_MOLDES);
+                const csv = await res.text();
+                Papa.parse(csv, {
+                    header: true,
+                    skipEmptyLines: true,
+                    complete: (results) => {
+                        procesarDB(results.data);
+                        showStep('step-auth');
+                    }
+                });
+            } catch (e) {
+                document.getElementById('step-loading').innerHTML = '<h3 style="color:#ff453a;">Error crítico: No se pudo conectar a la base de datos de moldes.</h3>';
+            }
         };
 
-        function getBaseHue(baseName) {
-            const key = baseName.toUpperCase();
-            if (typeColorMap.hasOwnProperty(key)) return typeColorMap[key];
-            let hash = 0;
-            for (let i = 0; i < key.length; i++) hash = key.charCodeAt(i) + ((hash << 5) - hash);
-            return Math.abs(hash) % 360;
-        }
+        function procesarDB(data) {
+            data.forEach(row => {
+                const fam = row['Familia']?.trim();
+                const lad = row['Lad']?.trim();
+                const num = row['N°']?.trim();
+                const molde = row['Molde']?.trim();
+                if (!fam || !lad || !num || !molde) return;
 
-        function getBrickColor(baseName, number) {
-            const hue = getBaseHue(baseName);
-            let light = 65 - ((number - 1) * 15); 
-            if (light < 25) light = 25; 
-            let sat = 85; 
-            return `hsl(${hue}, ${sat}%, ${light}%)`;
-        }
-
-        function pickTextColor(hslColor) {
-            const m = hslColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
-            if (!m) return '#000';
-            return parseInt(m[3]) > 55 ? '#000' : '#fff';
-        }
-
-        function formatYYYYMMDD(date) {
-            const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0');
-            return `${y}-${m}-${d}`;
-        }
-        function key(fecha, turno) { return `${fecha}_${turno}`; }
-        function getBaseName(molde) { return molde.split(' (')[0].trim().split(/[xX]/)[0].trim(); }
-        function getMoldNumber(molde) { const m = molde.match(/\((\d+)\)/); return m ? parseInt(m[1]) : 1; }
-        function getImageSrc(base) { return `${IMG_PATH}${base}.png`; }
-
-        function parseFlexibleDate(str) {
-            if (!str) return null;
-            const parts = str.split('/');
-            if (parts.length !== 3) return null;
-            const day = parseInt(parts[0]), month = parseInt(parts[1]) - 1, year = parseInt(parts[2]);
-            const date = new Date(year, month, day);
-            return (date.getFullYear() === year && date.getMonth() === month && date.getDate() === day) ? date : null;
-        }
-
-        function normalizarTarea(tarea) {
-            if (!tarea) return '';
-            return tarea.replace(/Ã³/g, 'ó').replace(/Ã©/g, 'é').replace(/Ã±/g, 'ñ');
-        }
-
-        async function fetchCSV(url) {
-            const r = await fetch(url);
-            const t = await r.text();
-            return new Promise(resolve => Papa.parse(t, {
-                header: true,
-                skipEmptyLines: true,
-                transformHeader: h => h.trim().toUpperCase().replace(/:/g, ''),
-                complete: res => resolve(res.data)
-            }));
-        }
-
-        function processData(rows) {
-            const data = {};
-            rows.forEach(row => {
-                const molde = (row['LADRILLO'] || '').trim();
-                let tarea = (row['TAREA'] || '').trim();
-                tarea = normalizarTarea(tarea);
-                const fi = (row['FECHA INICIO'] || '').trim();
-                const ti = (row['TURNO INICIO'] || '').trim();
-                const ff = (row['FECHA FIN'] || '').trim();
-                const tf = (row['TURNO FIN'] || '').trim();
-                
-                if (!molde || !fi || !ff) return;
-
-                const inicio = parseFlexibleDate(fi);
-                const fin = parseFlexibleDate(ff);
-                if (!inicio || !fin) return;
-
-                for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate() + 1)) {
-                    const ds = formatYYYYMMDD(d);
-                    let tDia = [];
-                    const diaIgualInicio = d.getTime() === inicio.getTime();
-                    const diaIgualFin = d.getTime() === fin.getTime();
-
-                    if (diaIgualInicio && diaIgualFin) {
-                        const i1 = TURNOS.indexOf(ti), i2 = TURNOS.indexOf(tf);
-                        for (let i = i1; i <= i2; i++) tDia.push(TURNOS[i]);
-                    } else if (diaIgualInicio) {
-                        const i1 = TURNOS.indexOf(ti);
-                        for (let i = i1; i < 3; i++) tDia.push(TURNOS[i]);
-                    } else if (diaIgualFin) {
-                        const i2 = TURNOS.indexOf(tf);
-                        for (let i = 0; i <= i2; i++) tDia.push(TURNOS[i]);
-                    } else {
-                        tDia = [...TURNOS];
-                    }
-                    tDia.forEach(t => {
-                        const k = key(ds, t);
-                        if (!data[k]) data[k] = [];
-                        data[k].push({
-                            moldeCompleto: molde,
-                            baseName: getBaseName(molde),
-                            number: getMoldNumber(molde),
-                            tarea,
-                            esInicio: diaIgualInicio && t === ti,
-                            esFin: diaIgualFin && t === tf
-                        });
-                    });
-                }
+                if (!db[fam]) db[fam] = {};
+                if (!db[fam][lad]) db[fam][lad] = {};
+                db[fam][lad][num] = molde;
             });
-            return data;
         }
 
-        async function loadData() {
-            try {
-                document.getElementById('loader').classList.remove('hidden');
-                const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
-                planData = processData(planRows);
-                realData = processData(realRows);
-                renderGantt();
-                setTimeout(() => { document.getElementById('loader').classList.add('hidden'); }, 400); 
-            } catch (error) {
-                console.error(error);
-                document.getElementById('ganttWrapper').innerHTML = '<p style="color:red; text-align:center;">Error crítico al cargar datos desde Google Sheets.</p>';
-                document.getElementById('loader').classList.add('hidden');
+        // Navegación
+        function showStep(stepId, addHistory = true) {
+            document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
+            document.getElementById(stepId).classList.add('active');
+            if (addHistory && stepId !== 'step-auth' && stepId !== 'step-loading') {
+                if(historyStack[historyStack.length-1] !== stepId) historyStack.push(stepId);
             }
         }
 
-        function getCompliance(realMold, plans) {
-            if (!realMold) return null;
-            const prod = plans.filter(p => p.tarea === 'Producción');
-            const test = plans.filter(p => p.tarea === 'Prueba');
-            const match = prod.find(p => p.moldeCompleto === realMold);
-            if (prod.length === 0 && test.length > 0) return { status: 'desvio' };
-            if (match) return test.length > 0 ? { status: 'parcial' } : { status: 'cumplido' };
-            return prod.length > 0 ? { status: 'desvio' } : { status: 'sinPlan' };
+        function goBack(targetStep) {
+            historyStack.pop(); 
+            showStep(targetStep, false);
         }
 
-        function renderGantt() {
-            const wrapper = document.getElementById('ganttWrapper');
-            const year = currentDate.getFullYear(), month = currentDate.getMonth();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const todayStr = formatYYYYMMDD(new Date());
-
-            document.getElementById('monthTitle').textContent = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
-            document.getElementById('printHeaderTitle').textContent = `Cronograma de Producción - ${document.getElementById('monthTitle').textContent}`;
-            
-            document.getElementById('kpiContainer').style.display = currentView === 'cumpl' ? 'flex' : 'none';
-            if (currentView === 'cumpl') actualizarKPIs();
-
-            const turnoWidth = 65;
-            const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
-
-            const precalc = {};
-            const changeDays = new Set();
-            const testDays = new Set();
-            
-            let prevMoldPlan = null, prevBaseNamePlan = null, prevNumberPlan = null;
-            let prevMoldReal = null, prevBaseNameReal = null, prevNumberReal = null;
-
-            for (let d = 1; d <= daysInMonth; d++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                TURNOS.forEach(turno => {
-                    const k = key(dateStr, turno);
-
-                    // Planificación
-                    const tasksPlan = planData[k] || [];
-                    const prodPlan = tasksPlan.filter(t => t.tarea === 'Producción').sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
-                    const testPlan = tasksPlan.filter(t => t.tarea === 'Prueba');
-                    
-                    if (prodPlan.length > 0) {
-                        const currentMold = prodPlan[0].moldeCompleto;
-                        const isChange = currentMold !== prevMoldPlan;
-                        precalc['plan_' + k] = {
-                            mold: currentMold, baseName: prodPlan[0].baseName, number: prodPlan[0].number,
-                            showDetail: isChange, prevProps: (isChange && prevMoldPlan) ? { baseName: prevBaseNamePlan, number: prevNumberPlan } : null,
-                            hasTest: testPlan.length > 0, esFin: prodPlan[0].esFin
-                        };
-                        if (isChange && currentView === 'plan') changeDays.add(dateStr);
-                        prevMoldPlan = currentMold; prevBaseNamePlan = prodPlan[0].baseName; prevNumberPlan = prodPlan[0].number;
-                    } else { precalc['plan_' + k] = { mold: null, hasTest: testPlan.length > 0 }; prevMoldPlan = null; }
-                    if (testPlan.length > 0 && currentView === 'plan') testDays.add(dateStr);
-
-                    // Real
-                    const tasksReal = realData[k] || [];
-                    const prodReal = tasksReal.filter(t => t.tarea === 'Producción').sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
-                    const testReal = tasksReal.filter(t => t.tarea === 'Prueba');
-                    
-                    if (prodReal.length > 0) {
-                        const currentMold = prodReal[0].moldeCompleto;
-                        const isChange = currentMold !== prevMoldReal;
-                        precalc['real_' + k] = {
-                            mold: currentMold, baseName: prodReal[0].baseName, number: prodReal[0].number,
-                            showDetail: isChange, prevProps: (isChange && prevMoldReal) ? { baseName: prevBaseNameReal, number: prevNumberReal } : null,
-                            hasTest: testReal.length > 0, esFin: prodReal[0].esFin
-                        };
-                        if (isChange && currentView !== 'plan') changeDays.add(dateStr);
-                        prevMoldReal = currentMold; prevBaseNameReal = prodReal[0].baseName; prevNumberReal = prodReal[0].number;
-                    } else { precalc['real_' + k] = { mold: null, hasTest: testReal.length > 0 }; prevMoldReal = null; }
-                    if (testReal.length > 0 && currentView !== 'plan') testDays.add(dateStr);
-                });
-            }
-
-            let html = `<table class="gantt-table"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
-            const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-            for (let d = 1; d <= daysInMonth; d++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                const date = new Date(year, month, d);
-                const isSunday = date.getDay() === 0;
-                let thClass = isSunday ? 'sunday-cell' : '';
-                if (dateStr === todayStr) thClass += ' today-col';
-
-                const indicators = [];
-                if (changeDays.has(dateStr)) indicators.push('<span class="indicator-change">🔄️</span>');
-                if (testDays.has(dateStr)) indicators.push('<span class="indicator-pr">PR</span>');
-                const indicatorHTML = indicators.length ? `<div class="day-indicators">${indicators.join('')}</div>` : '';
-
-                html += `<th class="${thClass}" style="width:${colWidthCalc};">
-                    <div class="day-header"><span class="day-name">${dayNames[date.getDay()]}</span><span class="day-number">${d}</span>${indicatorHTML}</div>
-                </th>`;
-            }
-            html += '</tr></thead><tbody>';
-
-            TURNOS.forEach(turno => {
-                let trClass = currentView === 'cumpl' ? 'has-emoji' : '';
-                let rowSpanStr = currentView === 'cumpl' ? 'rowspan="2"' : '';
-                let rowHtml = `<tr class="${trClass}"><td class="turn-label" style="width:${turnoWidth}px;" ${rowSpanStr}>${turno}</td>`;
-                let emojiRowHtml = `<tr class="emoji-row">`;
-
-                for (let d = 1; d <= daysInMonth; d++) {
-                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                    const dateObj = new Date(year, month, d);
-                    const k = key(dateStr, turno);
-                    const pre = (currentView === 'plan') ? precalc['plan_' + k] : precalc['real_' + k];
-
-                    let cellContent = ''; let bgColor = 'transparent'; let txtColor = 'inherit';
-                    let cellClasses = ''; let markers = '';
-                    let tooltip = `📅 ${dayNames[dateObj.getDay()]} ${d}/${month+1}/${year} - Turno ${turno}\n`;
-
-                    if (dateObj.getDay() === 0) cellClasses += ' sunday-cell';
-                    if (dateStr === todayStr) cellClasses += ' today-col';
-
-                    let emoji = ''; // Para la fila inferior si es cumplimiento
-
-                    if (pre.mold) {
-                        bgColor = getBrickColor(pre.baseName, pre.number);
-                        txtColor = pickTextColor(bgColor);
-
-                        if (pre.showDetail) {
-                            cellContent = `
-                                <div class="cell-content">
-                                    <img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}">
-                                    <span class="mold-base">${pre.baseName}</span>
-                                    <span class="mold-label-text">Molde</span>
-                                    <span class="mold-number">${pre.number}</span>
-                                </div>`;
-                            if (pre.prevProps) {
-                                const prevColor = getBrickColor(pre.prevProps.baseName, pre.prevProps.number);
-                                markers += `<div class="change-marker" style="border-top-color: ${prevColor};"></div>`;
-                            }
-                        }
-                        if (pre.esFin) markers += '<div class="end-marker"></div>';
-
-                        if (currentView === 'cumpl') {
-                            const comp = getCompliance(pre.mold, planData[k] || []);
-                            const barClass = comp.status === 'cumplido' ? 'green-bar' : comp.status === 'parcial' ? 'orange-bar' : comp.status === 'desvio' ? 'red-bar' : 'gray-bar';
-                            emoji = comp.status === 'cumplido' ? '✅' : comp.status === 'parcial' ? '⏳' : comp.status === 'desvio' ? '⚠️' : '📌';
-                            markers += `<div class="compliance-bar-cell ${barClass}"></div>`;
-                            cellClasses += ` comp-${comp.status}`;
-                        }
-                    } else if (!pre.hasTest) {
-                        cellContent = '<span style="color:var(--text-muted);">—</span>';
-                    } else {
-                        cellContent = '<span style="color:var(--text-muted);">—</span>';
-                    }
-
-                    if (pre.hasTest) markers += `<div class="test-marker"></div>`;
-
-                    if (currentView === 'plan') {
-                        tooltip += `🧱 Planificado: ${pre.mold ? pre.mold : 'Sin Plan'}\n`;
-                        if (pre.hasTest) tooltip += `🔬 Prueba: Sí`;
-                    } else if (currentView === 'prod') {
-                        tooltip += `🧱 Producción: ${pre.mold ? pre.mold : 'Sin Producción'}\n`;
-                        if (pre.hasTest) tooltip += `🔬 Prueba: Sí`;
-                    } else {
-                        const pData = planData[k] || [];
-                        const rData = pre.mold ? pre.mold : 'Sin Producción';
-                        const comp = getCompliance(pre.mold, pData);
-                        const pMold = pData.filter(x => x.tarea === 'Producción').map(x=>x.moldeCompleto).join(', ') || 'Sin Plan';
-                        const estadoStr = comp ? (comp.status === 'cumplido' ? 'Cumplido ✅' : comp.status === 'parcial' ? 'Parcial ⏳' : comp.status === 'desvio' ? 'Desvío ⚠️' : 'No Planificado 📌') : '-';
-                        tooltip += `📋 Plan: ${pMold}\n🏭 Real: ${rData}\n📊 Estado: ${estadoStr}`;
-                    }
-
-                    let inlineStyles = `color:${txtColor}; width:${colWidthCalc};`;
-                    if (bgColor !== 'transparent') inlineStyles += ` background-color:${bgColor};`;
-
-                    rowHtml += `<td class="${cellClasses}" style="${inlineStyles}" title="${tooltip}" onclick="abrirGantt('${dateStr}')">${markers}${cellContent}</td>`;
-                    if (currentView === 'cumpl') {
-                        let extraClasses = (dateObj.getDay()===0 ? ' sunday-cell' : '') + (dateStr===todayStr ? ' today-col' : '');
-                        emojiRowHtml += `<td class="${extraClasses}" style="width:${colWidthCalc}; text-align:center;">${emoji}</td>`;
-                    }
-                }
-                rowHtml += '</tr>';
-                emojiRowHtml += '</tr>';
-
-                html += rowHtml;
-                if (currentView === 'cumpl') html += emojiRowHtml;
-            });
-
-            html += '</tbody></table>';
-            wrapper.innerHTML = html;
-            renderPruebasInfo();
+        function resetWizard() {
+            state = { tarea: '', familia: '', lad: '', num: '', moldeCompleto: '' };
+            historyStack = [];
+            showStep('step-tarea');
         }
 
-        function actualizarKPIs() {
-            const year = currentDate.getFullYear(), month = currentDate.getMonth();
-            const daysInMonth = new Date(year, month + 1, 0).getDate();
-            let diasPlan = new Set(), cambios = 0, pruebasPlan = 0, cumplidas = 0, totalReal = 0;
-            const moldesSet = new Set();
-            for (let d = 1; d <= daysInMonth; d++) {
-                const ds = formatYYYYMMDD(new Date(year, month, d));
-                let tienePlanDia = false;
-                TURNOS.forEach(t => {
-                    const k = key(ds, t);
-                    const plans = planData[k] || [];
-                    const reals = realData[k] || [];
-                    if (plans.some(p => p.tarea === 'Producción')) tienePlanDia = true;
-                    const prods = plans.filter(p => p.tarea === 'Producción');
-                    if (prods.length > 1) cambios++;
-                    pruebasPlan += plans.filter(p => p.tarea === 'Prueba').length;
-                    prods.forEach(p => moldesSet.add(p.moldeCompleto));
-                    if (reals.length > 0) {
-                        const realMold = reals[0].moldeCompleto;
-                        totalReal++;
-                        const comp = getCompliance(realMold, plans);
-                        if (comp && comp.status === 'cumplido') cumplidas++;
-                        moldesSet.add(realMold);
-                    }
-                });
-                if (tienePlanDia) diasPlan.add(ds);
-            }
-            const pct = totalReal > 0 ? Math.round((cumplidas / totalReal) * 100) : 0;
-            document.getElementById('kpiContainer').innerHTML = `
-                <div class="kpi-card"><div class="kpi-value">${diasPlan.size}</div><div class="kpi-label">Días con plan</div></div>
-                <div class="kpi-card"><div class="kpi-value">${cambios}</div><div class="kpi-label">Cambios</div></div>
-                <div class="kpi-card"><div class="kpi-value">${pruebasPlan}</div><div class="kpi-label">Pruebas</div></div>
-                <div class="kpi-card"><div class="kpi-value">${pct}%</div><div class="kpi-label">Cumplimiento</div></div>
-                <div class="kpi-card"><div class="kpi-value">${moldesSet.size}</div><div class="kpi-label">Tipos de ladrillo</div></div>
-            `;
-        }
-
-        function renderPruebasInfo() {
-            const container = document.getElementById('pruebasInfo');
-            const year = currentDate.getFullYear(), month = currentDate.getMonth();
-            const pruebas = [];
-            
-            for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
-                const ds = formatYYYYMMDD(new Date(year, month, d));
-                
-                // Recopilar pruebas del DÍA completo para validar lógica solicitada
-                const dayPlanTests = [];
-                const dayRealTests = [];
-                TURNOS.forEach(t => {
-                    const k = key(ds, t);
-                    (planData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => dayPlanTests.push({ ...p, turnoPlan: t }));
-                    (realData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => dayRealTests.push({ ...p, turnoReal: t }));
-                });
-
-                dayPlanTests.forEach(p => {
-                    const cumplida = dayRealTests.some(rt => rt.moldeCompleto === p.moldeCompleto);
-                    pruebas.push({ fecha: ds, turno: p.turnoPlan, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: cumplida ? '✅ Realizada en el día' : '⚠️ No realizada' });
-                });
-                
-                dayRealTests.forEach(rt => {
-                    if (!dayPlanTests.some(p => p.moldeCompleto === rt.moldeCompleto)) {
-                        pruebas.push({ fecha: ds, turno: rt.turnoReal, molde: rt.moldeCompleto, tipo: 'Prueba Realizada', estado: '📌 No planificada' });
-                    }
-                });
-            }
-            
-            if (pruebas.length === 0) {
-                container.innerHTML = '<h3>🔬 Pruebas del mes</h3><p style="color:var(--text-muted);">Sin pruebas en este mes.</p>';
+        // Lógica de Autenticación
+        function verificarPassword() {
+            const pwd = document.getElementById('pwdInput').value;
+            if (pwd === 'Ladrillos2026') {
+                showStep('step-tarea');
             } else {
-                let html = `
-                <h3>🔬 Pruebas del mes</h3>
-                <table class="pruebas-table">
-                    <thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead>
-                    <tbody>
-                `;
-                pruebas.forEach(p => html += `<tr><td>${p.fecha}</td><td>${p.turno}</td><td>${p.molde}</td><td>${p.tipo}</td><td>${p.estado}</td></tr>`);
-                html += '</tbody></table>';
-                container.innerHTML = html;
+                document.getElementById('authMsg').textContent = 'Acceso denegado. Contraseña incorrecta.';
             }
         }
 
-        function setView(view) {
-            currentView = view;
-            document.getElementById('btnCumpl').classList.toggle('active', view === 'cumpl');
-            const slider = document.getElementById('toggleSlider');
-            document.getElementById('toggleProdLabel').classList.toggle('active', view === 'prod');
-            document.getElementById('togglePlanLabel').classList.toggle('active', view === 'plan');
-            slider.className = 'toggle-slider ' + (view === 'plan' ? 'right' : 'left');
-            renderGantt();
+        // Paso 1: Tarea
+        function selectTarea(tarea) {
+            state.tarea = tarea;
+            renderFamilias();
+            showStep('step-familia');
         }
 
-        function toggleProdPlan() { setView(currentView === 'prod' ? 'plan' : 'prod'); }
-        function toggleCumplimiento() { setView(currentView === 'cumpl' ? 'prod' : 'cumpl'); }
-        function imprimirPlan() { setTimeout(() => window.print(), 300); }
+        // Paso 2: Familia
+        function renderFamilias() {
+            const cont = document.getElementById('familia-container');
+            cont.innerHTML = '';
+            Object.keys(db).forEach(fam => {
+                cont.innerHTML += `<button class="option-btn" onclick="selectFamilia('${fam}')">${fam}</button>`;
+            });
+        }
 
-        function abrirGantt(dateStr) {
-            const dayNames = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-            const dateObj = new Date(dateStr + 'T00:00:00');
-            document.getElementById('ganttTitulo').textContent = `${dayNames[dateObj.getDay()]} ${dateObj.toLocaleDateString('es-AR', { day: 'numeric', month: 'long', year: 'numeric' })}`;
+        function selectFamilia(fam) {
+            state.familia = fam;
+            const lads = Object.keys(db[fam]);
+            if (lads.length === 1) {
+                selectLad(lads[0], true); // Auto-skip
+            } else {
+                renderLads(lads);
+                showStep('step-lad');
+            }
+        }
+
+        // Paso 3: Ladrillo
+        function renderLads(lads) {
+            const cont = document.getElementById('lad-container');
+            cont.innerHTML = '';
+            lads.forEach(lad => {
+                const img = `${IMG_PATH}${lad}.png`;
+                cont.innerHTML += `<button class="option-btn" onclick="selectLad('${lad}', false)">
+                    <img src="${img}" onerror="this.src='${FALLBACK_IMG}'">
+                    ${lad}
+                </button>`;
+            });
+        }
+
+        function selectLad(lad, isAutoSkipped) {
+            state.lad = lad;
+            const nums = Object.keys(db[state.familia][lad]);
+            if (nums.length === 1) {
+                selectNum(nums[0], true); // Auto-skip
+            } else {
+                if (isAutoSkipped) historyStack.push('step-lad');
+                renderNums(nums);
+                showStep('step-num');
+            }
+        }
+
+        // Paso 4: Número de Molde
+        function renderNums(nums) {
+            const cont = document.getElementById('num-container');
+            cont.innerHTML = '';
+            nums.forEach(num => {
+                cont.innerHTML += `<button class="option-btn" onclick="selectNum('${num}', false)">Molde ${num}</button>`;
+            });
+        }
+
+        function selectNum(num, isAutoSkipped) {
+            state.num = num;
+            state.moldeCompleto = db[state.familia][state.lad][num];
+            if (isAutoSkipped) historyStack.push('step-num');
+            prepararFechas();
+            showStep('step-fechas');
+        }
+
+        // Paso 5: Fechas
+        function prepararFechas() {
+            document.getElementById('summaryText').innerHTML = `<strong>Molde:</strong> ${state.moldeCompleto} <br> <strong>Asignación:</strong> ${state.tarea}`;
             
-            // Construcción del Grid del Mini-Gantt
-            let gridHtml = `
-            <div class="modal-gantt-grid">
-                <div class="mg-col mg-label"></div>
-                <div class="mg-col mg-header">Turno 1</div>
-                <div class="mg-col mg-header">Turno 2</div>
-                <div class="mg-col mg-header">Turno 3</div>
+            const hoy = new Date().toISOString().split('T')[0];
+            document.getElementById('fInicio').value = hoy;
+            document.getElementById('fFin').value = hoy;
 
-                <div class="mg-col mg-label">Planificación</div>
-            `;
+            if (state.tarea === 'Prueba') {
+                document.getElementById('bloque-fin').style.display = 'none';
+            } else {
+                document.getElementById('bloque-fin').style.display = 'block';
+            }
+        }
 
-            // Fila: Planificación
-            TURNOS.forEach(turno => {
-                const k = key(dateStr, turno);
-                const plans = planData[k] || [];
-                const prodPlan = plans.filter(p => p.tarea === 'Producción');
-                if (prodPlan.length > 0) {
-                    const p = prodPlan[0];
-                    const color = getBrickColor(p.baseName, p.number);
-                    const txtColor = pickTextColor(color);
-                    gridHtml += `
-                        <div class="mg-cell" style="background:${color}; color:${txtColor}; border-color:${color};">
-                            <div class="mg-content">
-                                <img src="${getImageSrc(p.baseName)}" onerror="this.src='${FALLBACK_IMG}'">
-                                <div class="mg-details">
-                                    <span style="font-weight:800; font-size:0.95rem;">${p.baseName}</span>
-                                    <span style="font-size:0.75rem;">Molde ${p.number}</span>
-                                </div>
-                            </div>
-                        </div>`;
-                } else {
-                    gridHtml += `<div class="mg-cell" style="background:transparent;"><span style="color:var(--text-muted);">—</span></div>`;
-                }
-            });
-
-            gridHtml += `<div class="mg-col mg-label">Producción Real</div>`;
-
-            // Fila: Real / Cumplimiento
-            TURNOS.forEach(turno => {
-                const k = key(dateStr, turno);
-                const plans = planData[k] || [];
-                const reals = realData[k] || [];
-                const prodReal = reals.filter(r => r.tarea === 'Producción');
-                if (prodReal.length > 0) {
-                    const r = prodReal[0];
-                    const color = getBrickColor(r.baseName, r.number);
-                    const txtColor = pickTextColor(color);
-                    const comp = getCompliance(r.moldeCompleto, plans);
-                    const emoji = comp.status === 'cumplido' ? '✅' : comp.status === 'parcial' ? '⏳' : comp.status === 'desvio' ? '⚠️' : '📌';
-                    const glowClass = `comp-${comp.status}`;
-
-                    gridHtml += `
-                        <div class="mg-cell ${glowClass}" style="background:${color}; color:${txtColor}; border-color:${color};">
-                            <div class="mg-content">
-                                <img src="${getImageSrc(r.baseName)}" onerror="this.src='${FALLBACK_IMG}'">
-                                <div class="mg-details">
-                                    <span style="font-weight:800; font-size:0.95rem;">${r.baseName}</span>
-                                    <span style="font-size:0.75rem;">Molde ${r.number}</span>
-                                </div>
-                            </div>
-                            <div class="mg-comp-emoji">${emoji}</div>
-                        </div>`;
-                } else {
-                    gridHtml += `<div class="mg-cell" style="background:transparent;"><span style="color:var(--text-muted);">—</span></div>`;
-                }
-            });
-
-            gridHtml += `</div>`; // Fin del grid
-
-            // Resumen de Pruebas a nivel de Día en el Modal
-            const dayPlanTests = [];
-            const dayRealTests = [];
-            TURNOS.forEach(t => {
-                const k = key(dateStr, t);
-                (planData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => dayPlanTests.push(p));
-                (realData[k] || []).filter(r => r.tarea === 'Prueba').forEach(r => dayRealTests.push(r));
-            });
-
-            let pruebasHtml = '';
-            if (dayPlanTests.length > 0 || dayRealTests.length > 0) {
-                pruebasHtml = `<div class="modal-pruebas" style="margin-top: 24px; border-top: 1px dashed var(--border); padding-top: 16px;">
-                    <h4 style="color: var(--accent-light); margin-bottom: 12px; font-size:1.1rem;">🔬 Pruebas del Día</h4>
-                    <table class="pruebas-table">
-                        <thead><tr><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead>
-                        <tbody>`;
-                
-                dayPlanTests.forEach(p => {
-                    const cumplida = dayRealTests.some(rt => rt.moldeCompleto === p.moldeCompleto);
-                    pruebasHtml += `<tr><td>${p.moldeCompleto}</td><td>Planificada</td><td>${cumplida ? '✅ Realizada en el día' : '⚠️ No realizada'}</td></tr>`;
-                });
-
-                dayRealTests.forEach(rt => {
-                    if (!dayPlanTests.some(p => p.moldeCompleto === rt.moldeCompleto)) {
-                        pruebasHtml += `<tr><td>${rt.moldeCompleto}</td><td>Realizada</td><td>📌 No planificada</td></tr>`;
-                    }
-                });
-                pruebasHtml += `</tbody></table></div>`;
+        // Envío POST
+        async function enviarDatos() {
+            const pwd = document.getElementById('pwdInput').value;
+            const fi = document.getElementById('fInicio').value;
+            const ti = document.getElementById('tInicio').value;
+            
+            if (!fi) {
+                document.getElementById('submitMsg').className = 'feedback error';
+                document.getElementById('submitMsg').textContent = 'Seleccione la fecha de inicio.';
+                return;
             }
 
-            document.getElementById('ganttDetalle').innerHTML = gridHtml + pruebasHtml;
-            document.getElementById('ganttModal').style.display = 'flex';
-        }
-        function cerrarGantt() { document.getElementById('ganttModal').style.display = 'none'; }
-        window.addEventListener('click', e => { if (e.target === document.getElementById('ganttModal')) cerrarGantt(); });
-
-        function abrirSelectorMes() {
-            document.getElementById('overlay').style.display = 'block';
-            document.getElementById('monthSelector').style.display = 'block';
-            const sel = document.getElementById('selMonth');
-            sel.innerHTML = '';
-            ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'].forEach((m,i) => {
-                const opt = document.createElement('option'); opt.value = i; opt.textContent = m;
-                if (i === currentDate.getMonth()) opt.selected = true;
-                sel.appendChild(opt);
+            const params = new URLSearchParams({
+                password: pwd,
+                molde: state.moldeCompleto,
+                tarea: state.tarea,
+                fechaInicio: fi,
+                turnoInicio: ti,
+                fechaFin: state.tarea === 'Prueba' ? fi : document.getElementById('fFin').value,
+                turnoFin: state.tarea === 'Prueba' ? ti : document.getElementById('tFin').value
             });
-            document.getElementById('selYear').value = currentDate.getFullYear();
-        }
-        function cerrarSelectorMes() { document.getElementById('overlay').style.display = 'none'; document.getElementById('monthSelector').style.display = 'none'; }
-        function irAMes() {
-            const m = parseInt(document.getElementById('selMonth').value);
-            const y = parseInt(document.getElementById('selYear').value);
-            currentDate.setFullYear(y); currentDate.setMonth(m);
-            cerrarSelectorMes();
-            loadData();
-        }
-        function cambiarMes(delta) { currentDate.setMonth(currentDate.getMonth() + delta); loadData(); }
-        function irAHoy() { currentDate = new Date(); loadData(); }
 
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('liveClock').textContent =
-                now.toLocaleDateString('es-AR', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) + ' · ' +
-                now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-        }
-        function toggleTheme() {
-            themeDark = !themeDark;
-            document.body.classList.toggle('light-mode', !themeDark);
-            localStorage.setItem('theme', themeDark ? 'dark' : 'light');
-        }
+            const btn = document.getElementById('btnSubmit');
+            const msg = document.getElementById('submitMsg');
+            btn.disabled = true;
+            btn.textContent = '⏳ Enviando...';
+            msg.textContent = '';
 
-        window.addEventListener('load', () => {
-            if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeDark = false; }
-            updateClock(); setInterval(updateClock, 30000);
-            loadData();
-        });
+            try {
+                const res = await fetch(URL_SCRIPT, { method: 'POST', body: params });
+                const json = await res.json();
+                
+                if (json.result === 'success') {
+                    msg.className = 'feedback success';
+                    msg.textContent = '✅ Planificación insertada en DatosProd exitosamente.';
+                    setTimeout(resetWizard, 2500);
+                } else {
+                    msg.className = 'feedback error';
+                    msg.textContent = '❌ Error: ' + json.message;
+                }
+            } catch (err) {
+                msg.className = 'feedback error';
+                msg.textContent = '❌ Error de comunicación con la base de datos (CORS o URL incorrecta).';
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '📤 Confirmar Asignación';
+            }
+        }
     </script>
 </body>
 </html>
