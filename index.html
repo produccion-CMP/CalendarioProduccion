@@ -217,24 +217,20 @@
         .mold-label-text { font-size: 0.5rem; font-weight: 600; opacity: 0.7; text-transform: uppercase; }
         .mold-number { font-size: 0.65rem; font-weight: 700; }
 
-        /* Triángulo Cambio de Molde (Esquina Superior Izquierda) */
         .change-marker {
             position: absolute; top: 0; left: 0;
             width: 0; height: 0;
-            border-top: 18px solid; 
+            border-top: 18px solid;
             border-right: 18px solid transparent;
             z-index: 5;
-            filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.4));
         }
 
-        /* Triángulo Prueba/PR (Esquina Superior Derecha) */
         .test-marker {
             position: absolute; top: 0; right: 0;
             width: 0; height: 0;
             border-top: 18px solid #000;
             border-left: 18px solid transparent;
             z-index: 5;
-            filter: drop-shadow(-1px 1px 2px rgba(0,0,0,0.4));
         }
 
         .compliance-bar-cell {
@@ -251,47 +247,27 @@
             position: absolute; bottom: 6px; right: 4px; font-size: 0.7rem;
         }
 
-        td.today-col {
-            border-left: 3px solid #000 !important;
-            border-right: 3px solid #000 !important;
-        }
+        td.today-col { border-left: 3px solid #000 !important; border-right: 3px solid #000 !important; }
         th.today-col {
-            border-left: 3px solid #000 !important;
-            border-right: 3px solid #000 !important;
-            border-top: 3px solid #000 !important;
-            background: #111 !important;
-            color: #fff !important;
+            border-left: 3px solid #000 !important; border-right: 3px solid #000 !important;
+            border-top: 3px solid #000 !important; background: #111 !important; color: #fff !important;
             position: relative;
         }
         th.today-col .day-header::after {
-            content: "HOY";
-            position: absolute;
-            bottom: -14px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: var(--accent);
-            color: #fff;
-            font-size: 0.6rem;
-            font-weight: 800;
-            padding: 2px 8px;
-            border-radius: 10px;
-            z-index: 5;
+            content: "HOY"; position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%);
+            background: var(--accent); color: #fff; font-size: 0.6rem; font-weight: 800; padding: 2px 8px;
+            border-radius: 10px; z-index: 5;
         }
-        tr:last-child td.today-col {
-            border-bottom: 3px solid #000 !important;
-        }
-
-        td.sunday-cell {
-            background-color: var(--sunday-bg);
-        }
+        tr:last-child td.today-col { border-bottom: 3px solid #000 !important; }
+        td.sunday-cell { background-color: var(--sunday-bg); }
 
         .pruebas-info {
             margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius);
             padding: 16px; box-shadow: var(--shadow-3d); font-size: 0.8rem;
         }
-        .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: left; }
-        .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 8px; vertical-align: middle; }
-        .pruebas-table th { background: var(--bg-cell); color: var(--accent-light); font-weight: 700; }
+        .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
+        .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 6px; vertical-align: middle; text-align: center; }
+        .pruebas-table th { background: var(--bg-cell); font-weight: 700; color: var(--accent-light); }
 
         .gantt-modal {
             position: fixed; top:0; left:0; width:100%; height:100%;
@@ -316,53 +292,27 @@
         .gantt-plan { opacity: 0.7; }
         .close-btn { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; float: right; }
 
-        /* Estilos optimizados para Impresión */
         @media print {
-            * {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-            body { 
-                background: white !important; 
-                color: black !important; 
-                padding: 0; 
-                font-size: 9px !important; 
-            }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+            @page { size: A4 landscape; margin: 1cm; }
+            body { background: white; color: black; padding: 0; font-family: sans-serif; font-size: 9px; }
             .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal,
-            .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn { 
-                display: none !important; 
-            }
-            .gantt-wrapper { 
-                box-shadow: none !important; 
-                background: none !important; 
-                padding: 0 !important; 
-                overflow: visible !important; 
-            }
-            .gantt-table th, .gantt-table td { 
-                border: 1px solid #444 !important; 
-                height: 38px !important; 
-                padding: 1px;
-            }
-            .mold-image { width: 14px; height: 14px; filter: none !important; }
-            .mold-base { font-size: 6px; }
-            .mold-label-text { font-size: 5px; }
-            .mold-number { font-size: 6px; }
-            .day-number { font-size: 7px; }
-            .day-name { font-size: 5px; }
-            .turn-label { font-size: 7px; }
-            
-            #pruebasPrint { display: block !important; margin-top: 15px; page-break-inside: avoid; }
-            #pruebasPrint h3 { font-size: 10px; margin-bottom: 5px; color: #000; }
-            #pruebasPrint table { width: 100%; border-collapse: collapse; font-size: 7px; }
-            #pruebasPrint th, #pruebasPrint td { border: 1px solid #444 !important; padding: 3px; color: #000 !important; }
-            #pruebasPrint th { background: #eee !important; font-weight: bold; }
-            
-            #pruebasInfo { display: none !important; }
-            
-            @page { size: A4 landscape; margin: 5mm; }
+            .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn { display: none !important; }
+            .gantt-wrapper { box-shadow: none; background: none; padding: 0; overflow: visible; margin-bottom: 20px; }
+            .gantt-table { width: 100%; border-collapse: collapse; }
+            .gantt-table th, .gantt-table td { border: 1px solid #444; height: 35px; }
+            .mold-image { width: 14px; height: 14px; filter: none; }
+            .turn-label { font-size: 0.7rem; }
+            .day-number { font-size: 0.7rem; }
+            .day-name { font-size: 0.5rem; }
+            .pruebas-info { margin-top: 0; background: none; box-shadow: none; border-radius: 0; padding: 0; }
+            .pruebas-table { font-size: 0.7rem; margin-top: 10px; border-collapse: collapse; width: 100%; }
+            .pruebas-table th, .pruebas-table td { border: 1px solid #444; padding: 4px; color: black !important; }
+            .pruebas-table th { background-color: #eee !important; color: black !important; }
+            h1 { font-size: 1.2rem; margin: 0 0 5px 0; color: black !important; text-align: center; }
+            h3 { font-size: 0.9rem; margin: 0 0 5px 0; }
+            /* Se inyectará el título para impresión por JS */
         }
-
-        #pruebasPrint { display: none; }
     </style>
 </head>
 <body>
@@ -378,7 +328,7 @@
         <div class="logo-container">
             <img src="img/logo CMP.png" alt="Cerámica Marcos Paz">
             <div class="title-block">
-                <h1>Cronograma de Producción</h1>
+                <h1 id="printHeaderTitle">Cronograma de Producción</h1>
                 <small>Cerámica Marcos Paz – Planta CEVIL</small>
             </div>
         </div>
@@ -417,7 +367,6 @@
 
     <div class="gantt-wrapper" id="ganttWrapper"></div>
     <div class="pruebas-info" id="pruebasInfo"></div>
-    <div id="pruebasPrint"></div>
 
     <div class="gantt-modal" id="ganttModal">
         <div class="gantt-content">
@@ -493,18 +442,17 @@
         async function fetchCSV(url) {
             const r = await fetch(url);
             const t = await r.text();
-            return new Promise(resolve => Papa.parse(t, {header:true, skipEmptyLines:true, complete: res => resolve(res.data)}));
+            return new Promise(resolve => Papa.parse(t, {
+                header: true,
+                skipEmptyLines: true,
+                transformHeader: h => h.trim(), // Blinda ante "Marca temporal" y espacios ocultos
+                complete: res => resolve(res.data)
+            }));
         }
 
         function processData(rows) {
             const data = {};
-            rows.forEach(rawRow => {
-                // Limpieza de claves (inmune a offsets de columnas como Marca Temporal)
-                const row = {};
-                for (let k in rawRow) {
-                    row[k.trim()] = rawRow[k];
-                }
-
+            rows.forEach(row => {
                 const molde = (row['LADRILLO:'] || '').trim();
                 let tarea = (row['TAREA:'] || '').trim();
                 tarea = normalizarTarea(tarea);
@@ -544,7 +492,6 @@
                             baseName: getBaseName(molde),
                             number: getMoldNumber(molde),
                             tarea,
-                            turno: t,
                             esInicio: diaIgualInicio && t === ti,
                             esFin: diaIgualFin && t === tf
                         });
@@ -576,26 +523,6 @@
             return prod.length > 0 ? { status: 'desvio' } : { status: 'sinPlan' };
         }
 
-        function parseOverlaps(tasksArray, trackingVars) {
-            let prods = tasksArray.filter(t => t.tarea === 'Producción');
-            const tests = tasksArray.filter(t => t.tarea === 'Prueba');
-            
-            if (prods.length > 1) {
-                // Resolución de conflicto en el mismo turno
-                const starting = prods.find(p => p.esInicio);
-                const ending = prods.find(p => p.esFin);
-                if (starting) {
-                    if (ending) {
-                        trackingVars.prevMold = ending.moldeCompleto;
-                        trackingVars.prevBase = ending.baseName;
-                        trackingVars.prevNum = ending.number;
-                    }
-                    prods = [starting];
-                }
-            }
-            return { prods, tests };
-        }
-
         function renderGantt() {
             const wrapper = document.getElementById('ganttWrapper');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
@@ -603,6 +530,8 @@
             const todayStr = formatYYYYMMDD(new Date());
 
             document.getElementById('monthTitle').textContent = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
+            document.getElementById('printHeaderTitle').textContent = `Cronograma de Producción - ${document.getElementById('monthTitle').textContent}`;
+            
             document.getElementById('kpiContainer').style.display = currentView === 'cumpl' ? 'flex' : 'none';
             if (currentView === 'cumpl') actualizarKPIs();
 
@@ -613,53 +542,63 @@
             const changeDays = new Set();
             const testDays = new Set();
             
-            let planTrack = { prevMold: null, prevBase: null, prevNum: null };
-            let realTrack = { prevMold: null, prevBase: null, prevNum: null };
+            let prevMoldPlan = null, prevBaseNamePlan = null, prevNumberPlan = null;
+            let prevMoldReal = null, prevBaseNameReal = null, prevNumberReal = null;
 
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 TURNOS.forEach(turno => {
                     const k = key(dateStr, turno);
 
-                    // Planificación
+                    // Mapeo cronológico Planificación (ordenado para priorizar tareas de inicio y solucionar superposiciones)
                     const tasksPlan = planData[k] || [];
-                    const parsedPlan = parseOverlaps(tasksPlan, planTrack);
-                    if (parsedPlan.prods.length > 0) {
-                        const currentMold = parsedPlan.prods[0].moldeCompleto;
-                        const isChange = currentMold !== planTrack.prevMold;
+                    const prodPlan = tasksPlan.filter(t => t.tarea === 'Producción')
+                                              .sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
+                    const testPlan = tasksPlan.filter(t => t.tarea === 'Prueba');
+                    
+                    if (prodPlan.length > 0) {
+                        const currentMold = prodPlan[0].moldeCompleto;
+                        const isChange = currentMold !== prevMoldPlan;
                         precalc['plan_' + k] = {
-                            mold: currentMold, baseName: parsedPlan.prods[0].baseName, number: parsedPlan.prods[0].number,
+                            mold: currentMold,
+                            baseName: prodPlan[0].baseName,
+                            number: prodPlan[0].number,
                             showDetail: isChange,
-                            prevProps: (isChange && planTrack.prevMold) ? { baseName: planTrack.prevBase, number: planTrack.prevNum } : null,
-                            hasTest: parsedPlan.tests.length > 0
+                            prevProps: (isChange && prevMoldPlan) ? { baseName: prevBaseNamePlan, number: prevNumberPlan } : null,
+                            hasTest: testPlan.length > 0
                         };
                         if (isChange && currentView === 'plan') changeDays.add(dateStr);
-                        planTrack.prevMold = currentMold; planTrack.prevBase = parsedPlan.prods[0].baseName; planTrack.prevNum = parsedPlan.prods[0].number;
+                        prevMoldPlan = currentMold; prevBaseNamePlan = prodPlan[0].baseName; prevNumberPlan = prodPlan[0].number;
                     } else {
-                        precalc['plan_' + k] = { mold: null, hasTest: parsedPlan.tests.length > 0 };
-                        planTrack.prevMold = null; 
+                        precalc['plan_' + k] = { mold: null, hasTest: testPlan.length > 0 };
+                        prevMoldPlan = null; 
                     }
-                    if (parsedPlan.tests.length > 0 && currentView === 'plan') testDays.add(dateStr);
+                    if (testPlan.length > 0 && currentView === 'plan') testDays.add(dateStr);
 
-                    // Real
+                    // Mapeo cronológico Producción Real
                     const tasksReal = realData[k] || [];
-                    const parsedReal = parseOverlaps(tasksReal, realTrack);
-                    if (parsedReal.prods.length > 0) {
-                        const currentMold = parsedReal.prods[0].moldeCompleto;
-                        const isChange = currentMold !== realTrack.prevMold;
+                    const prodReal = tasksReal.filter(t => t.tarea === 'Producción')
+                                              .sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
+                    const testReal = tasksReal.filter(t => t.tarea === 'Prueba');
+                    
+                    if (prodReal.length > 0) {
+                        const currentMold = prodReal[0].moldeCompleto;
+                        const isChange = currentMold !== prevMoldReal;
                         precalc['real_' + k] = {
-                            mold: currentMold, baseName: parsedReal.prods[0].baseName, number: parsedReal.prods[0].number,
+                            mold: currentMold,
+                            baseName: prodReal[0].baseName,
+                            number: prodReal[0].number,
                             showDetail: isChange,
-                            prevProps: (isChange && realTrack.prevMold) ? { baseName: realTrack.prevBase, number: realTrack.prevNum } : null,
-                            hasTest: parsedReal.tests.length > 0
+                            prevProps: (isChange && prevMoldReal) ? { baseName: prevBaseNameReal, number: prevNumberReal } : null,
+                            hasTest: testReal.length > 0
                         };
                         if (isChange && currentView !== 'plan') changeDays.add(dateStr);
-                        realTrack.prevMold = currentMold; realTrack.prevBase = parsedReal.prods[0].baseName; realTrack.prevNum = parsedReal.prods[0].number;
+                        prevMoldReal = currentMold; prevBaseNameReal = prodReal[0].baseName; prevNumberReal = prodReal[0].number;
                     } else {
-                        precalc['real_' + k] = { mold: null, hasTest: parsedReal.tests.length > 0 };
-                        realTrack.prevMold = null;
+                        precalc['real_' + k] = { mold: null, hasTest: testReal.length > 0 };
+                        prevMoldReal = null;
                     }
-                    if (parsedReal.tests.length > 0 && currentView !== 'plan') testDays.add(dateStr);
+                    if (testReal.length > 0 && currentView !== 'plan') testDays.add(dateStr);
                 });
             }
 
@@ -719,7 +658,7 @@
                             `;
                             if (pre.prevProps) {
                                 const prevColor = getBrickColor(pre.prevProps.baseName, pre.prevProps.number);
-                                markers += `<div class="change-marker" title="Viene de: ${pre.prevProps.baseName} (${pre.prevProps.number})" style="border-top-color: ${prevColor};"></div>`;
+                                markers += `<div class="change-marker" style="border-top-color: ${prevColor};"></div>`;
                             }
                         }
 
@@ -730,6 +669,8 @@
                             markers += `<div class="compliance-bar-cell ${barClass}"></div><div class="compliance-emoji-cell">${emoji}</div>`;
                         }
                     } else if (!pre.hasTest) {
+                        cellContent = '<span style="color:var(--text-muted);">—</span>';
+                    } else {
                         cellContent = '<span style="color:var(--text-muted);">—</span>';
                     }
 
@@ -746,7 +687,6 @@
             html += '</tbody></table>';
             wrapper.innerHTML = html;
             renderPruebasInfo();
-            renderPruebasPrint();
         }
 
         function actualizarKPIs() {
@@ -790,46 +730,40 @@
             const container = document.getElementById('pruebasInfo');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const pruebas = [];
+            
             for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
-                const dayPlanTests = [], dayRealTests = [];
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
-                    (planData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => dayPlanTests.push(p));
-                    (realData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => dayRealTests.push(p));
-                });
-                dayPlanTests.forEach(p => {
-                    const cumplida = dayRealTests.some(rt => rt.moldeCompleto === p.moldeCompleto && rt.turno === p.turno);
-                    pruebas.push({ fecha: ds, turno: p.turno, molde: p.moldeCompleto, tipo: 'Plan', estado: cumplida ? '<span style="color:var(--green); font-weight:700;">✅ Prueba Realizada</span>' : '⚠️ No realizada' });
-                });
-                dayRealTests.forEach(rt => {
-                    if (!dayPlanTests.some(p => p.moldeCompleto === rt.moldeCompleto && p.turno === rt.turno)) {
-                        pruebas.push({ fecha: ds, turno: rt.turno, molde: rt.moldeCompleto, tipo: 'Real', estado: '📌 No planificada' });
-                    }
+                    const dayPlanTests = (planData[k] || []).filter(p => p.tarea === 'Prueba');
+                    const dayRealTests = (realData[k] || []).filter(p => p.tarea === 'Prueba');
+                    
+                    dayPlanTests.forEach(p => {
+                        const cumplida = dayRealTests.some(rt => rt.moldeCompleto === p.moldeCompleto);
+                        pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: cumplida ? '✅ Realizada' : '⚠️ No realizada' });
+                    });
+                    
+                    dayRealTests.forEach(rt => {
+                        if (!dayPlanTests.some(p => p.moldeCompleto === rt.moldeCompleto)) {
+                            pruebas.push({ fecha: ds, turno: t, molde: rt.moldeCompleto, tipo: 'Prueba Realizada', estado: '📌 No planificada' });
+                        }
+                    });
                 });
             }
+            
             if (pruebas.length === 0) {
                 container.innerHTML = '<h3>🔬 Pruebas del mes</h3><p style="color:var(--text-muted);">Sin pruebas en esta vista.</p>';
             } else {
-                let html = '<h3>🔬 Pruebas del mes</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>';
+                let html = `
+                <h3>🔬 Pruebas del mes</h3>
+                <table class="pruebas-table">
+                    <thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead>
+                    <tbody>
+                `;
                 pruebas.forEach(p => html += `<tr><td>${p.fecha}</td><td>${p.turno}</td><td>${p.molde}</td><td>${p.tipo}</td><td>${p.estado}</td></tr>`);
                 html += '</tbody></table>';
                 container.innerHTML = html;
             }
-        }
-
-        function renderPruebasPrint() {
-            const printDiv = document.getElementById('pruebasPrint');
-            const year = currentDate.getFullYear(), month = currentDate.getMonth();
-            const pruebasPlan = [];
-            for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
-                const ds = formatYYYYMMDD(new Date(year, month, d));
-                TURNOS.forEach(t => {
-                    const k = key(ds, t);
-                    (planData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => pruebasPlan.push({ fecha: ds, turno: p.turno, molde: p.moldeCompleto }));
-                });
-            }
-            printDiv.innerHTML = pruebasPlan.length ? '<h3>Detalle de Pruebas Planificadas</h3><table><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th></tr></thead><tbody>' + pruebasPlan.map(p => `<tr><td>${p.fecha}</td><td>${p.turno}</td><td>${p.molde}</td></tr>`).join('') + '</tbody></table>' : '';
         }
 
         function setView(view) {
@@ -842,15 +776,11 @@
             renderGantt();
         }
 
-        function toggleProdPlan() {
-            setView(currentView === 'prod' ? 'plan' : 'prod');
-        }
-        function toggleCumplimiento() {
-            setView(currentView === 'cumpl' ? 'prod' : 'cumpl');
-        }
+        function toggleProdPlan() { setView(currentView === 'prod' ? 'plan' : 'prod'); }
+        function toggleCumplimiento() { setView(currentView === 'cumpl' ? 'prod' : 'cumpl'); }
         function imprimirPlan() {
-            setView('plan');
-            setTimeout(() => window.print(), 250);
+            setView(currentView); // Imprime la vista actual (Planificación o Producción)
+            setTimeout(() => window.print(), 200);
         }
 
         function abrirGantt(dateStr) {
