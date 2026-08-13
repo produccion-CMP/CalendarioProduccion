@@ -24,6 +24,7 @@
             --gray: #636366;
             --shadow: 0 2px 8px rgba(0,0,0,0.3);
             --shadow-3d: 0 4px 12px rgba(0,0,0,0.4);
+            --shadow-hover: 0 8px 20px rgba(0,0,0,0.5);
             --radius: 14px;
             --cell-h: 78px;
             --font: 'Plus Jakarta Sans', system-ui, sans-serif;
@@ -42,6 +43,7 @@
             --accent-light: #c45a2c;
             --shadow: 0 2px 12px rgba(0,0,0,0.08);
             --shadow-3d: 0 4px 16px rgba(0,0,0,0.12);
+            --shadow-hover: 0 8px 25px rgba(0,0,0,0.2);
             --prueba-bg: #ffd700;
             --sunday-bg: rgba(0,0,0,0.03);
         }
@@ -60,6 +62,7 @@
             display: flex; justify-content: space-between; align-items: center;
             padding: 16px 24px; background: var(--bg-panel); border-radius: var(--radius);
             box-shadow: var(--shadow-3d); margin-bottom: 20px;
+            transition: box-shadow 0.3s;
         }
         .logo-container { display: flex; align-items: center; gap: 16px; }
         .logo-container img { height: 56px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3)); }
@@ -67,15 +70,15 @@
         .title-block small { font-size: 0.8rem; color: var(--text-muted); font-weight: 500; }
         .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
         .header-top-row { display: flex; align-items: center; gap: 12px; }
-        .live-clock { font-weight: 600; font-size: 0.9rem; color: var(--text-main); background: var(--bg-cell); padding: 8px 16px; border-radius: 30px; }
-        .theme-btn { background: none; border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; }
+        .live-clock { font-weight: 600; font-size: 0.9rem; color: var(--text-main); background: var(--bg-cell); padding: 8px 16px; border-radius: 30px; box-shadow: var(--shadow); }
+        .theme-btn { background: none; border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 8px; cursor: pointer; font-size: 1.1rem; box-shadow: var(--shadow); transition: box-shadow 0.2s; }
         .btn-new-plan {
             background: var(--accent); color: #fff; border: none; padding: 8px 16px;
             border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer;
             text-decoration: none; display: flex; align-items: center; gap: 6px;
             box-shadow: var(--shadow); transition: transform 0.2s, box-shadow 0.2s;
         }
-        .btn-new-plan:hover { transform: translateY(-2px); box-shadow: 0 6px 14px rgba(0,0,0,0.4); }
+        .btn-new-plan:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
 
         .views-container {
             display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap;
@@ -86,6 +89,7 @@
         .toggle-switch {
             position: relative; width: 180px; height: 38px; background: var(--bg-cell);
             border-radius: 20px; cursor: pointer; border: 2px solid var(--border); overflow: hidden;
+            box-shadow: var(--shadow);
         }
         .toggle-option {
             position: absolute; top: 0; width: 50%; height: 100%;
@@ -105,7 +109,7 @@
         .cumpl-btn {
             background: var(--bg-cell); border: 2px solid var(--border); padding: 10px 22px;
             border-radius: 30px; font-weight: 600; font-size: 0.85rem; cursor: pointer;
-            color: var(--text-main); transition: 0.2s;
+            color: var(--text-main); transition: 0.2s; box-shadow: var(--shadow);
         }
         .cumpl-btn.active { background: var(--accent); color: #fff; border-color: var(--accent); box-shadow: 0 0 12px var(--accent); }
 
@@ -113,9 +117,9 @@
             background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main);
             padding: 8px 16px; border-radius: 24px; font-weight: 600; font-size: 0.8rem;
             cursor: pointer; display: flex; align-items: center; gap: 6px;
-            transition: 0.2s; text-decoration: none;
+            transition: 0.2s; text-decoration: none; box-shadow: var(--shadow);
         }
-        .action-btn:hover { background: var(--accent); color: #fff; }
+        .action-btn:hover { background: var(--accent); color: #fff; box-shadow: var(--shadow-hover); }
 
         .kpi-container {
             display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap;
@@ -125,7 +129,7 @@
             box-shadow: var(--shadow-3d); text-align: center; min-width: 100px;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-        .kpi-card:hover { transform: translateY(-4px); box-shadow: 0 12px 20px rgba(0,0,0,0.3); }
+        .kpi-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-hover); }
         .kpi-value { font-size: 1.8rem; font-weight: 800; color: var(--accent-light); }
         .kpi-label { font-size: 0.8rem; color: var(--text-muted); margin-top: 4px; }
 
@@ -138,8 +142,9 @@
         .month-nav button {
             background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main);
             padding: 8px 16px; border-radius: 20px; font-weight: 600; cursor: pointer; transition: 0.2s;
+            box-shadow: var(--shadow);
         }
-        .month-nav button:hover { background: var(--accent); color: #fff; }
+        .month-nav button:hover { background: var(--accent); color: #fff; box-shadow: var(--shadow-hover); }
         .month-title {
             font-size: 1.1rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
             border-bottom: 1px dashed var(--text-muted); padding: 4px 8px;
@@ -147,7 +152,7 @@
         .month-title:hover { color: var(--accent-light); }
         .btn-today {
             background: var(--accent); color: #fff; border: none; padding: 6px 14px;
-            border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer;
+            border-radius: 20px; font-weight: 600; font-size: 0.8rem; cursor: pointer; box-shadow: var(--shadow);
         }
 
         .month-selector {
@@ -176,11 +181,12 @@
         }
         .gantt-table th {
             background: var(--bg-cell); font-weight: 700; color: var(--accent-light);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
         }
         .gantt-table td { cursor: pointer; }
         .gantt-table td:hover {
             transform: scale(1.03);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            box-shadow: var(--shadow-hover);
             z-index: 10;
         }
 
@@ -311,7 +317,6 @@
             .pruebas-table th { background-color: #eee !important; color: black !important; }
             h1 { font-size: 1.2rem; margin: 0 0 5px 0; color: black !important; text-align: center; }
             h3 { font-size: 0.9rem; margin: 0 0 5px 0; }
-            /* Se inyectará el título para impresión por JS */
         }
     </style>
 </head>
@@ -351,7 +356,7 @@
             </div>
         </div>
         <button class="cumpl-btn" id="btnCumpl" onclick="toggleCumplimiento()">📊 Cumplimiento</button>
-        <button class="action-btn" onclick="imprimirPlan()">🖨️ Imprimir Plan</button>
+        <button class="action-btn" onclick="imprimirPlan()">🖨️ Imprimir</button>
     </div>
 
     <div class="kpi-container" id="kpiContainer" style="display:none;"></div>
@@ -445,7 +450,7 @@
             return new Promise(resolve => Papa.parse(t, {
                 header: true,
                 skipEmptyLines: true,
-                transformHeader: h => h.trim(), // Blinda ante "Marca temporal" y espacios ocultos
+                transformHeader: h => h.trim(),
                 complete: res => resolve(res.data)
             }));
         }
@@ -550,7 +555,6 @@
                 TURNOS.forEach(turno => {
                     const k = key(dateStr, turno);
 
-                    // Mapeo cronológico Planificación (ordenado para priorizar tareas de inicio y solucionar superposiciones)
                     const tasksPlan = planData[k] || [];
                     const prodPlan = tasksPlan.filter(t => t.tarea === 'Producción')
                                               .sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
@@ -575,7 +579,6 @@
                     }
                     if (testPlan.length > 0 && currentView === 'plan') testDays.add(dateStr);
 
-                    // Mapeo cronológico Producción Real
                     const tasksReal = realData[k] || [];
                     const prodReal = tasksReal.filter(t => t.tarea === 'Producción')
                                               .sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
@@ -779,7 +782,7 @@
         function toggleProdPlan() { setView(currentView === 'prod' ? 'plan' : 'prod'); }
         function toggleCumplimiento() { setView(currentView === 'cumpl' ? 'prod' : 'cumpl'); }
         function imprimirPlan() {
-            setView(currentView); // Imprime la vista actual (Planificación o Producción)
+            setView(currentView);
             setTimeout(() => window.print(), 200);
         }
 
