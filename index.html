@@ -57,7 +57,9 @@
         .loader-container h2 { color: var(--accent-light); margin-bottom: 8px; font-weight: 800; letter-spacing: -0.5px;}
         .loader-container p { color: var(--text-muted); font-size: 0.9rem; }
 
-        /* Encabezados */
+        /* Encabezados Exclusivos */
+        #printHeader { display: none; } /* Oculto en pantalla */
+
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--bg-panel); border-radius: var(--radius); box-shadow: var(--shadow-3d); margin-bottom: 20px; }
         .logo-container { display: flex; align-items: center; gap: 16px; }
         .logo-container img { height: 56px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
@@ -145,9 +147,9 @@
         .mold-label-text { font-size: 0.55rem; font-weight: 700; opacity: 0.85; text-transform: uppercase; margin-top: 1px;}
         .mold-number { font-size: 0.7rem; font-weight: 800; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
 
-        /* Animación y diseño Flecha Avance (TAMAÑO REDUCIDO) */
+        /* Flecha Avance Ajustada (Más pequeña y sutil) */
         .flow-arrow-container { display: flex; justify-content: center; align-items: center; height: 100%; width: 100%; }
-        .flow-arrow { width: 14px; height: 14px; opacity: 0.45; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); animation: moveDown 2s infinite ease-in-out; }
+        .flow-arrow { width: 13px; height: 13px; opacity: 0.35; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); animation: moveDown 2s infinite ease-in-out; }
         @keyframes moveDown { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(2px); } }
 
         .change-marker { position: absolute; top: 0; left: 0; width: 0; height: 0; border-top: 22px solid; border-right: 22px solid transparent; z-index: 5; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); }
@@ -192,73 +194,68 @@
         .mg-cell.empty { background: var(--bg-cell); box-shadow: none; border: 1px dashed var(--border); color: var(--text-muted); }
         .mg-comp { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; border-radius: 10px; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); color: #fff; }
 
-        /* CONTENEDOR EXCLUSIVO PARA IMPRESIÓN */
-        #printHeader { display: none; }
-
-        /* --- CONFIGURACIÓN ESTRICTA DE IMPRESIÓN (A4 APAISADO - 1 CARILLA) --- */
+        /* ================= MEDIA PRINT ================= */
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
-            @page { size: A4 landscape; margin: 0.5cm; } /* Márgenes mínimos para maximizar espacio */
-            body { background: white; color: black; padding: 0; font-family: sans-serif; font-size: 8px; }
+            @page { size: A4 landscape; margin: 8mm; }
             
-            /* Ocultar UI innecesaria */
-            .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal, .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, #loader, #legendContainer { display: none !important; }
+            /* Layout Flexbox estirado para abarcar el 100% de la carilla */
+            body { 
+                background: white; color: black; padding: 0; font-family: sans-serif; 
+                height: 100vh; display: flex; flex-direction: column; overflow: hidden;
+            }
             
-            /* Mostrar e inyectar estilos al Header de Impresión */
-            #printHeader { display: block !important; text-align: center; margin-bottom: 10px; }
-            #printHeader h1 { font-size: 1.5rem; color: black !important; margin: 0; font-weight: 800; text-transform: uppercase;}
-            #printHeader h2 { font-size: 1rem; color: #444 !important; margin: 4px 0 0 0; text-transform: uppercase; font-weight: 700; border-bottom: 1px solid #ccc; padding-bottom: 6px; display: inline-block;}
-
-            /* Gantt - Compactación extrema */
-            .gantt-wrapper { box-shadow: none; background: none; padding: 0; margin-bottom: 10px; border: none;}
-            .gantt-table { width: 100%; border-collapse: collapse; }
-            .gantt-table th, .gantt-table td { border: 1px solid #888 !important; height: 32px !important; padding: 1px !important; }
-            .gantt-table th:first-child, .gantt-table td:first-child { border-width: 1px !important; }
+            /* Ocultar UI de Pantalla */
+            .app-header, .views-container, .kpi-container, .month-nav, .month-selector, 
+            .gantt-modal, .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, 
+            #loader, #legendContainer { display: none !important; }
             
-            /* Encabezados de días (achicar grid) */
-            .day-header { grid-template-rows: 10px 14px 12px 10px; gap: 0; height: 100%; }
-            .day-name { font-size: 0.45rem; color: #000 !important; }
-            .day-number { font-size: 0.75rem; color: #000 !important; }
-            .indicator-row { height: 12px; }
-            .indicator-change { font-size: 0.6rem; filter: none; animation: none; }
-            .indicator-pr { font-size: 0.4rem; padding: 1px 2px; box-shadow: none; animation: none; }
-
-            /* Textos e imágenes internos */
-            .turn-label { font-size: 0.6rem; color: #000 !important; }
-            .mold-image { width: 14px; height: 14px; margin-bottom: 1px; filter: none !important; }
-            .mold-base { font-size: 0.55rem; text-shadow: none !important; line-height: 1; }
-            .mold-label-text { display: none !important; } /* Ocultar "Molde" para ahorrar espacio vertical */
-            .mold-number { font-size: 0.6rem; text-shadow: none !important; line-height: 1;}
-            .change-marker { border-top-width: 12px; border-right-width: 12px; filter: none !important; }
-            .test-marker { border-top-width: 12px; border-left-width: 12px; }
-            .flow-arrow-container { display: none !important; } /* Ocultar flechas en papel */
-
-            /* Cumplimiento en impresión */
-            .comp-row { display: table-row !important; }
-            .comp-row td { height: 16px !important; }
-            .comp-label-text { font-size: 0.5rem; color: #000 !important; }
-            .comp-indicator { font-size: 0.65rem; box-shadow: none !important; border-radius: 0; }
+            /* Encabezado Exclusivo para Impresión */
+            #printHeader { 
+                display: block !important; flex: 0 0 auto; text-align: center; margin-bottom: 8px;
+            }
+            #printTitleMain { font-size: 1.4rem; font-weight: 800; margin: 0 0 2px 0; color: #000 !important; text-transform: uppercase; }
+            #printTitleSub { font-size: 1rem; font-weight: 600; margin: 0; color: #444 !important; text-transform: uppercase; letter-spacing: 1px;}
             
-            /* Evitar estilos oscuros de Hoy */
-            td.today-col { background: none !important; border-left: 1px solid #888 !important; border-right: 1px solid #888 !important; }
-            th.today-col { background: none !important; color: #000 !important; border: 1px solid #888 !important; }
-            th.today-col .day-number { color: #000 !important; }
-            th.today-col .day-header::after { display: none !important; }
-
-            /* Tabla Pruebas - Minimalista y compacta */
-            .pruebas-info { margin-top: 5px; background: none; box-shadow: none; border-radius: 0; padding: 0; }
-            .pruebas-info h3 { font-size: 0.8rem; margin: 0 0 4px 0; color: #000 !important; text-align: center; }
-            .pruebas-table { font-size: 0.6rem; border: 1px solid #888; width: 100%; margin-top: 0; }
-            .pruebas-table th, .pruebas-table td { border: 1px solid #888; color: #000 !important; padding: 3px !important; }
-            .pruebas-table th { background-color: #f0f0f0 !important; }
+            /* Contenedor del Gantt distribuido */
+            .gantt-wrapper { 
+                flex: 1 1 auto; display: flex; flex-direction: column; overflow: hidden; 
+                box-shadow: none; background: none; padding: 0; margin-bottom: 8px; border: none;
+            }
+            .gantt-table { height: 100%; width: 100%; border-collapse: collapse; }
+            
+            /* Fuerza a la tabla a estirar las celdas equitativamente */
+            .gantt-table th, .gantt-table td { border: 1px solid #444 !important; height: auto !important; }
+            
+            /* Lógica Estricta de Fila de Cumplimiento (Solo en vista Cumplimiento) */
+            .comp-row { display: none !important; }
+            body.view-cumpl .comp-row { display: table-row !important; }
+            body.view-cumpl .comp-row td { height: 25px !important; }
+            
+            /* Ajustes Visuales Menores (Nitidez) */
+            .mold-image { width: 14px; height: 14px; filter: none; }
+            .mold-base { font-size: 0.65rem; }
+            .mold-number { font-size: 0.6rem; }
+            .turn-label { font-size: 0.75rem; }
+            .day-number { font-size: 0.75rem; }
+            .day-name { font-size: 0.55rem; }
+            
+            .flow-arrow-container { display: none !important; } /* Sin flechas en el papel */
+            
+            /* Sección Pruebas debajo */
+            .pruebas-info { flex: 0 0 auto; margin-top: 0; background: none; box-shadow: none; border-radius: 0; padding: 0; }
+            .pruebas-table { font-size: 0.75rem; border: 1px solid #000; width: 100%; margin-top: 4px; }
+            .pruebas-table th, .pruebas-table td { border: 1px solid #000; color: #000 !important; padding: 4px; }
+            .pruebas-table th { background-color: #eee !important; color: black !important; }
+            .pruebas-info h3 { font-size: 0.9rem; margin: 0 0 2px 0; color: black !important; text-transform: uppercase;}
         }
     </style>
 </head>
 <body>
-    <!-- Cabecera exclusiva para impresión -->
+    <!-- Encabezado Físico (Solo Impresión) -->
     <div id="printHeader">
-        <h1 id="printTitleDoc">Cronograma de Producción</h1>
-        <h2 id="printSubtitleDoc">Producción</h2>
+        <h1 id="printTitleMain">Cronograma de Producción</h1>
+        <h2 id="printTitleSub">Vista</h2>
     </div>
 
     <!-- Loader -->
@@ -280,7 +277,7 @@
         <div class="logo-container">
             <img src="img/logo CMP.png" alt="Cerámica Marcos Paz">
             <div class="title-block">
-                <h1 id="printHeaderTitle">Cronograma de Producción</h1>
+                <h1>Cronograma de Producción</h1>
                 <small>Cerámica Marcos Paz – Planta CEVIL</small>
             </div>
         </div>
@@ -341,7 +338,7 @@
         let planData = {};
         let realData = {};
         let currentView = 'prod';
-        let currentDate = new Date(2026, 7, 13); // 13 Agosto 2026 simulado
+        let currentDate = new Date(2026, 7, 13); // Simulando 13 de Agosto
         let actualSystemDate = new Date(); 
         let themeDark = true;
 
@@ -479,17 +476,6 @@
             return { status: 'sinPlan', msg: '-', emoji: '' };
         }
 
-        function updatePrintHeaders() {
-            const monthText = document.getElementById('monthTitle').textContent;
-            document.getElementById('printTitleDoc').textContent = `Cronograma de Producción - ${monthText}`;
-            
-            let viewText = 'Producción';
-            if(currentView === 'plan') viewText = 'Planificación';
-            if(currentView === 'cumpl') viewText = 'Cumplimiento de Plan';
-            
-            document.getElementById('printSubtitleDoc').textContent = `Vista: ${viewText}`;
-        }
-
         function renderGantt() {
             const wrapper = document.getElementById('ganttWrapper');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
@@ -497,9 +483,6 @@
             const todayStr = formatYYYYMMDD(actualSystemDate); 
 
             document.getElementById('monthTitle').textContent = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
-            document.getElementById('printHeaderTitle').textContent = `Cronograma de Producción - ${document.getElementById('monthTitle').textContent}`;
-            updatePrintHeaders();
-
             document.getElementById('kpiContainer').style.display = currentView === 'cumpl' ? 'flex' : 'none';
 
             const turnoWidth = 70;
@@ -509,7 +492,7 @@
             const changeDays = new Set();
             const testDays = new Set();
             const dayRealTestsMap = {}; 
-            const visibleBases = new Set(); 
+            const visibleBases = new Set();
             
             for (let d = 1; d <= daysInMonth; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
@@ -603,7 +586,8 @@
                             cellContent = `<div class="cell-content"><img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}"><span class="mold-base">${pre.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${pre.number}</span></div>`;
                             if (pre.prevProps) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
                         } else { 
-                            cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="4" x2="12" y2="20"></line><polyline points="18 14 12 20 6 14"></polyline></svg></div>`; 
+                            // Flecha de Avance Ajustada
+                            cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`; 
                         }
                         if (pre.esFin) markers += '<div class="end-marker"></div>';
                     }
@@ -622,12 +606,13 @@
                 }
                 html += '</tr>';
 
+                // Fila de Cumplimiento
                 html += `<tr class="comp-row"><td class="comp-label-text" style="width:${turnoWidth}px; text-align:center;">CUMPL</td>`;
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                     const k = key(dateStr, turno);
                     let compCellClass = ''; let compEmoji = '';
-                    if (dateStr === todayStr) { } 
+                    if (dateStr === todayStr) { /* Bloqueado HOY */ } 
                     else if (planData[k] && planData[k].length > 0) {
                         const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
                         compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
@@ -641,6 +626,7 @@
             html += '</tbody></table>';
             wrapper.innerHTML = html;
             
+            // Generar Leyenda Dinámica
             const legendContainer = document.getElementById('legendContainer');
             if (visibleBases.size > 0) {
                 let legendHtml = '<div class="legend-title">🎨 Leyenda de colores del mes</div><div class="legend-items">';
@@ -700,6 +686,7 @@
             `;
         }
 
+        // Filtro Inteligente de Pruebas según Vista Actual
         function renderPruebasInfo(dayRealTestsMap, todayStr) {
             const container = document.getElementById('pruebasInfo');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
@@ -757,7 +744,20 @@
 
         function toggleProdPlan() { setView(currentView === 'prod' ? 'plan' : 'prod'); }
         function toggleCumplimiento() { setView(currentView === 'cumpl' ? 'prod' : 'cumpl'); }
-        function imprimirPlan() { setTimeout(() => window.print(), 300); }
+        
+        function imprimirPlan() {
+            // Asigna los títulos dinámicos a la cabecera de impresión antes de abrir el modal
+            const mesStr = document.getElementById('monthTitle').textContent;
+            document.getElementById('printTitleMain').textContent = `CRONOGRAMA DE PRODUCCIÓN - ${mesStr}`;
+            
+            let subText = "";
+            if(currentView === 'plan') subText = "Planificación";
+            else if(currentView === 'prod') subText = "Producción";
+            else if(currentView === 'cumpl') subText = "Cumplimiento de Plan";
+            document.getElementById('printTitleSub').textContent = subText;
+
+            setTimeout(() => window.print(), 300); 
+        }
 
         function renderModalBlock(task) {
             if (!task) return `<div class="mg-cell empty">Sin Asignación</div>`;
