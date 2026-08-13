@@ -58,7 +58,7 @@
         .loader-container p { color: var(--text-muted); font-size: 0.9rem; }
 
         /* Encabezados Exclusivos */
-        #printHeader { display: none; } /* Oculto en pantalla */
+        #printHeader { display: none; } 
 
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--bg-panel); border-radius: var(--radius); box-shadow: var(--shadow-3d); margin-bottom: 20px; }
         .logo-container { display: flex; align-items: center; gap: 16px; }
@@ -184,8 +184,6 @@
         .modal-header-container h3 { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin: 0; }
         .close-btn { background: var(--bg-cell); border: 1px solid var(--border); color: var(--text-main); font-weight: 700; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
         .close-btn:hover { background: var(--red); color: #fff; border-color: var(--red); }
-
-        /* Grid del Modal */
         .modal-grid { display: grid; grid-template-columns: 140px repeat(3, 1fr); gap: 12px; align-items: stretch; }
         .mg-header { font-weight: 800; text-align: center; color: var(--accent-light); font-size: 1.1rem; padding: 12px; background: var(--bg-cell); border-radius: 10px; border: 1px solid var(--border); }
         .mg-row-label { display: flex; align-items: center; justify-content: flex-end; font-weight: 700; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; padding-right: 12px; text-align: right; }
@@ -194,57 +192,68 @@
         .mg-cell.empty { background: var(--bg-cell); box-shadow: none; border: 1px dashed var(--border); color: var(--text-muted); }
         .mg-comp { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; border-radius: 10px; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); color: #fff; }
 
-        /* ================= MEDIA PRINT ================= */
+        /* ================= MEDIA PRINT (ÓPTIMA PARA A4) ================= */
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: A4 landscape; margin: 8mm; }
             
-            /* Layout Flexbox estirado para abarcar el 100% de la carilla */
             body { 
                 background: white; color: black; padding: 0; font-family: sans-serif; 
                 height: 100vh; display: flex; flex-direction: column; overflow: hidden;
             }
             
-            /* Ocultar UI de Pantalla */
+            /* Ocultar Interfaz */
             .app-header, .views-container, .kpi-container, .month-nav, .month-selector, 
             .gantt-modal, .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, 
             #loader, #legendContainer { display: none !important; }
             
-            /* Encabezado Exclusivo para Impresión */
-            #printHeader { 
-                display: block !important; flex: 0 0 auto; text-align: center; margin-bottom: 8px;
-            }
+            /* Encabezado Exclusivo Impresión */
+            #printHeader { display: block !important; flex: 0 0 auto; text-align: center; margin-bottom: 8px; }
             #printTitleMain { font-size: 1.4rem; font-weight: 800; margin: 0 0 2px 0; color: #000 !important; text-transform: uppercase; }
             #printTitleSub { font-size: 1rem; font-weight: 600; margin: 0; color: #444 !important; text-transform: uppercase; letter-spacing: 1px;}
             
-            /* Contenedor del Gantt distribuido */
+            /* Gantt Extendido */
             .gantt-wrapper { 
                 flex: 1 1 auto; display: flex; flex-direction: column; overflow: hidden; 
                 box-shadow: none; background: none; padding: 0; margin-bottom: 8px; border: none;
             }
             .gantt-table { height: 100%; width: 100%; border-collapse: collapse; }
             
-            /* Fuerza a la tabla a estirar las celdas equitativamente */
-            .gantt-table th, .gantt-table td { border: 1px solid #444 !important; height: auto !important; }
+            /* Líneas de Cuadrícula Claras: Columnas continuas, Filas intra-día punteadas */
+            .gantt-table th, .gantt-table td { 
+                border-top: none !important;
+                border-left: none !important;
+                border-right: 2px solid #222 !important; 
+                border-bottom: 1px dashed #777 !important; 
+                height: auto !important; 
+            }
+            .gantt-table th { border-bottom: 2px solid #222 !important; }
+            .gantt-table th:first-child, .gantt-table td:first-child { border-left: 2px solid #222 !important; }
             
-            /* Lógica Estricta de Fila de Cumplimiento (Solo en vista Cumplimiento) */
+            /* Cierre de día (Turno 3 o Fila Cumplimiento) */
+            .gantt-table tr.t3-row td { border-bottom: 2px solid #222 !important; }
+            
+            /* Fila de Cumplimiento Condicional */
             .comp-row { display: none !important; }
             body.view-cumpl .comp-row { display: table-row !important; }
-            body.view-cumpl .comp-row td { height: 25px !important; }
+            body.view-cumpl .comp-row td { height: 25px !important; border-bottom: 2px solid #222 !important; }
+            body.view-cumpl .gantt-table tr.t3-row td { border-bottom: 1px dashed #777 !important; }
             
-            /* Ajustes Visuales Menores (Nitidez) */
-            .mold-image { width: 14px; height: 14px; filter: none; }
-            .mold-base { font-size: 0.65rem; }
-            .mold-number { font-size: 0.6rem; }
+            /* Ajustes Visuales Menores */
+            .mold-image { width: 14px; height: 14px; filter: none !important; }
+            .mold-base { font-size: 0.65rem; text-shadow: none !important; }
+            .mold-number { font-size: 0.6rem; text-shadow: none !important; }
             .turn-label { font-size: 0.75rem; }
             .day-number { font-size: 0.75rem; }
             .day-name { font-size: 0.55rem; }
             
-            .flow-arrow-container { display: none !important; } /* Sin flechas en el papel */
+            /* Flecha Sutil (Sin movimiento ni sombra) */
+            .flow-arrow-container { display: flex !important; } 
+            .flow-arrow { opacity: 0.5 !important; animation: none !important; filter: none !important; }
             
-            /* Sección Pruebas debajo */
+            /* Pruebas */
             .pruebas-info { flex: 0 0 auto; margin-top: 0; background: none; box-shadow: none; border-radius: 0; padding: 0; }
-            .pruebas-table { font-size: 0.75rem; border: 1px solid #000; width: 100%; margin-top: 4px; }
+            .pruebas-table { font-size: 0.75rem; border: 1px solid #000; width: 100%; margin-top: 4px; border-collapse: collapse; }
             .pruebas-table th, .pruebas-table td { border: 1px solid #000; color: #000 !important; padding: 4px; }
             .pruebas-table th { background-color: #eee !important; color: black !important; }
             .pruebas-info h3 { font-size: 0.9rem; margin: 0 0 2px 0; color: black !important; text-transform: uppercase;}
@@ -252,13 +261,11 @@
     </style>
 </head>
 <body>
-    <!-- Encabezado Físico (Solo Impresión) -->
     <div id="printHeader">
         <h1 id="printTitleMain">Cronograma de Producción</h1>
         <h2 id="printTitleSub">Vista</h2>
     </div>
 
-    <!-- Loader -->
     <div id="loader" class="loader-container">
         <div class="spinner"></div>
         <h2>Sincronizando...</h2>
@@ -335,8 +342,7 @@
         const FALLBACK_IMG = 'img/moldes/default.png';
         const TURNOS = ['T1','T2','T3'];
 
-        let planData = {};
-        let realData = {};
+        let planData = {}; let realData = {};
         let currentView = 'prod';
         let currentDate = new Date(2026, 7, 13); // Simulando 13 de Agosto
         let actualSystemDate = new Date(); 
@@ -365,10 +371,7 @@
             return parseInt(m[3]) > 55 ? '#000' : '#fff';
         }
 
-        function formatYYYYMMDD(date) {
-            const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0');
-            return `${y}-${m}-${d}`;
-        }
+        function formatYYYYMMDD(date) { const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0'); return `${y}-${m}-${d}`; }
         function key(fecha, turno) { return `${fecha}_${turno}`; }
         function getBaseName(molde) { return molde.split(' (')[0].trim().split(/[xX]/)[0].trim(); }
         function getMoldNumber(molde) { const m = molde.match(/\((\d+)\)/); return m ? parseInt(m[1]) : 1; }
@@ -383,61 +386,41 @@
             return (date.getFullYear() === year && date.getMonth() === month && date.getDate() === day) ? date : null;
         }
 
-        function normalizarTarea(tarea) {
-            if (!tarea) return '';
-            return tarea.replace(/Ã³/g, 'ó').replace(/Ã©/g, 'é').replace(/Ã±/g, 'ñ');
-        }
+        function normalizarTarea(tarea) { if (!tarea) return ''; return tarea.replace(/Ã³/g, 'ó').replace(/Ã©/g, 'é').replace(/Ã±/g, 'ñ'); }
 
         async function fetchCSV(url) {
-            const r = await fetch(url);
-            const t = await r.text();
-            return new Promise(resolve => Papa.parse(t, {
-                header: true, skipEmptyLines: true,
-                transformHeader: h => h.trim().toUpperCase().replace(/:/g, ''),
-                complete: res => resolve(res.data)
-            }));
+            const r = await fetch(url); const t = await r.text();
+            return new Promise(resolve => Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().toUpperCase().replace(/:/g, ''), complete: res => resolve(res.data) }));
         }
 
         function processData(rows) {
             const data = {};
             rows.forEach(row => {
                 const molde = (row['LADRILLO'] || '').trim();
-                let tarea = (row['TAREA'] || '').trim();
-                tarea = normalizarTarea(tarea);
-                const fi = (row['FECHA INICIO'] || '').trim();
-                const ti = (row['TURNO INICIO'] || '').trim();
-                const ff = (row['FECHA FIN'] || '').trim();
-                const tf = (row['TURNO FIN'] || '').trim();
+                let tarea = (row['TAREA'] || '').trim(); tarea = normalizarTarea(tarea);
+                const fi = (row['FECHA INICIO'] || '').trim(); const ti = (row['TURNO INICIO'] || '').trim();
+                const ff = (row['FECHA FIN'] || '').trim(); const tf = (row['TURNO FIN'] || '').trim();
                 
                 if (!molde || !fi || !ff) return;
-
-                const inicio = parseFlexibleDate(fi);
-                const fin = parseFlexibleDate(ff);
+                const inicio = parseFlexibleDate(fi); const fin = parseFlexibleDate(ff);
                 if (!inicio || !fin) return;
 
                 for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate() + 1)) {
-                    const ds = formatYYYYMMDD(d);
-                    let tDia = [];
-                    const diaIgualInicio = d.getTime() === inicio.getTime();
-                    const diaIgualFin = d.getTime() === fin.getTime();
+                    const ds = formatYYYYMMDD(d); let tDia = [];
+                    const diaIgualInicio = d.getTime() === inicio.getTime(); const diaIgualFin = d.getTime() === fin.getTime();
 
                     if (diaIgualInicio && diaIgualFin) {
                         const i1 = TURNOS.indexOf(ti), i2 = TURNOS.indexOf(tf);
                         for (let i = i1; i <= i2; i++) tDia.push(TURNOS[i]);
                     } else if (diaIgualInicio) {
-                        const i1 = TURNOS.indexOf(ti);
-                        for (let i = i1; i < 3; i++) tDia.push(TURNOS[i]);
+                        for (let i = TURNOS.indexOf(ti); i < 3; i++) tDia.push(TURNOS[i]);
                     } else if (diaIgualFin) {
-                        const i2 = TURNOS.indexOf(tf);
-                        for (let i = 0; i <= i2; i++) tDia.push(TURNOS[i]);
+                        for (let i = 0; i <= TURNOS.indexOf(tf); i++) tDia.push(TURNOS[i]);
                     } else { tDia = [...TURNOS]; }
+                    
                     tDia.forEach(t => {
-                        const k = key(ds, t);
-                        if (!data[k]) data[k] = [];
-                        data[k].push({
-                            moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde),
-                            tarea, esInicio: diaIgualInicio && t === ti, esFin: diaIgualFin && t === tf
-                        });
+                        const k = key(ds, t); if (!data[k]) data[k] = [];
+                        data[k].push({ moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde), tarea, esInicio: diaIgualInicio && t === ti, esFin: diaIgualFin && t === tf });
                     });
                 }
             });
@@ -488,18 +471,14 @@
             const turnoWidth = 70;
             const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
 
-            const precalc = {};
-            const changeDays = new Set();
-            const testDays = new Set();
-            const dayRealTestsMap = {}; 
-            const visibleBases = new Set();
+            const precalc = {}; const changeDays = new Set(); const testDays = new Set();
+            const dayRealTestsMap = {}; const visibleBases = new Set();
             
             for (let d = 1; d <= daysInMonth; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
                 dayRealTestsMap[ds] = [];
                 TURNOS.forEach(t => {
-                    const rt = realData[key(ds, t)] || [];
-                    rt.filter(x => x.tarea === 'Prueba').forEach(x => {
+                    (realData[key(ds, t)] || []).filter(x => x.tarea === 'Prueba').forEach(x => {
                         if(!dayRealTestsMap[ds].includes(x.moldeCompleto)) dayRealTestsMap[ds].push(x.moldeCompleto);
                     });
                 });
@@ -512,13 +491,13 @@
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 TURNOS.forEach(turno => {
                     const k = key(dateStr, turno);
+                    
                     const tasksPlan = planData[k] || [];
                     const prodPlan = tasksPlan.filter(t => t.tarea === 'Producción').sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
                     const testPlan = tasksPlan.filter(t => t.tarea === 'Prueba');
                     
                     if (prodPlan.length > 0) {
-                        const currentMold = prodPlan[0].moldeCompleto;
-                        const isChange = currentMold !== prevMoldPlan;
+                        const currentMold = prodPlan[0].moldeCompleto; const isChange = currentMold !== prevMoldPlan;
                         precalc['plan_' + k] = { mold: currentMold, baseName: prodPlan[0].baseName, number: prodPlan[0].number, showDetail: isChange, prevProps: (isChange && prevMoldPlan) ? { baseName: prevBaseNamePlan, number: prevNumberPlan } : null, hasTest: testPlan.length > 0, esFin: prodPlan[0].esFin };
                         if (isChange && currentView === 'plan') changeDays.add(dateStr);
                         prevMoldPlan = currentMold; prevBaseNamePlan = prodPlan[0].baseName; prevNumberPlan = prodPlan[0].number;
@@ -533,8 +512,7 @@
                         const testReal = tasksReal.filter(t => t.tarea === 'Prueba');
                         
                         if (prodReal.length > 0) {
-                            const currentMold = prodReal[0].moldeCompleto;
-                            const isChange = currentMold !== prevMoldReal;
+                            const currentMold = prodReal[0].moldeCompleto; const isChange = currentMold !== prevMoldReal;
                             precalc['real_' + k] = { mold: currentMold, baseName: prodReal[0].baseName, number: prodReal[0].number, showDetail: isChange, prevProps: (isChange && prevMoldReal) ? { baseName: prevBaseNameReal, number: prevNumberReal } : null, hasTest: testReal.length > 0, esFin: prodReal[0].esFin };
                             if (isChange && currentView !== 'plan') changeDays.add(dateStr);
                             prevMoldReal = currentMold; prevBaseNameReal = prodReal[0].baseName; prevNumberReal = prodReal[0].number;
@@ -562,8 +540,7 @@
 
             TURNOS.forEach(turno => {
                 const isT3 = turno === 'T3';
-                const rowClass = isT3 ? 't3-row' : '';
-                html += `<tr class="${rowClass}"><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
+                html += `<tr class="${isT3 ? 't3-row' : ''}"><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                     const dateObj = new Date(year, month, d);
@@ -579,15 +556,13 @@
 
                     if (pre.mold) {
                         visibleBases.add(pre.baseName); 
-                        bgColor = getBrickColor(pre.baseName, pre.number);
-                        txtColor = pickTextColor(bgColor);
+                        bgColor = getBrickColor(pre.baseName, pre.number); txtColor = pickTextColor(bgColor);
 
                         if (pre.showDetail) {
                             cellContent = `<div class="cell-content"><img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}"><span class="mold-base">${pre.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${pre.number}</span></div>`;
                             if (pre.prevProps) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
                         } else { 
-                            // Flecha de Avance Ajustada
-                            cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`; 
+                            cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`; 
                         }
                         if (pre.esFin) markers += '<div class="end-marker"></div>';
                     }
@@ -606,13 +581,13 @@
                 }
                 html += '</tr>';
 
-                // Fila de Cumplimiento
+                // Fila Cumplimiento
                 html += `<tr class="comp-row"><td class="comp-label-text" style="width:${turnoWidth}px; text-align:center;">CUMPL</td>`;
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                     const k = key(dateStr, turno);
                     let compCellClass = ''; let compEmoji = '';
-                    if (dateStr === todayStr) { /* Bloqueado HOY */ } 
+                    if (dateStr === todayStr) {} 
                     else if (planData[k] && planData[k].length > 0) {
                         const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
                         compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
@@ -626,7 +601,6 @@
             html += '</tbody></table>';
             wrapper.innerHTML = html;
             
-            // Generar Leyenda Dinámica
             const legendContainer = document.getElementById('legendContainer');
             if (visibleBases.size > 0) {
                 let legendHtml = '<div class="legend-title">🎨 Leyenda de colores del mes</div><div class="legend-items">';
@@ -686,7 +660,6 @@
             `;
         }
 
-        // Filtro Inteligente de Pruebas según Vista Actual
         function renderPruebasInfo(dayRealTestsMap, todayStr) {
             const container = document.getElementById('pruebasInfo');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
@@ -746,14 +719,13 @@
         function toggleCumplimiento() { setView(currentView === 'cumpl' ? 'prod' : 'cumpl'); }
         
         function imprimirPlan() {
-            // Asigna los títulos dinámicos a la cabecera de impresión antes de abrir el modal
             const mesStr = document.getElementById('monthTitle').textContent;
             document.getElementById('printTitleMain').textContent = `CRONOGRAMA DE PRODUCCIÓN - ${mesStr}`;
             
             let subText = "";
             if(currentView === 'plan') subText = "Planificación";
-            else if(currentView === 'prod') subText = "Producción";
-            else if(currentView === 'cumpl') subText = "Cumplimiento de Plan";
+            else if(currentView === 'prod') subText = "Producción Real";
+            else if(currentView === 'cumpl') subText = "Análisis de Cumplimiento";
             document.getElementById('printTitleSub').textContent = subText;
 
             setTimeout(() => window.print(), 300); 
