@@ -25,7 +25,7 @@
             --shadow: 0 4px 12px rgba(0,0,0,0.4);
             --shadow-3d: 0 8px 24px rgba(0,0,0,0.6);
             --radius: 16px;
-            --cell-h: 85px; /* Altura aumentada para evitar truncados */
+            --cell-h: 85px; 
             --font: 'Plus Jakarta Sans', system-ui, sans-serif;
             --prueba-bg: #ffd700;
             --sunday-bg: rgba(255,255,255,0.03);
@@ -49,7 +49,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: var(--font); background: var(--bg-body); color: var(--text-main); padding: 24px; min-height: 100vh; transition: background 0.3s, color 0.3s; }
 
-        /* Loader Neomórfico */
+        /* Loader */
         .loader-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease, visibility 0.5s ease; }
         .spinner { width: 60px; height: 60px; border: 5px solid var(--bg-cell); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite; margin-bottom: 20px; box-shadow: 0 0 20px rgba(224, 123, 76, 0.3); }
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -57,7 +57,7 @@
         .loader-container h2 { color: var(--accent-light); margin-bottom: 8px; font-weight: 800; letter-spacing: -0.5px;}
         .loader-container p { color: var(--text-muted); font-size: 0.9rem; }
 
-        /* Encabezados y Controles */
+        /* Encabezados */
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--bg-panel); border-radius: var(--radius); box-shadow: var(--shadow-3d); margin-bottom: 20px; }
         .logo-container { display: flex; align-items: center; gap: 16px; }
         .logo-container img { height: 56px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
@@ -71,7 +71,7 @@
         
         .views-container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; background: var(--bg-panel); padding: 12px 20px; border-radius: var(--radius); box-shadow: var(--shadow-3d); margin-bottom: 20px; }
         
-        /* Switch UI Mejorado */
+        /* Switch UI */
         .switch-group { display: flex; align-items: center; gap: 10px; }
         .toggle-switch { position: relative; width: 190px; height: 42px; background: var(--bg-cell); border-radius: 24px; cursor: pointer; border: 2px solid var(--border); box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
         .toggle-option { position: absolute; top: 0; width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; transition: 0.3s; z-index: 1; }
@@ -84,7 +84,6 @@
 
         .cumpl-btn { background: var(--bg-cell); border: 2px solid var(--border); padding: 10px 24px; border-radius: 30px; font-weight: 700; font-size: 0.85rem; cursor: pointer; color: var(--text-main); transition: 0.3s; box-shadow: var(--shadow); }
         .cumpl-btn.active { background: linear-gradient(135deg, var(--accent-light), var(--accent)); color: #fff; border-color: transparent; box-shadow: 0 6px 16px rgba(224, 123, 76, 0.4); transform: translateY(-2px); }
-
         .action-btn { background: var(--bg-cell); border: 1px solid var(--border); color: var(--text-main); padding: 10px 18px; border-radius: 24px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: var(--shadow); }
         .action-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: translateY(-2px); }
 
@@ -107,39 +106,27 @@
         .month-selector select, .month-selector input { margin: 10px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); font-family: var(--font); font-weight: 600; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1500; }
 
-        /* Grid / Tabla Principal */
+        /* Grid Principal */
         .gantt-wrapper { background: var(--bg-panel); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow-3d); overflow-x: auto; }
         .gantt-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
-        
-        .gantt-table th, .gantt-table td { 
-            border-bottom: 1px dashed var(--border); border-right: 2px solid var(--border); 
-            height: var(--cell-h); padding: 4px; text-align: center; vertical-align: middle; 
-            position: relative; overflow: hidden; transition: 0.2s; 
-        }
+        .gantt-table th, .gantt-table td { border-bottom: 1px dashed var(--border); border-right: 2px solid var(--border); height: var(--cell-h); padding: 4px; text-align: center; vertical-align: middle; position: relative; overflow: hidden; transition: 0.2s; }
         .gantt-table th { background: var(--bg-panel); border-bottom: 3px solid var(--border); padding: 8px 4px; z-index: 20;}
         .gantt-table th:first-child, .gantt-table td:first-child { border-left: 2px solid var(--border); border-right: 3px solid var(--border); background: var(--bg-panel); position: sticky; left: 0; z-index: 30; }
-        .gantt-table tr.t3-row td { border-bottom: 3px solid var(--border); } /* Línea gruesa fin de día */
+        .gantt-table tr.t3-row td { border-bottom: 3px solid var(--border); }
         
-        /* Fila de Cumplimiento Oculta/Visible */
         .comp-row { display: none; }
         body.view-cumpl .comp-row { display: table-row; }
         body.view-cumpl .comp-row td { height: 35px; border-bottom: 3px solid var(--border); background: var(--bg-cell); padding: 4px; }
-        body.view-cumpl .gantt-table tr.t3-row td { border-bottom: 1px dashed var(--border); } /* Ajuste de borde si comp está visible */
+        body.view-cumpl .gantt-table tr.t3-row td { border-bottom: 1px dashed var(--border); }
 
         .comp-indicator { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; border-radius: 6px; font-size: 0.9rem; font-weight: 700; color: #fff; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); }
-        .ci-cumplido { background: var(--green); }
-        .ci-parcial { background: var(--orange); }
-        .ci-desvio { background: var(--red); }
-        .ci-vacio { background: transparent; }
+        .ci-cumplido { background: var(--green); } .ci-parcial { background: var(--orange); } .ci-desvio { background: var(--red); } .ci-vacio { background: transparent; }
 
         .gantt-table td { cursor: pointer; }
-        
-        /* Efecto Hover Inteligente (Zoom Columna) */
         .gantt-table td.hover-col, .gantt-table th.hover-col { background-color: rgba(255, 255, 255, 0.04); }
         .gantt-table td.hover-col .cell-content, .gantt-table td.hover-col .comp-indicator { transform: scale(1.08); z-index: 15; box-shadow: 0 4px 12px rgba(0,0,0,0.4); }
         .light-mode .gantt-table td.hover-col { background-color: rgba(0,0,0,0.03); }
 
-        /* Cabecera Fija e Inamovible */
         .day-header { display: grid; grid-template-rows: 16px 20px 18px 18px; text-align: center; gap: 2px; align-items: center; justify-items: center; height: 100%; }
         .day-name { font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
         .day-number { font-weight: 800; font-size: 1.1rem; color: var(--text-main); }
@@ -151,12 +138,17 @@
         .turn-label { font-weight: 800; color: var(--accent-light); font-size: 0.9rem; margin: auto; }
         .comp-label-text { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px;}
 
-        /* Contenido de la Celda - Textos Completos */
+        /* Celda de contenido */
         .cell-content { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; border-radius: 8px; transition: 0.2s; padding: 2px;}
         .mold-image { width: 32px; height: 32px; object-fit: contain; border-radius: 6px; background: rgba(255,255,255,0.15); margin-bottom: 2px; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.7)); }
         .mold-base { font-weight: 800; font-size: 0.75rem; line-height: 1.1; text-align: center; white-space: normal; word-break: break-word; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
         .mold-label-text { font-size: 0.55rem; font-weight: 700; opacity: 0.85; text-transform: uppercase; margin-top: 1px;}
         .mold-number { font-size: 0.7rem; font-weight: 800; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+
+        /* Animación y diseño Flecha Avance */
+        .flow-arrow-container { display: flex; justify-content: center; align-items: center; height: 100%; width: 100%; }
+        .flow-arrow { width: 18px; height: 18px; opacity: 0.45; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.6)); animation: moveDown 2s infinite ease-in-out; }
+        @keyframes moveDown { 0%, 100% { transform: translateY(-3px); } 50% { transform: translateY(3px); } }
 
         .change-marker { position: absolute; top: 0; left: 0; width: 0; height: 0; border-top: 22px solid; border-right: 22px solid transparent; z-index: 5; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); }
         .test-marker { position: absolute; top: 0; right: 0; width: 0; height: 0; border-top: 22px solid #000; border-left: 22px solid transparent; z-index: 5; }
@@ -166,6 +158,13 @@
         th.today-col .day-number { color: var(--accent) !important; font-size: 1.2rem; }
         td.sunday-cell { background-color: var(--sunday-bg); }
 
+        /* Leyenda de Colores */
+        #legendContainer { margin-top: 16px; background: var(--bg-panel); padding: 16px 20px; border-radius: var(--radius); box-shadow: var(--shadow-3d); display: none; }
+        .legend-title { font-size: 0.8rem; font-weight: 800; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; text-align: center; letter-spacing: 0.5px;}
+        .legend-items { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: center; }
+        .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 800; color: var(--text-main); }
+        .legend-color { width: 22px; height: 22px; border-radius: 6px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.4); }
+
         /* Pruebas Inferiores */
         .pruebas-info { margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-3d); }
         .pruebas-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.8rem; margin-top: 12px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
@@ -174,7 +173,7 @@
         .pruebas-table tbody tr:last-child td { border-bottom: none; }
         .pruebas-table tbody tr:hover { background: rgba(255,255,255,0.02); }
 
-        /* Modal Gantt (Glassmorphism + Grid Evolucionado) */
+        /* Modal Gantt */
         .gantt-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 3000; }
         .gantt-content { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 20px; padding: 28px; width: 95%; max-width: 850px; box-shadow: 0 20px 60px rgba(0,0,0,0.9); animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes modalPop { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
@@ -188,11 +187,9 @@
         .modal-grid { display: grid; grid-template-columns: 140px repeat(3, 1fr); gap: 12px; align-items: stretch; }
         .mg-header { font-weight: 800; text-align: center; color: var(--accent-light); font-size: 1.1rem; padding: 12px; background: var(--bg-cell); border-radius: 10px; border: 1px solid var(--border); }
         .mg-row-label { display: flex; align-items: center; justify-content: flex-end; font-weight: 700; font-size: 0.85rem; color: var(--text-muted); text-transform: uppercase; padding-right: 12px; text-align: right; }
-        
         .mg-cell { border-radius: 12px; padding: 12px; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; min-height: 90px; box-shadow: inset 0 2px 6px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.3); transition: transform 0.2s; color: #fff;}
         .mg-cell:hover { transform: translateY(-3px); box-shadow: 0 6px 16px rgba(0,0,0,0.5); }
         .mg-cell.empty { background: var(--bg-cell); box-shadow: none; border: 1px dashed var(--border); color: var(--text-muted); }
-        
         .mg-comp { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; border-radius: 10px; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); color: #fff; }
 
         @media print {
@@ -200,21 +197,31 @@
             @page { size: A4 landscape; margin: 1cm; }
             body { background: white; color: black; padding: 0; font-family: sans-serif; font-size: 9px; }
             .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal, .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, #loader { display: none !important; }
+            
             .gantt-wrapper { box-shadow: none; background: none; padding: 0; margin-bottom: 20px; border: none;}
             .gantt-table { width: 100%; border-collapse: collapse; }
             .gantt-table th, .gantt-table td { border: 1px solid #666 !important; height: 45px; }
             .comp-row { display: table-row !important; }
             .comp-row td { height: 15px !important; }
             .mold-image { width: 16px; height: 16px; filter: none; }
-            .pruebas-info { margin-top: 0; background: none; box-shadow: none; border-radius: 0; padding: 0; }
+            
+            /* Impresión de Leyenda y Pruebas */
+            #legendContainer { margin-top: 10px; padding: 10px; box-shadow: none; background: transparent; border: 1px solid #666; display: block; border-radius: 8px;}
+            .legend-title { font-size: 0.8rem; color: #000 !important; }
+            .legend-item { color: #000 !important; font-size: 0.75rem; }
+            
+            .pruebas-info { margin-top: 15px; background: none; box-shadow: none; border-radius: 0; padding: 0; }
             .pruebas-table { font-size: 0.7rem; border: 1px solid #000; width: 100%; }
             .pruebas-table th, .pruebas-table td { border: 1px solid #000; color: #000 !important; }
+            .pruebas-table th { background-color: #eee !important; color: black !important; }
+            
             h1 { font-size: 1.2rem; margin: 0 0 5px 0; color: black !important; text-align: center; }
+            .flow-arrow-container { display: none !important; } /* Ocultar flechas de animación en papel */
         }
     </style>
 </head>
 <body>
-    <!-- Pantalla de Carga -->
+    <!-- Loader -->
     <div id="loader" class="loader-container">
         <div class="spinner"></div>
         <h2>Sincronizando...</h2>
@@ -256,7 +263,7 @@
             </div>
         </div>
         <button class="cumpl-btn" id="btnCumpl" onclick="toggleCumplimiento()">📊 Analizar Cumplimiento</button>
-        <button class="action-btn" onclick="imprimirPlan()">🖨️ Imprimir Plan</button>
+        <button class="action-btn" onclick="imprimirPlan()">🖨️ Imprimir Vista Actual</button>
     </div>
 
     <div class="kpi-container" id="kpiContainer" style="display:none;"></div>
@@ -271,6 +278,7 @@
     </div>
 
     <div class="gantt-wrapper" id="ganttWrapper"></div>
+    <div id="legendContainer"></div>
     <div class="pruebas-info" id="pruebasInfo"></div>
 
     <div class="gantt-modal" id="ganttModal">
@@ -293,14 +301,11 @@
         let planData = {};
         let realData = {};
         let currentView = 'prod';
-        let currentDate = new Date(2026, 7, 13); // Simulando entorno actual para consistencia visual (13 Agosto 2026)
-        let actualSystemDate = new Date(); // Fecha real del sistema operativo
+        let currentDate = new Date(2026, 7, 13); // 13 Agosto 2026 simulado
+        let actualSystemDate = new Date(); // Fecha real sistema
         let themeDark = true;
 
-        const typeColorMap = {
-            'H8': 15, 'H12': 35, 'H18': 55, 'P12': 195, 'P18': 225,
-            'L12': 275, 'L16': 315, 'DM20': 110, 'DM27': 150, 'KB': 0
-        };
+        const typeColorMap = { 'H8': 15, 'H12': 35, 'H18': 55, 'P12': 195, 'P18': 225, 'L12': 275, 'L16': 315, 'DM20': 110, 'DM27': 150, 'KB': 0 };
 
         function getBaseHue(baseName) {
             const key = baseName.toUpperCase();
@@ -314,8 +319,7 @@
             const hue = getBaseHue(baseName);
             let light = 65 - ((number - 1) * 15); 
             if (light < 25) light = 25; 
-            let sat = 85; 
-            return `hsl(${hue}, ${sat}%, ${light}%)`;
+            return `hsl(${hue}, 85%, ${light}%)`;
         }
 
         function pickTextColor(hslColor) {
@@ -389,9 +393,7 @@
                     } else if (diaIgualFin) {
                         const i2 = TURNOS.indexOf(tf);
                         for (let i = 0; i <= i2; i++) tDia.push(TURNOS[i]);
-                    } else {
-                        tDia = [...TURNOS];
-                    }
+                    } else { tDia = [...TURNOS]; }
                     tDia.forEach(t => {
                         const k = key(ds, t);
                         if (!data[k]) data[k] = [];
@@ -409,21 +411,18 @@
             try {
                 document.getElementById('loader').classList.remove('hidden');
                 const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
-                planData = processData(planRows);
-                realData = processData(realRows);
+                planData = processData(planRows); realData = processData(realRows);
                 renderGantt();
                 setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500); 
             } catch (error) {
                 console.error(error);
-                document.getElementById('ganttWrapper').innerHTML = '<p style="color:var(--red); text-align:center; font-weight:bold; margin-top: 20px;">Error crítico al cargar datos desde Google Sheets.</p>';
+                document.getElementById('ganttWrapper').innerHTML = '<p style="color:var(--red); text-align:center; font-weight:bold; margin-top: 20px;">Error al cargar datos.</p>';
                 document.getElementById('loader').classList.add('hidden');
             }
         }
 
-        // Motor de cumplimiento avanzado (Toma en cuenta las pruebas a nivel DÍA)
         function getComplianceDayLevel(planTasks, realTasks, dayRealTestsArray) {
             if (!planTasks || planTasks.length === 0) return { status: 'sinPlan', msg: '-', emoji: '' };
-            
             const planProd = planTasks.find(p => p.tarea === 'Producción');
             const planTest = planTasks.find(p => p.tarea === 'Prueba');
             const realProd = realTasks ? realTasks.find(p => p.tarea === 'Producción') : null;
@@ -434,7 +433,6 @@
                 return { status: 'desvio', msg: 'No Producido', emoji: '❌' };
             }
             if (planTest) {
-                // Validación flexible de prueba: Si se hizo en cualquier turno del mismo día, es válida.
                 if (dayRealTestsArray.includes(planTest.moldeCompleto)) return { status: 'cumplido', msg: 'Prueba Realizada', emoji: '✅' };
                 return { status: 'desvio', msg: 'Prueba Omitida', emoji: '❌' };
             }
@@ -445,23 +443,21 @@
             const wrapper = document.getElementById('ganttWrapper');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const todayStr = formatYYYYMMDD(actualSystemDate); // Bloqueo estricto del "Hoy" real
+            const todayStr = formatYYYYMMDD(actualSystemDate); 
 
             document.getElementById('monthTitle').textContent = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
             document.getElementById('printHeaderTitle').textContent = `Cronograma de Producción - ${document.getElementById('monthTitle').textContent}`;
-            
             document.getElementById('kpiContainer').style.display = currentView === 'cumpl' ? 'flex' : 'none';
 
             const turnoWidth = 70;
             const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
 
-            // Pre-cálculo cronológico y de cumplimiento por día
             const precalc = {};
             const changeDays = new Set();
             const testDays = new Set();
-            const dayRealTestsMap = {}; // Guarda array de moldes probados por día
+            const dayRealTestsMap = {}; 
+            const visibleBases = new Set(); // Recolector para Leyenda
             
-            // 1. Mapear Pruebas Reales por Día (Para flexibilidad de cumplimiento)
             for (let d = 1; d <= daysInMonth; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
                 dayRealTestsMap[ds] = [];
@@ -480,8 +476,6 @@
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 TURNOS.forEach(turno => {
                     const k = key(dateStr, turno);
-
-                    // Planificación
                     const tasksPlan = planData[k] || [];
                     const prodPlan = tasksPlan.filter(t => t.tarea === 'Producción').sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
                     const testPlan = tasksPlan.filter(t => t.tarea === 'Prueba');
@@ -495,10 +489,8 @@
                     } else { precalc['plan_' + k] = { mold: null, hasTest: testPlan.length > 0 }; prevMoldPlan = null; }
                     if (testPlan.length > 0 && currentView === 'plan') testDays.add(dateStr);
 
-                    // Producción Real (Oculta para Hoy)
                     if (dateStr === todayStr) {
-                        precalc['real_' + k] = { mold: null, hasTest: false };
-                        prevMoldReal = null;
+                        precalc['real_' + k] = { mold: null, hasTest: false }; prevMoldReal = null;
                     } else {
                         const tasksReal = realData[k] || [];
                         const prodReal = tasksReal.filter(t => t.tarea === 'Producción').sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
@@ -525,26 +517,16 @@
                 const date = new Date(year, month, d);
                 let thClass = date.getDay() === 0 ? 'sunday-cell' : '';
                 if (dateStr === todayStr) thClass += ' today-col';
-
                 let indHtml = '';
                 if (changeDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-change">🔄️</span></div>'; else indHtml += '<div class="indicator-row"></div>';
                 if (testDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-pr">PR</span></div>'; else indHtml += '<div class="indicator-row"></div>';
-
-                html += `<th class="${thClass}" style="width:${colWidthCalc};">
-                    <div class="day-header">
-                        <div class="day-name">${dayNames[date.getDay()]}</div>
-                        <div class="day-number">${d}</div>
-                        ${indHtml}
-                    </div>
-                </th>`;
+                html += `<th class="${thClass}" style="width:${colWidthCalc};"><div class="day-header"><div class="day-name">${dayNames[date.getDay()]}</div><div class="day-number">${d}</div>${indHtml}</div></th>`;
             }
             html += '</tr></thead><tbody>';
 
             TURNOS.forEach(turno => {
                 const isT3 = turno === 'T3';
                 const rowClass = isT3 ? 't3-row' : '';
-                
-                // --- Fila Principal (Turno) ---
                 html += `<tr class="${rowClass}"><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
@@ -560,29 +542,22 @@
                     if (dateStr === todayStr) cellClasses += ' today-col';
 
                     if (pre.mold) {
+                        visibleBases.add(pre.baseName); // Registro para Leyenda
                         bgColor = getBrickColor(pre.baseName, pre.number);
                         txtColor = pickTextColor(bgColor);
 
                         if (pre.showDetail) {
-                            cellContent = `
-                                <div class="cell-content">
-                                    <img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}">
-                                    <span class="mold-base">${pre.baseName}</span>
-                                    <span class="mold-label-text">Molde</span>
-                                    <span class="mold-number">${pre.number}</span>
-                                </div>
-                            `;
-                            if (pre.prevProps) {
-                                const prevColor = getBrickColor(pre.prevProps.baseName, pre.prevProps.number);
-                                markers += `<div class="change-marker" style="border-top-color: ${prevColor};"></div>`;
-                            }
-                        } else { cellContent = `<div class="cell-content"></div>`; }
+                            cellContent = `<div class="cell-content"><img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}"><span class="mold-base">${pre.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${pre.number}</span></div>`;
+                            if (pre.prevProps) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
+                        } else { 
+                            // Flecha Animada de Continuidad
+                            cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="4" x2="12" y2="20"></line><polyline points="18 14 12 20 6 14"></polyline></svg></div>`; 
+                        }
                         if (pre.esFin) markers += '<div class="end-marker"></div>';
                     }
 
                     if (pre.hasTest) markers += `<div class="test-marker"></div>`;
 
-                    // Tooltip Inteligente
                     const comp = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
                     if (currentView === 'plan') { tooltip += `📋 Plan: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
                     else if (currentView === 'prod') { tooltip += `🏭 Real: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
@@ -595,46 +570,50 @@
                 }
                 html += '</tr>';
 
-                // --- Fila Intermedia (Cumplimiento) ---
+                // Fila de Cumplimiento
                 html += `<tr class="comp-row"><td class="comp-label-text" style="width:${turnoWidth}px; text-align:center;">CUMPL</td>`;
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                     const k = key(dateStr, turno);
-                    
                     let compCellClass = ''; let compEmoji = '';
-                    if (dateStr === todayStr) {
-                        // Bloqueado para HOY
-                    } else if (planData[k] && planData[k].length > 0) {
+                    if (dateStr === todayStr) { /* Bloqueado HOY */ } 
+                    else if (planData[k] && planData[k].length > 0) {
                         const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
-                        compCellClass = `ci-${cData.status}`;
-                        compEmoji = cData.emoji;
+                        compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
                     } else { compCellClass = 'ci-vacio'; }
-
                     let tdClass = new Date(year, month, d).getDay() === 0 ? 'sunday-cell' : '';
                     if (dateStr === todayStr) tdClass += ' today-col';
-
                     html += `<td class="${tdClass}"><div class="comp-indicator ${compCellClass}">${compEmoji}</div></td>`;
                 }
                 html += '</tr>';
             });
-
             html += '</tbody></table>';
             wrapper.innerHTML = html;
             
-            // Asignación Eventos Hover Columna (Zoom Inteligente)
+            // Generar Leyenda Dinámica
+            const legendContainer = document.getElementById('legendContainer');
+            if (visibleBases.size > 0) {
+                let legendHtml = '<div class="legend-title">🎨 Leyenda de colores del mes</div><div class="legend-items">';
+                Array.from(visibleBases).sort().forEach(base => {
+                    const color = getBrickColor(base, 1);
+                    legendHtml += `<div class="legend-item"><div class="legend-color" style="background:${color};"></div><span>${base}</span></div>`;
+                });
+                legendHtml += '</div>';
+                legendContainer.innerHTML = legendHtml;
+                legendContainer.style.display = 'block';
+            } else { legendContainer.style.display = 'none'; legendContainer.innerHTML = ''; }
+
             const table = wrapper.querySelector('.gantt-table');
             table.addEventListener('mouseover', e => {
                 const td = e.target.closest('td, th'); if (!td || td.cellIndex === 0) return;
-                const idx = td.cellIndex;
-                Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.add('hover-col'); });
+                const idx = td.cellIndex; Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.add('hover-col'); });
             });
             table.addEventListener('mouseout', e => {
                 const td = e.target.closest('td, th'); if (!td || td.cellIndex === 0) return;
-                const idx = td.cellIndex;
-                Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.remove('hover-col'); });
+                const idx = td.cellIndex; Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.remove('hover-col'); });
             });
 
-            renderPruebasInfo(dayRealTestsMap);
+            renderPruebasInfo(dayRealTestsMap, todayStr);
         }
 
         function actualizarKPIs(dayRealTestsMap, daysInMonth, year, month, todayStr) {
@@ -646,17 +625,13 @@
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
                     const plans = planData[k] || [];
-                    const reals = ds === todayStr ? [] : (realData[k] || []); // Hoy no cuenta en el % final
-                    
+                    const reals = ds === todayStr ? [] : (realData[k] || []); 
                     const prodsPlan = plans.filter(p => p.tarea === 'Producción');
                     const testsPlan = plans.filter(p => p.tarea === 'Prueba');
-                    
                     if (prodsPlan.length > 0 || testsPlan.length > 0) tienePlanDia = true;
                     if (prodsPlan.length > 1) cambios++;
-                    
                     pruebasPlan += testsPlan.length;
                     prodsPlan.forEach(p => moldesSet.add(p.moldeCompleto));
-
                     if (plans.length > 0 && ds !== todayStr) {
                         totalObj++;
                         const comp = getComplianceDayLevel(plans, reals, dayRealTestsMap[ds]);
@@ -675,7 +650,8 @@
             `;
         }
 
-        function renderPruebasInfo(dayRealTestsMap) {
+        // Filtro Inteligente de Pruebas según Vista Actual
+        function renderPruebasInfo(dayRealTestsMap, todayStr) {
             const container = document.getElementById('pruebasInfo');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const pruebas = [];
@@ -685,26 +661,35 @@
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
                     const dayPlanTests = (planData[k] || []).filter(p => p.tarea === 'Prueba');
-                    const shiftRealTests = (realData[k] || []).filter(p => p.tarea === 'Prueba');
+                    let shiftRealTests = (realData[k] || []).filter(p => p.tarea === 'Prueba');
                     
-                    dayPlanTests.forEach(p => {
-                        const cumplida = dayRealTestsMap[ds].includes(p.moldeCompleto); // Validación a nivel DÍA
-                        pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: cumplida ? '✅ Realizada' : '❌ No realizada' });
-                    });
-                    shiftRealTests.forEach(rt => {
-                        // Si no estaba planificada hoy en general
-                        const estabaPlanificadaHoy = TURNOS.some(turnoBusqueda => (planData[key(ds, turnoBusqueda)] || []).some(x => x.moldeCompleto === rt.moldeCompleto));
-                        if (!estabaPlanificadaHoy) {
-                            pruebas.push({ fecha: ds, turno: t, molde: rt.moldeCompleto, tipo: 'Prueba Ejecutada', estado: '📌 No planificada hoy' });
-                        }
-                    });
+                    if (ds === todayStr) shiftRealTests = []; // Bloqueo data real de hoy
+                    
+                    if (currentView === 'plan') {
+                        dayPlanTests.forEach(p => pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: '-' }));
+                    } else if (currentView === 'prod') {
+                        shiftRealTests.forEach(rt => pruebas.push({ fecha: ds, turno: t, molde: rt.moldeCompleto, tipo: 'Prueba Ejecutada', estado: 'Realizada ✅' }));
+                    } else {
+                        // Vista Cumplimiento (Ambas cruzadas)
+                        dayPlanTests.forEach(p => {
+                            const cumplida = dayRealTestsMap[ds].includes(p.moldeCompleto); 
+                            pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: cumplida ? '✅ Realizada' : '❌ No realizada' });
+                        });
+                        shiftRealTests.forEach(rt => {
+                            const estabaPlanificadaHoy = TURNOS.some(turnoBusqueda => (planData[key(ds, turnoBusqueda)] || []).some(x => x.moldeCompleto === rt.moldeCompleto));
+                            if (!estabaPlanificadaHoy) {
+                                pruebas.push({ fecha: ds, turno: t, molde: rt.moldeCompleto, tipo: 'Prueba Ejecutada', estado: '📌 No planificada hoy' });
+                            }
+                        });
+                    }
                 });
             }
             
             if (pruebas.length === 0) {
-                container.innerHTML = '<h3>🔬 Pruebas del mes</h3><p style="color:var(--text-muted);">Sin pruebas registradas.</p>';
+                container.innerHTML = '<h3>🔬 Detalle de Pruebas</h3><p style="color:var(--text-muted);">Sin información de pruebas para la vista actual.</p>';
             } else {
-                let html = `<h3>🔬 Pruebas del mes</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>`;
+                let title = currentView === 'plan' ? 'Pruebas Planificadas' : currentView === 'prod' ? 'Pruebas Ejecutadas' : 'Cruce de Pruebas (Plan vs Real)';
+                let html = `<h3>🔬 ${title}</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>`;
                 pruebas.forEach(p => html += `<tr><td>${p.fecha}</td><td>${p.turno}</td><td><strong>${p.molde}</strong></td><td>${p.tipo}</td><td>${p.estado}</td></tr>`);
                 html += '</tbody></table>';
                 container.innerHTML = html;
@@ -732,11 +717,7 @@
             const txt = pickTextColor(color);
             let imgH = `<img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" style="width:40px; height:40px;">`;
             if (task.tarea === 'Prueba') imgH = '🔬';
-            return `<div class="mg-cell" style="background:${color}; color:${txt};">
-                        ${imgH}
-                        <span style="font-weight:800; font-size:1rem; margin-top:6px; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${task.baseName}</span>
-                        <span style="font-size:0.75rem; opacity:0.9;">Molde ${task.number}</span>
-                    </div>`;
+            return `<div class="mg-cell" style="background:${color}; color:${txt};">${imgH}<span style="font-weight:800; font-size:1rem; margin-top:6px; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${task.baseName}</span><span style="font-size:0.75rem; opacity:0.9;">Molde ${task.number}</span></div>`;
         }
 
         function abrirGantt(dateStr) {
@@ -745,35 +726,23 @@
             document.getElementById('ganttTitulo').textContent = dObj.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
             const cont = document.getElementById('ganttDetalle');
             
-            // Reconstrucción día a nivel test
             const dTestArr = [];
             TURNOS.forEach(t => { (realData[key(dateStr, t)]||[]).filter(x=>x.tarea==='Prueba').forEach(x => { if(!dTestArr.includes(x.moldeCompleto)) dTestArr.push(x.moldeCompleto); }); });
 
-            let html = `<div class="modal-grid">
-                <div></div> <div class="mg-header">T1</div> <div class="mg-header">T2</div> <div class="mg-header">T3</div>
-                
-                <div class="mg-row-label">Planificación</div>`;
+            let html = `<div class="modal-grid"><div></div> <div class="mg-header">T1</div> <div class="mg-header">T2</div> <div class="mg-header">T3</div><div class="mg-row-label">Planificación</div>`;
             TURNOS.forEach(t => { html += renderModalBlock((planData[key(dateStr, t)] || [])[0]); });
-
             html += `<div class="mg-row-label">Cumplimiento</div>`;
             TURNOS.forEach(t => {
                 const k = key(dateStr, t);
-                if (isToday) {
-                    html += `<div class="mg-comp" style="background:var(--bg-cell); border: 1px dashed var(--border); color:var(--text-muted); font-size:0.8rem;">HOY (En curso)</div>`;
-                } else if (!planData[k] || planData[k].length === 0) {
-                    html += `<div></div>`;
-                } else {
+                if (isToday) html += `<div class="mg-comp" style="background:var(--bg-cell); border: 1px dashed var(--border); color:var(--text-muted); font-size:0.8rem;">HOY</div>`;
+                else if (!planData[k] || planData[k].length === 0) html += `<div></div>`;
+                else {
                     const c = getComplianceDayLevel(planData[k], realData[k], dTestArr);
                     html += `<div class="mg-comp ci-${c.status}">${c.emoji} <span style="margin-left:8px; font-size:0.9rem;">${c.msg}</span></div>`;
                 }
             });
-
             html += `<div class="mg-row-label">Prod. Real</div>`;
-            TURNOS.forEach(t => {
-                if(isToday) html += `<div class="mg-cell empty">Información Protegida</div>`;
-                else html += renderModalBlock((realData[key(dateStr, t)] || [])[0]); 
-            });
-
+            TURNOS.forEach(t => { if(isToday) html += `<div class="mg-cell empty">Dato Protegido</div>`; else html += renderModalBlock((realData[key(dateStr, t)] || [])[0]); });
             html += `</div>`;
             cont.innerHTML = html;
             document.getElementById('ganttModal').style.display = 'flex';
@@ -792,23 +761,15 @@
             document.getElementById('selYear').value = currentDate.getFullYear();
         }
         function cerrarSelectorMes() { document.getElementById('overlay').style.display = 'none'; document.getElementById('monthSelector').style.display = 'none'; }
-        function irAMes() {
-            currentDate.setFullYear(parseInt(document.getElementById('selYear').value)); currentDate.setMonth(parseInt(document.getElementById('selMonth').value));
-            cerrarSelectorMes(); loadData();
-        }
+        function irAMes() { currentDate.setFullYear(parseInt(document.getElementById('selYear').value)); currentDate.setMonth(parseInt(document.getElementById('selMonth').value)); cerrarSelectorMes(); loadData(); }
         function cambiarMes(delta) { currentDate.setMonth(currentDate.getMonth() + delta); loadData(); }
         function irAHoy() { currentDate = new Date(); loadData(); }
-
-        function updateClock() {
-            const now = new Date();
-            document.getElementById('liveClock').textContent = now.toLocaleDateString('es-AR', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) + ' · ' + now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' });
-        }
+        function updateClock() { const now = new Date(); document.getElementById('liveClock').textContent = now.toLocaleDateString('es-AR', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) + ' · ' + now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }); }
         function toggleTheme() { themeDark = !themeDark; document.body.classList.toggle('light-mode', !themeDark); localStorage.setItem('theme', themeDark ? 'dark' : 'light'); }
 
         window.addEventListener('load', () => {
             if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeDark = false; }
-            updateClock(); setInterval(updateClock, 30000);
-            loadData();
+            updateClock(); setInterval(updateClock, 30000); loadData();
         });
     </script>
 </body>
