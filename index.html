@@ -217,21 +217,14 @@
         .mold-label-text { font-size: 0.5rem; font-weight: 600; opacity: 0.7; text-transform: uppercase; }
         .mold-number { font-size: 0.65rem; font-weight: 700; }
 
-        .end-marker {
-            position: absolute; bottom: 0; right: 0; width: 0; height: 0;
-            border-style: solid;
-            border-width: 0 0 8px 8px;
-            border-color: transparent transparent var(--accent) transparent;
-            opacity: 0.7;
-        }
-
         /* Triángulo Cambio de Molde (Esquina Superior Izquierda) */
         .change-marker {
             position: absolute; top: 0; left: 0;
             width: 0; height: 0;
-            border-top: 18px solid; /* El color se define dinámicamente inline */
+            border-top: 18px solid; 
             border-right: 18px solid transparent;
             z-index: 5;
+            filter: drop-shadow(1px 1px 2px rgba(0,0,0,0.4));
         }
 
         /* Triángulo Prueba/PR (Esquina Superior Derecha) */
@@ -241,6 +234,7 @@
             border-top: 18px solid #000;
             border-left: 18px solid transparent;
             z-index: 5;
+            filter: drop-shadow(-1px 1px 2px rgba(0,0,0,0.4));
         }
 
         .compliance-bar-cell {
@@ -288,15 +282,16 @@
         }
 
         td.sunday-cell {
-            background-color: var(--sunday-bg); /* Prioridad ajustada al remover !important */
+            background-color: var(--sunday-bg);
         }
 
         .pruebas-info {
             margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius);
             padding: 16px; box-shadow: var(--shadow-3d); font-size: 0.8rem;
         }
-        .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; }
-        .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 6px; vertical-align: middle; }
+        .pruebas-table { width: 100%; border-collapse: collapse; font-size: 0.75rem; text-align: left; }
+        .pruebas-table th, .pruebas-table td { border: 1px solid var(--border); padding: 8px; vertical-align: middle; }
+        .pruebas-table th { background: var(--bg-cell); color: var(--accent-light); font-weight: 700; }
 
         .gantt-modal {
             position: fixed; top:0; left:0; width:100%; height:100%;
@@ -321,20 +316,53 @@
         .gantt-plan { opacity: 0.7; }
         .close-btn { background: var(--accent); color: #fff; border: none; padding: 6px 14px; border-radius: 4px; cursor: pointer; float: right; }
 
+        /* Estilos optimizados para Impresión */
         @media print {
-            body { background: white; color: black; padding: 0; font-size: 8px; }
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            body { 
+                background: white !important; 
+                color: black !important; 
+                padding: 0; 
+                font-size: 9px !important; 
+            }
             .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal,
-            .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, #pruebasInfo { display: none !important; }
-            .gantt-wrapper { box-shadow: none; background: none; padding: 0; }
-            .gantt-table th, .gantt-table td { border: 1px solid #aaa; height: 40px; }
-            .mold-image { width: 14px; height: 14px; filter: none; }
-            #pruebasPrint { display: block !important; position: absolute; right: 10px; top: 10px; width: 25%; }
-            #pruebasPrint table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
-            #pruebasPrint th, #pruebasPrint td { border: 1px solid #aaa; padding: 4px; }
-            @page { size: A4 landscape; margin: 0.3cm; }
+            .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn { 
+                display: none !important; 
+            }
+            .gantt-wrapper { 
+                box-shadow: none !important; 
+                background: none !important; 
+                padding: 0 !important; 
+                overflow: visible !important; 
+            }
+            .gantt-table th, .gantt-table td { 
+                border: 1px solid #444 !important; 
+                height: 38px !important; 
+                padding: 1px;
+            }
+            .mold-image { width: 14px; height: 14px; filter: none !important; }
+            .mold-base { font-size: 6px; }
+            .mold-label-text { font-size: 5px; }
+            .mold-number { font-size: 6px; }
+            .day-number { font-size: 7px; }
+            .day-name { font-size: 5px; }
+            .turn-label { font-size: 7px; }
+            
+            #pruebasPrint { display: block !important; margin-top: 15px; page-break-inside: avoid; }
+            #pruebasPrint h3 { font-size: 10px; margin-bottom: 5px; color: #000; }
+            #pruebasPrint table { width: 100%; border-collapse: collapse; font-size: 7px; }
+            #pruebasPrint th, #pruebasPrint td { border: 1px solid #444 !important; padding: 3px; color: #000 !important; }
+            #pruebasPrint th { background: #eee !important; font-weight: bold; }
+            
+            #pruebasInfo { display: none !important; }
+            
+            @page { size: A4 landscape; margin: 5mm; }
         }
 
-        #pruebasPrint { display: none; margin-top: 20px; }
+        #pruebasPrint { display: none; }
     </style>
 </head>
 <body>
@@ -412,18 +440,9 @@
         let currentDate = new Date();
         let themeDark = true;
 
-        // Distribución optimizada de Matiz (Hue) por base para no repetirse
         const typeColorMap = {
-            'H8': 15,
-            'H12': 35,
-            'H18': 55,
-            'P12': 195,
-            'P18': 225,
-            'L12': 275,
-            'L16': 315,
-            'DM20': 110,
-            'DM27': 150,
-            'KB': 0
+            'H8': 15, 'H12': 35, 'H18': 55, 'P12': 195, 'P18': 225,
+            'L12': 275, 'L16': 315, 'DM20': 110, 'DM27': 150, 'KB': 0
         };
 
         function getBaseHue(baseName) {
@@ -434,12 +453,10 @@
             return Math.abs(hash) % 360;
         }
 
-        // Variaciones de intensidad calculadas en función del número de molde
         function getBrickColor(baseName, number) {
             const hue = getBaseHue(baseName);
-            // El molde 1 es más claro (luminosidad alta). El molde 2, 3, etc., se va oscureciendo en saltos de 15%.
             let light = 65 - ((number - 1) * 15); 
-            if (light < 25) light = 25; // Previene que se vuelva absolutamente negro y mantenga el color.
+            if (light < 25) light = 25; 
             let sat = 85; 
             return `hsl(${hue}, ${sat}%, ${light}%)`;
         }
@@ -481,7 +498,13 @@
 
         function processData(rows) {
             const data = {};
-            rows.forEach(row => {
+            rows.forEach(rawRow => {
+                // Limpieza de claves (inmune a offsets de columnas como Marca Temporal)
+                const row = {};
+                for (let k in rawRow) {
+                    row[k.trim()] = rawRow[k];
+                }
+
                 const molde = (row['LADRILLO:'] || '').trim();
                 let tarea = (row['TAREA:'] || '').trim();
                 tarea = normalizarTarea(tarea);
@@ -521,6 +544,7 @@
                             baseName: getBaseName(molde),
                             number: getMoldNumber(molde),
                             tarea,
+                            turno: t,
                             esInicio: diaIgualInicio && t === ti,
                             esFin: diaIgualFin && t === tf
                         });
@@ -552,6 +576,26 @@
             return prod.length > 0 ? { status: 'desvio' } : { status: 'sinPlan' };
         }
 
+        function parseOverlaps(tasksArray, trackingVars) {
+            let prods = tasksArray.filter(t => t.tarea === 'Producción');
+            const tests = tasksArray.filter(t => t.tarea === 'Prueba');
+            
+            if (prods.length > 1) {
+                // Resolución de conflicto en el mismo turno
+                const starting = prods.find(p => p.esInicio);
+                const ending = prods.find(p => p.esFin);
+                if (starting) {
+                    if (ending) {
+                        trackingVars.prevMold = ending.moldeCompleto;
+                        trackingVars.prevBase = ending.baseName;
+                        trackingVars.prevNum = ending.number;
+                    }
+                    prods = [starting];
+                }
+            }
+            return { prods, tests };
+        }
+
         function renderGantt() {
             const wrapper = document.getElementById('ganttWrapper');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
@@ -565,70 +609,60 @@
             const turnoWidth = 65;
             const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
 
-            // Pre-cálculo de secuencias cronológicas
             const precalc = {};
             const changeDays = new Set();
             const testDays = new Set();
             
-            let prevMoldPlan = null, prevBaseNamePlan = null, prevNumberPlan = null;
-            let prevMoldReal = null, prevBaseNameReal = null, prevNumberReal = null;
+            let planTrack = { prevMold: null, prevBase: null, prevNum: null };
+            let realTrack = { prevMold: null, prevBase: null, prevNum: null };
 
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 TURNOS.forEach(turno => {
                     const k = key(dateStr, turno);
 
-                    // Mapeo cronológico Planificación
+                    // Planificación
                     const tasksPlan = planData[k] || [];
-                    const prodPlan = tasksPlan.filter(t => t.tarea === 'Producción');
-                    const testPlan = tasksPlan.filter(t => t.tarea === 'Prueba');
-                    if (prodPlan.length > 0) {
-                        const currentMold = prodPlan[0].moldeCompleto;
-                        const isChange = currentMold !== prevMoldPlan;
+                    const parsedPlan = parseOverlaps(tasksPlan, planTrack);
+                    if (parsedPlan.prods.length > 0) {
+                        const currentMold = parsedPlan.prods[0].moldeCompleto;
+                        const isChange = currentMold !== planTrack.prevMold;
                         precalc['plan_' + k] = {
-                            mold: currentMold,
-                            baseName: prodPlan[0].baseName,
-                            number: prodPlan[0].number,
+                            mold: currentMold, baseName: parsedPlan.prods[0].baseName, number: parsedPlan.prods[0].number,
                             showDetail: isChange,
-                            prevProps: (isChange && prevMoldPlan) ? { baseName: prevBaseNamePlan, number: prevNumberPlan } : null,
-                            hasTest: testPlan.length > 0,
-                            esFin: prodPlan[0].esFin
+                            prevProps: (isChange && planTrack.prevMold) ? { baseName: planTrack.prevBase, number: planTrack.prevNum } : null,
+                            hasTest: parsedPlan.tests.length > 0
                         };
                         if (isChange && currentView === 'plan') changeDays.add(dateStr);
-                        prevMoldPlan = currentMold; prevBaseNamePlan = prodPlan[0].baseName; prevNumberPlan = prodPlan[0].number;
+                        planTrack.prevMold = currentMold; planTrack.prevBase = parsedPlan.prods[0].baseName; planTrack.prevNum = parsedPlan.prods[0].number;
                     } else {
-                        precalc['plan_' + k] = { mold: null, hasTest: testPlan.length > 0 };
-                        prevMoldPlan = null; // Hueco en turnos reinicia la producción continua
+                        precalc['plan_' + k] = { mold: null, hasTest: parsedPlan.tests.length > 0 };
+                        planTrack.prevMold = null; 
                     }
-                    if (testPlan.length > 0 && currentView === 'plan') testDays.add(dateStr);
+                    if (parsedPlan.tests.length > 0 && currentView === 'plan') testDays.add(dateStr);
 
-                    // Mapeo cronológico Producción Real
+                    // Real
                     const tasksReal = realData[k] || [];
-                    const prodReal = tasksReal.filter(t => t.tarea === 'Producción');
-                    const testReal = tasksReal.filter(t => t.tarea === 'Prueba');
-                    if (prodReal.length > 0) {
-                        const currentMold = prodReal[0].moldeCompleto;
-                        const isChange = currentMold !== prevMoldReal;
+                    const parsedReal = parseOverlaps(tasksReal, realTrack);
+                    if (parsedReal.prods.length > 0) {
+                        const currentMold = parsedReal.prods[0].moldeCompleto;
+                        const isChange = currentMold !== realTrack.prevMold;
                         precalc['real_' + k] = {
-                            mold: currentMold,
-                            baseName: prodReal[0].baseName,
-                            number: prodReal[0].number,
+                            mold: currentMold, baseName: parsedReal.prods[0].baseName, number: parsedReal.prods[0].number,
                             showDetail: isChange,
-                            prevProps: (isChange && prevMoldReal) ? { baseName: prevBaseNameReal, number: prevNumberReal } : null,
-                            hasTest: testReal.length > 0,
-                            esFin: prodReal[0].esFin
+                            prevProps: (isChange && realTrack.prevMold) ? { baseName: realTrack.prevBase, number: realTrack.prevNum } : null,
+                            hasTest: parsedReal.tests.length > 0
                         };
                         if (isChange && currentView !== 'plan') changeDays.add(dateStr);
-                        prevMoldReal = currentMold; prevBaseNameReal = prodReal[0].baseName; prevNumberReal = prodReal[0].number;
+                        realTrack.prevMold = currentMold; realTrack.prevBase = parsedReal.prods[0].baseName; realTrack.prevNum = parsedReal.prods[0].number;
                     } else {
-                        precalc['real_' + k] = { mold: null, hasTest: testReal.length > 0 };
-                        prevMoldReal = null;
+                        precalc['real_' + k] = { mold: null, hasTest: parsedReal.tests.length > 0 };
+                        realTrack.prevMold = null;
                     }
-                    if (testReal.length > 0 && currentView !== 'plan') testDays.add(dateStr);
+                    if (parsedReal.tests.length > 0 && currentView !== 'plan') testDays.add(dateStr);
                 });
             }
 
-            // Construcción del HTML
             let html = `<table class="gantt-table"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
             const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
             for (let d = 1; d <= daysInMonth; d++) {
@@ -685,11 +719,9 @@
                             `;
                             if (pre.prevProps) {
                                 const prevColor = getBrickColor(pre.prevProps.baseName, pre.prevProps.number);
-                                markers += `<div class="change-marker" style="border-top-color: ${prevColor};"></div>`;
+                                markers += `<div class="change-marker" title="Viene de: ${pre.prevProps.baseName} (${pre.prevProps.number})" style="border-top-color: ${prevColor};"></div>`;
                             }
                         }
-
-                        if (pre.esFin) markers += '<div class="end-marker"></div>';
 
                         if (currentView === 'cumpl') {
                             const comp = getCompliance(pre.mold, planData[k] || []);
@@ -699,16 +731,10 @@
                         }
                     } else if (!pre.hasTest) {
                         cellContent = '<span style="color:var(--text-muted);">—</span>';
-                    } else {
-                        // En caso de que haya una prueba en un turno sin producción declarada
-                        cellContent = '<span style="color:var(--text-muted);">—</span>';
                     }
 
-                    if (pre.hasTest) {
-                        markers += `<div class="test-marker"></div>`;
-                    }
+                    if (pre.hasTest) markers += `<div class="test-marker"></div>`;
 
-                    // Se asigna dinámicamente el estilo para permitir la superposición transparente en los domingos.
                     let inlineStyles = `color:${txtColor}; width:${colWidthCalc};`;
                     if (bgColor !== 'transparent') inlineStyles += ` background-color:${bgColor};`;
 
@@ -773,20 +799,20 @@
                     (realData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => dayRealTests.push(p));
                 });
                 dayPlanTests.forEach(p => {
-                    const cumplida = dayRealTests.some(rt => rt.moldeCompleto === p.moldeCompleto);
-                    pruebas.push({ fecha: ds, molde: p.moldeCompleto, tipo: 'Plan', estado: cumplida ? '✅ Realizada' : '⚠️ No realizada' });
+                    const cumplida = dayRealTests.some(rt => rt.moldeCompleto === p.moldeCompleto && rt.turno === p.turno);
+                    pruebas.push({ fecha: ds, turno: p.turno, molde: p.moldeCompleto, tipo: 'Plan', estado: cumplida ? '<span style="color:var(--green); font-weight:700;">✅ Prueba Realizada</span>' : '⚠️ No realizada' });
                 });
                 dayRealTests.forEach(rt => {
-                    if (!dayPlanTests.some(p => p.moldeCompleto === rt.moldeCompleto)) {
-                        pruebas.push({ fecha: ds, molde: rt.moldeCompleto, tipo: 'Real', estado: '📌 No planificada' });
+                    if (!dayPlanTests.some(p => p.moldeCompleto === rt.moldeCompleto && p.turno === rt.turno)) {
+                        pruebas.push({ fecha: ds, turno: rt.turno, molde: rt.moldeCompleto, tipo: 'Real', estado: '📌 No planificada' });
                     }
                 });
             }
             if (pruebas.length === 0) {
                 container.innerHTML = '<h3>🔬 Pruebas del mes</h3><p style="color:var(--text-muted);">Sin pruebas en esta vista.</p>';
             } else {
-                let html = '<h3>🔬 Pruebas del mes</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>';
-                pruebas.forEach(p => html += `<tr><td>${p.fecha}</td><td>${p.molde}</td><td>${p.tipo}</td><td>${p.estado}</td></tr>`);
+                let html = '<h3>🔬 Pruebas del mes</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>';
+                pruebas.forEach(p => html += `<tr><td>${p.fecha}</td><td>${p.turno}</td><td>${p.molde}</td><td>${p.tipo}</td><td>${p.estado}</td></tr>`);
                 html += '</tbody></table>';
                 container.innerHTML = html;
             }
@@ -800,10 +826,10 @@
                 const ds = formatYYYYMMDD(new Date(year, month, d));
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
-                    (planData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => pruebasPlan.push({ fecha: ds, molde: p.moldeCompleto }));
+                    (planData[k] || []).filter(p => p.tarea === 'Prueba').forEach(p => pruebasPlan.push({ fecha: ds, turno: p.turno, molde: p.moldeCompleto }));
                 });
             }
-            printDiv.innerHTML = pruebasPlan.length ? '<h3>Pruebas Plan</h3><table>' + pruebasPlan.map(p => `<tr><td>${p.fecha}</td><td>${p.molde}</td></tr>`).join('') + '</table>' : '';
+            printDiv.innerHTML = pruebasPlan.length ? '<h3>Detalle de Pruebas Planificadas</h3><table><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th></tr></thead><tbody>' + pruebasPlan.map(p => `<tr><td>${p.fecha}</td><td>${p.turno}</td><td>${p.molde}</td></tr>`).join('') + '</tbody></table>' : '';
         }
 
         function setView(view) {
@@ -824,7 +850,7 @@
         }
         function imprimirPlan() {
             setView('plan');
-            setTimeout(() => window.print(), 100);
+            setTimeout(() => window.print(), 250);
         }
 
         function abrirGantt(dateStr) {
