@@ -25,7 +25,7 @@
             --shadow: 0 4px 12px rgba(0,0,0,0.4);
             --shadow-3d: 0 8px 24px rgba(0,0,0,0.6);
             --radius: 16px;
-            --cell-h: 85px;
+            --cell-h: 85px; 
             --font: 'Plus Jakarta Sans', system-ui, sans-serif;
             --prueba-bg: #ffd700;
             --sunday-bg: rgba(255,255,255,0.03);
@@ -49,6 +49,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; }
         body { font-family: var(--font); background: var(--bg-body); color: var(--text-main); padding: 24px; min-height: 100vh; transition: background 0.3s, color 0.3s; }
 
+        /* Loader */
         .loader-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: var(--bg-body); z-index: 9999; display: flex; flex-direction: column; justify-content: center; align-items: center; transition: opacity 0.5s ease, visibility 0.5s ease; }
         .spinner { width: 60px; height: 60px; border: 5px solid var(--bg-cell); border-top-color: var(--accent); border-radius: 50%; animation: spin 1s cubic-bezier(0.6, 0.2, 0.4, 0.8) infinite; margin-bottom: 20px; box-shadow: 0 0 20px rgba(224, 123, 76, 0.3); }
         @keyframes spin { 100% { transform: rotate(360deg); } }
@@ -56,7 +57,8 @@
         .loader-container h2 { color: var(--accent-light); margin-bottom: 8px; font-weight: 800; letter-spacing: -0.5px;}
         .loader-container p { color: var(--text-muted); font-size: 0.9rem; }
 
-        #printHeader { display: none; }
+        /* Encabezados Exclusivos Impresión */
+        #printHeader { display: none; } 
 
         .app-header { display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; background: var(--bg-panel); border-radius: var(--radius); box-shadow: var(--shadow-3d); margin-bottom: 20px; }
         .logo-container { display: flex; align-items: center; gap: 16px; }
@@ -68,9 +70,10 @@
         .live-clock { font-weight: 600; font-size: 0.9rem; background: var(--bg-cell); padding: 8px 16px; border-radius: 30px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2); }
         .theme-btn { background: var(--bg-cell); border: 1px solid var(--border); color: var(--text-main); padding: 8px 12px; border-radius: 10px; cursor: pointer; box-shadow: var(--shadow); transition: transform 0.2s; }
         .theme-btn:hover { transform: scale(1.05); }
-
+        
         .views-container { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 15px; background: var(--bg-panel); padding: 12px 20px; border-radius: var(--radius); box-shadow: var(--shadow-3d); margin-bottom: 20px; }
-
+        
+        /* Switch UI */
         .switch-group { display: flex; align-items: center; gap: 10px; }
         .toggle-switch { position: relative; width: 190px; height: 42px; background: var(--bg-cell); border-radius: 24px; cursor: pointer; border: 2px solid var(--border); box-shadow: inset 0 2px 6px rgba(0,0,0,0.3); }
         .toggle-option { position: absolute; top: 0; width: 50%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.85rem; transition: 0.3s; z-index: 1; }
@@ -86,11 +89,13 @@
         .action-btn { background: var(--bg-cell); border: 1px solid var(--border); color: var(--text-main); padding: 10px 18px; border-radius: 24px; font-weight: 600; font-size: 0.85rem; cursor: pointer; display: flex; align-items: center; gap: 8px; transition: 0.2s; box-shadow: var(--shadow); }
         .action-btn:hover { background: var(--accent); color: #fff; border-color: var(--accent); transform: translateY(-2px); }
 
+        /* KPIs */
         .kpi-container { display: flex; gap: 15px; justify-content: center; margin-bottom: 20px; flex-wrap: wrap; }
         .kpi-card { background: var(--bg-panel); border-radius: var(--radius); padding: 16px 24px; box-shadow: var(--shadow-3d); text-align: center; min-width: 120px; border-top: 3px solid var(--accent); flex: 1 1 auto; }
         .kpi-value { font-size: 2rem; font-weight: 800; color: var(--text-main); letter-spacing: -1px; }
         .kpi-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-top: 4px; text-transform: uppercase; }
 
+        /* Navegación Mes */
         .month-nav { display: flex; flex-direction: column; align-items: center; gap: 12px; margin-bottom: 20px; }
         .month-nav-row { display: flex; justify-content: center; align-items: center; gap: 16px; }
         .month-nav button { background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main); padding: 8px 18px; border-radius: 20px; font-weight: 700; cursor: pointer; transition: 0.2s; box-shadow: var(--shadow); }
@@ -103,13 +108,14 @@
         .month-selector select, .month-selector input { margin: 10px; padding: 10px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); font-family: var(--font); font-weight: 600; }
         .overlay { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); backdrop-filter: blur(5px); z-index: 1500; }
 
+        /* Grid Principal (Desktop/Default) */
         .gantt-wrapper { background: var(--bg-panel); border-radius: var(--radius); padding: 12px; box-shadow: var(--shadow-3d); overflow-x: auto; }
         .gantt-table { width: 100%; border-collapse: separate; border-spacing: 0; table-layout: fixed; }
         .gantt-table th, .gantt-table td { border-bottom: 1px dashed var(--border); border-right: 2px solid var(--border); height: var(--cell-h); padding: 4px; text-align: center; vertical-align: middle; position: relative; overflow: hidden; transition: 0.2s; }
         .gantt-table th { background: var(--bg-panel); border-bottom: 3px solid var(--border); padding: 8px 4px; z-index: 20;}
         .gantt-table th:first-child, .gantt-table td:first-child { border-left: 2px solid var(--border); border-right: 3px solid var(--border); background: var(--bg-panel); position: sticky; left: 0; z-index: 30; }
         .gantt-table tr.t3-row td { border-bottom: 3px solid var(--border); }
-
+        
         .comp-row { display: none; }
         body.view-cumpl .comp-row { display: table-row; }
         body.view-cumpl .comp-row td { height: 35px; border-bottom: 3px solid var(--border); background: var(--bg-cell); padding: 4px; }
@@ -134,30 +140,34 @@
         .turn-label { font-weight: 800; color: var(--accent-light); font-size: 0.9rem; margin: auto; }
         .comp-label-text { font-size: 0.65rem; color: var(--text-muted); font-weight: 700; letter-spacing: 1px;}
 
+        /* Celda de contenido */
         .cell-content { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100%; width: 100%; border-radius: 8px; transition: 0.2s; padding: 2px;}
         .mold-image { width: 32px; height: 32px; object-fit: contain; border-radius: 6px; background: rgba(255,255,255,0.15); margin-bottom: 2px; filter: drop-shadow(0 3px 5px rgba(0,0,0,0.7)); }
         .mold-base { font-weight: 800; font-size: 0.75rem; line-height: 1.1; text-align: center; white-space: normal; word-break: break-word; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
         .mold-label-text { font-size: 0.55rem; font-weight: 700; opacity: 0.85; text-transform: uppercase; margin-top: 1px;}
         .mold-number { font-size: 0.7rem; font-weight: 800; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
 
+        /* Flecha Avance Ajustada (Sutil 13px) */
         .flow-arrow-container { display: flex; justify-content: center; align-items: center; height: 100%; width: 100%; }
         .flow-arrow { width: 13px; height: 13px; opacity: 0.35; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); animation: moveDown 2s infinite ease-in-out; }
         @keyframes moveDown { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(2px); } }
 
         .change-marker { position: absolute; top: 0; left: 0; width: 0; height: 0; border-top: 22px solid; border-right: 22px solid transparent; z-index: 5; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); }
         .test-marker { position: absolute; top: 0; right: 0; width: 0; height: 0; border-top: 22px solid #000; border-left: 22px solid transparent; z-index: 5; }
-
+        
         td.today-col { border-left: 3px solid #000 !important; border-right: 3px solid #000 !important; background: rgba(0,0,0,0.1); }
         th.today-col { border-left: 3px solid #000 !important; border-right: 3px solid #000 !important; border-top: 3px solid #000 !important; background: #000 !important; color: #fff !important; }
         th.today-col .day-number { color: var(--accent) !important; font-size: 1.2rem; }
         td.sunday-cell { background-color: var(--sunday-bg); }
 
+        /* Leyenda de Colores */
         #legendContainer { margin-top: 16px; background: var(--bg-panel); padding: 16px 20px; border-radius: var(--radius); box-shadow: var(--shadow-3d); display: none; }
         .legend-title { font-size: 0.8rem; font-weight: 800; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase; text-align: center; letter-spacing: 0.5px;}
         .legend-items { display: flex; flex-wrap: wrap; gap: 20px; align-items: center; justify-content: center; }
         .legend-item { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 800; color: var(--text-main); }
         .legend-color { width: 22px; height: 22px; border-radius: 6px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.4); }
 
+        /* Pruebas Inferiores */
         .pruebas-info { margin-top: 20px; background: var(--bg-panel); border-radius: var(--radius); padding: 20px; box-shadow: var(--shadow-3d); }
         .pruebas-table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 0.8rem; margin-top: 12px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); }
         .pruebas-table th, .pruebas-table td { padding: 10px; text-align: center; border-bottom: 1px solid var(--border); }
@@ -165,10 +175,11 @@
         .pruebas-table tbody tr:last-child td { border-bottom: none; }
         .pruebas-table tbody tr:hover { background: rgba(255,255,255,0.02); }
 
+        /* Modal Gantt */
         .gantt-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 3000; }
         .gantt-content { background: var(--bg-panel); border: 1px solid var(--border); border-radius: 20px; padding: 28px; width: 95%; max-width: 850px; box-shadow: 0 20px 60px rgba(0,0,0,0.9); animation: modalPop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         @keyframes modalPop { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
-
+        
         .modal-header-container { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; border-bottom: 2px solid var(--bg-cell); padding-bottom: 16px;}
         .modal-header-container h3 { font-size: 1.4rem; font-weight: 800; color: var(--text-main); margin: 0; }
         .close-btn { background: var(--bg-cell); border: 1px solid var(--border); color: var(--text-main); font-weight: 700; padding: 8px 16px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
@@ -181,36 +192,37 @@
         .mg-cell.empty { background: var(--bg-cell); box-shadow: none; border: 1px dashed var(--border); color: var(--text-muted); }
         .mg-comp { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; border-radius: 10px; padding: 12px; box-shadow: inset 0 2px 4px rgba(0,0,0,0.3); color: #fff; }
 
+        /* ================= RESPONSIVE MÓVIL (VISTA VERTICAL) ================= */
         @media screen and (max-width: 768px) {
             body { padding: 12px; }
             .app-header { flex-direction: column; text-align: center; gap: 16px; padding: 16px; }
             .header-right { width: 100%; align-items: stretch; }
             .header-top-row { justify-content: space-between; margin-bottom: 8px; }
             .btn-new-plan { justify-content: center; width: 100%; }
-
+            
             .views-container { flex-direction: column; align-items: stretch; gap: 12px; }
             .switch-group, .toggle-switch, .cumpl-btn, .action-btn { width: 100%; justify-content: center; }
-
+            
             .kpi-container { gap: 10px; }
             .kpi-card { min-width: 40%; padding: 12px 8px; }
-
+            
             .month-nav-row { width: 100%; justify-content: space-between; }
-
+            
             .mobile-gantt { width: 100%; table-layout: fixed; }
-            .mobile-gantt th, .mobile-gantt td {
-                border-bottom: 2px solid var(--border) !important;
-                border-right: 1px dashed var(--border) !important;
+            .mobile-gantt th, .mobile-gantt td { 
+                border-bottom: 2px solid var(--border) !important; 
+                border-right: 1px dashed var(--border) !important; 
                 padding: 4px;
             }
             .mobile-gantt th:first-child, .mobile-gantt td:first-child { border-right: 2px solid var(--border) !important; }
             .mobile-gantt th:last-child, .mobile-gantt td:last-child { border-right: none !important; }
             .mobile-gantt th { border-bottom: 2px solid var(--border) !important; }
-
+            
             body.view-cumpl .mobile-gantt tr.day-row td { border-bottom: 1px dashed var(--border) !important; }
             body.view-cumpl .mobile-gantt tr.comp-row td { border-bottom: 2px solid var(--border) !important; }
 
             .mobile-gantt .day-header { grid-template-rows: auto auto auto; gap: 4px; }
-
+            
             .mobile-gantt .flow-arrow { animation: moveRightMobile 2s infinite ease-in-out !important; }
             @keyframes moveRightMobile {
                 0%, 100% { transform: rotate(-90deg) translateY(-2px); }
@@ -220,7 +232,7 @@
             .mobile-gantt tr.today-row th, .mobile-gantt tr.today-row td { border-top: 3px solid #000 !important; border-bottom: 3px solid #000 !important; }
             .mobile-gantt tr.today-row th { background: #000 !important; color: #fff !important; }
             .mobile-gantt tr.today-row th .day-number { color: var(--accent); font-size: 1.3rem; }
-
+            
             .modal-grid { grid-template-columns: 70px repeat(3, 1fr); gap: 6px; }
             .mg-header { font-size: 0.85rem; padding: 6px; }
             .mg-row-label { font-size: 0.65rem; padding-right: 4px; }
@@ -230,41 +242,33 @@
             .mg-comp { font-size: 0.9rem; padding: 4px; }
         }
 
+        /* ================= MEDIA PRINT ================= */
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: A4 landscape; margin: 8mm; }
-
             body { background: white; color: black; padding: 0; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-
             .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal, .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, #loader, #legendContainer { display: none !important; }
-
             #printHeader { display: block !important; flex: 0 0 auto; text-align: center; margin-bottom: 8px; }
             #printTitleMain { font-size: 1.4rem; font-weight: 800; margin: 0 0 2px 0; color: #000 !important; text-transform: uppercase; }
             #printTitleSub { font-size: 1rem; font-weight: 600; margin: 0; color: #444 !important; text-transform: uppercase; letter-spacing: 1px;}
-
             .gantt-wrapper { flex: 1 1 auto; display: flex; flex-direction: column; overflow: hidden; box-shadow: none; background: none; padding: 0; margin-bottom: 8px; border: none;}
             .gantt-table { height: 100%; width: 100%; border-collapse: collapse; }
-
             .gantt-table th, .gantt-table td { border-top: none !important; border-left: none !important; border-right: 2px solid #222 !important; border-bottom: 1px dashed #777 !important; height: auto !important; }
             .gantt-table th { border-bottom: 2px solid #222 !important; }
             .gantt-table th:first-child, .gantt-table td:first-child { border-left: 2px solid #222 !important; }
             .gantt-table tr.t3-row td { border-bottom: 2px solid #222 !important; }
-
             .comp-row { display: none !important; }
             body.view-cumpl .comp-row { display: table-row !important; }
             body.view-cumpl .comp-row td { height: 25px !important; border-bottom: 2px solid #222 !important; }
             body.view-cumpl .gantt-table tr.t3-row td { border-bottom: 1px dashed #777 !important; }
-
             .mold-image { width: 14px; height: 14px; filter: none !important; }
             .mold-base { font-size: 0.65rem; text-shadow: none !important; }
             .mold-number { font-size: 0.6rem; text-shadow: none !important; }
             .turn-label { font-size: 0.75rem; }
             .day-number { font-size: 0.75rem; }
             .day-name { font-size: 0.55rem; }
-
-            .flow-arrow-container { display: flex !important; }
+            .flow-arrow-container { display: flex !important; } 
             .flow-arrow { opacity: 0.5 !important; animation: none !important; filter: none !important; }
-
             .pruebas-info { flex: 0 0 auto; margin-top: 0; background: none; box-shadow: none; border-radius: 0; padding: 0; }
             .pruebas-table { font-size: 0.75rem; border: 1px solid #000; width: 100%; margin-top: 4px; border-collapse: collapse; }
             .pruebas-table th, .pruebas-table td { border: 1px solid #000; color: #000 !important; padding: 4px; }
@@ -274,11 +278,13 @@
     </style>
 </head>
 <body>
+    <!-- Encabezado Físico (Solo Impresión) -->
     <div id="printHeader">
         <h1 id="printTitleMain">Cronograma de Producción</h1>
         <h2 id="printTitleSub">Vista</h2>
     </div>
 
+    <!-- Loader -->
     <div id="loader" class="loader-container">
         <div class="spinner"></div>
         <h2>Sincronizando...</h2>
@@ -357,8 +363,8 @@
 
         let planData = {}; let realData = {};
         let currentView = 'prod';
-        let currentDate = new Date(2026, 7, 13);
-        let actualSystemDate = new Date();
+        let currentDate = new Date(2026, 7, 13); // Simulando 13 de Agosto
+        let actualSystemDate = new Date(); 
         let themeDark = true;
         let isMobileState = window.innerWidth <= 768;
 
@@ -374,8 +380,8 @@
 
         function getBrickColor(baseName, number) {
             const hue = getBaseHue(baseName);
-            let light = 65 - ((number - 1) * 15);
-            if (light < 25) light = 25;
+            let light = 65 - ((number - 1) * 15); 
+            if (light < 25) light = 25; 
             return `hsl(${hue}, 85%, ${light}%)`;
         }
 
@@ -414,7 +420,7 @@
                 let tarea = (row['TAREA'] || '').trim(); tarea = normalizarTarea(tarea);
                 const fi = (row['FECHA INICIO'] || '').trim(); const ti = (row['TURNO INICIO'] || '').trim();
                 const ff = (row['FECHA FIN'] || '').trim(); const tf = (row['TURNO FIN'] || '').trim();
-
+                
                 if (!molde || !fi || !ff) return;
                 const inicio = parseFlexibleDate(fi); const fin = parseFlexibleDate(ff);
                 if (!inicio || !fin) return;
@@ -431,7 +437,7 @@
                     } else if (diaIgualFin) {
                         for (let i = 0; i <= TURNOS.indexOf(tf); i++) tDia.push(TURNOS[i]);
                     } else { tDia = [...TURNOS]; }
-
+                    
                     tDia.forEach(t => {
                         const k = key(ds, t); if (!data[k]) data[k] = [];
                         data[k].push({ moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde), tarea, esInicio: diaIgualInicio && t === ti, esFin: diaIgualFin && t === tf });
@@ -447,7 +453,7 @@
                 const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
                 planData = processData(planRows); realData = processData(realRows);
                 renderGantt();
-                setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500);
+                setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500); 
             } catch (error) {
                 console.error(error);
                 document.getElementById('ganttWrapper').innerHTML = '<p style="color:var(--red); text-align:center; font-weight:bold; margin-top: 20px;">Error al cargar datos.</p>';
@@ -477,7 +483,7 @@
             const wrapper = document.getElementById('ganttWrapper');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const todayStr = formatYYYYMMDD(actualSystemDate);
+            const todayStr = formatYYYYMMDD(actualSystemDate); 
 
             document.getElementById('monthTitle').textContent = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
             document.getElementById('kpiContainer').style.display = currentView === 'cumpl' ? 'flex' : 'none';
@@ -487,7 +493,7 @@
 
             const precalc = {}; const changeDays = new Set(); const testDays = new Set();
             const dayRealTestsMap = {}; const visibleBases = new Set();
-
+            
             for (let d = 1; d <= daysInMonth; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
                 dayRealTestsMap[ds] = [];
@@ -499,67 +505,63 @@
             }
 
             let prevMoldPlan = null, prevBaseNamePlan = null, prevNumberPlan = null;
-            let prevMoldPlanEnded = false;
             let prevMoldReal = null, prevBaseNameReal = null, prevNumberReal = null;
-            let prevMoldRealEnded = false;
 
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                 TURNOS.forEach(turno => {
                     const k = key(dateStr, turno);
-
+                    
                     const tasksPlan = planData[k] || [];
                     const prodPlan = tasksPlan.filter(t => t.tarea === 'Producción').sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
                     const testPlan = tasksPlan.filter(t => t.tarea === 'Prueba');
-
+                    
                     if (prodPlan.length > 0) {
-                        const currentMold = prodPlan[0].moldeCompleto;
-                        const isChange = currentMold !== prevMoldPlan;
+                        const currentMold = prodPlan[0].moldeCompleto; const isChange = currentMold !== prevMoldPlan;
+                        const hasChangeInSameTurn = (isChange && tasksPlan.some(t => t.moldeCompleto === prevMoldPlan && t.esFin));
                         precalc['plan_' + k] = {
                             mold: currentMold,
                             baseName: prodPlan[0].baseName,
                             number: prodPlan[0].number,
                             showDetail: isChange,
-                            prevProps: (isChange && prevMoldPlan && prevMoldPlanEnded) ? { baseName: prevBaseNamePlan, number: prevNumberPlan } : null,
+                            prevProps: (isChange && prevMoldPlan) ? { baseName: prevBaseNamePlan, number: prevNumberPlan } : null,
+                            hasChangeInSameTurn: hasChangeInSameTurn,
                             hasTest: testPlan.length > 0,
                             esFin: prodPlan[0].esFin
                         };
                         if (isChange && currentView === 'plan') changeDays.add(dateStr);
                         prevMoldPlan = currentMold; prevBaseNamePlan = prodPlan[0].baseName; prevNumberPlan = prodPlan[0].number;
-                        prevMoldPlanEnded = prodPlan[0].esFin;
                     } else {
                         precalc['plan_' + k] = { mold: null, hasTest: testPlan.length > 0 };
-                        prevMoldPlan = null;
-                        prevMoldPlanEnded = false;
+                        prevMoldPlan = null; 
                     }
                     if (testPlan.length > 0 && currentView === 'plan') testDays.add(dateStr);
 
                     if (dateStr === todayStr) {
-                        precalc['real_' + k] = { mold: null, hasTest: false }; prevMoldReal = null; prevMoldRealEnded = false;
+                        precalc['real_' + k] = { mold: null, hasTest: false }; prevMoldReal = null;
                     } else {
                         const tasksReal = realData[k] || [];
                         const prodReal = tasksReal.filter(t => t.tarea === 'Producción').sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
                         const testReal = tasksReal.filter(t => t.tarea === 'Prueba');
-
+                        
                         if (prodReal.length > 0) {
-                            const currentMold = prodReal[0].moldeCompleto;
-                            const isChange = currentMold !== prevMoldReal;
+                            const currentMold = prodReal[0].moldeCompleto; const isChange = currentMold !== prevMoldReal;
+                            const hasChangeInSameTurn = (isChange && tasksReal.some(t => t.moldeCompleto === prevMoldReal && t.esFin));
                             precalc['real_' + k] = {
                                 mold: currentMold,
                                 baseName: prodReal[0].baseName,
                                 number: prodReal[0].number,
                                 showDetail: isChange,
-                                prevProps: (isChange && prevMoldReal && prevMoldRealEnded) ? { baseName: prevBaseNameReal, number: prevNumberReal } : null,
+                                prevProps: (isChange && prevMoldReal) ? { baseName: prevBaseNameReal, number: prevNumberReal } : null,
+                                hasChangeInSameTurn: hasChangeInSameTurn,
                                 hasTest: testReal.length > 0,
                                 esFin: prodReal[0].esFin
                             };
                             if (isChange && currentView !== 'plan') changeDays.add(dateStr);
                             prevMoldReal = currentMold; prevBaseNameReal = prodReal[0].baseName; prevNumberReal = prodReal[0].number;
-                            prevMoldRealEnded = prodReal[0].esFin;
                         } else {
                             precalc['real_' + k] = { mold: null, hasTest: testReal.length > 0 };
                             prevMoldReal = null;
-                            prevMoldRealEnded = false;
                         }
                         if (testReal.length > 0 && currentView !== 'plan') testDays.add(dateStr);
                     }
@@ -569,7 +571,8 @@
             if (currentView === 'cumpl') actualizarKPIs(dayRealTestsMap, daysInMonth, year, month, todayStr);
 
             let html = '';
-
+            
+            // Render Mobile
             if (isMobileState) {
                 html += `<table class="gantt-table mobile-gantt"><thead><tr><th style="width:${turnoWidth}px; z-index:30;">DÍA</th>`;
                 TURNOS.forEach(t => html += `<th>${t}</th>`);
@@ -588,7 +591,7 @@
 
                     html += `<tr class="day-row ${trClass}">`;
                     let thClass = dateStr === todayStr ? 'today-col' : (dateObj.getDay() === 0 ? 'sunday-cell' : '');
-
+                    
                     html += `<th class="${thClass}">
                         <div class="day-header">
                             <div class="day-name">${dayNames[dateObj.getDay()]}</div>
@@ -601,26 +604,26 @@
                         const k = key(dateStr, turno);
                         const pre = (currentView === 'plan') ? precalc['plan_' + k] : precalc['real_' + k];
                         let cellContent = ''; let bgColor = 'transparent'; let txtColor = 'inherit';
-                        let cellClasses = dateObj.getDay() === 0 ? 'sunday-cell' : '';
+                        let cellClasses = dateObj.getDay() === 0 ? 'sunday-cell' : ''; 
                         let markers = '';
                         let tooltip = `📅 ${dayNames[dateObj.getDay()]} ${d}/${month+1}/${year} - ${turno}\n`;
 
                         if (pre.mold) {
-                            visibleBases.add(pre.baseName);
+                            visibleBases.add(pre.baseName); 
                             bgColor = getBrickColor(pre.baseName, pre.number); txtColor = pickTextColor(bgColor);
                             if (pre.showDetail) {
                                 cellContent = `<div class="cell-content"><img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}"><span class="mold-base">${pre.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${pre.number}</span></div>`;
-                                if (pre.prevProps) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
-                            } else {
-                                cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`;
+                                if (pre.prevProps && pre.hasChangeInSameTurn) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
+                            } else { 
+                                cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`; 
                             }
                             if (pre.esFin) markers += '<div class="end-marker"></div>';
                         }
                         if (pre.hasTest) markers += `<div class="test-marker"></div>`;
 
                         const comp = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
-                        if (currentView === 'plan') { tooltip += `📋 Plan: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; }
-                        else if (currentView === 'prod') { tooltip += `🏭 Real: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; }
+                        if (currentView === 'plan') { tooltip += `📋 Plan: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
+                        else if (currentView === 'prod') { tooltip += `🏭 Real: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
                         else { tooltip += `📋 Plan: ${planData[k]?.find(x=>x.tarea==='Producción')?.moldeCompleto || '-'}\n🏭 Real: ${pre.mold || '-'}\n📊 Estado: ${comp.msg} ${comp.emoji}`; }
 
                         let inlineStyles = `color:${txtColor};`;
@@ -634,7 +637,7 @@
                     TURNOS.forEach(turno => {
                         const k = key(dateStr, turno);
                         let compCellClass = ''; let compEmoji = '';
-                        if (dateStr === todayStr) {}
+                        if (dateStr === todayStr) {} 
                         else if (planData[k] && planData[k].length > 0) {
                             const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
                             compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
@@ -645,8 +648,7 @@
                     html += `</tr>`;
                 }
                 html += `</tbody></table>`;
-            }
-            else {
+            } else {
                 html += `<table class="gantt-table"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
                 const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
                 for (let d = 1; d <= daysInMonth; d++) {
@@ -679,14 +681,14 @@
                         if (dateStr === todayStr) cellClasses += ' today-col';
 
                         if (pre.mold) {
-                            visibleBases.add(pre.baseName);
+                            visibleBases.add(pre.baseName); 
                             bgColor = getBrickColor(pre.baseName, pre.number); txtColor = pickTextColor(bgColor);
 
                             if (pre.showDetail) {
                                 cellContent = `<div class="cell-content"><img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}"><span class="mold-base">${pre.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${pre.number}</span></div>`;
-                                if (pre.prevProps) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
-                            } else {
-                                cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`;
+                                if (pre.prevProps && pre.hasChangeInSameTurn) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
+                            } else { 
+                                cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`; 
                             }
                             if (pre.esFin) markers += '<div class="end-marker"></div>';
                         }
@@ -694,8 +696,8 @@
                         if (pre.hasTest) markers += `<div class="test-marker"></div>`;
 
                         const comp = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
-                        if (currentView === 'plan') { tooltip += `📋 Plan: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; }
-                        else if (currentView === 'prod') { tooltip += `🏭 Real: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; }
+                        if (currentView === 'plan') { tooltip += `📋 Plan: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
+                        else if (currentView === 'prod') { tooltip += `🏭 Real: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
                         else { tooltip += `📋 Plan: ${planData[k]?.find(x=>x.tarea==='Producción')?.moldeCompleto || '-'}\n🏭 Real: ${pre.mold || '-'}\n📊 Estado: ${comp.msg} ${comp.emoji}`; }
 
                         let inlineStyles = `color:${txtColor}; width:${colWidthCalc};`;
@@ -710,7 +712,7 @@
                         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                         const k = key(dateStr, turno);
                         let compCellClass = ''; let compEmoji = '';
-                        if (dateStr === todayStr) {}
+                        if (dateStr === todayStr) {} 
                         else if (planData[k] && planData[k].length > 0) {
                             const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
                             compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
@@ -725,7 +727,7 @@
             }
 
             wrapper.innerHTML = html;
-
+            
             const legendContainer = document.getElementById('legendContainer');
             if (visibleBases.size > 0) {
                 let legendHtml = '<div class="legend-title">🎨 Leyenda de colores del mes</div><div class="legend-items">';
@@ -762,7 +764,7 @@
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
                     const plans = planData[k] || [];
-                    const reals = ds === todayStr ? [] : (realData[k] || []);
+                    const reals = ds === todayStr ? [] : (realData[k] || []); 
                     const prodsPlan = plans.filter(p => p.tarea === 'Producción');
                     const testsPlan = plans.filter(p => p.tarea === 'Prueba');
                     if (prodsPlan.length > 0 || testsPlan.length > 0) tienePlanDia = true;
@@ -791,23 +793,23 @@
             const container = document.getElementById('pruebasInfo');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const pruebas = [];
-
+            
             for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
                     const dayPlanTests = (planData[k] || []).filter(p => p.tarea === 'Prueba');
                     let shiftRealTests = (realData[k] || []).filter(p => p.tarea === 'Prueba');
-
-                    if (ds === todayStr) shiftRealTests = [];
-
+                    
+                    if (ds === todayStr) shiftRealTests = []; 
+                    
                     if (currentView === 'plan') {
                         dayPlanTests.forEach(p => pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: '-' }));
                     } else if (currentView === 'prod') {
                         shiftRealTests.forEach(rt => pruebas.push({ fecha: ds, turno: t, molde: rt.moldeCompleto, tipo: 'Prueba Ejecutada', estado: 'Realizada ✅' }));
                     } else {
                         dayPlanTests.forEach(p => {
-                            const cumplida = dayRealTestsMap[ds].includes(p.moldeCompleto);
+                            const cumplida = dayRealTestsMap[ds].includes(p.moldeCompleto); 
                             pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: cumplida ? '✅ Realizada' : '❌ No realizada' });
                         });
                         shiftRealTests.forEach(rt => {
@@ -819,7 +821,7 @@
                     }
                 });
             }
-
+            
             if (pruebas.length === 0) {
                 container.innerHTML = '<h3>🔬 Detalle de Pruebas</h3><p style="color:var(--text-muted);">Sin información de pruebas para la vista actual.</p>';
             } else {
@@ -844,11 +846,11 @@
 
         function toggleProdPlan() { setView(currentView === 'prod' ? 'plan' : 'prod'); }
         function toggleCumplimiento() { setView(currentView === 'cumpl' ? 'prod' : 'cumpl'); }
-
+        
         function imprimirPlan() {
             const mesStr = document.getElementById('monthTitle').textContent;
             document.getElementById('printTitleMain').textContent = `CRONOGRAMA DE PRODUCCIÓN - ${mesStr}`;
-
+            
             let subText = "";
             if(currentView === 'plan') subText = "Planificación";
             else if(currentView === 'prod') subText = "Producción Real";
@@ -863,12 +865,12 @@
 
             setTimeout(() => {
                 window.print();
-
+                
                 if (tempMobile) {
                     isMobileState = true;
                     renderGantt();
                 }
-            }, 400);
+            }, 400); 
         }
 
         function renderModalBlock(task) {
@@ -885,7 +887,7 @@
             const dObj = new Date(dateStr + 'T00:00:00');
             document.getElementById('ganttTitulo').textContent = dObj.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
             const cont = document.getElementById('ganttDetalle');
-
+            
             const dTestArr = [];
             TURNOS.forEach(t => { (realData[key(dateStr, t)]||[]).filter(x=>x.tarea==='Prueba').forEach(x => { if(!dTestArr.includes(x.moldeCompleto)) dTestArr.push(x.moldeCompleto); }); });
 
@@ -929,8 +931,8 @@
 
         window.addEventListener('load', () => {
             if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeDark = false; }
-            updateClock(); setInterval(updateClock, 30000);
-
+            updateClock(); setInterval(updateClock, 30000); 
+            
             window.addEventListener('resize', () => {
                 const currentIsMobile = window.innerWidth <= 768;
                 if (currentIsMobile !== isMobileState) {
