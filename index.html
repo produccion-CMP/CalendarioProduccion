@@ -363,7 +363,8 @@
 
         let planData = {}; let realData = {};
         let currentView = 'prod';
-        let currentDate = new Date(2026, 7, 13); // Simulando 13 de Agosto
+        // ✅ Mes actual por defecto
+        let currentDate = new Date();
         let actualSystemDate = new Date(); 
         let themeDark = true;
         let isMobileState = window.innerWidth <= 768;
@@ -637,7 +638,10 @@
                     TURNOS.forEach(turno => {
                         const k = key(dateStr, turno);
                         let compCellClass = ''; let compEmoji = '';
-                        if (dateStr === todayStr) {} 
+                        // ✅ Evitar cruces en días futuros
+                        if (dateStr > todayStr) {
+                            compCellClass = 'ci-vacio'; compEmoji = '';
+                        } else if (dateStr === todayStr) {} 
                         else if (planData[k] && planData[k].length > 0) {
                             const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
                             compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
@@ -712,7 +716,10 @@
                         const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                         const k = key(dateStr, turno);
                         let compCellClass = ''; let compEmoji = '';
-                        if (dateStr === todayStr) {} 
+                        // ✅ Evitar cruces en días futuros
+                        if (dateStr > todayStr) {
+                            compCellClass = 'ci-vacio'; compEmoji = '';
+                        } else if (dateStr === todayStr) {} 
                         else if (planData[k] && planData[k].length > 0) {
                             const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
                             compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
@@ -771,7 +778,7 @@
                     if (prodsPlan.length > 1) cambios++;
                     pruebasPlan += testsPlan.length;
                     prodsPlan.forEach(p => moldesSet.add(p.moldeCompleto));
-                    if (plans.length > 0 && ds !== todayStr) {
+                    if (plans.length > 0 && ds <= todayStr) { // ✅ Solo hasta hoy
                         totalObj++;
                         const comp = getComplianceDayLevel(plans, reals, dayRealTestsMap[ds]);
                         if (comp.status === 'cumplido') cumplidas++;
@@ -796,6 +803,7 @@
             
             for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
+                if (ds > todayStr) continue; // ✅ Ignorar días futuros
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
                     const dayPlanTests = (planData[k] || []).filter(p => p.tarea === 'Prueba');
@@ -873,13 +881,24 @@
             }, 400); 
         }
 
-        function renderModalBlock(task) {
-            if (!task) return `<div class="mg-cell empty">Sin Asignación</div>`;
-            const color = getBrickColor(task.baseName, task.number);
-            const txt = pickTextColor(color);
-            let imgH = `<img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" style="width:40px; height:40px;">`;
-            if (task.tarea === 'Prueba') imgH = '🔬';
-            return `<div class="mg-cell" style="background:${color}; color:${txt};">${imgH}<span style="font-weight:800; font-size:1rem; margin-top:6px; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${task.baseName}</span><span style="font-size:0.75rem; opacity:0.9;">Molde ${task.number}</span></div>`;
+        // ✅ Modificado para aceptar array de tareas y mostrarlas todas
+        function renderModalBlock(tasks) {
+            if (!tasks || tasks.length === 0) return `<div class="mg-cell empty">Sin Asignación</div>`;
+            let blocksHtml = '';
+            tasks.forEach(task => {
+                const color = getBrickColor(task.baseName, task.number);
+                const txt = pickTextColor(color);
+                let imgH = `<img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" style="width:30px; height:30px; display:block; margin:0 auto;">`;
+                if (task.tarea === 'Prueba') imgH = '🔬';
+                blocksHtml += `
+                    <div class="mg-sub-block" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:${color}; color:${txt}; border-radius:8px; padding:4px; margin-bottom:4px; min-height:60px;">
+                        ${imgH}
+                        <span style="font-weight:800; font-size:0.9rem; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${task.baseName}</span>
+                        <span style="font-size:0.7rem; opacity:0.9;">Molde ${task.number}</span>
+                    </div>
+                `;
+            });
+            return `<div class="mg-cell" style="background:transparent; box-shadow:none; padding:0;">${blocksHtml}</div>`;
         }
 
         function abrirGantt(dateStr) {
@@ -892,7 +911,10 @@
             TURNOS.forEach(t => { (realData[key(dateStr, t)]||[]).filter(x=>x.tarea==='Prueba').forEach(x => { if(!dTestArr.includes(x.moldeCompleto)) dTestArr.push(x.moldeCompleto); }); });
 
             let html = `<div class="modal-grid"><div></div> <div class="mg-header">T1</div> <div class="mg-header">T2</div> <div class="mg-header">T3</div><div class="mg-row-label">Planificación</div>`;
-            TURNOS.forEach(t => { html += renderModalBlock((planData[key(dateStr, t)] || [])[0]); });
+            TURNOS.forEach(t => { 
+                const tasksPlan = planData[key(dateStr, t)] || [];
+                html += renderModalBlock(tasksPlan); // ✅ Pasa todas las tareas
+            });
             html += `<div class="mg-row-label">Cumplimiento</div>`;
             TURNOS.forEach(t => {
                 const k = key(dateStr, t);
@@ -904,7 +926,13 @@
                 }
             });
             html += `<div class="mg-row-label">Prod. Real</div>`;
-            TURNOS.forEach(t => { if(isToday) html += `<div class="mg-cell empty">Dato Protegido</div>`; else html += renderModalBlock((realData[key(dateStr, t)] || [])[0]); });
+            TURNOS.forEach(t => { 
+                if(isToday) html += `<div class="mg-cell empty">Dato Protegido</div>`; 
+                else {
+                    const tasksReal = realData[key(dateStr, t)] || [];
+                    html += renderModalBlock(tasksReal); // ✅ Pasa todas las tareas
+                }
+            });
             html += `</div>`;
             cont.innerHTML = html;
             document.getElementById('ganttModal').style.display = 'flex';
