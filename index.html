@@ -803,22 +803,24 @@
             
             for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
-                if (ds > todayStr) continue; // ✅ Ignorar días futuros
+                const esPendiente = ds >= todayStr;
+                if (ds > todayStr && currentView === 'prod') continue;
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
                     const dayPlanTests = (planData[k] || []).filter(p => p.tarea === 'Prueba');
                     let shiftRealTests = (realData[k] || []).filter(p => p.tarea === 'Prueba');
-                    
-                    if (ds === todayStr) shiftRealTests = []; 
-                    
+
+                    if (esPendiente) shiftRealTests = [];
+
                     if (currentView === 'plan') {
-                        dayPlanTests.forEach(p => pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: '-' }));
+                        dayPlanTests.forEach(p => pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: esPendiente ? '⏳ Pendiente' : '-' }));
                     } else if (currentView === 'prod') {
                         shiftRealTests.forEach(rt => pruebas.push({ fecha: ds, turno: t, molde: rt.moldeCompleto, tipo: 'Prueba Ejecutada', estado: 'Realizada ✅' }));
                     } else {
                         dayPlanTests.forEach(p => {
-                            const cumplida = dayRealTestsMap[ds].includes(p.moldeCompleto); 
-                            pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: cumplida ? '✅ Realizada' : '❌ No realizada' });
+                            const cumplida = dayRealTestsMap[ds].includes(p.moldeCompleto);
+                            const estado = esPendiente ? '⏳ Pendiente' : (cumplida ? '✅ Realizada' : '❌ No realizada');
+                            pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado });
                         });
                         shiftRealTests.forEach(rt => {
                             const estabaPlanificadaHoy = TURNOS.some(turnoBusqueda => (planData[key(ds, turnoBusqueda)] || []).some(x => x.moldeCompleto === rt.moldeCompleto));
