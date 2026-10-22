@@ -76,11 +76,15 @@
         .modal-buttons { display: flex; flex-direction: column; gap: 10px; }
         .modal-btn-secondary { background: var(--bg-cell); border: 1px solid var(--border); color: var(--text-main); width: 100%; padding: 14px; border-radius: 10px; font-weight: 700; cursor: pointer; transition: 0.2s; }
         .modal-btn-secondary:hover { background: var(--border); }
+        .back-cal { display: none; align-items: center; gap: 6px; margin: -6px 0 18px; padding: 8px 14px; border-radius: 10px; background: var(--bg-cell); border: 1px solid var(--border); color: var(--text-main); font-weight: 700; font-size: 0.85rem; text-decoration: none; transition: 0.2s; width: fit-content; }
+        .back-cal:hover { border-color: var(--accent); color: var(--accent-light); transform: translateX(-2px); }
+        .back-cal.visible { display: inline-flex; }
     </style>
 </head>
 <body>
 
     <div class="wizard-container">
+        <a href="index.html" class="back-cal" id="backCal" onclick="return volverCalendario(event)">← Volver al calendario</a>
         <!-- Loader Inicial -->
         <div id="step-loading" class="step active">
             <div class="loader"></div>
@@ -91,7 +95,7 @@
         <div id="step-auth" class="step">
             <h2>🔐 Control de Acceso</h2>
             <div class="input-group">
-                <input type="password" id="pwdInput" placeholder="Ingrese su contraseña">
+                <input type="password" id="pwdInput" placeholder="Ingrese su contraseña" autocomplete="current-password" enterkeyhint="go">
             </div>
             <button class="primary-btn" onclick="verificarPassword()">Ingresar</button>
             <div id="authMsg" class="feedback error"></div>
@@ -207,6 +211,12 @@
         let activeStep = 'step-loading';
         let state = { tarea: '', familia: '', lad: '', num: '', moldeCompleto: '', fInicio: '', tInicio: '', fFin: '', tFin: '' };
 
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('pwdInput').addEventListener('keydown', e => {
+                if (e.key === 'Enter') { e.preventDefault(); verificarPassword(); }
+            });
+        });
+
         window.onload = async () => {
             try {
                 const res = await fetch(CSV_MOLDES);
@@ -245,6 +255,14 @@
             document.getElementById(activeStep).classList.remove('active');
             document.getElementById(nextStep).classList.add('active');
             activeStep = nextStep;
+            document.getElementById('backCal').classList.toggle('visible', nextStep !== 'step-loading' && nextStep !== 'step-auth');
+            if (nextStep === 'step-auth') setTimeout(() => document.getElementById('pwdInput').focus(), 50);
+        }
+
+        function volverCalendario(ev) {
+            const enCurso = state.tarea && activeStep !== 'step-tarea';
+            if (enCurso && !confirm('Hay una carga en curso que no se registró. ¿Volver igual al calendario?')) { ev.preventDefault(); return false; }
+            return true;
         }
 
         function retroceder() {
@@ -253,6 +271,7 @@
             document.getElementById(activeStep).classList.remove('active');
             document.getElementById(prevStep).classList.add('active');
             activeStep = prevStep;
+            document.getElementById('backCal').classList.toggle('visible', prevStep !== 'step-loading' && prevStep !== 'step-auth');
         }
 
         function resetWizard() {

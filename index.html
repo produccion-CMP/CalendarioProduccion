@@ -272,43 +272,110 @@
             .mg-comp { font-size: 0.9rem; padding: 4px; }
         }
 
-        /* ================= MEDIA PRINT ================= */
+        .btn-new-plan { position: relative; overflow: hidden; display: inline-flex; align-items: center; gap: 12px; padding: 8px 18px 8px 8px; border-radius: 16px; text-decoration: none; color: #fff; background: linear-gradient(135deg, #f3a676 0%, var(--accent) 55%, #c4552a 100%); box-shadow: 0 6px 18px rgba(224, 123, 76, 0.45), inset 0 1px 0 rgba(255,255,255,0.35); transition: transform 0.2s ease, box-shadow 0.2s ease; }
+        .btn-new-plan:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(224, 123, 76, 0.6), inset 0 1px 0 rgba(255,255,255,0.35); }
+        .btn-new-plan:active { transform: translateY(0); }
+        .btn-new-plan:focus-visible { outline: 3px solid var(--accent-light); outline-offset: 3px; }
+        .btn-new-plan::after { content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%; background: linear-gradient(100deg, transparent, rgba(255,255,255,0.45), transparent); transform: skewX(-20deg); animation: bnpShine 4.5s ease-in-out infinite; }
+        @keyframes bnpShine { 0%, 70% { left: -60%; } 100% { left: 130%; } }
+        .bnp-icon { position: relative; width: 38px; height: 38px; border-radius: 12px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.2); box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35); flex: 0 0 auto; }
+        .bnp-icon img { width: 26px; height: 26px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.35)); }
+        .bnp-plus { position: absolute; right: -6px; bottom: -6px; width: 18px; height: 18px; border-radius: 50%; background: #fff; color: var(--accent); font-weight: 900; font-size: 14px; line-height: 18px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.3); }
+        .bnp-text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
+        .bnp-text strong { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.2px; }
+        .bnp-text small { font-size: 0.7rem; font-weight: 600; opacity: 0.9; }
+        @media (prefers-reduced-motion: reduce) { .btn-new-plan::after { animation: none; display: none; } }
+
+        .comp-indicator { position: relative; }
+        .ci-test { position: absolute; top: -5px; right: -5px; width: 17px; height: 17px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; line-height: 1; border: 2px solid var(--bg-panel); box-shadow: 0 1px 3px rgba(0,0,0,0.5); z-index: 3; }
+        .ci-test.static { position: static; }
+        .ct-cumplido { background: var(--green); } .ct-parcial { background: var(--orange); } .ct-desvio { background: var(--red); } .ct-pendiente { background: var(--gray); }
+        .comp-row td { overflow: visible !important; }
+        .ci-hoy { border-style: solid; border-color: var(--accent); font-size: 0.75rem; }
+
+        .mold-warn { position: absolute; left: 3px; top: 3px; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 900; color: #fff; z-index: 6; border: 2px solid #fff; box-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+        .mold-warn.static { position: static; }
+        .mw-red { background: var(--red); } .mw-amber { background: var(--orange); }
+
+        td.turno-actual::before { content: ''; position: absolute; inset: 2px; border-radius: 6px; border: 2px solid #fff; box-shadow: 0 0 0 2px rgba(0,0,0,0.55), 0 0 12px rgba(255,255,255,0.6); z-index: 4; pointer-events: none; animation: turnoPulse 1.8s ease-in-out infinite; }
+        @keyframes turnoPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+        @media (prefers-reduced-motion: reduce) { td.turno-actual::before { animation: none; } }
+        .legend-now { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #fff; box-shadow: 0 0 0 2px rgba(0,0,0,0.55), 0 0 10px rgba(255,255,255,0.5); background: var(--bg-cell); }
+        .mold-var { font-size: 0.8em; font-weight: 800; opacity: 0.85; margin-left: 1px; }
+
+        .kpi-card.kpi-main { flex: 2 1 260px; }
+        .kpi-card.kpi-main .kpi-value { font-size: 2.6rem; }
+        .kpi-card.kpi-test { flex: 1.4 1 200px; }
+        .kpi-card .kpi-label { margin: 0 0 4px; }
+
+        .mg-comp-wrap { display: flex; flex-direction: column; gap: 6px; }
+        .mg-comp-wait { background: var(--bg-cell); border: 1px dashed var(--border); color: var(--text-muted); font-size: 0.8rem; box-shadow: none; }
+        .mg-comp-test { border-radius: 10px; padding: 8px 10px; color: #fff; font-size: 0.8rem; box-shadow: inset 0 2px 4px rgba(0,0,0,0.25); }
+        .mg-comp-test .mg-detail { margin-top: 4px; }
+        .mg-ext { display: inline-block; margin-top: 3px; font-size: 0.66rem; font-weight: 800; padding: 1px 6px; border-radius: 6px; background: rgba(0,0,0,0.25); color: #fff; }
+        .mg-estado { display: inline-block; margin-top: 3px; font-size: 0.62rem; font-weight: 800; padding: 1px 6px; border-radius: 6px; background: rgba(0,0,0,0.65); }
+        .me-ok { color: #6ee787; } .me-amber { color: #ffc35a; } .me-red { color: #ff7b72; }
+        .mg-now { font-size: 0.6rem; font-weight: 800; color: #fff; background: var(--accent); padding: 1px 6px; border-radius: 6px; vertical-align: middle; }
+
+        /* ================= IMPRESIÓN (una carilla A4) ================= */
+        body.printing { --bg-body: #fff; --bg-panel: #fff; --bg-cell: #f2f2f2; --border: #9a9a9a; --text-main: #000; --text-muted: #444; --shadow: none; --shadow-3d: none; --cell-h: 52px; --sunday-bg: rgba(0,0,0,0.04); background: #fff !important; color: #000; padding: 0 !important; min-height: 0; font-family: var(--font); }
+        body.printing *, body.printing *::before, body.printing *::after { transition: none !important; animation: none !important; }
+        body.printing .app-header, body.printing .views-container, body.printing .month-nav, body.printing .month-selector, body.printing .gantt-modal, body.printing .overlay, body.printing #loader { display: none !important; }
+        body.printing #printHeader { display: flex !important; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 6px; }
+        body.printing #printTitleMain { font-size: 1.15rem; font-weight: 800; color: #000; text-transform: uppercase; }
+        body.printing #printTitleSub { font-size: 0.72rem; font-weight: 600; color: #444; }
+        body.printing .kpi-container { gap: 6px; margin-bottom: 6px; }
+        body.printing .kpi-card { padding: 4px 8px; border: 1px solid #bbb; border-top-width: 3px; border-radius: 8px; min-width: 0; }
+        body.printing .kpi-value, body.printing .kpi-card.kpi-main .kpi-value { font-size: 1.15rem; }
+        body.printing .kpi-label, body.printing .kpi-sub { font-size: 0.6rem; }
+        body.printing .gantt-wrapper { padding: 0; border-radius: 0; overflow: visible; }
+        body.printing .gantt-table th, body.printing .gantt-table td { border-right: 1px solid #555 !important; border-bottom: 1px dashed #888 !important; padding: 1px; }
+        body.printing .gantt-table th { border-bottom: 2px solid #000 !important; padding: 2px 1px; height: auto; }
+        body.printing .gantt-table th:first-child, body.printing .gantt-table td:first-child { border-left: 1px solid #555 !important; position: static; }
+        body.printing .gantt-table tr.t3-row td { border-bottom: 2px solid #000 !important; }
+        body.printing.view-cumpl .comp-row td { height: 20px; border-bottom: 2px solid #000 !important; background: #fafafa; }
+        body.printing.view-cumpl .gantt-table tr.t3-row td { border-bottom: 1px dashed #888 !important; }
+        body.printing .day-header { grid-template-rows: 11px 15px 13px 13px; gap: 0; }
+        body.printing .day-number { font-size: 0.8rem; }
+        body.printing .day-name { font-size: 0.5rem; }
+        body.printing .indicator-change { font-size: 0.65rem; animation: none; }
+        body.printing .indicator-pr { font-size: 0.48rem; padding: 0 2px; animation: none; }
+        body.printing .mold-image { width: 16px; height: 16px; filter: none; }
+        body.printing .cc-change .mold-image { width: 13px; height: 13px; }
+        body.printing .mold-base { font-size: 0.58rem; text-shadow: none !important; }
+        body.printing .mold-number { font-size: 0.55rem; text-shadow: none !important; }
+        body.printing .mold-label-text { font-size: 0.45rem; }
+        body.printing .turn-label { font-size: 0.7rem; }
+        body.printing .comp-label-text { font-size: 0.5rem; }
+        body.printing .comp-indicator { font-size: 0.65rem; }
+        body.printing .ci-test { width: 12px; height: 12px; font-size: 7px; top: -3px; right: -3px; border-width: 1px; }
+        body.printing .test-marker { border-top-width: 14px; border-left-width: 14px; }
+        body.printing .flow-arrow { opacity: 0.5; animation: none; filter: none; }
+        body.printing .split-sweep, body.printing td.turno-actual::before { display: none !important; }
+        body.printing .mold-warn { width: 11px; height: 11px; font-size: 8px; border-width: 1px; }
+        body.printing #legendContainer { margin-top: 6px; padding: 4px 6px; border: 1px solid #bbb; border-radius: 8px; }
+        body.printing .legend-section + .legend-section { margin-top: 4px; padding-top: 4px; }
+        body.printing .legend-title { font-size: 0.55rem; margin-bottom: 3px; }
+        body.printing .legend-items { gap: 10px; }
+        body.printing .legend-item { font-size: 0.6rem; gap: 4px; }
+        body.printing .legend-color, body.printing .legend-mold, body.printing .legend-now, body.printing .legend-swatch-split { width: 14px; height: 14px; font-size: 0.5rem; border-radius: 3px; }
+        body.printing .legend-tri { border-top-width: 11px; border-left-width: 11px; }
+        body.printing .legend-warn { margin-top: 4px; padding: 3px; font-size: 0.55rem; }
+        body.printing .pruebas-info { margin-top: 6px; padding: 0; border-radius: 0; }
+        body.printing .pruebas-info h3 { font-size: 0.7rem; text-transform: uppercase; }
+        body.printing .pruebas-info p { font-size: 0.6rem; }
+        body.printing .pruebas-table { font-size: 0.58rem; margin-top: 2px; border: 1px solid #000; border-collapse: collapse; border-radius: 0; }
+        body.printing .pruebas-table th, body.printing .pruebas-table td { border: 1px solid #777; padding: 1px 4px; color: #000; }
+        body.printing .pruebas-table th { background: #e8e8e8; color: #000; font-size: 0.55rem; }
+        body.printing td.today-col, body.printing th.today-col { border-left: 2px solid #000 !important; border-right: 2px solid #000 !important; }
+        body.printing .gantt-table td.hover-col, body.printing .gantt-table th.hover-col { background-color: transparent; }
+
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: A4 landscape; margin: 8mm; }
-            body { background: white; color: black; padding: 0; font-family: sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
-            .app-header, .views-container, .kpi-container, .month-nav, .month-selector, .gantt-modal, .live-clock, .theme-btn, .overlay, .btn-new-plan, .action-btn, #loader, #legendContainer { display: none !important; }
-            #printHeader { display: block !important; flex: 0 0 auto; text-align: center; margin-bottom: 8px; }
-            #printTitleMain { font-size: 1.4rem; font-weight: 800; margin: 0 0 2px 0; color: #000 !important; text-transform: uppercase; }
-            #printTitleSub { font-size: 1rem; font-weight: 600; margin: 0; color: #444 !important; text-transform: uppercase; letter-spacing: 1px;}
-            .gantt-wrapper { flex: 1 1 auto; display: flex; flex-direction: column; overflow: hidden; box-shadow: none; background: none; padding: 0; margin-bottom: 8px; border: none;}
-            .gantt-table { height: 100%; width: 100%; border-collapse: collapse; }
-            .gantt-table th, .gantt-table td { border-top: none !important; border-left: none !important; border-right: 2px solid #222 !important; border-bottom: 1px dashed #777 !important; height: auto !important; }
-            .gantt-table th { border-bottom: 2px solid #222 !important; }
-            .gantt-table th:first-child, .gantt-table td:first-child { border-left: 2px solid #222 !important; }
-            .gantt-table tr.t3-row td { border-bottom: 2px solid #222 !important; }
-            .comp-row { display: none !important; }
-            body.view-cumpl .comp-row { display: table-row !important; }
-            body.view-cumpl .comp-row td { height: 25px !important; border-bottom: 2px solid #222 !important; }
-            body.view-cumpl .gantt-table tr.t3-row td { border-bottom: 1px dashed #777 !important; }
-            .mold-image { width: 14px; height: 14px; filter: none !important; }
-            .mold-base { font-size: 0.65rem; text-shadow: none !important; }
-            .mold-number { font-size: 0.6rem; text-shadow: none !important; }
-            .turn-label { font-size: 0.75rem; }
-            .day-number { font-size: 0.75rem; }
-            .day-name { font-size: 0.55rem; }
-            .flow-arrow-container { display: flex !important; } 
-            .flow-arrow { opacity: 0.5 !important; animation: none !important; filter: none !important; }
-            .split-sweep { display: none !important; }
-            .split-swap { animation: none !important; text-shadow: none !important; }
-            .split-lbl { font-size: 0.5rem; text-shadow: none !important; }
-            .split-lbl b { font-size: 0.55rem; }
-
-            .pruebas-info { flex: 0 0 auto; margin-top: 0; background: none; box-shadow: none; border-radius: 0; padding: 0; }
-            .pruebas-table { font-size: 0.75rem; border: 1px solid #000; width: 100%; margin-top: 4px; border-collapse: collapse; }
-            .pruebas-table th, .pruebas-table td { border: 1px solid #000; color: #000 !important; padding: 4px; }
-            .pruebas-table th { background-color: #eee !important; color: black !important; }
-            .pruebas-info h3 { font-size: 0.9rem; margin: 0 0 2px 0; color: black !important; text-transform: uppercase;}
+            html, body { background: #fff !important; }
+            .app-header, .views-container, .month-nav, .month-selector, .gantt-modal, .overlay, #loader { display: none !important; }
+            * { animation: none !important; transition: none !important; }
         }
     </style>
 </head>
@@ -347,7 +414,10 @@
                 <div class="live-clock" id="liveClock"></div>
                 <button class="theme-btn" onclick="toggleTheme()">🌓</button>
             </div>
-            <a href="admin.html" class="btn-new-plan">🧱 Nuevo Plan</a>
+            <a href="admin.html" class="btn-new-plan" title="Cargar una nueva planificación de producción o prueba">
+                <span class="bnp-icon"><img src="img/moldes/H12.png" alt="" onerror="this.style.display='none'"><span class="bnp-plus">+</span></span>
+                <span class="bnp-text"><strong>Nuevo plan</strong><small>Producción o prueba</small></span>
+            </a>
         </div>
     </header>
 
@@ -392,29 +462,67 @@
     <script>
         const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';
         const CSV_REAL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=307264581&single=true&output=csv';
+        const CSV_MOLDES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=164840916&single=true&output=csv';
+        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwAjJJAFBEoFsfmUMwr39qB9qI8EHAblwMItixZYul6blpw266f8Ho5Ilh26BSlNj_Jtg/exec';
         const IMG_PATH = 'img/moldes/';
         const FALLBACK_IMG = 'img/moldes/default.png';
-        const TURNOS = ['T1','T2','T3'];
-
-        let planData = {}; let realData = {};
-        let currentView = 'prod';
-        // ✅ Mes actual por defecto
-        let currentDate = new Date();
-        let actualSystemDate = new Date(); 
-        let themeDark = true;
-        let isMobileState = window.innerWidth <= 768;
-
-        const CSV_MOLDES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=164840916&single=true&output=csv';
+        const TURNOS = ['T1', 'T2', 'T3'];
+        const TURNO_HORARIO = { T1: { ini: -2, fin: 6 }, T2: { ini: 6, fin: 14 }, T3: { ini: 14, fin: 22 } };
         const TIPO_COLOR = { 'H12': { h: 55 }, 'H18': { h: 140 }, 'H8': { h: 0 }, 'P12': { h: 250 }, 'P18': { h: 205 }, 'DM20': { h: 95 }, 'DM27': { h: 175 }, 'L12,5': { h: 295 }, 'L16': { h: 325 }, 'KB': { h: 60, c: 0.045 } };
         const L_MOLDE = [0.80, 0.68, 0.56, 0.45];
         const C_MAX = 0.20;
         const TOLERANCIA_PRUEBA_DIAS = 1;
-        const colorCache = {};
-        const nombresFueraCatalogo = new Set();
+        const PESO_MISMO_LADRILLO = 0.5;
+        const RECARGA_MIN = 10;
+        const A4_PX = { w: 1062, h: 733 };
+        const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const ARROW_SVG = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`;
+        const EVAL_VACIO = { status: 'vacio', score: null, emoji: '', msg: '-', detalle: [] };
+
+        let planData = {}; let realData = {};
+        let currentView = 'prod';
+        let currentDate = new Date(); currentDate.setDate(1);
+        let themeDark = true;
+        let isMobileState = window.innerWidth <= 768;
         let catalogo = { exacto: new Map(), porTipoNum: new Map(), cargado: false };
         let matchPruebas = { plan: new Map(), real: new Map() };
+        let moldesExt = { estados: new Map(), prod: new Map(), cargado: false, rango: '' };
+        let printState = null;
+        const colorCache = {};
 
+        function hoyStr() { return formatYYYYMMDD(new Date()); }
+        function formatYYYYMMDD(date) { const y = date.getFullYear(), m = String(date.getMonth() + 1).padStart(2, '0'), d = String(date.getDate()).padStart(2, '0'); return `${y}-${m}-${d}`; }
+        function key(fecha, turno) { return `${fecha}_${turno}`; }
+        function getBaseName(molde) { return String(molde).split(' (')[0].trim().split(/[xX]/)[0].trim(); }
+        function getMoldNumber(molde) { const m = String(molde).match(/\((\d+)\)/); return m ? parseInt(m[1]) : 1; }
+        function getImageSrc(base) { return `${IMG_PATH}${base}.png`; }
         function getTipo(nombre) { return String(nombre).split(' (')[0].trim().split(/\s+/)[0].split(/[xX]/)[0].toUpperCase(); }
+        function escAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+        function sumarDias(ds, n) { const d = new Date(ds + 'T00:00:00'); d.setDate(d.getDate() + n); return formatYYYYMMDD(d); }
+        function fechaCorta(ds) { const p = ds.split('-'); return `${parseInt(p[2])}/${parseInt(p[1])}`; }
+        function fmtHoras(min) { const m = Math.round(min); return `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')} h`; }
+        function fmtTn(tn) { return tn.toLocaleString('es-AR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }); }
+        function nombreProducto(t) { return t.baseName + (t.variante || ''); }
+        function idSeq(t) { return t.moldeCompleto + '|' + (t.variante || ''); }
+
+        function parseFlexibleDate(str) {
+            if (!str) return null;
+            const parts = String(str).split('/');
+            if (parts.length !== 3) return null;
+            const day = parseInt(parts[0]), month = parseInt(parts[1]) - 1, year = parseInt(parts[2]);
+            const date = new Date(year, month, day);
+            return (date.getFullYear() === year && date.getMonth() === month && date.getDate() === day) ? date : null;
+        }
+
+        function turnoOrd(date, turno) { return Math.round(date.getTime() / 86400000) * 3 + TURNOS.indexOf(turno); }
+
+        function limiteTurno(ds, t, campo) { const d = new Date(ds + 'T00:00:00'); d.setHours(TURNO_HORARIO[t][campo], 0, 0, 0); return d; }
+        function estadoTurno(ds, t) {
+            const ahora = new Date();
+            if (ahora >= limiteTurno(ds, t, 'fin')) return 'pasado';
+            if (ahora >= limiteTurno(ds, t, 'ini')) return 'actual';
+            return 'futuro';
+        }
 
         function oklchToLinRgb(L, C, h) {
             const a = C * Math.cos(h * Math.PI / 180), b = C * Math.sin(h * Math.PI / 180);
@@ -472,30 +580,81 @@
             catalogo = { exacto, porTipoNum, cargado: exacto.size > 0 };
         }
 
-        function canonMolde(raw) {
-            const limpio = String(raw || '').trim().replace(/\s+/g, ' ');
-            if (!limpio || !catalogo.cargado) return limpio;
+        function resolverBase(limpio) {
+            if (!catalogo.cargado) return { molde: limpio, ok: true };
             const ex = catalogo.exacto.get(normNombre(limpio));
-            if (ex) return ex;
+            if (ex) return { molde: ex, ok: true };
             const num = (limpio.match(/\((\d+)\)/) || [])[1];
-            if (num) {
-                const cands = catalogo.porTipoNum.get(tipoPrefijo(limpio) + '|' + num) || [];
-                if (cands.length === 1) return cands[0];
+            if (!num) return { molde: limpio, ok: false };
+            const pref = tipoPrefijo(limpio);
+            const directos = catalogo.porTipoNum.get(pref + '|' + num) || [];
+            if (directos.length === 1) return { molde: directos[0], ok: true };
+            if (directos.length === 0) {
+                const aprox = [];
+                catalogo.porTipoNum.forEach((lista, k) => { const [t, n] = k.split('|'); if (n === num && t.startsWith(pref)) aprox.push(...lista); });
+                if (aprox.length === 1) return { molde: aprox[0], ok: true };
             }
-            nombresFueraCatalogo.add(limpio);
-            return limpio;
+            return { molde: limpio, ok: false };
         }
 
-        function sumarDias(ds, n) { const d = new Date(ds + 'T00:00:00'); d.setDate(d.getDate() + n); return formatYYYYMMDD(d); }
-        function fechaCorta(ds) { const p = ds.split('-'); return `${parseInt(p[2])}/${parseInt(p[1])}`; }
+        function resolverMolde(raw) {
+            const limpio = String(raw || '').trim().replace(/\s+/g, ' ');
+            if (!limpio) return { molde: '', variante: '', ok: true };
+            const mv = limpio.match(/^([^\s(]+?)[xX](\d+)(.*)$/);
+            if (mv) {
+                const r = resolverBase((mv[1] + mv[3]).trim());
+                return r.ok ? { molde: r.molde, variante: 'x' + mv[2], ok: true } : { molde: limpio, variante: '', ok: false };
+            }
+            const r = resolverBase(limpio);
+            return { molde: r.molde, variante: '', ok: r.ok };
+        }
+
+        function normalizarTarea(tarea) { if (!tarea) return ''; return tarea.replace(/Ã³/g, 'ó').replace(/Ã©/g, 'é').replace(/Ã±/g, 'ñ'); }
+
+        async function fetchCSV(url) {
+            const r = await fetch(url); const t = await r.text();
+            return new Promise(resolve => Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().toUpperCase().replace(/:/g, ''), complete: res => resolve(res.data) }));
+        }
+
+        function processData(rows) {
+            const data = {};
+            rows.forEach(row => {
+                const res = resolverMolde(row['LADRILLO']);
+                const molde = res.molde;
+                const tarea = normalizarTarea((row['TAREA'] || '').trim());
+                const fi = (row['FECHA INICIO'] || '').trim(); const ti = (row['TURNO INICIO'] || '').trim();
+                const ff = (row['FECHA FIN'] || '').trim(); const tf = (row['TURNO FIN'] || '').trim();
+                if (!molde || !fi || !ff) return;
+                const inicio = parseFlexibleDate(fi); const fin = parseFlexibleDate(ff);
+                if (!inicio || !fin || TURNOS.indexOf(ti) < 0 || TURNOS.indexOf(tf) < 0) return;
+                const ordIni = turnoOrd(inicio, ti), ordFin = turnoOrd(fin, tf);
+                if (ordFin < ordIni) return;
+
+                for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate() + 1)) {
+                    const ds = formatYYYYMMDD(d); let tDia = [];
+                    const diaIgualInicio = d.getTime() === inicio.getTime(); const diaIgualFin = d.getTime() === fin.getTime();
+                    if (diaIgualInicio && diaIgualFin) { for (let i = TURNOS.indexOf(ti); i <= TURNOS.indexOf(tf); i++) tDia.push(TURNOS[i]); }
+                    else if (diaIgualInicio) { for (let i = TURNOS.indexOf(ti); i < 3; i++) tDia.push(TURNOS[i]); }
+                    else if (diaIgualFin) { for (let i = 0; i <= TURNOS.indexOf(tf); i++) tDia.push(TURNOS[i]); }
+                    else tDia = [...TURNOS];
+
+                    tDia.forEach(t => {
+                        const k = key(ds, t); if (!data[k]) data[k] = [];
+                        if (data[k].some(x => x.moldeCompleto === molde && x.variante === res.variante && x.tarea === tarea && x.ordIni === ordIni && x.ordFin === ordFin)) return;
+                        data[k].push({ moldeCompleto: molde, variante: res.variante, fueraCatalogo: !res.ok, baseName: getBaseName(molde), number: getMoldNumber(molde), tarea, esInicio: diaIgualInicio && t === ti, esFin: diaIgualFin && t === tf, ordIni, ordFin });
+                    });
+                }
+            });
+            return data;
+        }
 
         function construirMatchPruebas() {
-            const hoy = formatYYYYMMDD(actualSystemDate);
-            const listar = (data, soloPasado) => {
+            const hoy = hoyStr();
+            const listar = (data, soloHastaHoy) => {
                 const s = new Map();
                 Object.keys(data).forEach(k => {
                     const ds = k.slice(0, 10);
-                    if (soloPasado && ds >= hoy) return;
+                    if (soloHastaHoy && ds > hoy) return;
                     data[k].forEach(x => { if (x.tarea === 'Prueba') s.set(ds + '|' + x.moldeCompleto, { ds, molde: x.moldeCompleto }); });
                 });
                 return s;
@@ -520,109 +679,80 @@
             matchPruebas = { plan, real };
         }
 
-        function textoDesfase(mt) {
-            if (!mt || !mt.delta) return '';
-            const n = Math.abs(mt.delta);
-            return ` (${n} día${n > 1 ? 's' : ''} ${mt.delta > 0 ? 'después' : 'antes'}: ${fechaCorta(mt.fecha)})`;
-        }
+        function rangoMes(year, month) { return { desde: sumarDias(formatYYYYMMDD(new Date(year, month, 1)), -1), hasta: sumarDias(formatYYYYMMDD(new Date(year, month + 1, 0)), 1) }; }
 
-        function estadoPruebaPlan(ds, molde, todayStr) {
-            const mt = matchPruebas.plan.get(ds + '|' + molde);
-            if (mt) return { estado: 'ok', mt };
-            if (ds >= todayStr) return { estado: 'futura' };
-            if (sumarDias(ds, TOLERANCIA_PRUEBA_DIAS) >= todayStr) return { estado: 'tolerancia' };
-            return { estado: 'omitida' };
-        }
-
-        function formatYYYYMMDD(date) { const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0'); return `${y}-${m}-${d}`; }
-        function key(fecha, turno) { return `${fecha}_${turno}`; }
-        function getBaseName(molde) { return molde.split(' (')[0].trim().split(/[xX]/)[0].trim(); }
-        function getMoldNumber(molde) { const m = molde.match(/\((\d+)\)/); return m ? parseInt(m[1]) : 1; }
-        function getImageSrc(base) { return `${IMG_PATH}${base}.png`; }
-
-        function parseFlexibleDate(str) {
-            if (!str) return null;
-            const parts = str.split('/');
-            if (parts.length !== 3) return null;
-            const day = parseInt(parts[0]), month = parseInt(parts[1]) - 1, year = parseInt(parts[2]);
-            const date = new Date(year, month, day);
-            return (date.getFullYear() === year && date.getMonth() === month && date.getDate() === day) ? date : null;
-        }
-
-        function turnoOrd(date, turno) { return Math.round(date.getTime() / 86400000) * 3 + TURNOS.indexOf(turno); }
-
-        function normalizarTarea(tarea) { if (!tarea) return ''; return tarea.replace(/Ã³/g, 'ó').replace(/Ã©/g, 'é').replace(/Ã±/g, 'ñ'); }
-
-        async function fetchCSV(url) {
-            const r = await fetch(url); const t = await r.text();
-            return new Promise(resolve => Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().toUpperCase().replace(/:/g, ''), complete: res => resolve(res.data) }));
-        }
-
-        function processData(rows) {
-            const data = {};
-            rows.forEach(row => {
-                const molde = canonMolde(row['LADRILLO']);
-                let tarea = (row['TAREA'] || '').trim(); tarea = normalizarTarea(tarea);
-                const fi = (row['FECHA INICIO'] || '').trim(); const ti = (row['TURNO INICIO'] || '').trim();
-                const ff = (row['FECHA FIN'] || '').trim(); const tf = (row['TURNO FIN'] || '').trim();
-                
-                if (!molde || !fi || !ff) return;
-                const inicio = parseFlexibleDate(fi); const fin = parseFlexibleDate(ff);
-                if (!inicio || !fin || TURNOS.indexOf(ti) < 0 || TURNOS.indexOf(tf) < 0) return;
-                const ordIni = turnoOrd(inicio, ti), ordFin = turnoOrd(fin, tf);
-                if (ordFin < ordIni) return;
-
-                for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate() + 1)) {
-                    const ds = formatYYYYMMDD(d); let tDia = [];
-                    const diaIgualInicio = d.getTime() === inicio.getTime(); const diaIgualFin = d.getTime() === fin.getTime();
-
-                    if (diaIgualInicio && diaIgualFin) {
-                        const i1 = TURNOS.indexOf(ti), i2 = TURNOS.indexOf(tf);
-                        for (let i = i1; i <= i2; i++) tDia.push(TURNOS[i]);
-                    } else if (diaIgualInicio) {
-                        for (let i = TURNOS.indexOf(ti); i < 3; i++) tDia.push(TURNOS[i]);
-                    } else if (diaIgualFin) {
-                        for (let i = 0; i <= TURNOS.indexOf(tf); i++) tDia.push(TURNOS[i]);
-                    } else { tDia = [...TURNOS]; }
-                    
-                    tDia.forEach(t => {
-                        const k = key(ds, t); if (!data[k]) data[k] = [];
-                        if (data[k].some(x => x.moldeCompleto === molde && x.tarea === tarea && x.ordIni === ordIni && x.ordFin === ordFin)) return;
-                        data[k].push({ moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde), tarea, esInicio: diaIgualInicio && t === ti, esFin: diaIgualFin && t === tf, ordIni, ordFin });
-                    });
-                }
-            });
-            return data;
-        }
-
-        async function loadData() {
+        async function cargarMoldesExt(year, month, forzar) {
+            const { desde, hasta } = rangoMes(year, month);
+            const rango = desde + '|' + hasta;
+            if (!forzar && moldesExt.rango === rango) return false;
+            const ctrl = new AbortController();
+            const timer = setTimeout(() => ctrl.abort(), 20000);
             try {
-                document.getElementById('loader').classList.remove('hidden');
-                const [planRows, realRows, moldRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL), fetchCSV(CSV_MOLDES).catch(() => [])]);
-                construirCatalogo(moldRows);
-                nombresFueraCatalogo.clear();
-                planData = processData(planRows); realData = processData(realRows);
-                construirMatchPruebas();
-                renderGantt();
-                setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500); 
-            } catch (error) {
-                console.error(error);
-                document.getElementById('ganttWrapper').innerHTML = '<p style="color:var(--red); text-align:center; font-weight:bold; margin-top: 20px;">Error al cargar datos.</p>';
-                document.getElementById('loader').classList.add('hidden');
+                const r = await fetch(`${URL_SCRIPT}?accion=moldes&desde=${desde}&hasta=${hasta}`, { signal: ctrl.signal });
+                const j = await r.json();
+                if (j.result !== 'success') throw new Error(j.message || 'Respuesta inválida');
+                const estados = new Map();
+                (j.estados || []).forEach(e => {
+                    const num = (String(e.numero).match(/\d+/) || [])[0];
+                    if (!num) return;
+                    const res = resolverMolde(`${String(e.molde).trim()} (${num})`);
+                    if (res.ok) estados.set(res.molde, e);
+                });
+                const prod = new Map();
+                (j.produccion || []).forEach(p => {
+                    const res = resolverMolde(p.molde);
+                    const k = key(p.fecha, p.turno);
+                    if (!prod.has(k)) prod.set(k, []);
+                    prod.get(k).push({ molde: res.molde, variante: res.variante, tn: Number(p.tn) || 0, min: Number(p.min) || 0 });
+                });
+                moldesExt = { estados, prod, cargado: true, rango };
+                return true;
+            } catch (err) {
+                console.warn('Base de moldes no disponible:', err);
+                moldesExt = { estados: new Map(), prod: new Map(), cargado: false, rango };
+                return false;
+            } finally {
+                clearTimeout(timer);
             }
         }
 
-        const PESO_MISMO_LADRILLO = 0.5;
-        const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
-        const ARROW_SVG = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`;
-        const EVAL_VACIO = { status: 'vacio', score: null, emoji: '', msg: '-', detalle: [] };
+        function estadoMolde(molde) {
+            const e = moldesExt.estados.get(molde);
+            if (!e) return null;
+            const est = String(e.estado || '').trim();
+            const n = est.toLowerCase();
+            const nivel = n.startsWith('operativo') ? 'ok' : (n.includes('calibr') ? 'amber' : 'red');
+            return { texto: est, nivel, info: e };
+        }
 
-        function escAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+        function extTurno(k, t) {
+            const lista = moldesExt.prod.get(k) || [];
+            return lista.filter(e => e.molde === t.moldeCompleto && (e.variante || '') === (t.variante || '')).reduce((acc, e) => ({ tn: acc.tn + e.tn, min: acc.min + e.min }), { tn: 0, min: 0 });
+        }
+
+        async function loadData(silencioso) {
+            const loader = document.getElementById('loader');
+            try {
+                if (!silencioso) loader.classList.remove('hidden');
+                const [planRows, realRows, moldRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL), fetchCSV(CSV_MOLDES).catch(() => [])]);
+                construirCatalogo(moldRows);
+                planData = processData(planRows); realData = processData(realRows);
+                construirMatchPruebas();
+                renderGantt();
+                setTimeout(() => loader.classList.add('hidden'), 300);
+                const nuevo = await cargarMoldesExt(currentDate.getFullYear(), currentDate.getMonth(), !!silencioso);
+                if (nuevo && !printState) renderGantt();
+            } catch (error) {
+                console.error(error);
+                if (!silencioso) document.getElementById('ganttWrapper').innerHTML = '<p style="color:var(--red); text-align:center; font-weight:bold; margin-top: 20px;">Error al cargar datos.</p>';
+                loader.classList.add('hidden');
+            }
+        }
 
         function getProdSeq(tasks) {
             const prods = (tasks || []).filter(t => t.tarea === 'Producción').slice().sort((a, b) => (a.ordIni - b.ordIni) || (a.ordFin - b.ordFin));
             const seq = [];
-            prods.forEach(p => { if (!seq.length || seq[seq.length - 1].moldeCompleto !== p.moldeCompleto) seq.push(p); });
+            prods.forEach(p => { if (!seq.length || idSeq(seq[seq.length - 1]) !== idSeq(p)) seq.push(p); });
             return seq;
         }
 
@@ -632,23 +762,43 @@
             return out;
         }
 
-        function seqTexto(seq) { return seq.length ? seq.map(m => m.moldeCompleto).join(' → ') : '-'; }
+        function seqTexto(seq) { return seq.length ? seq.map(m => m.moldeCompleto + (m.variante ? ` [${nombreProducto(m)}]` : '')).join(' → ') : '-'; }
 
-        function evaluarCumplimiento(dateStr, turno, todayStr) {
+        function textoDesfase(mt) {
+            if (!mt || !mt.delta) return '';
+            const n = Math.abs(mt.delta);
+            return ` (${n} día${n > 1 ? 's' : ''} ${mt.delta > 0 ? 'después' : 'antes'}: ${fechaCorta(mt.fecha)})`;
+        }
+
+        function estadoPruebaPlan(ds, molde) {
+            const hoy = hoyStr();
+            const mt = matchPruebas.plan.get(ds + '|' + molde);
+            if (mt) return { estado: 'ok', mt };
+            if (ds >= hoy) return { estado: 'futura' };
+            if (sumarDias(ds, TOLERANCIA_PRUEBA_DIAS) >= hoy) return { estado: 'tolerancia' };
+            return { estado: 'omitida' };
+        }
+
+        function textoPrueba(molde, ep) {
+            if (ep.estado === 'ok') return `✔ Prueba ${molde} realizada${textoDesfase(ep.mt)}`;
+            if (ep.estado === 'futura') return `⏳ Prueba ${molde} pendiente`;
+            if (ep.estado === 'tolerancia') return `⏳ Prueba ${molde} dentro de la tolerancia (±${TOLERANCIA_PRUEBA_DIAS} día)`;
+            return `✖ Prueba ${molde} no realizada`;
+        }
+
+        function evaluarProduccion(dateStr, turno) {
             const k = key(dateStr, turno);
             const planProd = [...new Set(getProdSeq(planData[k]).map(x => x.moldeCompleto))];
-            const planTests = getTestList(planData[k]).map(x => x.moldeCompleto);
-            const hayPlan = planProd.length + planTests.length > 0;
-
-            if (dateStr > todayStr) return hayPlan ? { status: 'pendiente', score: null, emoji: '', msg: 'Pendiente', detalle: [] } : EVAL_VACIO;
-            if (dateStr === todayStr) return { status: 'hoy', score: null, emoji: '', msg: 'En curso (hoy)', detalle: [] };
-
+            const et = estadoTurno(dateStr, turno);
+            if (et !== 'pasado') {
+                if (!planProd.length) return EVAL_VACIO;
+                return et === 'actual' ? { status: 'hoy', score: null, emoji: '⏱️', msg: 'Turno en curso', detalle: [] } : { status: 'pendiente', score: null, emoji: '', msg: 'Pendiente', detalle: [] };
+            }
             const realProd = [...new Set(getProdSeq(realData[k]).map(x => x.moldeCompleto))];
             const detalle = [];
             const sinMatch = [];
             const restoReal = [...realProd];
-            let aciertos = 0, pruebasEnTolerancia = 0;
-
+            let aciertos = 0;
             planProd.forEach(m => {
                 const i = restoReal.indexOf(m);
                 if (i >= 0) { aciertos += 1; restoReal.splice(i, 1); detalle.push(`✔ ${m} producido`); }
@@ -661,36 +811,52 @@
                 else detalle.push(`✖ ${m} no producido`);
             });
             restoReal.forEach(r => detalle.push(`➕ ${r} no planificado`));
-            planTests.forEach(m => {
-                const ep = estadoPruebaPlan(dateStr, m, todayStr);
-                if (ep.estado === 'ok') { aciertos += 1; detalle.push(`✔ Prueba ${m} realizada${textoDesfase(ep.mt)}`); }
-                else if (ep.estado === 'tolerancia') { pruebasEnTolerancia++; detalle.push(`⏳ Prueba ${m} dentro de la tolerancia (±${TOLERANCIA_PRUEBA_DIAS} día)`); }
-                else detalle.push(`✖ Prueba ${m} no realizada`);
-            });
-
-            if (!hayPlan) return restoReal.length ? { status: 'noplan', score: null, emoji: '➕', msg: 'Producción sin plan', detalle } : EVAL_VACIO;
-
-            const denom = planProd.length + planTests.length - pruebasEnTolerancia + restoReal.length;
-            if (denom === 0) return { status: 'pendiente', score: null, emoji: '⏳', msg: 'Prueba en tolerancia', detalle };
-            const score = aciertos / denom;
+            if (!planProd.length) return restoReal.length ? { status: 'noplan', score: null, emoji: '➕', msg: 'Producción sin plan', detalle } : EVAL_VACIO;
+            const score = aciertos / (planProd.length + restoReal.length);
             if (score >= 0.999) return { status: 'cumplido', score: 1, emoji: '✅', msg: 'Cumplido', detalle };
             if (score > 0) return { status: 'parcial', score, emoji: '⚠️', msg: `Parcial (${Math.round(score * 100)}%)`, detalle };
             return { status: 'desvio', score: 0, emoji: '❌', msg: 'Desvío', detalle };
         }
 
-        function buildPre(tasks, prevMold) {
+        function evaluarPruebas(dateStr, turno) {
+            const tests = getTestList(planData[key(dateStr, turno)]).map(x => x.moldeCompleto);
+            if (!tests.length) return null;
+            const items = tests.map(m => ({ molde: m, ep: estadoPruebaPlan(dateStr, m) }));
+            const ok = items.filter(i => i.ep.estado === 'ok').length;
+            const om = items.filter(i => i.ep.estado === 'omitida').length;
+            const detalle = items.map(i => textoPrueba(i.molde, i.ep));
+            if (ok + om === 0) return { status: 'pendiente', msg: 'Pendiente', detalle, ok, om };
+            if (om === 0) return { status: 'cumplido', msg: 'Realizada', detalle, ok, om };
+            if (ok === 0) return { status: 'desvio', msg: 'No realizada', detalle, ok, om };
+            return { status: 'parcial', msg: `Parcial (${ok}/${ok + om})`, detalle, ok, om };
+        }
+
+        function proporcionCambio(k, seq) {
+            if (!moldesExt.cargado || seq.length < 2) return null;
+            const partes = seq.map(t => extTurno(k, t).min);
+            const total = partes.reduce((a, b) => a + b, 0);
+            if (total <= 0 || partes.some(p => p <= 0)) return null;
+            return partes.map(p => p / total);
+        }
+
+        function buildPre(tasks, prevInmediato, prevUltimo, k, usarExt) {
             const seq = getProdSeq(tasks);
             const tests = getTestList(tasks);
-            if (!seq.length) return { pre: { seq, tests, mold: null, multi: false, showDetail: false, hasTest: tests.length > 0 }, last: null, isChange: false };
+            const base = { seq, tests, mold: null, multi: false, showDetail: false, hasTest: tests.length > 0, proporcion: null, fuera: (tasks || []).filter(t => t.fueraCatalogo).map(t => t.moldeCompleto) };
+            if (!seq.length) return { pre: base, last: null, isChange: false };
             const last = seq[seq.length - 1];
-            const isChange = seq.length > 1 || seq[0].moldeCompleto !== prevMold;
-            return { pre: { seq, tests, mold: last.moldeCompleto, multi: seq.length > 1, showDetail: isChange, hasTest: tests.length > 0 }, last: last.moldeCompleto, isChange };
+            const moldes = [...new Set(seq.map(s => s.moldeCompleto))];
+            const isChange = moldes.length > 1 || (!!prevUltimo && seq[0].moldeCompleto !== prevUltimo.moldeCompleto);
+            const showDetail = seq.length > 1 || isChange || !prevInmediato || idSeq(seq[0]) !== idSeq(prevInmediato);
+            const pre = Object.assign(base, { mold: last.moldeCompleto, multi: seq.length > 1, showDetail, proporcion: usarExt ? proporcionCambio(k, seq) : null });
+            return { pre, last, isChange };
         }
 
         function moldeDetalleHtml(m, compacto) {
             const img = `<img src="${getImageSrc(m.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${m.baseName}">`;
-            if (compacto) return `<div class="cell-content cc-change">${img}<span class="mold-base">${m.baseName}</span><span class="mold-label-text">Molde <b>${m.number}</b></span></div>`;
-            return `<div class="cell-content">${img}<span class="mold-base">${m.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${m.number}</span></div>`;
+            const nombre = `${m.baseName}${m.variante ? `<small class="mold-var">${m.variante}</small>` : ''}`;
+            if (compacto) return `<div class="cell-content cc-change">${img}<span class="mold-base">${nombre}</span><span class="mold-label-text">Molde <b>${m.number}</b></span></div>`;
+            return `<div class="cell-content">${img}<span class="mold-base">${nombre}</span><span class="mold-label-text">Molde</span><span class="mold-number">${m.number}</span></div>`;
         }
 
         function buildCellParts(pre) {
@@ -701,101 +867,128 @@
             const clsTxt = txt === '#000' ? 'txt-dark' : '';
             if (pre.multi) {
                 const n = pre.seq.length;
-                const CORTE = 36, LINEA = 1.2;
-                const LINEA_COLOR = 'rgba(255,255,255,0.95)';
-                const limite = i => i * CORTE / (n - 1);
+                const LINEA = 1.2, LINEA_COLOR = 'rgba(255,255,255,0.95)';
+                const limites = [0];
+                let acum = 0;
+                for (let i = 1; i < n; i++) {
+                    acum += pre.proporcion ? pre.proporcion[i - 1] * 100 : 50 / (n - 1);
+                    limites.push(Math.min(80, Math.max(limites[i - 1] + 8, Math.max(10, acum))));
+                }
+                limites.push(100);
                 const stops = pre.seq.map((m, i) => {
                     const c = getBrickColor(m.baseName, m.number);
-                    const a = i === 0 ? 0 : limite(i) + LINEA;
-                    const b = i === n - 1 ? 100 : limite(i + 1) - LINEA;
-                    const sep = i === n - 1 ? '' : `, ${LINEA_COLOR} ${b.toFixed(1)}%, ${LINEA_COLOR} ${(limite(i + 1) + LINEA).toFixed(1)}%`;
+                    const a = i === 0 ? 0 : limites[i] + LINEA;
+                    const b = i === n - 1 ? 100 : limites[i + 1] - LINEA;
+                    const sep = i === n - 1 ? '' : `, ${LINEA_COLOR} ${b.toFixed(1)}%, ${LINEA_COLOR} ${(limites[i + 1] + LINEA).toFixed(1)}%`;
                     return `${c} ${a.toFixed(1)}%, ${c} ${b.toFixed(1)}%${sep}`;
                 }).join(', ');
-                return {
-                    content: `<div class="split-sweep"></div>${moldeDetalleHtml(ultimo, true)}`,
-                    style: `background:linear-gradient(170deg, ${stops}); color:${txt};`,
-                    cls: `multi-mold ${clsTxt}`
-                };
+                return { content: `<div class="split-sweep"></div>${moldeDetalleHtml(ultimo, true)}`, style: `background:linear-gradient(170deg, ${stops}); color:${txt};`, cls: `multi-mold ${clsTxt}` };
             }
             const content = pre.showDetail ? moldeDetalleHtml(ultimo, false) : ARROW_SVG;
             return { content, style: `background-color:${bgUltimo}; color:${txt};`, cls: clsTxt };
         }
 
-        function buildTooltip(dateStr, turno, dateObj, pre, k, todayStr) {
+        function avisoEstadoMolde(pre, dateStr) {
+            if (currentView !== 'plan' || !moldesExt.cargado || dateStr < hoyStr()) return null;
+            const avisos = pre.seq.map(m => ({ m, e: estadoMolde(m.moldeCompleto) })).filter(x => x.e && x.e.nivel !== 'ok');
+            if (!avisos.length) return null;
+            const nivel = avisos.some(a => a.e.nivel === 'red') ? 'red' : 'amber';
+            return { nivel, texto: avisos.map(a => `⚠️ ${a.m.moldeCompleto}: ${a.e.texto}${a.e.info.observaciones ? ' – ' + a.e.info.observaciones : ''}`).join('\n') };
+        }
+
+        function buildTooltip(dateStr, turno, dateObj, pre, k, aviso) {
             let tip = `📅 ${DAY_NAMES[dateObj.getDay()]} ${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()} - ${turno}\n`;
-            if (pre.multi) tip += `🔄 Cambio de molde dentro del turno\n`;
+            if (estadoTurno(dateStr, turno) === 'actual') tip += `⏱️ Turno en curso\n`;
+            if (pre.multi) tip += `🔄 Cambio de molde dentro del turno${pre.proporcion ? ` (según extrusora: ${pre.proporcion.map(p => Math.round(p * 100) + '%').join(' / ')})` : ''}\n`;
             const pruebas = pre.tests.length ? pre.tests.map(t => t.moldeCompleto).join(', ') : 'No';
-            if (currentView === 'plan') return tip + `📋 Plan: ${seqTexto(pre.seq)}\n🔬 Prueba: ${pruebas}`;
-            if (currentView === 'prod') return tip + `🏭 Real: ${seqTexto(pre.seq)}\n🔬 Prueba: ${pruebas}`;
-            const ev = evaluarCumplimiento(dateStr, turno, todayStr);
-            tip += `📋 Plan: ${seqTexto(getProdSeq(planData[k]))}\n🏭 Real: ${seqTexto(pre.seq)}\n📊 Estado: ${ev.msg} ${ev.emoji}`;
+            if (currentView === 'plan') {
+                tip += `📋 Plan: ${seqTexto(pre.seq)}\n🔬 Prueba: ${pruebas}`;
+                if (aviso) tip += `\n${aviso.texto}`;
+                return tip;
+            }
+            const lineasTn = moldesExt.cargado ? [...pre.seq, ...pre.tests].map(t => { const x = extTurno(k, t); return x.min > 0 ? `⚙️ ${nombreProducto(t)} (${t.number}): ${fmtTn(x.tn)} Tn · ${fmtHoras(x.min)}` : null; }).filter(Boolean) : [];
+            if (currentView === 'prod') {
+                tip += `🏭 Real: ${seqTexto(pre.seq)}\n🔬 Prueba: ${pruebas}`;
+                if (lineasTn.length) tip += '\n' + lineasTn.join('\n');
+                return tip;
+            }
+            const ev = evaluarProduccion(dateStr, turno);
+            const pr = evaluarPruebas(dateStr, turno);
+            tip += `📋 Plan: ${seqTexto(getProdSeq(planData[k]))}\n🏭 Real: ${seqTexto(pre.seq)}\n\n🏭 PRODUCCIÓN: ${ev.msg} ${ev.emoji}`;
             if (ev.detalle.length) tip += '\n' + ev.detalle.join('\n');
+            if (pr) tip += `\n\n🔬 PRUEBAS: ${pr.msg}\n${pr.detalle.join('\n')}`;
+            if (lineasTn.length) tip += '\n\n' + lineasTn.join('\n');
             return tip;
         }
 
-        function buildCompIndicator(dateStr, turno, todayStr) {
-            const ev = evaluarCumplimiento(dateStr, turno, todayStr);
+        function buildCompIndicator(dateStr, turno) {
+            const ev = evaluarProduccion(dateStr, turno);
+            const pr = evaluarPruebas(dateStr, turno);
             const inner = ev.status === 'parcial' ? `<span class="comp-pct">${Math.round(ev.score * 100)}%</span>` : ev.emoji;
-            const tip = ev.status === 'vacio' ? '' : `${ev.msg}${ev.detalle.length ? '\n' + ev.detalle.join('\n') : ''}`;
-            return `<div class="comp-indicator ci-${ev.status}" title="${escAttr(tip)}">${inner}</div>`;
+            const badge = pr ? `<span class="ci-test ct-${pr.status}">🔬</span>` : '';
+            const partes = [];
+            if (ev.status !== 'vacio') partes.push(`🏭 Producción: ${ev.msg}${ev.detalle.length ? '\n' + ev.detalle.join('\n') : ''}`);
+            if (pr) partes.push(`🔬 Pruebas: ${pr.msg}\n${pr.detalle.join('\n')}`);
+            return `<div class="comp-indicator ci-${ev.status}" title="${escAttr(partes.join('\n\n'))}">${inner}${badge}</div>`;
         }
 
         function renderGantt() {
             const wrapper = document.getElementById('ganttWrapper');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const todayStr = formatYYYYMMDD(actualSystemDate);
+            const todayStr = hoyStr();
 
             document.getElementById('monthTitle').textContent = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
             document.getElementById('kpiContainer').style.display = currentView === 'cumpl' ? 'flex' : 'none';
 
             const turnoWidth = isMobileState ? 65 : 70;
             const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
-
             const precalc = {}; const changeDays = new Set(); const testDays = new Set();
-            const visibles = new Map();
-            let hayMulti = false;
+            const visibles = new Map(); const fueraVisibles = new Set();
+            let hayMulti = false, hayAviso = false;
 
-            let prevMoldPlan = null, prevMoldReal = null;
+            const ultimoAntes = (data, ds0) => {
+                for (let i = 1; i <= 15; i++) {
+                    const ds = sumarDias(ds0, -i);
+                    for (let j = TURNOS.length - 1; j >= 0; j--) { const sq = getProdSeq(data[key(ds, TURNOS[j])]); if (sq.length) return { last: sq[sq.length - 1], inmediato: i === 1 && j === TURNOS.length - 1 }; }
+                }
+                return { last: null, inmediato: false };
+            };
+            const primerDia = formatYYYYMMDD(new Date(year, month, 1));
+            const uaPlan = ultimoAntes(planData, primerDia), uaReal = ultimoAntes(realData, primerDia);
+            let prevPlan = uaPlan.inmediato ? uaPlan.last : null, ultPlan = uaPlan.last;
+            let prevReal = uaReal.inmediato ? uaReal.last : null, ultReal = uaReal.last;
+
             for (let d = 1; d <= daysInMonth; d++) {
                 const dateStr = formatYYYYMMDD(new Date(year, month, d));
                 TURNOS.forEach(turno => {
                     const k = key(dateStr, turno);
-
-                    const rp = buildPre(planData[k], prevMoldPlan);
-                    precalc['plan_' + k] = rp.pre;
-                    prevMoldPlan = rp.last;
-                    if (currentView === 'plan') {
-                        if (rp.isChange) changeDays.add(dateStr);
-                        if (rp.pre.hasTest) testDays.add(dateStr);
-                    }
-
-                    if (dateStr === todayStr) {
-                        precalc['real_' + k] = { seq: [], tests: [], mold: null, multi: false, showDetail: false, hasTest: false };
-                        prevMoldReal = null;
-                    } else {
-                        const rr = buildPre(realData[k], prevMoldReal);
-                        precalc['real_' + k] = rr.pre;
-                        prevMoldReal = rr.last;
-                        if (currentView !== 'plan') {
-                            if (rr.isChange) changeDays.add(dateStr);
-                            if (rr.pre.hasTest) testDays.add(dateStr);
-                        }
-                    }
+                    const rp = buildPre(planData[k], prevPlan, ultPlan, k, false);
+                    precalc['plan_' + k] = rp.pre; prevPlan = rp.last; ultPlan = rp.last || ultPlan;
+                    const rr = buildPre(realData[k], prevReal, ultReal, k, true);
+                    precalc['real_' + k] = rr.pre; prevReal = rr.last; ultReal = rr.last || ultReal;
+                    const r = currentView === 'plan' ? rp : rr;
+                    if (r.isChange) changeDays.add(dateStr);
+                    if (r.pre.hasTest) testDays.add(dateStr);
                 });
             }
 
-            if (currentView === 'cumpl') actualizarKPIs(daysInMonth, year, month, todayStr);
+            if (currentView === 'cumpl') actualizarKPIs(daysInMonth, year, month);
 
             const renderTd = (dateStr, turno, dateObj, extraCls, extraStyle) => {
                 const k = key(dateStr, turno);
                 const pre = (currentView === 'plan') ? precalc['plan_' + k] : precalc['real_' + k];
                 pre.seq.forEach(m => { const tp = getTipo(m.baseName); if (!visibles.has(tp)) visibles.set(tp, new Map()); visibles.get(tp).set(m.number, { baseName: m.baseName, molde: m.moldeCompleto }); });
+                pre.fuera.forEach(f => fueraVisibles.add(f));
                 if (pre.multi) hayMulti = true;
                 const parts = buildCellParts(pre);
-                const markers = pre.hasTest ? `<div class="test-marker"></div>` : '';
-                const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, todayStr);
-                return `<td class="${extraCls} ${parts.cls}" style="${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="abrirGantt('${dateStr}')">${markers}${parts.content}</td>`;
+                const aviso = avisoEstadoMolde(pre, dateStr);
+                if (aviso) hayAviso = true;
+                let markers = pre.hasTest ? `<div class="test-marker"></div>` : '';
+                if (aviso) markers += `<div class="mold-warn mw-${aviso.nivel}">!</div>`;
+                const cls = `${extraCls} ${parts.cls}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}`;
+                const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso);
+                return `<td class="${cls}" style="${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="abrirGantt('${dateStr}')">${markers}${parts.content}</td>`;
             };
 
             const indicadores = dateStr => {
@@ -805,12 +998,10 @@
             };
 
             let html = '';
-
             if (isMobileState) {
                 html += `<table class="gantt-table mobile-gantt"><thead><tr><th style="width:${turnoWidth}px; z-index:30;">DÍA</th>`;
                 TURNOS.forEach(t => html += `<th>${t}</th>`);
                 html += `</tr></thead><tbody>`;
-
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateObj = new Date(year, month, d);
                     const dateStr = formatYYYYMMDD(dateObj);
@@ -818,13 +1009,10 @@
                     let trClass = dateStr === todayStr ? 'today-row' : '';
                     if (esDomingo) trClass += ' sunday-row';
                     const thClass = dateStr === todayStr ? 'today-col' : (esDomingo ? 'sunday-cell' : '');
-
                     html += `<tr class="day-row ${trClass}"><th class="${thClass}"><div class="day-header"><div class="day-name">${DAY_NAMES[dateObj.getDay()]}</div><div class="day-number">${d}</div>${indicadores(dateStr)}</div></th>`;
                     TURNOS.forEach(turno => { html += renderTd(dateStr, turno, dateObj, esDomingo ? 'sunday-cell' : '', ''); });
-                    html += `</tr>`;
-
-                    html += `<tr class="comp-row ${trClass}"><td class="comp-label-text ${thClass}" style="text-align:center;">CUMPL</td>`;
-                    TURNOS.forEach(turno => { html += `<td class="${esDomingo ? 'sunday-cell' : ''}">${buildCompIndicator(dateStr, turno, todayStr)}</td>`; });
+                    html += `</tr><tr class="comp-row ${trClass}"><td class="comp-label-text ${thClass}" style="text-align:center;">CUMPL</td>`;
+                    TURNOS.forEach(turno => { html += `<td class="${esDomingo ? 'sunday-cell' : ''}">${buildCompIndicator(dateStr, turno)}</td>`; });
                     html += `</tr>`;
                 }
                 html += `</tbody></table>`;
@@ -838,7 +1026,6 @@
                     html += `<th class="${thClass}" style="width:${colWidthCalc};"><div class="day-header"><div class="day-name">${DAY_NAMES[dateObj.getDay()]}</div><div class="day-number">${d}</div>${indicadores(dateStr)}</div></th>`;
                 }
                 html += '</tr></thead><tbody>';
-
                 TURNOS.forEach(turno => {
                     html += `<tr class="${turno === 'T3' ? 't3-row' : ''}"><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
                     for (let d = 1; d <= daysInMonth; d++) {
@@ -848,15 +1035,13 @@
                         if (dateStr === todayStr) cls += ' today-col';
                         html += renderTd(dateStr, turno, dateObj, cls, `width:${colWidthCalc}; `);
                     }
-                    html += '</tr>';
-
-                    html += `<tr class="comp-row"><td class="comp-label-text" style="width:${turnoWidth}px; text-align:center;">CUMPL</td>`;
+                    html += `</tr><tr class="comp-row"><td class="comp-label-text" style="width:${turnoWidth}px; text-align:center;">CUMPL</td>`;
                     for (let d = 1; d <= daysInMonth; d++) {
                         const dateObj = new Date(year, month, d);
                         const dateStr = formatYYYYMMDD(dateObj);
                         let tdClass = dateObj.getDay() === 0 ? 'sunday-cell' : '';
                         if (dateStr === todayStr) tdClass += ' today-col';
-                        html += `<td class="${tdClass}">${buildCompIndicator(dateStr, turno, todayStr)}</td>`;
+                        html += `<td class="${tdClass}">${buildCompIndicator(dateStr, turno)}</td>`;
                     }
                     html += '</tr>';
                 });
@@ -864,7 +1049,7 @@
             }
 
             wrapper.innerHTML = html;
-            renderLeyenda(visibles, hayMulti);
+            renderLeyenda(visibles, hayMulti, hayAviso, fueraVisibles);
 
             const table = wrapper.querySelector('.gantt-table');
             if (!isMobileState) {
@@ -877,13 +1062,11 @@
                     const idx = td.cellIndex; Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.remove('hover-col'); });
                 });
             }
-
-            renderPruebasInfo(todayStr);
+            renderPruebasInfo();
         }
 
-        function renderLeyenda(visibles, hayMulti) {
+        function renderLeyenda(visibles, hayMulti, hayAviso, fueraVisibles) {
             const cont = document.getElementById('legendContainer');
-            if (visibles.size === 0 && currentView !== 'cumpl') { cont.style.display = 'none'; cont.innerHTML = ''; return; }
             let h = '';
             if (visibles.size > 0) {
                 h += '<div class="legend-section"><div class="legend-title">🎨 Color = tipo de ladrillo · Intensidad = N° de molde</div><div class="legend-items">';
@@ -899,50 +1082,49 @@
             }
             const ejA = getBrickColor('H18', 2), ejB = getBrickColor('H12', 2);
             h += '<div class="legend-section"><div class="legend-title">🔎 Símbolos</div><div class="legend-items">';
-            h += `<div class="legend-item"><div class="legend-swatch-split" style="background:linear-gradient(170deg, ${ejA} 0%, ${ejA} 40%, #fff 40%, #fff 44%, ${ejB} 44%, ${ejB} 100%);"><div class="split-sweep"></div></div><span>Cambio de molde a mitad de turno${hayMulti ? '' : ' (sin casos este mes)'}</span></div>`;
-            h += `<div class="legend-item"><div class="legend-color" style="background:${ejB};"></div><span>Cambio al inicio del turno: color pleno</span></div>`;
+            h += `<div class="legend-item"><div class="legend-swatch-split" style="background:linear-gradient(170deg, ${ejA} 0%, ${ejA} 40%, #fff 40%, #fff 44%, ${ejB} 44%, ${ejB} 100%);"><div class="split-sweep"></div></div><span>Cambio a mitad de turno${moldesExt.cargado ? ' (proporción según extrusora)' : ''}${hayMulti ? '' : ' · sin casos este mes'}</span></div>`;
+            h += `<div class="legend-item"><div class="legend-color" style="background:${ejB};"></div><span>Cambio al inicio del turno</span></div>`;
             h += `<div class="legend-item"><span class="indicator-change">🔄️</span><span>Día con cambio de molde</span></div>`;
-            h += `<div class="legend-item"><div class="legend-tri"></div><span>Turno con prueba (no es producción)</span></div>`;
+            h += `<div class="legend-item"><div class="legend-tri"></div><span>Turno con prueba</span></div>`;
+            h += `<div class="legend-item"><div class="legend-now"></div><span>Turno en curso</span></div>`;
+            if (currentView === 'plan' && moldesExt.cargado) {
+                h += `<div class="legend-item"><div class="mold-warn mw-amber static">!</div><span>Molde en calibración</span></div>`;
+                h += `<div class="legend-item"><div class="mold-warn mw-red static">!</div><span>Molde no operativo${hayAviso ? '' : ' · sin casos'}</span></div>`;
+            }
             if (currentView === 'cumpl') {
-                h += `<div class="legend-item"><div class="legend-color ci-cumplido"></div><span>Cumplido</span></div>`;
+                h += `<div class="legend-item"><div class="legend-color ci-cumplido"></div><span>Prod. cumplida</span></div>`;
                 h += `<div class="legend-item"><div class="legend-color ci-parcial"></div><span>Parcial (%)</span></div>`;
                 h += `<div class="legend-item"><div class="legend-color ci-desvio"></div><span>Desvío</span></div>`;
-                h += `<div class="legend-item"><div class="legend-color ci-noplan"></div><span>Producción sin plan</span></div>`;
+                h += `<div class="legend-item"><div class="legend-color ci-noplan"></div><span>Prod. sin plan</span></div>`;
+                h += `<div class="legend-item"><span class="ci-test ct-cumplido static">🔬</span><span>Prueba (verde ok · rojo no · gris pendiente)</span></div>`;
             }
             h += '</div></div>';
-            if (nombresFueraCatalogo.size > 0) {
-                h += `<div class="legend-warn">⚠️ Nombres que no figuran en el catálogo de Moldes: <strong>${[...nombresFueraCatalogo].sort().map(escAttr).join(' · ')}</strong></div>`;
-            }
+            if (fueraVisibles.size > 0) h += `<div class="legend-warn">⚠️ Nombres que no figuran en el catálogo de Moldes: <strong>${[...fueraVisibles].sort().map(escAttr).join(' · ')}</strong></div>`;
             cont.innerHTML = h;
             cont.style.display = 'block';
         }
 
-        function actualizarKPIs(daysInMonth, year, month, todayStr) {
-            const diasPlan = new Set(); const moldesSet = new Set();
+        function actualizarKPIs(daysInMonth, year, month) {
+            const diasPlan = new Set();
             let cambiosPlan = 0, cambiosReal = 0, prevP = null, prevR = null;
-            let pruebasMes = 0, pruebasPlanPas = 0, pruebasHechas = 0;
-            let sumScore = 0, nEval = 0, nCump = 0, nParc = 0, nDesv = 0, nNoPlan = 0;
+            let pruebasMes = 0, pruebasEval = 0, pruebasHechas = 0;
+            let sumScore = 0, nEval = 0, nCump = 0, nParc = 0, nDesv = 0, nNoPlan = 0, tnMes = 0;
 
             for (let d = 1; d <= daysInMonth; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
-                const esPasado = ds < todayStr;
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
                     const seqP = getProdSeq(planData[k]);
                     const testsP = getTestList(planData[k]);
                     if (seqP.length || testsP.length) diasPlan.add(ds);
-                    seqP.forEach(m => { moldesSet.add(m.moldeCompleto); if (prevP !== null && m.moldeCompleto !== prevP) cambiosPlan++; prevP = m.moldeCompleto; });
+                    seqP.forEach(m => { if (prevP !== null && m.moldeCompleto !== prevP) cambiosPlan++; prevP = m.moldeCompleto; });
                     pruebasMes += testsP.length;
-
-                    if (!esPasado) return;
+                    (moldesExt.prod.get(k) || []).forEach(e => { tnMes += e.tn; });
+                    if (estadoTurno(ds, t) !== 'pasado') return;
                     getProdSeq(realData[k]).forEach(m => { if (prevR !== null && m.moldeCompleto !== prevR) cambiosReal++; prevR = m.moldeCompleto; });
-                    testsP.forEach(x => {
-                        const ep = estadoPruebaPlan(ds, x.moldeCompleto, todayStr);
-                        if (ep.estado === 'ok') { pruebasHechas++; pruebasPlanPas++; }
-                        else if (ep.estado === 'omitida') pruebasPlanPas++;
-                    });
-
-                    const ev = evaluarCumplimiento(ds, t, todayStr);
+                    const pr = evaluarPruebas(ds, t);
+                    if (pr) { pruebasHechas += pr.ok; pruebasEval += pr.ok + pr.om; }
+                    const ev = evaluarProduccion(ds, t);
                     if (ev.status === 'noplan') nNoPlan++;
                     if (ev.score === null) return;
                     nEval++; sumScore += ev.score;
@@ -951,151 +1133,168 @@
             }
 
             const pct = nEval > 0 ? Math.round((sumScore / nEval) * 100) : 0;
-            const pctPr = pruebasPlanPas > 0 ? Math.round((pruebasHechas / pruebasPlanPas) * 100) : null;
+            const pctPr = pruebasEval > 0 ? Math.round((pruebasHechas / pruebasEval) * 100) : null;
             const colorPct = v => v >= 85 ? 'var(--green)' : v >= 50 ? 'var(--orange)' : 'var(--red)';
             document.getElementById('kpiContainer').innerHTML = `
-                <div class="kpi-card"><div class="kpi-value">${diasPlan.size}</div><div class="kpi-label">Días c/ Plan</div></div>
-                <div class="kpi-card"><div class="kpi-value">${cambiosPlan} / ${cambiosReal}</div><div class="kpi-label">Cambios Plan / Real</div><div class="kpi-sub">real hasta ayer</div></div>
-                <div class="kpi-card" style="${pctPr === null ? '' : `border-top-color:${colorPct(pctPr)};`}"><div class="kpi-value">${pruebasHechas} / ${pruebasPlanPas}</div><div class="kpi-label">Pruebas Realiz. / Plan.</div><div class="kpi-sub">${pruebasMes} planificadas en el mes · tolerancia ±${TOLERANCIA_PRUEBA_DIAS} día</div></div>
-                <div class="kpi-card" style="border-top-color:${colorPct(pct)};"><div class="kpi-value">${pct}%</div><div class="kpi-label">Efectividad Total</div><div class="kpi-sub">${nEval} turnos evaluados</div></div>
-                <div class="kpi-card"><div class="kpi-value" style="font-size:1.4rem;">✅${nCump} ⚠️${nParc} ❌${nDesv}</div><div class="kpi-label">Turnos</div><div class="kpi-sub">${nNoPlan > 0 ? `➕ ${nNoPlan} con producción sin plan` : 'sin producción fuera de plan'}</div></div>
-                <div class="kpi-card"><div class="kpi-value">${moldesSet.size}</div><div class="kpi-label">Variedad Ladrillos</div></div>
+                <div class="kpi-card kpi-main" style="border-top-color:${colorPct(pct)};"><div class="kpi-label">🏭 Cumplimiento de Producción</div><div class="kpi-value">${pct}%</div><div class="kpi-sub">✅ ${nCump} · ⚠️ ${nParc} · ❌ ${nDesv} de ${nEval} turnos${nNoPlan ? ` · ➕ ${nNoPlan} sin plan` : ''}</div></div>
+                <div class="kpi-card kpi-test" style="${pctPr === null ? '' : `border-top-color:${colorPct(pctPr)};`}"><div class="kpi-label">🔬 Cumplimiento de Pruebas</div><div class="kpi-value">${pctPr === null ? '–' : pctPr + '%'}</div><div class="kpi-sub">${pruebasHechas} de ${pruebasEval} evaluadas · ${pruebasMes} plan. en el mes · ±${TOLERANCIA_PRUEBA_DIAS} día</div></div>
+                <div class="kpi-card"><div class="kpi-label">Cambios Plan / Real</div><div class="kpi-value">${cambiosPlan} / ${cambiosReal}</div><div class="kpi-sub">real en turnos cerrados</div></div>
+                <div class="kpi-card"><div class="kpi-label">Días c/ Plan</div><div class="kpi-value">${diasPlan.size}</div></div>
+                ${moldesExt.cargado ? `<div class="kpi-card"><div class="kpi-label">Tn producidas</div><div class="kpi-value">${Math.round(tnMes).toLocaleString('es-AR')}</div><div class="kpi-sub">según base de moldes</div></div>` : ''}
             `;
         }
 
-        function renderPruebasInfo(todayStr) {
+        function renderPruebasInfo() {
             const container = document.getElementById('pruebasInfo');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
+            const hoy = hoyStr();
             const pruebas = [];
-
             for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
                     const planT = getTestList(planData[k]);
-                    const realT = ds < todayStr ? getTestList(realData[k]) : [];
+                    const realT = ds <= hoy ? getTestList(realData[k]) : [];
                     if (currentView === 'plan') {
-                        planT.forEach(p => pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: ds >= todayStr ? '⏳ Pendiente' : '-' }));
+                        planT.forEach(p => pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: ds >= hoy ? '⏳ Pendiente' : '-' }));
                     } else if (currentView === 'prod') {
-                        realT.forEach(r => pruebas.push({ fecha: ds, turno: t, molde: r.moldeCompleto, tipo: 'Prueba Ejecutada', estado: 'Realizada ✅' }));
+                        realT.forEach(r => { const x = extTurno(k, r); pruebas.push({ fecha: ds, turno: t, molde: r.moldeCompleto, tipo: 'Prueba Ejecutada', estado: `Realizada ✅${x.min > 0 ? ` · ${fmtTn(x.tn)} Tn · ${fmtHoras(x.min)}` : ''}` }); });
                     } else {
                         planT.forEach(p => {
-                            const ep = estadoPruebaPlan(ds, p.moldeCompleto, todayStr);
-                            const estado = ep.estado === 'ok' ? `✅ Realizada${textoDesfase(ep.mt)}`
-                                : ep.estado === 'futura' ? '⏳ Pendiente'
-                                : ep.estado === 'tolerancia' ? `⏳ En tolerancia (±${TOLERANCIA_PRUEBA_DIAS} día)`
-                                : '❌ No realizada';
+                            const ep = estadoPruebaPlan(ds, p.moldeCompleto);
+                            const estado = ep.estado === 'ok' ? `✅ Realizada${textoDesfase(ep.mt)}` : ep.estado === 'futura' ? '⏳ Pendiente' : ep.estado === 'tolerancia' ? `⏳ En tolerancia (±${TOLERANCIA_PRUEBA_DIAS} día)` : '❌ No realizada';
                             pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado });
                         });
-                        realT.forEach(r => {
-                            if (!matchPruebas.real.has(ds + '|' + r.moldeCompleto)) pruebas.push({ fecha: ds, turno: t, molde: r.moldeCompleto, tipo: 'Prueba Ejecutada', estado: '📌 No planificada' });
-                        });
+                        realT.forEach(r => { if (!matchPruebas.real.has(ds + '|' + r.moldeCompleto)) pruebas.push({ fecha: ds, turno: t, molde: r.moldeCompleto, tipo: 'Prueba Ejecutada', estado: '📌 No planificada' }); });
                     }
                 });
             }
-
             if (pruebas.length === 0) {
                 container.innerHTML = '<h3>🔬 Detalle de Pruebas</h3><p style="color:var(--text-muted);">Sin información de pruebas para la vista actual.</p>';
-            } else {
-                const title = currentView === 'plan' ? 'Pruebas Planificadas' : currentView === 'prod' ? 'Pruebas Ejecutadas' : `Cruce de Pruebas (Plan vs Real · tolerancia ±${TOLERANCIA_PRUEBA_DIAS} día)`;
-                let html = `<h3>🔬 ${title}</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>`;
-                pruebas.forEach(p => html += `<tr><td>${p.fecha}</td><td>${p.turno}</td><td><strong>${p.molde}</strong></td><td>${p.tipo}</td><td>${p.estado}</td></tr>`);
-                html += '</tbody></table>';
-                container.innerHTML = html;
+                return;
             }
+            const title = currentView === 'plan' ? 'Pruebas Planificadas' : currentView === 'prod' ? 'Pruebas Ejecutadas' : `Cruce de Pruebas (Plan vs Real · tolerancia ±${TOLERANCIA_PRUEBA_DIAS} día)`;
+            let html = `<h3>🔬 ${title}</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>`;
+            pruebas.forEach(p => html += `<tr><td>${fechaCorta(p.fecha)}</td><td>${p.turno}</td><td><strong>${p.molde}</strong></td><td>${p.tipo}</td><td>${p.estado}</td></tr>`);
+            container.innerHTML = html + '</tbody></table>';
         }
 
         function setView(view) {
             currentView = view;
             document.body.classList.toggle('view-cumpl', view === 'cumpl');
             document.getElementById('btnCumpl').classList.toggle('active', view === 'cumpl');
-            const slider = document.getElementById('toggleSlider');
             document.getElementById('toggleProdLabel').classList.toggle('active', view === 'prod');
             document.getElementById('togglePlanLabel').classList.toggle('active', view === 'plan');
-            slider.className = 'toggle-slider ' + (view === 'plan' ? 'right' : 'left');
+            document.getElementById('toggleSlider').className = 'toggle-slider ' + (view === 'plan' ? 'right' : 'left');
             renderGantt();
         }
 
         function toggleProdPlan() { setView(currentView === 'prod' ? 'plan' : 'prod'); }
         function toggleCumplimiento() { setView(currentView === 'cumpl' ? 'prod' : 'cumpl'); }
-        
-        function imprimirPlan() {
+
+        function prepararImpresion() {
+            if (printState) return;
+            printState = { mobile: isMobileState };
             const mesStr = document.getElementById('monthTitle').textContent;
-            document.getElementById('printTitleMain').textContent = `CRONOGRAMA DE PRODUCCIÓN - ${mesStr}`;
-            
-            let subText = "";
-            if(currentView === 'plan') subText = "Planificación";
-            else if(currentView === 'prod') subText = "Producción Real";
-            else if(currentView === 'cumpl') subText = "Análisis de Cumplimiento";
-            document.getElementById('printTitleSub').textContent = subText;
-
-            const tempMobile = isMobileState;
-            if (tempMobile) {
-                isMobileState = false;
-                renderGantt();
+            const sub = currentView === 'plan' ? 'Planificación' : currentView === 'prod' ? 'Producción Real' : 'Análisis de Cumplimiento';
+            document.getElementById('printTitleMain').textContent = `Cronograma de Producción · ${mesStr}`;
+            document.getElementById('printTitleSub').textContent = `${sub} · Cerámica Marcos Paz – Planta CEVIL · Impreso ${new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })}`;
+            if (isMobileState) { isMobileState = false; renderGantt(); }
+            const body = document.body;
+            body.classList.add('printing');
+            body.style.zoom = '';
+            const medir = s => {
+                body.style.width = (A4_PX.w / s) + 'px';
+                const visibles = [...body.children].filter(el => el.tagName !== 'SCRIPT' && getComputedStyle(el).display !== 'none' && getComputedStyle(el).position !== 'fixed');
+                return Math.max(1, ...visibles.map(el => el.getBoundingClientRect().bottom + window.scrollY)) * s;
+            };
+            const limite = A4_PX.h * 0.97;
+            let escala = 1;
+            body.style.removeProperty('--cell-h');
+            if (medir(1) <= limite) {
+                let lo = 52, hi = 130;
+                for (let i = 0; i < 8; i++) { const mid = (lo + hi) / 2; body.style.setProperty('--cell-h', mid + 'px'); if (medir(1) <= limite * 0.94) lo = mid; else hi = mid; }
+                body.style.setProperty('--cell-h', lo + 'px');
+            } else {
+                let lo = 0.25, hi = 1;
+                for (let i = 0; i < 12; i++) { const mid = (lo + hi) / 2; if (medir(mid) <= limite) lo = mid; else hi = mid; }
+                escala = lo;
             }
-
-            setTimeout(() => {
-                window.print();
-                
-                if (tempMobile) {
-                    isMobileState = true;
-                    renderGantt();
-                }
-            }, 400); 
+            body.style.width = (A4_PX.w / escala) + 'px';
+            body.style.zoom = String(escala);
         }
 
-        function renderModalBlock(tasks) {
+        function restaurarImpresion() {
+            if (!printState) return;
+            const body = document.body;
+            body.classList.remove('printing');
+            body.style.width = '';
+            body.style.zoom = '';
+            body.style.removeProperty('--cell-h');
+            const eraMobile = printState.mobile;
+            printState = null;
+            if (eraMobile) { isMobileState = true; renderGantt(); }
+        }
+
+        function imprimirPlan() { prepararImpresion(); setTimeout(() => window.print(), 60); }
+        window.addEventListener('beforeprint', prepararImpresion);
+        window.addEventListener('afterprint', restaurarImpresion);
+
+        function renderModalBlock(tasks, k, conExt) {
             const seq = getProdSeq(tasks);
             const tests = getTestList(tasks);
             if (!seq.length && !tests.length) return `<div class="mg-cell empty">Sin Asignación</div>`;
-            const bloqueProd = task => {
-                const color = getBrickColor(task.baseName, task.number);
+            const datosExt = t => {
+                if (!conExt || !moldesExt.cargado) return '';
+                const x = extTurno(k, t);
+                return x.min > 0 ? `<span class="mg-ext">${fmtTn(x.tn)} Tn · ${fmtHoras(x.min)}</span>` : '';
+            };
+            const chipEstado = t => {
+                if (conExt || !moldesExt.cargado) return '';
+                const e = estadoMolde(t.moldeCompleto);
+                return e ? `<span class="mg-estado me-${e.nivel}" title="${escAttr(e.info.observaciones || '')}">● ${escAttr(e.texto)}</span>` : '';
+            };
+            const bloqueProd = t => {
+                const color = getBrickColor(t.baseName, t.number);
                 const txt = pickTextColor(color);
                 return `<div class="mg-sub-block" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:${color}; color:${txt}; border-radius:8px; padding:4px; margin-bottom:4px; min-height:60px;">
-                        <img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" style="width:30px; height:30px; display:block; margin:0 auto;">
-                        <span style="font-weight:800; font-size:0.9rem;">${task.baseName}</span>
-                        <span style="font-size:0.7rem; opacity:0.9;">Molde ${task.number}</span>
+                        <img src="${getImageSrc(t.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" style="width:30px; height:30px; display:block; margin:0 auto;">
+                        <span style="font-weight:800; font-size:0.9rem;">${nombreProducto(t)}</span>
+                        <span style="font-size:0.7rem; opacity:0.9;">Molde ${t.number}</span>
+                        ${datosExt(t)}${chipEstado(t)}
                     </div>`;
             };
-            const bloquePrueba = task => {
-                const color = getBrickColor(task.baseName, task.number);
-                return `<div class="mg-test" style="border-left-color:${color};"><span class="mg-test-ico">🔬</span><span><strong>Prueba</strong> ${task.baseName} · M${task.number}</span></div>`;
-            };
+            const bloquePrueba = t => `<div class="mg-test" style="border-left-color:${getBrickColor(t.baseName, t.number)};"><span class="mg-test-ico">🔬</span><span><strong>Prueba</strong> ${t.baseName} · M${t.number}${datosExt(t) ? '<br>' + datosExt(t) : ''}</span></div>`;
             let html = seq.map(bloqueProd).join('<div class="mg-change">⇣ cambio de molde</div>');
             html += tests.map(bloquePrueba).join('');
             return `<div class="mg-cell" style="background:transparent; box-shadow:none; padding:0;">${html}</div>`;
         }
 
         function abrirGantt(dateStr) {
-            const todayStr = formatYYYYMMDD(actualSystemDate);
-            const isToday = dateStr === todayStr;
             const dObj = new Date(dateStr + 'T00:00:00');
             document.getElementById('ganttTitulo').textContent = dObj.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
-            const cont = document.getElementById('ganttDetalle');
-
-            let html = `<div class="modal-grid"><div></div> <div class="mg-header">T1</div> <div class="mg-header">T2</div> <div class="mg-header">T3</div><div class="mg-row-label">Planificación</div>`;
-            TURNOS.forEach(t => { html += renderModalBlock(planData[key(dateStr, t)]); });
-
+            let html = `<div class="modal-grid"><div></div>`;
+            TURNOS.forEach(t => { html += `<div class="mg-header">${t}${estadoTurno(dateStr, t) === 'actual' ? ' <small class="mg-now">en curso</small>' : ''}</div>`; });
+            html += `<div class="mg-row-label">Planificación</div>`;
+            TURNOS.forEach(t => { html += renderModalBlock(planData[key(dateStr, t)], key(dateStr, t), false); });
             html += `<div class="mg-row-label">Cumplimiento</div>`;
             TURNOS.forEach(t => {
-                const ev = evaluarCumplimiento(dateStr, t, todayStr);
-                if (ev.status === 'hoy') html += `<div class="mg-comp" style="background:var(--bg-cell); border: 1px dashed var(--border); color:var(--text-muted); font-size:0.8rem;">HOY</div>`;
-                else if (ev.status === 'pendiente') html += `<div class="mg-comp" style="background:var(--bg-cell); border: 1px dashed var(--border); color:var(--text-muted); font-size:0.8rem;">⏳ Pendiente</div>`;
-                else if (ev.status === 'vacio') html += `<div></div>`;
-                else {
-                    const det = ev.detalle.length ? `<ul class="mg-detail">${ev.detalle.map(x => `<li>${x}</li>`).join('')}</ul>` : '';
-                    html += `<div class="mg-comp ci-${ev.status}"><div>${ev.emoji} <span style="margin-left:6px; font-size:0.9rem;">${ev.msg}</span></div>${det}</div>`;
-                }
+                const ev = evaluarProduccion(dateStr, t);
+                const pr = evaluarPruebas(dateStr, t);
+                let cel = '';
+                if (ev.status === 'hoy' || ev.status === 'pendiente') cel += `<div class="mg-comp mg-comp-wait">${ev.status === 'hoy' ? '⏱️ Turno en curso' : '⏳ Pendiente'}</div>`;
+                else if (ev.status !== 'vacio') cel += `<div class="mg-comp ci-${ev.status}"><div>🏭 ${ev.emoji} <span style="margin-left:4px; font-size:0.85rem;">${ev.msg}</span></div>${ev.detalle.length ? `<ul class="mg-detail">${ev.detalle.map(x => `<li>${x}</li>`).join('')}</ul>` : ''}</div>`;
+                if (pr) cel += `<div class="mg-comp-test ct-${pr.status}"><div><strong>🔬 Pruebas:</strong> ${pr.msg}</div><ul class="mg-detail">${pr.detalle.map(x => `<li>${x}</li>`).join('')}</ul></div>`;
+                html += `<div class="mg-comp-wrap">${cel}</div>`;
             });
-
             html += `<div class="mg-row-label">Prod. Real</div>`;
             TURNOS.forEach(t => {
-                if (isToday) html += `<div class="mg-cell empty">Dato Protegido</div>`;
-                else html += renderModalBlock(realData[key(dateStr, t)]);
+                const k = key(dateStr, t);
+                const et = estadoTurno(dateStr, t);
+                const vacio = !(realData[k] || []).length;
+                html += vacio && et === 'futuro' ? `<div class="mg-cell empty">Turno no iniciado</div>` : vacio && et === 'actual' ? `<div class="mg-cell empty">Sin carga aún</div>` : renderModalBlock(realData[k], k, true);
             });
-            html += `</div>`;
-            cont.innerHTML = html;
+            document.getElementById('ganttDetalle').innerHTML = html + `</div>`;
             document.getElementById('ganttModal').style.display = 'flex';
         }
 
@@ -1105,31 +1304,28 @@
         function abrirSelectorMes() {
             document.getElementById('overlay').style.display = 'block'; document.getElementById('monthSelector').style.display = 'block';
             const sel = document.getElementById('selMonth'); sel.innerHTML = '';
-            ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'].forEach((m,i) => {
+            ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'].forEach((m, i) => {
                 const opt = document.createElement('option'); opt.value = i; opt.textContent = m;
                 if (i === currentDate.getMonth()) opt.selected = true; sel.appendChild(opt);
             });
             document.getElementById('selYear').value = currentDate.getFullYear();
         }
         function cerrarSelectorMes() { document.getElementById('overlay').style.display = 'none'; document.getElementById('monthSelector').style.display = 'none'; }
-        function irAMes() { currentDate.setFullYear(parseInt(document.getElementById('selYear').value)); currentDate.setMonth(parseInt(document.getElementById('selMonth').value)); cerrarSelectorMes(); loadData(); }
-        function cambiarMes(delta) { currentDate.setMonth(currentDate.getMonth() + delta); loadData(); }
-        function irAHoy() { currentDate = new Date(); loadData(); }
+        function irAMes() { currentDate = new Date(parseInt(document.getElementById('selYear').value), parseInt(document.getElementById('selMonth').value), 1); cerrarSelectorMes(); loadData(); }
+        function cambiarMes(delta) { currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + delta, 1); loadData(); }
+        function irAHoy() { const h = new Date(); currentDate = new Date(h.getFullYear(), h.getMonth(), 1); loadData(); }
         function updateClock() { const now = new Date(); document.getElementById('liveClock').textContent = now.toLocaleDateString('es-AR', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) + ' · ' + now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }); }
-        function toggleTheme() { themeDark = !themeDark; document.body.classList.toggle('light-mode', !themeDark); localStorage.setItem('theme', themeDark ? 'dark' : 'light'); }
+        function leerTema() { try { return localStorage.getItem('theme'); } catch (e) { return null; } }
+        function toggleTheme() { themeDark = !themeDark; document.body.classList.toggle('light-mode', !themeDark); try { localStorage.setItem('theme', themeDark ? 'dark' : 'light'); } catch (e) { } }
 
         window.addEventListener('load', () => {
-            if (localStorage.getItem('theme') === 'light') { document.body.classList.add('light-mode'); themeDark = false; }
-            updateClock(); setInterval(updateClock, 30000); 
-            
+            if (leerTema() === 'light') { document.body.classList.add('light-mode'); themeDark = false; }
+            updateClock(); setInterval(updateClock, 30000);
+            setInterval(() => { if (!printState && document.visibilityState === 'visible') loadData(true); }, RECARGA_MIN * 60000);
             window.addEventListener('resize', () => {
                 const currentIsMobile = window.innerWidth <= 768;
-                if (currentIsMobile !== isMobileState) {
-                    isMobileState = currentIsMobile;
-                    renderGantt();
-                }
+                if (currentIsMobile !== isMobileState && !printState) { isMobileState = currentIsMobile; renderGantt(); }
             });
-
             loadData();
         });
     </script>
