@@ -426,6 +426,8 @@
                 
                 if (json.result === 'success') {
                     mostrarModal('success', 'Planificación Registrada', `Se ingresó correctamente el molde ${state.moldeCompleto} a la base de datos.`);
+                } else if (json.result === 'duplicate') {
+                    mostrarModal('warning', 'Registro ya existente', json.message || 'Esta planificación ya estaba cargada. No se duplicó.');
                 } else {
                     mostrarModal('error', 'Error en el Registro', json.message || 'La contraseña o los parámetros son inválidos.');
                 }
@@ -439,14 +441,14 @@
 
         // --- Modal ---
         function mostrarModal(status, titulo, mensaje) {
-            document.getElementById('modalIcon').textContent = status === 'success' ? '✅' : '❌';
+            document.getElementById('modalIcon').textContent = status === 'success' ? '✅' : status === 'warning' ? '⚠️' : '❌';
             document.getElementById('modalTitle').textContent = titulo;
             document.getElementById('modalMessage').textContent = mensaje;
             
             const btnGroup = document.getElementById('modalBtnGroup');
             btnGroup.innerHTML = '';
 
-            if (status === 'success') {
+            if (status === 'success' || status === 'warning') {
                 btnGroup.innerHTML = `
                     <button class="primary-btn" onclick="cerrarModal(true)">Registrar otra planificación</button>
                     <button class="modal-btn-secondary" onclick="finalizarCarga()">Finalizar</button>
