@@ -154,6 +154,30 @@
 
         .change-marker { position: absolute; top: 0; left: 0; width: 0; height: 0; border-top: 22px solid; border-right: 22px solid transparent; z-index: 5; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); }
         .test-marker { position: absolute; top: 0; right: 0; width: 0; height: 0; border-top: 22px solid #000; border-left: 22px solid transparent; z-index: 5; }
+
+        td.multi-mold { padding: 0 !important; }
+        .split-wrap { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 4px 3px; z-index: 2; pointer-events: none; }
+        .split-lbl { font-size: 0.62rem; font-weight: 800; line-height: 1.05; text-shadow: 0 1px 2px rgba(0,0,0,0.55); white-space: nowrap; }
+        .split-lbl b { font-size: 0.68rem; }
+        .split-swap { align-self: center; font-size: 0.85rem; line-height: 1; color: #fff; text-shadow: 0 0 4px rgba(0,0,0,0.9); animation: swapPulse 1.6s ease-in-out infinite; }
+        .split-sweep { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(115deg, transparent 0%, transparent 38%, rgba(255,255,255,0.55) 50%, transparent 62%, transparent 100%); background-size: 250% 100%; animation: splitSweep 2.8s ease-in-out infinite; mix-blend-mode: overlay; }
+        @keyframes splitSweep { 0% { background-position: 120% 0; } 60%, 100% { background-position: -20% 0; } }
+        @keyframes swapPulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.25); opacity: 1; } }
+        @media (prefers-reduced-motion: reduce) { .split-sweep, .split-swap { animation: none; } }
+
+        .ci-noplan { background: #5e5ce6; }
+        .ci-pendiente, .ci-hoy { background: transparent; box-shadow: none; border: 1px dashed var(--border); }
+        .comp-pct { font-size: 0.68rem; font-weight: 800; }
+        .kpi-sub { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
+
+        .legend-section + .legend-section { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
+        .legend-swatch-split { width: 34px; height: 22px; border-radius: 6px; position: relative; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.4); }
+        .legend-tri { width: 0; height: 0; border-top: 16px solid #000; border-left: 16px solid transparent; }
+        body.light-mode .legend-tri { border-top-color: #000; }
+
+        .mg-change { text-align: center; font-size: 0.7rem; font-weight: 800; color: var(--accent-light); margin: -2px 0 2px; letter-spacing: 0.5px; }
+        .mg-detail { list-style: none; margin-top: 6px; font-size: 0.72rem; font-weight: 600; text-align: left; line-height: 1.35; }
+        .mg-comp { flex-direction: column; }
         
         td.today-col { border-left: 3px solid #000 !important; border-right: 3px solid #000 !important; background: rgba(0,0,0,0.1); }
         th.today-col { border-left: 3px solid #000 !important; border-right: 3px solid #000 !important; border-top: 3px solid #000 !important; background: #000 !important; color: #fff !important; }
@@ -269,6 +293,11 @@
             .day-name { font-size: 0.55rem; }
             .flow-arrow-container { display: flex !important; } 
             .flow-arrow { opacity: 0.5 !important; animation: none !important; filter: none !important; }
+            .split-sweep { display: none !important; }
+            .split-swap { animation: none !important; text-shadow: none !important; }
+            .split-lbl { font-size: 0.5rem; text-shadow: none !important; }
+            .split-lbl b { font-size: 0.55rem; }
+
             .pruebas-info { flex: 0 0 auto; margin-top: 0; background: none; box-shadow: none; border-radius: 0; padding: 0; }
             .pruebas-table { font-size: 0.75rem; border: 1px solid #000; width: 100%; margin-top: 4px; border-collapse: collapse; }
             .pruebas-table th, .pruebas-table td { border: 1px solid #000; color: #000 !important; padding: 4px; }
@@ -407,6 +436,8 @@
             return (date.getFullYear() === year && date.getMonth() === month && date.getDate() === day) ? date : null;
         }
 
+        function turnoOrd(date, turno) { return Math.round(date.getTime() / 86400000) * 3 + TURNOS.indexOf(turno); }
+
         function normalizarTarea(tarea) { if (!tarea) return ''; return tarea.replace(/Ã³/g, 'ó').replace(/Ã©/g, 'é').replace(/Ã±/g, 'ñ'); }
 
         async function fetchCSV(url) {
@@ -424,7 +455,9 @@
                 
                 if (!molde || !fi || !ff) return;
                 const inicio = parseFlexibleDate(fi); const fin = parseFlexibleDate(ff);
-                if (!inicio || !fin) return;
+                if (!inicio || !fin || TURNOS.indexOf(ti) < 0 || TURNOS.indexOf(tf) < 0) return;
+                const ordIni = turnoOrd(inicio, ti), ordFin = turnoOrd(fin, tf);
+                if (ordFin < ordIni) return;
 
                 for (let d = new Date(inicio); d <= fin; d.setDate(d.getDate() + 1)) {
                     const ds = formatYYYYMMDD(d); let tDia = [];
@@ -441,7 +474,8 @@
                     
                     tDia.forEach(t => {
                         const k = key(ds, t); if (!data[k]) data[k] = [];
-                        data[k].push({ moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde), tarea, esInicio: diaIgualInicio && t === ti, esFin: diaIgualFin && t === tf });
+                        if (data[k].some(x => x.moldeCompleto === molde && x.tarea === tarea && x.ordIni === ordIni && x.ordFin === ordFin)) return;
+                        data[k].push({ moldeCompleto: molde, baseName: getBaseName(molde), number: getMoldNumber(molde), tarea, esInicio: diaIgualInicio && t === ti, esFin: diaIgualFin && t === tf, ordIni, ordFin });
                     });
                 }
             });
@@ -462,29 +496,132 @@
             }
         }
 
-        function getComplianceDayLevel(planTasks, realTasks, dayRealTestsArray) {
-            if (!planTasks || planTasks.length === 0) return { status: 'sinPlan', msg: '-', emoji: '' };
-            const planProd = planTasks.find(p => p.tarea === 'Producción');
-            const planTest = planTasks.find(p => p.tarea === 'Prueba');
-            const realProd = realTasks ? realTasks.find(p => p.tarea === 'Producción') : null;
+        const PESO_MISMO_LADRILLO = 0.5;
+        const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+        const ARROW_SVG = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`;
+        const EVAL_VACIO = { status: 'vacio', score: null, emoji: '', msg: '-', detalle: [] };
 
-            if (planProd) {
-                if (realProd && realProd.moldeCompleto === planProd.moldeCompleto) return { status: 'cumplido', msg: 'Cumplido', emoji: '✅' };
-                if (realProd) return { status: 'desvio', msg: 'Desvío de Molde', emoji: '⚠️' };
-                return { status: 'desvio', msg: 'No Producido', emoji: '❌' };
+        function escAttr(s) { return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;'); }
+
+        function getProdSeq(tasks) {
+            const prods = (tasks || []).filter(t => t.tarea === 'Producción').slice().sort((a, b) => (a.ordIni - b.ordIni) || (a.ordFin - b.ordFin));
+            const seq = [];
+            prods.forEach(p => { if (!seq.length || seq[seq.length - 1].moldeCompleto !== p.moldeCompleto) seq.push(p); });
+            return seq;
+        }
+
+        function getTestList(tasks) {
+            const out = [];
+            (tasks || []).forEach(t => { if (t.tarea === 'Prueba' && !out.some(x => x.moldeCompleto === t.moldeCompleto)) out.push(t); });
+            return out;
+        }
+
+        function seqTexto(seq) { return seq.length ? seq.map(m => m.moldeCompleto).join(' → ') : '-'; }
+
+        function testsRealesDia(dateStr) {
+            const s = new Set();
+            TURNOS.forEach(t => (realData[key(dateStr, t)] || []).forEach(x => { if (x.tarea === 'Prueba') s.add(x.moldeCompleto); }));
+            return s;
+        }
+
+        function evaluarCumplimiento(dateStr, turno, todayStr) {
+            const k = key(dateStr, turno);
+            const planProd = [...new Set(getProdSeq(planData[k]).map(x => x.moldeCompleto))];
+            const planTests = getTestList(planData[k]).map(x => x.moldeCompleto);
+            const hayPlan = planProd.length + planTests.length > 0;
+
+            if (dateStr > todayStr) return hayPlan ? { status: 'pendiente', score: null, emoji: '', msg: 'Pendiente', detalle: [] } : EVAL_VACIO;
+            if (dateStr === todayStr) return { status: 'hoy', score: null, emoji: '', msg: 'En curso (hoy)', detalle: [] };
+
+            const realProd = [...new Set(getProdSeq(realData[k]).map(x => x.moldeCompleto))];
+            const realTests = testsRealesDia(dateStr);
+            const detalle = [];
+            const sinMatch = [];
+            const restoReal = [...realProd];
+            let aciertos = 0;
+
+            planProd.forEach(m => {
+                const i = restoReal.indexOf(m);
+                if (i >= 0) { aciertos += 1; restoReal.splice(i, 1); detalle.push(`✔ ${m} producido`); }
+                else sinMatch.push(m);
+            });
+            sinMatch.forEach(m => {
+                const base = getBaseName(m);
+                const i = restoReal.findIndex(r => getBaseName(r) === base);
+                if (i >= 0) { aciertos += PESO_MISMO_LADRILLO; detalle.push(`≈ ${m} plan. → se usó ${restoReal[i]}`); restoReal.splice(i, 1); }
+                else detalle.push(`✖ ${m} no producido`);
+            });
+            restoReal.forEach(r => detalle.push(`➕ ${r} no planificado`));
+            planTests.forEach(m => {
+                if (realTests.has(m)) { aciertos += 1; detalle.push(`✔ Prueba ${m} realizada`); }
+                else detalle.push(`✖ Prueba ${m} omitida`);
+            });
+
+            if (!hayPlan) return restoReal.length ? { status: 'noplan', score: null, emoji: '➕', msg: 'Producción sin plan', detalle } : EVAL_VACIO;
+
+            const score = aciertos / (planProd.length + planTests.length + restoReal.length);
+            if (score >= 0.999) return { status: 'cumplido', score: 1, emoji: '✅', msg: 'Cumplido', detalle };
+            if (score > 0) return { status: 'parcial', score, emoji: '⚠️', msg: `Parcial (${Math.round(score * 100)}%)`, detalle };
+            return { status: 'desvio', score: 0, emoji: '❌', msg: 'Desvío', detalle };
+        }
+
+        function buildPre(tasks, prevMold) {
+            const seq = getProdSeq(tasks);
+            const tests = getTestList(tasks);
+            if (!seq.length) return { pre: { seq, tests, mold: null, multi: false, showDetail: false, hasTest: tests.length > 0 }, last: null, isChange: false };
+            const last = seq[seq.length - 1];
+            const isChange = seq.length > 1 || seq[0].moldeCompleto !== prevMold;
+            return { pre: { seq, tests, mold: last.moldeCompleto, multi: seq.length > 1, showDetail: isChange, hasTest: tests.length > 0 }, last: last.moldeCompleto, isChange };
+        }
+
+        function buildCellParts(pre) {
+            if (!pre.mold) return { content: '', style: '', cls: '' };
+            if (pre.multi) {
+                const n = pre.seq.length;
+                const colors = pre.seq.map(m => getBrickColor(m.baseName, m.number));
+                const stops = colors.map((c, i) => {
+                    const a = i === 0 ? 0 : (i * 100 / n) + 4;
+                    const b = i === n - 1 ? 100 : ((i + 1) * 100 / n) - 4;
+                    return `${c} ${a.toFixed(1)}%, ${c} ${b.toFixed(1)}%`;
+                }).join(', ');
+                const labels = pre.seq.map((m, i) => {
+                    const align = i === 0 ? 'flex-start' : (i === n - 1 ? 'flex-end' : 'center');
+                    return `<span class="split-lbl" style="color:${pickTextColor(colors[i])}; align-self:${align};">${m.baseName} <b>${m.number}</b></span>`;
+                }).join('<span class="split-swap">⇄</span>');
+                return { content: `<div class="split-sweep"></div><div class="split-wrap">${labels}</div>`, style: `background:linear-gradient(115deg, ${stops});`, cls: 'multi-mold' };
             }
-            if (planTest) {
-                if (dayRealTestsArray.includes(planTest.moldeCompleto)) return { status: 'cumplido', msg: 'Prueba Realizada', emoji: '✅' };
-                return { status: 'desvio', msg: 'Prueba Omitida', emoji: '❌' };
-            }
-            return { status: 'sinPlan', msg: '-', emoji: '' };
+            const m = pre.seq[0];
+            const bg = getBrickColor(m.baseName, m.number);
+            const content = pre.showDetail
+                ? `<div class="cell-content"><img src="${getImageSrc(m.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${m.baseName}"><span class="mold-base">${m.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${m.number}</span></div>`
+                : ARROW_SVG;
+            return { content, style: `background-color:${bg}; color:${pickTextColor(bg)};`, cls: '' };
+        }
+
+        function buildTooltip(dateStr, turno, dateObj, pre, k, todayStr) {
+            let tip = `📅 ${DAY_NAMES[dateObj.getDay()]} ${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()} - ${turno}\n`;
+            if (pre.multi) tip += `🔄 Cambio de molde dentro del turno\n`;
+            const pruebas = pre.tests.length ? pre.tests.map(t => t.moldeCompleto).join(', ') : 'No';
+            if (currentView === 'plan') return tip + `📋 Plan: ${seqTexto(pre.seq)}\n🔬 Prueba: ${pruebas}`;
+            if (currentView === 'prod') return tip + `🏭 Real: ${seqTexto(pre.seq)}\n🔬 Prueba: ${pruebas}`;
+            const ev = evaluarCumplimiento(dateStr, turno, todayStr);
+            tip += `📋 Plan: ${seqTexto(getProdSeq(planData[k]))}\n🏭 Real: ${seqTexto(pre.seq)}\n📊 Estado: ${ev.msg} ${ev.emoji}`;
+            if (ev.detalle.length) tip += '\n' + ev.detalle.join('\n');
+            return tip;
+        }
+
+        function buildCompIndicator(dateStr, turno, todayStr) {
+            const ev = evaluarCumplimiento(dateStr, turno, todayStr);
+            const inner = ev.status === 'parcial' ? `<span class="comp-pct">${Math.round(ev.score * 100)}%</span>` : ev.emoji;
+            const tip = ev.status === 'vacio' ? '' : `${ev.msg}${ev.detalle.length ? '\n' + ev.detalle.join('\n') : ''}`;
+            return `<div class="comp-indicator ci-${ev.status}" title="${escAttr(tip)}">${inner}</div>`;
         }
 
         function renderGantt() {
             const wrapper = document.getElementById('ganttWrapper');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            const todayStr = formatYYYYMMDD(actualSystemDate); 
+            const todayStr = formatYYYYMMDD(actualSystemDate);
 
             document.getElementById('monthTitle').textContent = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
             document.getElementById('kpiContainer').style.display = currentView === 'cumpl' ? 'flex' : 'none';
@@ -494,239 +631,114 @@
 
             const precalc = {}; const changeDays = new Set(); const testDays = new Set();
             const dayRealTestsMap = {}; const visibleBases = new Set();
-            
+            let hayMulti = false;
+
             for (let d = 1; d <= daysInMonth; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
-                dayRealTestsMap[ds] = [];
-                TURNOS.forEach(t => {
-                    (realData[key(ds, t)] || []).filter(x => x.tarea === 'Prueba').forEach(x => {
-                        if(!dayRealTestsMap[ds].includes(x.moldeCompleto)) dayRealTestsMap[ds].push(x.moldeCompleto);
-                    });
-                });
+                dayRealTestsMap[ds] = [...testsRealesDia(ds)];
             }
 
-            let prevMoldPlan = null, prevBaseNamePlan = null, prevNumberPlan = null;
-            let prevMoldReal = null, prevBaseNameReal = null, prevNumberReal = null;
-
+            let prevMoldPlan = null, prevMoldReal = null;
             for (let d = 1; d <= daysInMonth; d++) {
-                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
+                const dateStr = formatYYYYMMDD(new Date(year, month, d));
                 TURNOS.forEach(turno => {
                     const k = key(dateStr, turno);
-                    
-                    const tasksPlan = planData[k] || [];
-                    const prodPlan = tasksPlan.filter(t => t.tarea === 'Producción').sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
-                    const testPlan = tasksPlan.filter(t => t.tarea === 'Prueba');
-                    
-                    if (prodPlan.length > 0) {
-                        const currentMold = prodPlan[0].moldeCompleto; const isChange = currentMold !== prevMoldPlan;
-                        const hasChangeInSameTurn = (isChange && tasksPlan.some(t => t.moldeCompleto === prevMoldPlan && t.esFin));
-                        precalc['plan_' + k] = {
-                            mold: currentMold,
-                            baseName: prodPlan[0].baseName,
-                            number: prodPlan[0].number,
-                            showDetail: isChange,
-                            prevProps: (isChange && prevMoldPlan) ? { baseName: prevBaseNamePlan, number: prevNumberPlan } : null,
-                            hasChangeInSameTurn: hasChangeInSameTurn,
-                            hasTest: testPlan.length > 0,
-                            esFin: prodPlan[0].esFin
-                        };
-                        if (isChange && currentView === 'plan') changeDays.add(dateStr);
-                        prevMoldPlan = currentMold; prevBaseNamePlan = prodPlan[0].baseName; prevNumberPlan = prodPlan[0].number;
-                    } else {
-                        precalc['plan_' + k] = { mold: null, hasTest: testPlan.length > 0 };
-                        prevMoldPlan = null; 
+
+                    const rp = buildPre(planData[k], prevMoldPlan);
+                    precalc['plan_' + k] = rp.pre;
+                    prevMoldPlan = rp.last;
+                    if (currentView === 'plan') {
+                        if (rp.isChange) changeDays.add(dateStr);
+                        if (rp.pre.hasTest) testDays.add(dateStr);
                     }
-                    if (testPlan.length > 0 && currentView === 'plan') testDays.add(dateStr);
 
                     if (dateStr === todayStr) {
-                        precalc['real_' + k] = { mold: null, hasTest: false }; prevMoldReal = null;
+                        precalc['real_' + k] = { seq: [], tests: [], mold: null, multi: false, showDetail: false, hasTest: false };
+                        prevMoldReal = null;
                     } else {
-                        const tasksReal = realData[k] || [];
-                        const prodReal = tasksReal.filter(t => t.tarea === 'Producción').sort((a, b) => (b.esInicio ? 1 : 0) - (a.esInicio ? 1 : 0));
-                        const testReal = tasksReal.filter(t => t.tarea === 'Prueba');
-                        
-                        if (prodReal.length > 0) {
-                            const currentMold = prodReal[0].moldeCompleto; const isChange = currentMold !== prevMoldReal;
-                            const hasChangeInSameTurn = (isChange && tasksReal.some(t => t.moldeCompleto === prevMoldReal && t.esFin));
-                            precalc['real_' + k] = {
-                                mold: currentMold,
-                                baseName: prodReal[0].baseName,
-                                number: prodReal[0].number,
-                                showDetail: isChange,
-                                prevProps: (isChange && prevMoldReal) ? { baseName: prevBaseNameReal, number: prevNumberReal } : null,
-                                hasChangeInSameTurn: hasChangeInSameTurn,
-                                hasTest: testReal.length > 0,
-                                esFin: prodReal[0].esFin
-                            };
-                            if (isChange && currentView !== 'plan') changeDays.add(dateStr);
-                            prevMoldReal = currentMold; prevBaseNameReal = prodReal[0].baseName; prevNumberReal = prodReal[0].number;
-                        } else {
-                            precalc['real_' + k] = { mold: null, hasTest: testReal.length > 0 };
-                            prevMoldReal = null;
+                        const rr = buildPre(realData[k], prevMoldReal);
+                        precalc['real_' + k] = rr.pre;
+                        prevMoldReal = rr.last;
+                        if (currentView !== 'plan') {
+                            if (rr.isChange) changeDays.add(dateStr);
+                            if (rr.pre.hasTest) testDays.add(dateStr);
                         }
-                        if (testReal.length > 0 && currentView !== 'plan') testDays.add(dateStr);
                     }
                 });
             }
 
-            if (currentView === 'cumpl') actualizarKPIs(dayRealTestsMap, daysInMonth, year, month, todayStr);
+            if (currentView === 'cumpl') actualizarKPIs(daysInMonth, year, month, todayStr);
+
+            const renderTd = (dateStr, turno, dateObj, extraCls, extraStyle) => {
+                const k = key(dateStr, turno);
+                const pre = (currentView === 'plan') ? precalc['plan_' + k] : precalc['real_' + k];
+                pre.seq.forEach(m => visibleBases.add(m.baseName));
+                if (pre.multi) hayMulti = true;
+                const parts = buildCellParts(pre);
+                const markers = pre.hasTest ? `<div class="test-marker"></div>` : '';
+                const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, todayStr);
+                return `<td class="${extraCls} ${parts.cls}" style="${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="abrirGantt('${dateStr}')">${markers}${parts.content}</td>`;
+            };
+
+            const indicadores = dateStr => {
+                let h = changeDays.has(dateStr) ? '<div class="indicator-row"><span class="indicator-change">🔄️</span></div>' : '<div class="indicator-row"></div>';
+                h += testDays.has(dateStr) ? '<div class="indicator-row"><span class="indicator-pr">PR</span></div>' : '<div class="indicator-row"></div>';
+                return h;
+            };
 
             let html = '';
-            
-            // Render Mobile
+
             if (isMobileState) {
                 html += `<table class="gantt-table mobile-gantt"><thead><tr><th style="width:${turnoWidth}px; z-index:30;">DÍA</th>`;
                 TURNOS.forEach(t => html += `<th>${t}</th>`);
                 html += `</tr></thead><tbody>`;
 
                 for (let d = 1; d <= daysInMonth; d++) {
-                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                     const dateObj = new Date(year, month, d);
-                    const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+                    const dateStr = formatYYYYMMDD(dateObj);
+                    const esDomingo = dateObj.getDay() === 0;
                     let trClass = dateStr === todayStr ? 'today-row' : '';
-                    if (dateObj.getDay() === 0) trClass += ' sunday-row';
+                    if (esDomingo) trClass += ' sunday-row';
+                    const thClass = dateStr === todayStr ? 'today-col' : (esDomingo ? 'sunday-cell' : '');
 
-                    let indHtml = '';
-                    if (changeDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-change">🔄️</span></div>'; else indHtml += '<div class="indicator-row"></div>';
-                    if (testDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-pr">PR</span></div>'; else indHtml += '<div class="indicator-row"></div>';
-
-                    html += `<tr class="day-row ${trClass}">`;
-                    let thClass = dateStr === todayStr ? 'today-col' : (dateObj.getDay() === 0 ? 'sunday-cell' : '');
-                    
-                    html += `<th class="${thClass}">
-                        <div class="day-header">
-                            <div class="day-name">${dayNames[dateObj.getDay()]}</div>
-                            <div class="day-number">${d}</div>
-                            ${indHtml}
-                        </div>
-                    </th>`;
-
-                    TURNOS.forEach(turno => {
-                        const k = key(dateStr, turno);
-                        const pre = (currentView === 'plan') ? precalc['plan_' + k] : precalc['real_' + k];
-                        let cellContent = ''; let bgColor = 'transparent'; let txtColor = 'inherit';
-                        let cellClasses = dateObj.getDay() === 0 ? 'sunday-cell' : ''; 
-                        let markers = '';
-                        let tooltip = `📅 ${dayNames[dateObj.getDay()]} ${d}/${month+1}/${year} - ${turno}\n`;
-
-                        if (pre.mold) {
-                            visibleBases.add(pre.baseName); 
-                            bgColor = getBrickColor(pre.baseName, pre.number); txtColor = pickTextColor(bgColor);
-                            if (pre.showDetail) {
-                                cellContent = `<div class="cell-content"><img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}"><span class="mold-base">${pre.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${pre.number}</span></div>`;
-                                if (pre.prevProps && pre.hasChangeInSameTurn) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
-                            } else { 
-                                cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`; 
-                            }
-                            if (pre.esFin) markers += '<div class="end-marker"></div>';
-                        }
-                        if (pre.hasTest) markers += `<div class="test-marker"></div>`;
-
-                        const comp = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
-                        if (currentView === 'plan') { tooltip += `📋 Plan: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
-                        else if (currentView === 'prod') { tooltip += `🏭 Real: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
-                        else { tooltip += `📋 Plan: ${planData[k]?.find(x=>x.tarea==='Producción')?.moldeCompleto || '-'}\n🏭 Real: ${pre.mold || '-'}\n📊 Estado: ${comp.msg} ${comp.emoji}`; }
-
-                        let inlineStyles = `color:${txtColor};`;
-                        if (bgColor !== 'transparent') inlineStyles += ` background-color:${bgColor};`;
-                        html += `<td class="${cellClasses}" style="${inlineStyles}" title="${tooltip}" onclick="abrirGantt('${dateStr}')">${markers}${cellContent}</td>`;
-                    });
+                    html += `<tr class="day-row ${trClass}"><th class="${thClass}"><div class="day-header"><div class="day-name">${DAY_NAMES[dateObj.getDay()]}</div><div class="day-number">${d}</div>${indicadores(dateStr)}</div></th>`;
+                    TURNOS.forEach(turno => { html += renderTd(dateStr, turno, dateObj, esDomingo ? 'sunday-cell' : '', ''); });
                     html += `</tr>`;
 
-                    html += `<tr class="comp-row ${trClass}">`;
-                    html += `<td class="comp-label-text ${thClass}" style="text-align:center;">CUMPL</td>`;
-                    TURNOS.forEach(turno => {
-                        const k = key(dateStr, turno);
-                        let compCellClass = ''; let compEmoji = '';
-                        // ✅ Evitar cruces en días futuros
-                        if (dateStr > todayStr) {
-                            compCellClass = 'ci-vacio'; compEmoji = '';
-                        } else if (dateStr === todayStr) {} 
-                        else if (planData[k] && planData[k].length > 0) {
-                            const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
-                            compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
-                        } else { compCellClass = 'ci-vacio'; }
-                        let tdClass = dateObj.getDay() === 0 ? 'sunday-cell' : '';
-                        html += `<td class="${tdClass}"><div class="comp-indicator ${compCellClass}">${compEmoji}</div></td>`;
-                    });
+                    html += `<tr class="comp-row ${trClass}"><td class="comp-label-text ${thClass}" style="text-align:center;">CUMPL</td>`;
+                    TURNOS.forEach(turno => { html += `<td class="${esDomingo ? 'sunday-cell' : ''}">${buildCompIndicator(dateStr, turno, todayStr)}</td>`; });
                     html += `</tr>`;
                 }
                 html += `</tbody></table>`;
             } else {
                 html += `<table class="gantt-table"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
-                const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
                 for (let d = 1; d <= daysInMonth; d++) {
-                    const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                    const date = new Date(year, month, d);
-                    let thClass = date.getDay() === 0 ? 'sunday-cell' : '';
+                    const dateObj = new Date(year, month, d);
+                    const dateStr = formatYYYYMMDD(dateObj);
+                    let thClass = dateObj.getDay() === 0 ? 'sunday-cell' : '';
                     if (dateStr === todayStr) thClass += ' today-col';
-                    let indHtml = '';
-                    if (changeDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-change">🔄️</span></div>'; else indHtml += '<div class="indicator-row"></div>';
-                    if (testDays.has(dateStr)) indHtml += '<div class="indicator-row"><span class="indicator-pr">PR</span></div>'; else indHtml += '<div class="indicator-row"></div>';
-                    html += `<th class="${thClass}" style="width:${colWidthCalc};"><div class="day-header"><div class="day-name">${dayNames[date.getDay()]}</div><div class="day-number">${d}</div>${indHtml}</div></th>`;
+                    html += `<th class="${thClass}" style="width:${colWidthCalc};"><div class="day-header"><div class="day-name">${DAY_NAMES[dateObj.getDay()]}</div><div class="day-number">${d}</div>${indicadores(dateStr)}</div></th>`;
                 }
                 html += '</tr></thead><tbody>';
 
                 TURNOS.forEach(turno => {
-                    const isT3 = turno === 'T3';
-                    const rowClass = isT3 ? 't3-row' : '';
-                    html += `<tr class="${rowClass}"><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
+                    html += `<tr class="${turno === 'T3' ? 't3-row' : ''}"><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
                     for (let d = 1; d <= daysInMonth; d++) {
-                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
                         const dateObj = new Date(year, month, d);
-                        const k = key(dateStr, turno);
-                        const pre = (currentView === 'plan') ? precalc['plan_' + k] : precalc['real_' + k];
-
-                        let cellContent = ''; let bgColor = 'transparent'; let txtColor = 'inherit';
-                        let cellClasses = ''; let markers = '';
-                        let tooltip = `📅 ${dayNames[dateObj.getDay()]} ${d}/${month+1}/${year} - ${turno}\n`;
-
-                        if (dateObj.getDay() === 0) cellClasses += ' sunday-cell';
-                        if (dateStr === todayStr) cellClasses += ' today-col';
-
-                        if (pre.mold) {
-                            visibleBases.add(pre.baseName); 
-                            bgColor = getBrickColor(pre.baseName, pre.number); txtColor = pickTextColor(bgColor);
-
-                            if (pre.showDetail) {
-                                cellContent = `<div class="cell-content"><img src="${getImageSrc(pre.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${pre.baseName}"><span class="mold-base">${pre.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${pre.number}</span></div>`;
-                                if (pre.prevProps && pre.hasChangeInSameTurn) markers += `<div class="change-marker" style="border-top-color: ${getBrickColor(pre.prevProps.baseName, pre.prevProps.number)};"></div>`;
-                            } else { 
-                                cellContent = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`; 
-                            }
-                            if (pre.esFin) markers += '<div class="end-marker"></div>';
-                        }
-
-                        if (pre.hasTest) markers += `<div class="test-marker"></div>`;
-
-                        const comp = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
-                        if (currentView === 'plan') { tooltip += `📋 Plan: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
-                        else if (currentView === 'prod') { tooltip += `🏭 Real: ${pre.mold || '-'}\n🔬 Prueba: ${pre.hasTest ? 'Sí' : 'No'}`; } 
-                        else { tooltip += `📋 Plan: ${planData[k]?.find(x=>x.tarea==='Producción')?.moldeCompleto || '-'}\n🏭 Real: ${pre.mold || '-'}\n📊 Estado: ${comp.msg} ${comp.emoji}`; }
-
-                        let inlineStyles = `color:${txtColor}; width:${colWidthCalc};`;
-                        if (bgColor !== 'transparent') inlineStyles += ` background-color:${bgColor};`;
-
-                        html += `<td class="${cellClasses}" style="${inlineStyles}" title="${tooltip}" onclick="abrirGantt('${dateStr}')">${markers}${cellContent}</td>`;
+                        const dateStr = formatYYYYMMDD(dateObj);
+                        let cls = dateObj.getDay() === 0 ? 'sunday-cell' : '';
+                        if (dateStr === todayStr) cls += ' today-col';
+                        html += renderTd(dateStr, turno, dateObj, cls, `width:${colWidthCalc}; `);
                     }
                     html += '</tr>';
 
                     html += `<tr class="comp-row"><td class="comp-label-text" style="width:${turnoWidth}px; text-align:center;">CUMPL</td>`;
                     for (let d = 1; d <= daysInMonth; d++) {
-                        const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(d).padStart(2, '0')}`;
-                        const k = key(dateStr, turno);
-                        let compCellClass = ''; let compEmoji = '';
-                        // ✅ Evitar cruces en días futuros
-                        if (dateStr > todayStr) {
-                            compCellClass = 'ci-vacio'; compEmoji = '';
-                        } else if (dateStr === todayStr) {} 
-                        else if (planData[k] && planData[k].length > 0) {
-                            const cData = getComplianceDayLevel(planData[k], realData[k], dayRealTestsMap[dateStr]);
-                            compCellClass = `ci-${cData.status}`; compEmoji = cData.emoji;
-                        } else { compCellClass = 'ci-vacio'; }
-                        let tdClass = new Date(year, month, d).getDay() === 0 ? 'sunday-cell' : '';
+                        const dateObj = new Date(year, month, d);
+                        const dateStr = formatYYYYMMDD(dateObj);
+                        let tdClass = dateObj.getDay() === 0 ? 'sunday-cell' : '';
                         if (dateStr === todayStr) tdClass += ' today-col';
-                        html += `<td class="${tdClass}"><div class="comp-indicator ${compCellClass}">${compEmoji}</div></td>`;
+                        html += `<td class="${tdClass}">${buildCompIndicator(dateStr, turno, todayStr)}</td>`;
                     }
                     html += '</tr>';
                 });
@@ -734,18 +746,7 @@
             }
 
             wrapper.innerHTML = html;
-            
-            const legendContainer = document.getElementById('legendContainer');
-            if (visibleBases.size > 0) {
-                let legendHtml = '<div class="legend-title">🎨 Leyenda de colores del mes</div><div class="legend-items">';
-                Array.from(visibleBases).sort().forEach(base => {
-                    const color = getBrickColor(base, 1);
-                    legendHtml += `<div class="legend-item"><div class="legend-color" style="background:${color};"></div><span>${base}</span></div>`;
-                });
-                legendHtml += '</div>';
-                legendContainer.innerHTML = legendHtml;
-                legendContainer.style.display = 'block';
-            } else { legendContainer.style.display = 'none'; legendContainer.innerHTML = ''; }
+            renderLeyenda(visibleBases, hayMulti);
 
             const table = wrapper.querySelector('.gantt-table');
             if (!isMobileState) {
@@ -762,36 +763,73 @@
             renderPruebasInfo(dayRealTestsMap, todayStr);
         }
 
-        function actualizarKPIs(dayRealTestsMap, daysInMonth, year, month, todayStr) {
-            let diasPlan = new Set(), cambios = 0, pruebasPlan = 0, cumplidas = 0, totalObj = 0;
-            const moldesSet = new Set();
+        function renderLeyenda(visibleBases, hayMulti) {
+            const cont = document.getElementById('legendContainer');
+            if (visibleBases.size === 0 && currentView !== 'cumpl') { cont.style.display = 'none'; cont.innerHTML = ''; return; }
+            let h = '';
+            if (visibleBases.size > 0) {
+                h += '<div class="legend-section"><div class="legend-title">🎨 Leyenda de colores del mes</div><div class="legend-items">';
+                Array.from(visibleBases).sort().forEach(base => {
+                    h += `<div class="legend-item"><div class="legend-color" style="background:${getBrickColor(base, 1)};"></div><span>${base}</span></div>`;
+                });
+                h += '</div></div>';
+            }
+            const ejA = getBrickColor('H18', 2), ejB = getBrickColor('H12', 2);
+            h += '<div class="legend-section"><div class="legend-title">🔎 Símbolos</div><div class="legend-items">';
+            h += `<div class="legend-item"><div class="legend-swatch-split" style="background:linear-gradient(115deg, ${ejA} 0%, ${ejA} 46%, ${ejB} 54%, ${ejB} 100%);"><div class="split-sweep"></div></div><span>Cambio de molde dentro del turno${hayMulti ? '' : ' (sin casos este mes)'}</span></div>`;
+            h += `<div class="legend-item"><span class="indicator-change">🔄️</span><span>Día con cambio de molde</span></div>`;
+            h += `<div class="legend-item"><div class="legend-tri"></div><span>Turno con prueba</span></div>`;
+            if (currentView === 'cumpl') {
+                h += `<div class="legend-item"><div class="legend-color ci-cumplido"></div><span>Cumplido</span></div>`;
+                h += `<div class="legend-item"><div class="legend-color ci-parcial"></div><span>Parcial (%)</span></div>`;
+                h += `<div class="legend-item"><div class="legend-color ci-desvio"></div><span>Desvío</span></div>`;
+                h += `<div class="legend-item"><div class="legend-color ci-noplan"></div><span>Producción sin plan</span></div>`;
+            }
+            h += '</div></div>';
+            cont.innerHTML = h;
+            cont.style.display = 'block';
+        }
+
+        function actualizarKPIs(daysInMonth, year, month, todayStr) {
+            const diasPlan = new Set(); const moldesSet = new Set();
+            let cambiosPlan = 0, cambiosReal = 0, prevP = null, prevR = null;
+            let pruebasMes = 0, pruebasPlanPas = 0, pruebasHechas = 0;
+            let sumScore = 0, nEval = 0, nCump = 0, nParc = 0, nDesv = 0, nNoPlan = 0;
+
             for (let d = 1; d <= daysInMonth; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
-                let tienePlanDia = false;
+                const esPasado = ds < todayStr;
+                const realTests = esPasado ? testsRealesDia(ds) : new Set();
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
-                    const plans = planData[k] || [];
-                    const reals = ds === todayStr ? [] : (realData[k] || []); 
-                    const prodsPlan = plans.filter(p => p.tarea === 'Producción');
-                    const testsPlan = plans.filter(p => p.tarea === 'Prueba');
-                    if (prodsPlan.length > 0 || testsPlan.length > 0) tienePlanDia = true;
-                    if (prodsPlan.length > 1) cambios++;
-                    pruebasPlan += testsPlan.length;
-                    prodsPlan.forEach(p => moldesSet.add(p.moldeCompleto));
-                    if (plans.length > 0 && ds <= todayStr) { // ✅ Solo hasta hoy
-                        totalObj++;
-                        const comp = getComplianceDayLevel(plans, reals, dayRealTestsMap[ds]);
-                        if (comp.status === 'cumplido') cumplidas++;
-                    }
+                    const seqP = getProdSeq(planData[k]);
+                    const testsP = getTestList(planData[k]);
+                    if (seqP.length || testsP.length) diasPlan.add(ds);
+                    seqP.forEach(m => { moldesSet.add(m.moldeCompleto); if (prevP !== null && m.moldeCompleto !== prevP) cambiosPlan++; prevP = m.moldeCompleto; });
+                    pruebasMes += testsP.length;
+
+                    if (!esPasado) return;
+                    getProdSeq(realData[k]).forEach(m => { if (prevR !== null && m.moldeCompleto !== prevR) cambiosReal++; prevR = m.moldeCompleto; });
+                    pruebasPlanPas += testsP.length;
+                    pruebasHechas += testsP.filter(x => realTests.has(x.moldeCompleto)).length;
+
+                    const ev = evaluarCumplimiento(ds, t, todayStr);
+                    if (ev.status === 'noplan') nNoPlan++;
+                    if (ev.score === null) return;
+                    nEval++; sumScore += ev.score;
+                    if (ev.status === 'cumplido') nCump++; else if (ev.status === 'parcial') nParc++; else nDesv++;
                 });
-                if (tienePlanDia) diasPlan.add(ds);
             }
-            const pct = totalObj > 0 ? Math.round((cumplidas / totalObj) * 100) : 0;
+
+            const pct = nEval > 0 ? Math.round((sumScore / nEval) * 100) : 0;
+            const pctPr = pruebasPlanPas > 0 ? Math.round((pruebasHechas / pruebasPlanPas) * 100) : null;
+            const colorPct = v => v >= 85 ? 'var(--green)' : v >= 50 ? 'var(--orange)' : 'var(--red)';
             document.getElementById('kpiContainer').innerHTML = `
                 <div class="kpi-card"><div class="kpi-value">${diasPlan.size}</div><div class="kpi-label">Días c/ Plan</div></div>
-                <div class="kpi-card"><div class="kpi-value">${cambios}</div><div class="kpi-label">Cambios</div></div>
-                <div class="kpi-card"><div class="kpi-value">${pruebasPlan}</div><div class="kpi-label">Pruebas Plan.</div></div>
-                <div class="kpi-card" style="border-top-color: ${pct >= 85 ? 'var(--green)' : pct >= 50 ? 'var(--orange)' : 'var(--red)'};"><div class="kpi-value">${pct}%</div><div class="kpi-label">Efectividad Total</div></div>
+                <div class="kpi-card"><div class="kpi-value">${cambiosPlan} / ${cambiosReal}</div><div class="kpi-label">Cambios Plan / Real</div><div class="kpi-sub">real hasta ayer</div></div>
+                <div class="kpi-card" style="${pctPr === null ? '' : `border-top-color:${colorPct(pctPr)};`}"><div class="kpi-value">${pruebasHechas} / ${pruebasPlanPas}</div><div class="kpi-label">Pruebas Realiz. / Plan.</div><div class="kpi-sub">${pruebasMes} planificadas en el mes</div></div>
+                <div class="kpi-card" style="border-top-color:${colorPct(pct)};"><div class="kpi-value">${pct}%</div><div class="kpi-label">Efectividad Total</div><div class="kpi-sub">${nEval} turnos evaluados</div></div>
+                <div class="kpi-card"><div class="kpi-value" style="font-size:1.4rem;">✅${nCump} ⚠️${nParc} ❌${nDesv}</div><div class="kpi-label">Turnos</div><div class="kpi-sub">${nNoPlan > 0 ? `➕ ${nNoPlan} con producción sin plan` : 'sin producción fuera de plan'}</div></div>
                 <div class="kpi-card"><div class="kpi-value">${moldesSet.size}</div><div class="kpi-label">Variedad Ladrillos</div></div>
             `;
         }
@@ -883,57 +921,51 @@
             }, 400); 
         }
 
-        // ✅ Modificado para aceptar array de tareas y mostrarlas todas
         function renderModalBlock(tasks) {
-            if (!tasks || tasks.length === 0) return `<div class="mg-cell empty">Sin Asignación</div>`;
-            let blocksHtml = '';
-            tasks.forEach(task => {
+            const seq = getProdSeq(tasks);
+            const tests = getTestList(tasks);
+            if (!seq.length && !tests.length) return `<div class="mg-cell empty">Sin Asignación</div>`;
+            const bloque = (task, esPrueba) => {
                 const color = getBrickColor(task.baseName, task.number);
                 const txt = pickTextColor(color);
-                let imgH = `<img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" style="width:30px; height:30px; display:block; margin:0 auto;">`;
-                if (task.tarea === 'Prueba') imgH = '🔬';
-                blocksHtml += `
-                    <div class="mg-sub-block" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:${color}; color:${txt}; border-radius:8px; padding:4px; margin-bottom:4px; min-height:60px;">
-                        ${imgH}
+                const icono = esPrueba ? '🔬' : `<img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" style="width:30px; height:30px; display:block; margin:0 auto;">`;
+                return `<div class="mg-sub-block" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:${color}; color:${txt}; border-radius:8px; padding:4px; margin-bottom:4px; min-height:60px;">
+                        ${icono}
                         <span style="font-weight:800; font-size:0.9rem; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${task.baseName}</span>
-                        <span style="font-size:0.7rem; opacity:0.9;">Molde ${task.number}</span>
-                    </div>
-                `;
-            });
-            return `<div class="mg-cell" style="background:transparent; box-shadow:none; padding:0;">${blocksHtml}</div>`;
+                        <span style="font-size:0.7rem; opacity:0.9;">${esPrueba ? 'Prueba · ' : ''}Molde ${task.number}</span>
+                    </div>`;
+            };
+            let html = seq.map(t => bloque(t, false)).join('<div class="mg-change">⇣ cambio de molde</div>');
+            html += tests.map(t => bloque(t, true)).join('');
+            return `<div class="mg-cell" style="background:transparent; box-shadow:none; padding:0;">${html}</div>`;
         }
 
         function abrirGantt(dateStr) {
-            const isToday = dateStr === formatYYYYMMDD(actualSystemDate);
+            const todayStr = formatYYYYMMDD(actualSystemDate);
+            const isToday = dateStr === todayStr;
             const dObj = new Date(dateStr + 'T00:00:00');
             document.getElementById('ganttTitulo').textContent = dObj.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
             const cont = document.getElementById('ganttDetalle');
-            
-            const dTestArr = [];
-            TURNOS.forEach(t => { (realData[key(dateStr, t)]||[]).filter(x=>x.tarea==='Prueba').forEach(x => { if(!dTestArr.includes(x.moldeCompleto)) dTestArr.push(x.moldeCompleto); }); });
 
             let html = `<div class="modal-grid"><div></div> <div class="mg-header">T1</div> <div class="mg-header">T2</div> <div class="mg-header">T3</div><div class="mg-row-label">Planificación</div>`;
-            TURNOS.forEach(t => { 
-                const tasksPlan = planData[key(dateStr, t)] || [];
-                html += renderModalBlock(tasksPlan); // ✅ Pasa todas las tareas
-            });
+            TURNOS.forEach(t => { html += renderModalBlock(planData[key(dateStr, t)]); });
+
             html += `<div class="mg-row-label">Cumplimiento</div>`;
             TURNOS.forEach(t => {
-                const k = key(dateStr, t);
-                if (isToday) html += `<div class="mg-comp" style="background:var(--bg-cell); border: 1px dashed var(--border); color:var(--text-muted); font-size:0.8rem;">HOY</div>`;
-                else if (!planData[k] || planData[k].length === 0) html += `<div></div>`;
+                const ev = evaluarCumplimiento(dateStr, t, todayStr);
+                if (ev.status === 'hoy') html += `<div class="mg-comp" style="background:var(--bg-cell); border: 1px dashed var(--border); color:var(--text-muted); font-size:0.8rem;">HOY</div>`;
+                else if (ev.status === 'pendiente') html += `<div class="mg-comp" style="background:var(--bg-cell); border: 1px dashed var(--border); color:var(--text-muted); font-size:0.8rem;">⏳ Pendiente</div>`;
+                else if (ev.status === 'vacio') html += `<div></div>`;
                 else {
-                    const c = getComplianceDayLevel(planData[k], realData[k], dTestArr);
-                    html += `<div class="mg-comp ci-${c.status}">${c.emoji} <span style="margin-left:8px; font-size:0.9rem;">${c.msg}</span></div>`;
+                    const det = ev.detalle.length ? `<ul class="mg-detail">${ev.detalle.map(x => `<li>${x}</li>`).join('')}</ul>` : '';
+                    html += `<div class="mg-comp ci-${ev.status}"><div>${ev.emoji} <span style="margin-left:6px; font-size:0.9rem;">${ev.msg}</span></div>${det}</div>`;
                 }
             });
+
             html += `<div class="mg-row-label">Prod. Real</div>`;
-            TURNOS.forEach(t => { 
-                if(isToday) html += `<div class="mg-cell empty">Dato Protegido</div>`; 
-                else {
-                    const tasksReal = realData[key(dateStr, t)] || [];
-                    html += renderModalBlock(tasksReal); // ✅ Pasa todas las tareas
-                }
+            TURNOS.forEach(t => {
+                if (isToday) html += `<div class="mg-cell empty">Dato Protegido</div>`;
+                else html += renderModalBlock(realData[key(dateStr, t)]);
             });
             html += `</div>`;
             cont.innerHTML = html;
