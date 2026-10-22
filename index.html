@@ -475,6 +475,100 @@
             .desvios-info { padding: 14px; }
         }
 
+
+        /* ===== v5: cumplimiento simplificado ===== */
+        body.view-cumpl { --cell-h: 58px; }
+        body.view-cumpl .day-header { grid-template-rows: 16px 22px; }
+        td.cs-cell { padding: 3px !important; }
+        td.cs-cell > .cs-franja { position: absolute; left: 3px; right: 3px; height: 5px; border-radius: 3px; z-index: 2; }
+        td.cs-cell > .cs-franja.plan { top: 3px; }
+        td.cs-cell > .cs-franja.real { bottom: 3px; }
+        td.cs-cell > .cs-franja.vacia { background: transparent; box-shadow: inset 0 0 0 1px rgba(127,127,127,0.35); }
+        .cs-body { position: absolute; left: 3px; right: 3px; top: 10px; bottom: 10px; border-radius: 6px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; color: #fff; transition: transform 0.2s ease, filter 0.2s ease; }
+        .cs-ico { font-size: 0.95rem; font-weight: 900; line-height: 1; }
+        .cs-sub { font-size: 0.5rem; font-weight: 800; opacity: 0.92; white-space: nowrap; letter-spacing: -0.2px; }
+        .cs-cumplido .cs-body { background: #2a9d4b; }
+        .cs-parcial .cs-body { background: #e08a00; }
+        .cs-parcial .cs-ico { font-size: 0.72rem; }
+        .cs-desvio .cs-body { background: #d23a2f; }
+        .cs-noplan .cs-body { background: #5856d6; }
+        .cs-hoy .cs-body { background: transparent; border: 1.5px dashed var(--accent); color: var(--accent-light); }
+        .cs-pendiente .cs-body { background: rgba(127,127,127,0.10); }
+        .cs-vacio .cs-body { background: transparent; }
+        td.cs-cell:hover .cs-body { transform: scale(1.06); filter: brightness(1.08); }
+        .cs-test { position: absolute; top: 0; right: 1px; z-index: 3; width: 13px; height: 13px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 7px; box-shadow: 0 0 0 1.5px var(--bg-panel); }
+        .cs-just { position: absolute; top: 0; left: 1px; z-index: 3; width: 14px; height: 14px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 8px; color: #fff; font-weight: 900; box-shadow: 0 0 0 1.5px var(--bg-panel); cursor: pointer; }
+        .cs-just.pend { background: var(--orange); animation: justPulse 2.4s ease-in-out infinite; }
+        .cs-just.ok { background: #0a84ff; }
+        .cs-test.static, .cs-just.static { position: static; animation: none; }
+        .lg-st { width: 22px; height: 22px; border-radius: 6px; display: inline-flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; font-size: 0.75rem; }
+        .lg-st.cs-cumplido { background: #2a9d4b; } .lg-st.cs-parcial { background: #e08a00; } .lg-st.cs-desvio { background: #d23a2f; } .lg-st.cs-noplan { background: #5856d6; }
+        .lg-franjas { display: inline-flex; flex-direction: column; justify-content: space-between; width: 22px; height: 22px; padding: 1px 0; border-radius: 6px; background: rgba(127,127,127,0.15); }
+        .lg-franjas i { display: block; height: 5px; border-radius: 3px; }
+
+        .analisis-info { display: none; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 16px; margin-top: 16px; }
+        .an-card { background: var(--bg-panel); border-radius: var(--radius); padding: 16px 20px; box-shadow: var(--shadow-3d); min-width: 0; animation: cardIn 0.5s ease both; }
+        .an-head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 8px; }
+        .an-head h3 { font-size: 1rem; font-weight: 800; }
+        .an-leyenda { display: flex; gap: 14px; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); }
+        .an-leyenda span { display: inline-flex; align-items: center; gap: 6px; }
+        .lg-real { width: 18px; height: 3px; border-radius: 2px; background: var(--accent); display: inline-block; }
+        .lg-plan { width: 18px; height: 0; border-top: 2px dashed var(--text-muted); display: inline-block; }
+        .an-nota { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; display: inline-flex; align-items: center; gap: 6px; }
+        .nota-marca { display: inline-block; width: 2px; height: 10px; background: var(--text-main); border-radius: 1px; }
+        .an-vacio { color: var(--text-muted); font-size: 0.85rem; }
+        .graf-acum { width: 100%; height: auto; display: block; overflow: visible; }
+        .g-grid { stroke: var(--border); stroke-width: 1; opacity: 0.6; }
+        .g-ytxt { fill: var(--text-muted); font-size: 10px; text-anchor: end; font-weight: 600; }
+        .g-xtxt { fill: var(--text-muted); font-size: 10px; text-anchor: middle; font-weight: 600; }
+        .g-hoy { stroke: var(--accent); stroke-width: 1; stroke-dasharray: 2 3; opacity: 0.8; }
+        .g-hoytxt { fill: var(--accent-light); font-size: 9px; text-anchor: middle; font-weight: 800; }
+        .g-plan { fill: none; stroke: var(--text-muted); stroke-width: 2; stroke-dasharray: 5 4; stroke-linejoin: round; }
+        .g-real { fill: none; stroke: var(--accent); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+        .g-area { fill: var(--accent); opacity: 0.12; }
+        .g-dot { fill: var(--accent); stroke: var(--bg-panel); stroke-width: 2; }
+        .g-lbl { fill: var(--text-muted); font-size: 11px; font-weight: 700; }
+        .g-lbl.real { fill: var(--text-main); font-weight: 800; }
+        .g-hit { fill: transparent; }
+        .g-hit:hover { fill: rgba(127,127,127,0.12); }
+        .at-lista { display: flex; flex-direction: column; gap: 12px; margin-top: 6px; }
+        .at-fila { display: grid; grid-template-columns: 80px minmax(0, 1fr) auto 46px; align-items: center; gap: 10px; font-size: 0.82rem; }
+        .at-nom { display: flex; align-items: center; gap: 6px; font-weight: 800; }
+        .at-bar { position: relative; height: 10px; border-radius: 5px; background: rgba(127,127,127,0.18); }
+        .at-bar span { display: block; height: 100%; border-radius: 5px; transition: width 0.8s cubic-bezier(0.22, 1, 0.36, 1); }
+        .at-bar i { position: absolute; top: -3px; width: 2px; height: 16px; background: var(--text-main); border-radius: 1px; }
+        .at-val { font-size: 0.75rem; color: var(--text-muted); white-space: nowrap; }
+        .at-val b { color: var(--text-main); font-size: 0.85rem; }
+        .at-pct { font-weight: 800; text-align: right; }
+
+        .desv-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+        .desv-filtro { display: inline-flex; background: var(--bg-cell); border: 1px solid var(--border); border-radius: 10px; padding: 3px; }
+        .desv-filtro button { background: none; border: none; color: var(--text-muted); font-family: var(--font); font-weight: 700; font-size: 0.78rem; padding: 6px 12px; border-radius: 8px; cursor: pointer; }
+        .desv-filtro button.on { background: var(--bg-panel); color: var(--text-main); box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+        .desv-filtro b { margin-left: 4px; color: var(--accent-light); }
+        .desv-tabla { width: 100%; border-collapse: collapse; margin-top: 12px; font-size: 0.8rem; }
+        .desv-tabla th { text-align: left; font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-muted); font-weight: 800; padding: 8px 10px; border-bottom: 1px solid var(--border); }
+        .desv-tabla td { padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+        .desv-tabla tr.pend td:first-child { box-shadow: inset 3px 0 0 var(--orange); }
+        .desv-tabla tr.ok td:first-child { box-shadow: inset 3px 0 0 #0a84ff; }
+        .desv-tabla tbody tr:hover { background: rgba(127,127,127,0.06); }
+        .desv-tabla .desv-just b { display: block; }
+        .desv-tabla .desv-just span { color: var(--text-muted); font-size: 0.75rem; }
+        .desv-tabla .desv-estado { display: inline-block; }
+        .st-desvio { background: #d23a2f; } .st-parcial { background: #e08a00; } .st-noplan { background: #5856d6; }
+
+        @media screen and (max-width: 768px) {
+            .analisis-info { grid-template-columns: 1fr; }
+            .at-fila { grid-template-columns: 64px minmax(0, 1fr) 40px; }
+            .at-val { grid-column: 2 / -1; grid-row: 2; }
+            .desv-tabla thead { display: none; }
+            .desv-tabla tr { display: grid; grid-template-columns: 1fr auto; gap: 2px 10px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+            .desv-tabla td { border: none; padding: 2px 6px; }
+            .desv-tabla td:nth-child(4)::before { content: 'Plan: '; color: var(--text-muted); }
+            .desv-tabla td:nth-child(5)::before { content: 'Real: '; color: var(--text-muted); }
+            .desv-tabla td:nth-child(6) { grid-column: 1 / -1; }
+        }
+
         /* ================= IMPRESIÓN (una carilla A4) ================= */
         body.printing { --bg-body: #fff; --bg-panel: #fff; --bg-cell: #f2f2f2; --border: #9a9a9a; --text-main: #000; --text-muted: #444; --shadow: none; --shadow-3d: none; --cell-h: 52px; --sunday-bg: rgba(0,0,0,0.04); background: #fff !important; color: #000; padding: 0 !important; min-height: 0; font-family: var(--font); }
         body.printing *, body.printing *::before, body.printing *::after { transition: none !important; animation: none !important; }
@@ -571,6 +665,22 @@
         body.printing.view-plan td.today-col { border-left: none !important; border-right: 1px solid #555 !important; background: transparent; }
         body.printing.view-plan .mold-warn, body.printing.view-plan .col-estado, body.printing .lg-live, body.printing .jf-overlay { display: none !important; }
 
+        body.printing.view-cumpl { --cell-h: 40px; }
+        body.printing .cs-sub { font-size: 0.42rem; }
+        body.printing .cs-ico { font-size: 0.7rem; }
+        body.printing .cs-just { animation: none; }
+        body.printing .analisis-info { gap: 8px; margin-top: 6px; }
+        body.printing .an-card { padding: 6px 10px; border: 1px solid #bbb; border-radius: 8px; animation: none; }
+        body.printing .an-head h3 { font-size: 0.75rem; }
+        body.printing .graf-acum { max-height: 150px; }
+        body.printing .at-lista { gap: 4px; }
+        body.printing .at-fila { font-size: 0.6rem; grid-template-columns: 60px minmax(0,1fr) auto 36px; gap: 6px; }
+        body.printing .desv-filtro, body.printing .desv-tabla td:last-child, body.printing .desv-tabla th:last-child { display: none; }
+        body.printing .desv-tabla { font-size: 0.52rem; margin-top: 3px; }
+        body.printing .desv-tabla th { font-size: 0.48rem; padding: 2px 4px; }
+        body.printing .desv-tabla td { padding: 1px 4px; }
+        body.printing .desv-tabla .desv-just span { display: none; }
+
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: A4 landscape; margin: 8mm; }
@@ -645,6 +755,7 @@
 
     <div class="gantt-wrapper" id="ganttWrapper"></div>
     <div id="legendContainer"></div>
+    <div class="analisis-info" id="analisisInfo"></div>
     <div class="desvios-info" id="desviosInfo"></div>
     <div class="pruebas-info" id="pruebasInfo"></div>
 
@@ -693,6 +804,7 @@
         const TOLERANCIA_PRUEBA_DIAS = 1;
         const PESO_MISMO_LADRILLO = 0.5;
         const RECARGA_MIN = 10;
+        const GRACIA_CARGA_HORAS = 3;
         const A4_PX = { w: 1062, h: 733 };
         const DAY_NAMES = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
         const ARROW_SVG = `<div class="flow-arrow-container"><svg class="flow-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><polyline points="19 12 12 19 5 12"></polyline></svg></div>`;
@@ -1080,6 +1192,9 @@
                 return et === 'actual' ? { status: 'hoy', score: null, emoji: '⏱️', msg: 'Turno en curso', detalle: [] } : { status: 'pendiente', score: null, emoji: '', msg: 'Pendiente', detalle: [] };
             }
             const realProd = [...new Set(getProdSeq(realData[k]).map(x => x.moldeCompleto))];
+            if (!realProd.length && planProd.length && !tnRealTurno(k) && new Date() < new Date(limiteTurno(dateStr, turno, 'fin').getTime() + GRACIA_CARGA_HORAS * 3600000)) {
+                return { status: 'hoy', score: null, emoji: '⏳', msg: 'Esperando carga del turno', detalle: [] };
+            }
             const detalle = [];
             const sinMatch = [];
             const restoReal = [...realProd];
@@ -1291,7 +1406,7 @@
             if (!info.pasado) return plan ? `<span class="tn-p muted">≈${fmtTn0(plan)}</span>` : '';
             if (real === null && !comp) return '';
             const r = comp > 0 ? (real || 0) / comp : null;
-            return `<span class="tn-r ${claseRatio(r)}">${fmtTn0(real || 0)}</span><span class="tn-p">/${fmtTn0(comp || 0)}</span>`;
+            return `<span class="tn-r ${claseRatio(r)}" title="Real ${fmtTn0(real || 0)} Tn · Plan ${fmtTn0(comp || 0)} Tn${r !== null ? ' (' + Math.round(r * 100) + '%)' : ''}">${fmtTn0(real || 0)}</span>`;
         }
 
         function renderGantt() {
@@ -1352,12 +1467,12 @@
                 if (currentView === 'plan') { const tp = tnPlanTurno(k); if (tp) tnHtml = `<span class="tn-tag plan">≈${fmtTn0(tp.tn)}</span>`; }
                 else { const tr = tnRealTurno(k); if (tr) tnHtml = `<span class="tn-tag">${fmtTn0(tr.tn)}</span>`; }
                 let parts;
-                if (currentView === 'cumpl') parts = buildCumplCell(preP, preR, dateStr, turno, evaluarProduccion(dateStr, turno), tnHtml);
+                if (currentView === 'cumpl') parts = buildCumplCellV5(preP, preR, dateStr, turno, k);
                 else { parts = buildCellParts(pre, false); parts.content += tnHtml; }
                 const aviso = avisoEstadoMolde(pre, dateStr);
                 if (aviso) hayAviso = true;
                 const conPrueba = currentView === 'cumpl' ? (preP.hasTest || preR.hasTest) : pre.hasTest;
-                let markers = conPrueba ? `<div class="test-marker"></div>` : '';
+                let markers = conPrueba && currentView !== 'cumpl' ? `<div class="test-marker"></div>` : '';
                 if (aviso) markers += `<div class="mold-warn mw-${aviso.nivel}">!</div>`;
                 const cls = `${extraCls} ${parts.cls}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}`;
                 const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso);
@@ -1365,11 +1480,12 @@
             };
 
             const indicadores = dateStr => {
+                if (currentView === 'cumpl') return '';
                 let h = changeDays.has(dateStr) ? '<div class="indicator-row"><span class="indicator-change">🔄️</span></div>' : '<div class="indicator-row"></div>';
                 h += testDays.has(dateStr) ? '<div class="indicator-row"><span class="indicator-pr">PR</span></div>' : '<div class="indicator-row"></div>';
                 return h;
             };
-            const etiquetaTn = currentView === 'plan' ? 'Tn esp.' : currentView === 'prod' ? 'Tn' : 'Tn R/P';
+            const etiquetaTn = currentView === 'plan' ? 'Tn esp.' : currentView === 'prod' ? 'Tn' : 'Tn real';
             const hayTn = moldesExt.cargado && (moldesExt.informe || moldesExt.prod.size) || moldesExt.promedios.size > 0;
 
             let html = '';
@@ -1386,13 +1502,11 @@
                     const thClass = dateStr === todayStr ? 'today-col' : (esDomingo ? 'sunday-cell' : '');
                     html += `<tr class="day-row ${trClass}"><th class="${thClass}"><div class="day-header"><div class="day-name">${DAY_NAMES[dateObj.getDay()]}</div><div class="day-number">${d}</div>${indicadores(dateStr)}</div></th>`;
                     TURNOS.forEach(turno => { html += renderTd(dateStr, turno, dateObj, esDomingo ? 'sunday-cell' : '', '', d); });
-                    html += `</tr><tr class="comp-row ${trClass}"><td class="comp-label-text ${thClass}" style="text-align:center;">CUMPL</td>`;
-                    TURNOS.forEach(turno => { html += `<td class="${esDomingo ? 'sunday-cell' : ''}">${buildCompIndicator(dateStr, turno)}</td>`; });
                     html += `</tr>`;
                     if (hayTn) {
                         const info = tnDias[dateStr];
-                        const dia = celdaTn(info, false), ac = celdaTn(info, true);
-                        if (dia || ac) html += `<tr class="tn-row-m ${trClass}"><td class="tn-label">${etiquetaTn}</td><td colspan="3"><span class="tn-m-dia">${dia || '–'}</span><span class="tn-m-ac">Acum. ${ac || '–'}</span></td></tr>`;
+                        const dia = celdaTn(info, false), ac = currentView === 'cumpl' ? '' : celdaTn(info, true);
+                        if (dia || ac) html += `<tr class="tn-row-m ${trClass}"><td class="tn-label">${etiquetaTn}</td><td colspan="3"><span class="tn-m-dia">${dia || '–'}</span>${ac ? `<span class="tn-m-ac">Acum. ${ac}</span>` : ''}</td></tr>`;
                     }
                 }
                 html += `</tbody></table>`;
@@ -1415,18 +1529,10 @@
                         if (dateStr === todayStr) cls += ' today-col';
                         html += renderTd(dateStr, turno, dateObj, cls, `width:${colWidthCalc}; `, d);
                     }
-                    html += `</tr><tr class="comp-row"><td class="comp-label-text" style="width:${turnoWidth}px; text-align:center;">CUMPL</td>`;
-                    for (let d = 1; d <= daysInMonth; d++) {
-                        const dateObj = new Date(year, month, d);
-                        const dateStr = formatYYYYMMDD(dateObj);
-                        let tdClass = dateObj.getDay() === 0 ? 'sunday-cell' : '';
-                        if (dateStr === todayStr) tdClass += ' today-col';
-                        html += `<td class="${tdClass}">${buildCompIndicator(dateStr, turno)}</td>`;
-                    }
                     html += '</tr>';
                 });
                 if (hayTn) {
-                    [false, true].forEach(acum => {
+                    (currentView === 'cumpl' ? [false] : [false, true]).forEach(acum => {
                         html += `<tr class="tn-row${acum ? ' tn-acum' : ''}"><td class="tn-label">${acum ? 'Acum.' : etiquetaTn}</td>`;
                         for (let d = 1; d <= daysInMonth; d++) {
                             const dateObj = new Date(year, month, d);
@@ -1443,6 +1549,7 @@
 
             wrapper.innerHTML = html;
             renderLeyenda(visibles, hayMulti, hayAviso, fueraVisibles);
+            renderAnalisis(tnDias, year, month);
 
             const table = wrapper.querySelector('.gantt-table');
             if (!isMobileState) {
@@ -1476,26 +1583,27 @@
             }
             const ejA = getBrickColor('H18', 2), ejB = getBrickColor('H12', 2);
             h += '<div class="legend-section"><div class="legend-title">🔎 Símbolos</div><div class="legend-items">';
+            if (currentView !== 'cumpl') {
             h += `<div class="legend-item"><div class="legend-swatch-split" style="background:linear-gradient(172deg, ${ejA} 0%, ${ejA} 38%, ${ejB} 50%, ${ejB} 100%);"><div class="split-sweep"></div></div><span>Cambio a mitad de turno${moldesExt.cargado ? ' (proporción según extrusora)' : ''}${hayMulti ? '' : ' · sin casos este mes'}</span></div>`;
             h += `<div class="legend-item"><div class="legend-color" style="background:${ejB};"></div><span>Cambio al inicio del turno</span></div>`;
             h += `<div class="legend-item"><span class="indicator-change static">🔄️</span><span>Día con cambio de molde</span></div>`;
             h += `<div class="legend-item"><div class="legend-tri"></div><span>Turno con prueba</span></div>`;
             if (currentView === 'plan') h += `<div class="legend-item"><span class="tn-tag plan static">≈182</span><span>Tn esperadas (promedio del tipo por turno, sin turnos con cambio)</span></div>`;
             else h += `<div class="legend-item"><span class="tn-tag static">250</span><span>Tn producidas en el turno</span></div>`;
+            }
             h += `<div class="legend-item lg-live"><div class="legend-now"></div><span>Turno en curso</span></div>`;
             if (currentView === 'plan' && moldesExt.cargado) {
                 h += `<div class="legend-item lg-live"><div class="mold-warn mw-amber static">!</div><span>Molde en calibración</span></div>`;
                 h += `<div class="legend-item lg-live"><div class="mold-warn mw-red static">!</div><span>Molde no operativo${hayAviso ? '' : ' · sin casos'}</span></div>`;
             }
             if (currentView === 'cumpl') {
-                h += `<div class="legend-item"><div class="legend-cmp"><span style="background:${ejB}"></span><span style="background:${ejA}"></span></div><span>Franja superior = plan · cuerpo = real</span></div>`;
-                h += `<div class="legend-item"><div class="legend-color ci-cumplido"></div><span>Cumplido</span></div>`;
-                h += `<div class="legend-item"><div class="legend-color ci-parcial"></div><span>Parcial (%)</span></div>`;
-                h += `<div class="legend-item"><div class="legend-color ci-desvio"></div><span>Desvío</span></div>`;
-                h += `<div class="legend-item"><div class="legend-color ci-noplan"></div><span>Sin plan</span></div>`;
-                h += `<div class="legend-item"><span class="ci-test ct-cumplido static">🔬</span><span>Prueba</span></div>`;
-                h += `<div class="legend-item"><span class="ci-just pend static">✎</span><span>Desvío a justificar</span></div>`;
-                h += `<div class="legend-item"><span class="ci-just ok static">💬</span><span>Justificado</span></div>`;
+                h += `<div class="legend-item"><span class="lg-st cs-cumplido">✓</span><span>Cumplido</span></div>`;
+                h += `<div class="legend-item"><span class="lg-st cs-parcial">%</span><span>Parcial</span></div>`;
+                h += `<div class="legend-item"><span class="lg-st cs-desvio">✕</span><span>Desvío</span></div>`;
+                h += `<div class="legend-item"><span class="lg-st cs-noplan">+</span><span>Producción sin plan</span></div>`;
+                h += `<div class="legend-item"><span class="lg-franjas"><i style="background:${ejB}"></i><i style="background:${ejA}"></i></span><span>Franja sup. = molde planificado · inf. = real</span></div>`;
+                h += `<div class="legend-item"><span class="cs-test ct-cumplido static">🔬</span><span>Prueba</span></div>`;
+                h += `<div class="legend-item"><span class="cs-just pend static">✎</span><span>Desvío a justificar</span></div>`;
             }
             h += '</div></div>';
             if (fueraVisibles.size > 0) h += `<div class="legend-warn">⚠️ Nombres que no figuran en el catálogo de Moldes: <strong>${[...fueraVisibles].sort().map(escAttr).join(' · ')}</strong></div>`;
@@ -1610,9 +1718,8 @@
                 h += `<div class="kpi-card kpi-main" style="--kc:${colorPct(pct)}"><div class="kpi-label">🏭 Cumplimiento de producción</div><div class="kpi-value">${pct}%</div><div class="kpi-ring"><span style="width:${pct}%"></span></div><div class="kpi-sub">✅ ${nCump} · ⚠️ ${nParc} · ❌ ${nDesv} de ${nEval} turnos${nNoPlan ? ` · ➕ ${nNoPlan} sin plan` : ''}</div></div>`;
                 h += `<div class="kpi-card" style="${pctTn === null ? '' : `--kc:${colorPct(pctTn)}`}"><div class="kpi-label">⚖️ Tn real vs plan</div><div class="kpi-value">${pctTn === null ? '–' : pctTn + '%'}</div><div class="kpi-sub">${fmtTn0(res.realTotal)} de ${fmtTn0(res.planComp)} Tn a la fecha</div></div>`;
                 h += `<div class="kpi-card" style="${pctPr === null ? '' : `--kc:${colorPct(pctPr)}`}"><div class="kpi-label">🔬 Cumplimiento de pruebas</div><div class="kpi-value">${pctPr === null ? '–' : pctPr + '%'}</div><div class="kpi-sub">${pruebasHechas} de ${pruebasEval} evaluadas · ${pruebasMes} plan. · ±${TOLERANCIA_PRUEBA_DIAS} día</div></div>`;
-                h += `<div class="kpi-card" style="--kc:${desviosMes.lista.length && nJust < desviosMes.lista.length ? 'var(--orange)' : 'var(--green)'}"><div class="kpi-label">📝 Desvíos</div><div class="kpi-value">${desviosMes.lista.length}</div><div class="kpi-sub">${nJust} justificados</div></div>`;
-                h += cardTipos;
-                h += tarjetaTipos('Tn por tipo: real a la fecha vs plan del mes', planTipos.concat(realTipos.filter(r => !planTipos.includes(r))), 'cumpl');
+                h += `<div class="kpi-card" style="--kc:${desviosMes.lista.length && nJust < desviosMes.lista.length ? 'var(--orange)' : 'var(--green)'}"><div class="kpi-label">📝 Desvíos sin justificar</div><div class="kpi-value">${desviosMes.lista.length - nJust}</div><div class="kpi-sub">de ${desviosMes.lista.length} desvíos en el mes</div></div>`;
+
             }
             cont.innerHTML = h;
         }
@@ -1652,26 +1759,144 @@
             container.innerHTML = html + '</tbody></table>';
         }
 
+        function fondoSeqH(seq) {
+            const cols = seq.map(m => getBrickColor(m.baseName, m.number));
+            if (cols.length === 1) return `background:${cols[0]};`;
+            const paso = 100 / cols.length;
+            return `background:linear-gradient(90deg, ${cols.map((c, i) => `${c} ${(i * paso + (i ? 6 : 0)).toFixed(1)}%, ${c} ${((i + 1) * paso - (i < cols.length - 1 ? 6 : 0)).toFixed(1)}%`).join(', ')});`;
+        }
+
+        function etiquetaMolde(t) { return t ? `${nombreProducto(t)}·${t.number}` : ''; }
+
+        function buildCumplCellV5(preP, preR, dateStr, turno, k) {
+            const ev = evaluarProduccion(dateStr, turno);
+            const pr = evaluarPruebas(dateStr, turno);
+            const ep = desviosMes.porInicio.get(k);
+            const iconos = { cumplido: '✓', desvio: '✕', noplan: '+', hoy: ev.emoji === '⏳' ? '⏳' : '⏱', pendiente: '', vacio: '' };
+            const ico = ev.status === 'parcial' ? `${Math.round(ev.score * 100)}%` : iconos[ev.status];
+            let sub = '';
+            if (['desvio', 'parcial', 'noplan'].includes(ev.status)) {
+                const r = preR.seq[preR.seq.length - 1];
+                sub = `<span class="cs-sub">${r ? etiquetaMolde(r) : 'sin prod.'}</span>`;
+            }
+            let marcas = '';
+            if (pr) marcas += `<span class="cs-test ct-${pr.status}" title="Prueba: ${escAttr(pr.msg)}">🔬</span>`;
+            if (ep) {
+                const j = moldesExt.justif.get(k);
+                marcas += `<span class="cs-just ${j ? 'ok' : 'pend'}" title="${j ? escAttr('Justificado: ' + j.motivo) : 'Desvío sin justificar · clic para registrar'}" onclick="event.stopPropagation(); abrirJustificacion('${k}')">${j ? '💬' : '✎'}</span>`;
+            }
+            const franja = (seq, cls) => seq.length ? `<div class="cs-franja ${cls}" style="${fondoSeqH(seq)}"></div>` : `<div class="cs-franja ${cls} vacia"></div>`;
+            const content = `${franja(preP.seq, 'plan')}<div class="cs-body"><span class="cs-ico">${ico}</span>${sub}</div>${franja(preR.seq, 'real')}${marcas}`;
+            return { content, style: '', cls: `cs-cell cs-${ev.status}` };
+        }
+
+        function graficoAcumulado(tnDias, year, month) {
+            const dias = new Date(year, month + 1, 0).getDate();
+            const hoy = hoyStr();
+            const W = 640, H = 230, ml = 52, mr = 92, mt = 14, mb = 28;
+            const pts = [];
+            for (let d = 1; d <= dias; d++) {
+                const ds = formatYYYYMMDD(new Date(year, month, d));
+                const i = tnDias[ds];
+                pts.push({ d, ds, plan: i.acPlan, real: ds <= hoy ? i.acReal : null, planComp: i.acPlanComp, dia: i });
+            }
+            const reales = pts.filter(p => p.real !== null && (p.dia.conReal || p.ds < hoy));
+            const maxY = Math.max(1, ...pts.map(p => p.plan), ...reales.map(p => p.real)) * 1.06;
+            const x = d => ml + (d - 1) / Math.max(1, dias - 1) * (W - ml - mr);
+            const y = v => mt + (1 - v / maxY) * (H - mt - mb);
+            const paso = Math.pow(10, Math.floor(Math.log10(maxY / 4)));
+            const tick = [1, 2, 2.5, 5, 10].map(f => f * paso).find(t => maxY / t <= 5) || paso * 10;
+            let svg = `<svg viewBox="0 0 ${W} ${H}" class="graf-acum" role="img" aria-label="Toneladas acumuladas real vs plan">`;
+            for (let v = 0; v <= maxY; v += tick) svg += `<line x1="${ml}" x2="${W - mr}" y1="${y(v)}" y2="${y(v)}" class="g-grid"/><text x="${ml - 6}" y="${y(v) + 3}" class="g-ytxt">${v >= 1000 ? (v / 1000).toLocaleString('es-AR') + ' mil' : v}</text>`;
+            [1, 8, 15, 22, dias].forEach(d => { svg += `<text x="${x(d)}" y="${H - 8}" class="g-xtxt">${d}</text>`; });
+            if (hoy.slice(0, 7) === formatYYYYMMDD(new Date(year, month, 1)).slice(0, 7)) {
+                const dh = parseInt(hoy.slice(8, 10));
+                svg += `<line x1="${x(dh)}" x2="${x(dh)}" y1="${mt}" y2="${H - mb}" class="g-hoy"/><text x="${x(dh)}" y="${mt - 3}" class="g-hoytxt">hoy</text>`;
+            }
+            const linea = arr => arr.map((p, i) => `${i ? 'L' : 'M'}${x(p.d).toFixed(1)},${y(p.v).toFixed(1)}`).join(' ');
+            const planPts = pts.map(p => ({ d: p.d, v: p.plan }));
+            svg += `<path d="${linea(planPts)}" class="g-plan"/>`;
+            if (reales.length) {
+                const rp = reales.map(p => ({ d: p.d, v: p.real }));
+                svg += `<path d="${linea(rp)} L${x(rp[rp.length - 1].d).toFixed(1)},${y(0)} L${x(rp[0].d).toFixed(1)},${y(0)} Z" class="g-area"/>`;
+                svg += `<path d="${linea(rp)}" class="g-real"/>`;
+                const u = rp[rp.length - 1];
+                svg += `<circle cx="${x(u.d)}" cy="${y(u.v)}" r="4.5" class="g-dot"/><text x="${x(u.d) + 8}" y="${y(u.v) + 4}" class="g-lbl real">Real ${fmtTn0(u.v)}</text>`;
+            }
+            const up = planPts[planPts.length - 1];
+            let yPlan = y(up.v) + 4;
+            if (reales.length) {
+                const ur = reales[reales.length - 1];
+                const yReal = y(ur.real) + 4;
+                if (x(up.d) - x(ur.d) < 90 && Math.abs(yPlan - yReal) < 14) yPlan = yReal + (ur.real >= up.v ? 14 : -14);
+            }
+            svg += `<text x="${x(up.d) + 8}" y="${yPlan}" class="g-lbl">Plan ${fmtTn0(up.v)}</text>`;
+            const ancho = (W - ml - mr) / Math.max(1, dias - 1);
+            pts.forEach(p => {
+                const t = `${p.d}/${month + 1}\nPlan acum.: ${fmtTn0(p.plan)} Tn${p.real !== null ? `\nReal acum.: ${fmtTn0(p.real)} Tn` : ''}${p.dia.real !== null ? `\nDel día: ${fmtTn0(p.dia.real)} Tn (plan ${fmtTn0(p.dia.planComp || p.dia.plan || 0)})` : ''}`;
+                svg += `<rect x="${(x(p.d) - ancho / 2).toFixed(1)}" y="${mt}" width="${ancho.toFixed(1)}" height="${H - mt - mb}" class="g-hit"><title>${t}</title></rect>`;
+            });
+            return svg + '</svg>';
+        }
+
+        function renderAnalisis(tnDias, year, month) {
+            const cont = document.getElementById('analisisInfo');
+            if (currentView !== 'cumpl') { cont.style.display = 'none'; cont.innerHTML = ''; return; }
+            cont.style.display = 'grid';
+            const res = resumenTipos(year, month);
+            const filas = res.tipos.filter(t => t.plan > 0 || t.real > 0).sort((a, b) => b.plan - a.plan || b.real - a.real);
+            const hayTn = moldesExt.cargado || moldesExt.promedios.size > 0;
+            let tipos = filas.map(f => {
+                const r = f.planComp > 0 ? f.real / f.planComp : null;
+                const avance = f.plan > 0 ? Math.min(100, f.real / f.plan * 100) : 100;
+                const marca = f.plan > 0 ? Math.min(100, f.planComp / f.plan * 100) : 0;
+                return `<div class="at-fila">
+                    <div class="at-nom"><span class="tipo-chip" style="background:${f.color}"></span>${escAttr(f.nombre)}</div>
+                    <div class="at-bar"><span style="width:${avance.toFixed(1)}%; background:${f.color}"></span>${f.plan > 0 ? `<i style="left:${marca.toFixed(1)}%"></i>` : ''}</div>
+                    <div class="at-val"><b>${fmtTn0(f.real)}</b> / ${f.plan > 0 ? fmtTn0(f.plan) : '–'} Tn</div>
+                    <div class="at-pct ${claseRatio(r)}">${r === null ? (f.plan > 0 ? '–' : 'sin plan') : Math.round(r * 100) + '%'}</div>
+                </div>`;
+            }).join('');
+            cont.innerHTML = `
+                <div class="an-card">
+                    <div class="an-head"><h3>Toneladas acumuladas</h3><div class="an-leyenda"><span><i class="lg-real"></i>Real</span><span><i class="lg-plan"></i>Plan</span></div></div>
+                    ${hayTn ? graficoAcumulado(tnDias, year, month) : '<p class="an-vacio">Sin datos de toneladas.</p>'}
+                </div>
+                <div class="an-card">
+                    <div class="an-head"><h3>Por tipo de ladrillo</h3><div class="an-nota">real a la fecha / plan del mes · % vs plan a la fecha <i class="nota-marca"></i></div></div>
+                    <div class="at-lista">${tipos || '<p class="an-vacio">Sin datos.</p>'}</div>
+                </div>`;
+        }
+
+        let filtroDesvios = 'pend';
+        function setFiltroDesvios(f) { filtroDesvios = f; renderDesvios(); }
+
         function renderDesvios() {
             const cont = document.getElementById('desviosInfo');
             if (currentView !== 'cumpl') { cont.style.display = 'none'; cont.innerHTML = ''; return; }
             cont.style.display = 'block';
-            const lista = desviosMes.lista;
-            if (!lista.length) { cont.innerHTML = '<h3>📝 Registro de desvíos</h3><p class="desv-vacio">Sin desvíos de producción en turnos cerrados este mes. 🎉</p>'; return; }
-            const etiquetas = { desvio: ['❌', 'Desvío'], parcial: ['⚠️', 'Parcial'], noplan: ['➕', 'Sin plan'] };
-            let html = `<h3>📝 Registro de desvíos <small>${lista.filter(e => moldesExt.justif.has(e.k)).length} de ${lista.length} justificados · se justifica al inicio de cada desvío</small></h3><div class="desv-lista">`;
+            const todos = desviosMes.lista;
+            if (!todos.length) { cont.innerHTML = '<h3>📝 Registro de desvíos</h3><p class="desv-vacio">Sin desvíos de producción en turnos cerrados este mes.</p>'; return; }
+            const pend = todos.filter(e => !moldesExt.justif.has(e.k));
+            if (filtroDesvios === 'pend' && !pend.length) filtroDesvios = 'todos';
+            const lista = filtroDesvios === 'pend' ? pend : todos;
+            const etiquetas = { desvio: 'Desvío', parcial: 'Parcial', noplan: 'Sin plan' };
+            let html = `<div class="desv-head"><h3>📝 Registro de desvíos</h3>
+                <div class="desv-filtro"><button class="${filtroDesvios === 'pend' ? 'on' : ''}" onclick="setFiltroDesvios('pend')">Pendientes <b>${pend.length}</b></button><button class="${filtroDesvios === 'todos' ? 'on' : ''}" onclick="setFiltroDesvios('todos')">Todos <b>${todos.length}</b></button></div></div>
+                <table class="desv-tabla"><thead><tr><th>Inicio</th><th>Duración</th><th>Estado</th><th>Planificado</th><th>Real</th><th>Justificación</th><th></th></tr></thead><tbody>`;
             lista.forEach(e => {
                 const j = moldesExt.justif.get(e.k);
-                const [ico, txt] = etiquetas[e.status];
-                html += `<div class="desv-item ${j ? 'ok' : 'pend'}">
-                    <div class="desv-cuando"><b>${fechaCorta(e.fecha)} · ${e.turno}</b><span>${e.turnos} turno${e.turnos > 1 ? 's' : ''}${e.turnos > 1 ? ` → ${fechaCorta(e.hasta.fecha)} ${e.hasta.turno}` : ''}</span></div>
-                    <div class="desv-estado st-${e.status}">${ico} ${txt}</div>
-                    <div class="desv-cmp"><div><small>Plan</small>${escAttr(e.plan)}</div><div><small>Real</small>${escAttr(e.real)}</div></div>
-                    <div class="desv-just">${j ? `<b>${escAttr(j.motivo)}</b>${j.detalle ? `<p>${escAttr(j.detalle)}</p>` : ''}<small>${escAttr(j.autor || '')}${j.marca ? ' · ' + escAttr(j.marca) : ''}</small>` : '<span class="desv-pend">Pendiente de justificación</span>'}</div>
-                    <button class="desv-btn" onclick="abrirJustificacion('${e.k}')">${j ? '✏️ Editar' : '✎ Justificar'}</button>
-                </div>`;
+                html += `<tr class="${j ? 'ok' : 'pend'}">
+                    <td><b>${fechaCorta(e.fecha)}</b> ${e.turno}</td>
+                    <td>${e.turnos} turno${e.turnos > 1 ? 's' : ''}</td>
+                    <td><span class="desv-estado st-${e.status}">${etiquetas[e.status]}</span></td>
+                    <td>${escAttr(e.plan)}</td>
+                    <td>${escAttr(e.real)}</td>
+                    <td class="desv-just">${j ? `<b>${escAttr(j.motivo)}</b>${j.detalle ? `<span>${escAttr(j.detalle)}</span>` : ''}` : '<span class="desv-pend">Pendiente</span>'}</td>
+                    <td><button class="desv-btn" onclick="abrirJustificacion('${e.k}')">${j ? 'Editar' : 'Justificar'}</button></td>
+                </tr>`;
             });
-            cont.innerHTML = html + '</div>';
+            cont.innerHTML = html + '</tbody></table>';
         }
 
         const MOTIVOS_DESVIO = ['Falla de equipo / mantenimiento correctivo', 'Molde no disponible o en reparación', 'Calibración o ajuste de molde', 'Falta de materia prima / arcilla', 'Problema de calidad', 'Cambio de prioridad comercial', 'Corte de energía o gas', 'Falta de personal', 'Error de planificación o de carga', 'Otro'];
