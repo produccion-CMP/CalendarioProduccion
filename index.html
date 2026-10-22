@@ -569,6 +569,202 @@
             .desv-tabla td:nth-child(6) { grid-column: 1 / -1; }
         }
 
+
+        /* ===== v6: pantalla de carga ===== */
+        .loader-container { background: radial-gradient(ellipse at 50% 35%, #2a1a12 0%, var(--bg-body) 70%); }
+        body.light-mode .loader-container { background: radial-gradient(ellipse at 50% 35%, #fbe6d9 0%, var(--bg-body) 70%); }
+        .splash { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 6px; padding: 24px; width: min(420px, 92vw); }
+        .splash-escena { position: relative; width: 210px; height: 120px; margin-bottom: 10px; }
+        .splash-muro { position: absolute; left: 50%; bottom: 16px; width: 168px; height: 84px; transform: translateX(-50%); }
+        .splash-muro i { position: absolute; width: 40px; height: 24px; border-radius: 4px; bottom: calc(var(--f) * 28px); background: linear-gradient(180deg, #e8875a, #b9572c); box-shadow: inset 0 -3px 0 rgba(0,0,0,0.18), 0 2px 4px rgba(0,0,0,0.4); opacity: 0; animation: ladrillo 3.6s cubic-bezier(0.34, 1.4, 0.64, 1) infinite; animation-delay: calc((var(--f) * 5 + var(--c)) * 0.16s); }
+        .splash-muro i { left: calc(var(--c) * 42px); }
+        .splash-muro i[style*="--f:1"] { left: calc(var(--c) * 42px - 21px); }
+        .splash-muro i.medio { width: 19px; }
+        .splash-muro i.medio[style*="--c:0"] { left: 0; }
+        .splash-muro i.medio[style*="--c:4"] { left: 147px; }
+        .splash-muro i::after { content: ''; position: absolute; inset: 6px 8px; border-radius: 2px; background: repeating-linear-gradient(90deg, rgba(0,0,0,0.22) 0 5px, transparent 5px 9px); }
+        .splash-muro i.medio::after { inset: 6px 4px; }
+        @keyframes ladrillo { 0% { opacity: 0; transform: translateY(-60px) rotate(-6deg); } 12% { opacity: 1; transform: none; } 78% { opacity: 1; transform: none; } 92%, 100% { opacity: 0; transform: translateY(6px); } }
+        .splash-horno { position: absolute; left: 0; right: 0; bottom: 0; height: 10px; border-radius: 5px; background: linear-gradient(90deg, #3a2418, #5a3020, #3a2418); overflow: hidden; }
+        .splash-horno span { position: absolute; top: 2px; width: 30px; height: 6px; border-radius: 3px; background: linear-gradient(90deg, transparent, #ffb347, #ff6a2b, transparent); animation: fuego 1.8s linear infinite; }
+        .splash-horno span:nth-child(2) { animation-delay: 0.6s; } .splash-horno span:nth-child(3) { animation-delay: 1.2s; }
+        @keyframes fuego { from { left: -30px; } to { left: 100%; } }
+        .splash-logo { height: 44px; margin: 4px 0; filter: drop-shadow(0 2px 6px rgba(0,0,0,0.5)); }
+        .splash h2 { color: var(--accent-light); font-size: 1.35rem; font-weight: 800; margin: 0; }
+        .splash-sub { color: var(--text-muted); font-size: 0.85rem; font-weight: 600; margin-bottom: 10px; }
+        .splash-bar { width: 100%; height: 6px; border-radius: 3px; background: rgba(127,127,127,0.2); overflow: hidden; }
+        .splash-bar span { display: block; height: 100%; width: 4%; border-radius: 3px; background: linear-gradient(90deg, var(--accent-light), var(--accent)); transition: width 0.5s cubic-bezier(0.22, 1, 0.36, 1); }
+        .splash-pasos { list-style: none; width: 100%; margin-top: 14px; display: grid; gap: 6px; text-align: left; }
+        .splash-pasos li { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; font-weight: 600; color: var(--text-muted); padding: 6px 10px; border-radius: 8px; background: rgba(127,127,127,0.08); transition: color 0.3s, background 0.3s; }
+        .splash-pasos li::before { content: ''; width: 14px; height: 14px; flex: 0 0 auto; border-radius: 50%; border: 2px solid rgba(127,127,127,0.5); box-sizing: border-box; }
+        .splash-pasos li.run::before { border-color: var(--accent); border-top-color: transparent; animation: spin 0.8s linear infinite; }
+        .splash-pasos li.ok { color: var(--text-main); }
+        .splash-pasos li.ok::before { content: '✓'; border: none; background: var(--green); color: #fff; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+        .splash-pasos li.err::before { content: '!'; border: none; background: var(--orange); color: #fff; font-size: 10px; font-weight: 900; display: flex; align-items: center; justify-content: center; }
+        .splash-pasos li.err::after { content: 'sin conexión, se continúa'; margin-left: auto; font-size: 0.7rem; color: var(--orange); }
+        .top-loader { position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 5000; pointer-events: none; opacity: 0; transition: opacity 0.2s; }
+        .top-loader.on { opacity: 1; }
+        .top-loader span { display: block; height: 100%; width: 40%; background: linear-gradient(90deg, transparent, var(--accent), transparent); animation: topLoad 1.1s ease-in-out infinite; }
+        @keyframes topLoad { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
+
+        /* ===== v6: encabezado ===== */
+        .app-header { padding: 14px 20px; gap: 16px; flex-wrap: wrap; background: linear-gradient(120deg, var(--bg-panel) 0%, var(--bg-panel) 55%, rgba(224,123,76,0.10) 100%); border: 1px solid var(--border); }
+        .brand { display: flex; align-items: center; gap: 14px; min-width: 0; }
+        .brand-logo { width: 58px; height: 58px; border-radius: 14px; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; box-shadow: inset 0 0 0 1px var(--border); flex: 0 0 auto; }
+        .brand-logo img { height: 40px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.4)); }
+        .brand-kicker { display: block; font-size: 0.72rem; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-muted); }
+        .brand h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.5px; line-height: 1.15; background: linear-gradient(90deg, var(--accent-light), var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+        .hdr-right { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; justify-content: flex-end; }
+        .reloj { display: flex; align-items: center; gap: 14px; padding: 8px 16px 8px 14px; border-radius: 16px; background: var(--bg-cell); box-shadow: inset 0 0 0 1px var(--border); }
+        .reloj-hora { font-size: 2.1rem; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; line-height: 1; }
+        .reloj-info { display: flex; flex-direction: column; gap: 3px; min-width: 170px; }
+        .reloj-fecha { font-size: 0.78rem; font-weight: 700; color: var(--text-main); }
+        .reloj-turno { display: flex; align-items: center; gap: 8px; }
+        .turno-chip { font-size: 0.68rem; font-weight: 800; padding: 2px 8px; border-radius: 6px; background: var(--accent); color: #fff; letter-spacing: 0.3px; }
+        .turno-horario { font-size: 0.7rem; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+        .turno-prog { height: 4px; border-radius: 2px; background: rgba(127,127,127,0.25); overflow: hidden; }
+        .turno-prog span { display: block; height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent-light), var(--accent)); transition: width 1s ease; }
+        .turno-resta { font-size: 0.64rem; font-weight: 600; color: var(--text-muted); }
+        .hdr-acciones { display: flex; align-items: center; gap: 8px; }
+        .icon-btn { width: 44px; height: 44px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); font-size: 1.15rem; cursor: pointer; transition: transform 0.2s, border-color 0.2s, background 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+        .icon-btn:hover { transform: translateY(-2px); border-color: var(--accent); }
+        .icon-btn.activo { background: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224,123,76,0.3); }
+        .solo-prod { display: none !important; }
+        body.modo-produccion .solo-prod { display: inline-flex !important; }
+        .modo-banner { display: none; align-items: center; justify-content: space-between; gap: 12px; margin: -8px 0 16px; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; color: #fff; animation: cardIn 0.35s ease both; }
+        .modo-banner.on { display: flex; }
+        .modo-banner.mb-produccion { background: linear-gradient(90deg, #b9572c, var(--accent)); }
+        .modo-banner.mb-compras { background: linear-gradient(90deg, #1f5fbf, #0a84ff); }
+        .modo-banner button { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: #fff; font-family: var(--font); font-weight: 700; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
+
+        /* ===== v6: navegación de mes ===== */
+        .month-nav { flex-direction: row; justify-content: center; align-items: center; gap: 10px; flex-wrap: wrap; margin-bottom: 18px; }
+        .month-nav .mn-arrow { width: 42px; height: 42px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-panel); color: var(--text-main); font-size: 1.5rem; line-height: 1; cursor: pointer; transition: 0.2s; padding: 0 !important; }
+        .month-nav .mn-arrow:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .month-nav .mn-title { display: inline-flex; align-items: baseline; gap: 10px; background: none !important; border: none !important; box-shadow: none !important; padding: 2px 10px !important; cursor: pointer; color: var(--text-main); font-family: var(--font); min-width: 230px; justify-content: center; }
+        .month-nav .mn-mes { font-size: 2rem; font-weight: 800; letter-spacing: -1px; }
+        .month-nav .mn-anio { font-size: 1.2rem; font-weight: 700; color: var(--text-muted); letter-spacing: 0.5px; }
+        .month-nav .mn-title:hover .mn-mes { color: var(--accent-light); }
+        .month-nav .mn-hoy { border: 1px solid var(--border) !important; background: var(--bg-panel) !important; color: var(--text-main) !important; padding: 7px 16px !important; border-radius: 20px !important; font-weight: 700 !important; font-size: 0.8rem; cursor: pointer; }
+        .month-nav .mn-hoy.activo { border-color: var(--accent) !important; color: var(--accent-light) !important; }
+        .month-nav .mn-valid { flex-basis: 100%; display: flex; justify-content: center; min-height: 0; }
+        .month-nav .mn-valid:empty { display: none; }
+        .sello { font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; }
+        .sello.ok { background: rgba(48,209,88,0.15); color: var(--green); box-shadow: inset 0 0 0 1px rgba(48,209,88,0.5); }
+        .sello.obs { background: rgba(255,159,10,0.15); color: var(--orange); box-shadow: inset 0 0 0 1px rgba(255,159,10,0.5); }
+        .sello.pend { background: rgba(127,127,127,0.15); color: var(--text-muted); box-shadow: inset 0 0 0 1px var(--border); }
+
+        /* ===== v6: modos y compras ===== */
+        .modos-box { max-width: 560px; }
+        .modos-sub { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 12px; }
+        .modos-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .modo-card { display: flex; flex-direction: column; align-items: flex-start; gap: 4px; text-align: left; padding: 16px; border-radius: 14px; border: 2px solid var(--border); background: var(--bg-cell); color: var(--text-main); font-family: var(--font); cursor: pointer; transition: 0.2s; }
+        .modo-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+        .modo-card.elegido { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(224,123,76,0.25); }
+        .modo-card.activo { border-color: var(--green); }
+        .mc-ico { font-size: 1.6rem; }
+        .modo-card b { font-size: 0.95rem; }
+        .modo-card small { color: var(--text-muted); font-size: 0.75rem; line-height: 1.35; }
+        .modo-login { margin-top: 6px; }
+        .modo-actual { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 8px 12px; border-radius: 10px; background: var(--bg-cell); font-size: 0.85rem; margin-bottom: 12px; }
+        .modo-actual button { background: none; border: 1px solid var(--border); color: var(--text-main); border-radius: 8px; padding: 5px 10px; font-family: var(--font); font-weight: 700; cursor: pointer; }
+        .modo-actual.lectura { color: var(--text-muted); }
+        .compras-bar { display: none; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin: -8px 0 16px; padding: 10px 16px; border-radius: 14px; background: rgba(10,132,255,0.10); box-shadow: inset 0 0 0 1px rgba(10,132,255,0.45); }
+        .compras-bar.on { display: flex; }
+        .cb-info { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; font-size: 0.85rem; }
+        .cb-tip { color: var(--text-muted); font-size: 0.78rem; }
+        .cb-acc { display: flex; gap: 8px; flex-wrap: wrap; }
+        .cb-btn { border: 1px solid var(--border); background: var(--bg-panel); color: var(--text-main); font-family: var(--font); font-weight: 700; font-size: 0.8rem; padding: 8px 14px; border-radius: 10px; cursor: pointer; transition: 0.2s; }
+        .cb-btn:hover { border-color: #0a84ff; }
+        .cb-btn.prim { background: #0a84ff; border-color: #0a84ff; color: #fff; }
+        td.bq-sel { cursor: copy; }
+        td.bq-hover { box-shadow: inset 0 0 0 3px #0a84ff !important; filter: brightness(1.1); }
+        .rec-badge { position: absolute; right: 2px; bottom: 2px; z-index: 6; width: 16px; height: 16px; border-radius: 50%; font-size: 9px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1.5px #fff; }
+        .rec-badge.pend { background: #0a84ff; animation: justPulse 2.4s ease-in-out infinite; }
+        .rec-badge.ok { background: #6e6e73; }
+        .rec-box { max-width: 520px; max-height: 92vh; overflow-y: auto; }
+        .rc-head { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 0.9rem; }
+        .rc-head span:last-child { color: var(--text-muted); font-size: 0.78rem; }
+        .rc-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px 12px; margin-top: 8px; font-size: 0.8rem; font-weight: 700; }
+        .rc-grid small { display: block; font-size: 0.65rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; }
+        .rc-prev { margin-top: 8px; font-size: 0.75rem; color: #5ea8ff; }
+        .rc-nota { color: var(--text-muted); font-size: 0.8rem; margin-top: 4px; }
+        .rc-acciones { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 4px; }
+        .rc-acciones label { margin: 0 !important; text-transform: none !important; letter-spacing: 0 !important; }
+        .rc-acciones input { position: absolute; opacity: 0; pointer-events: none; }
+        .rc-acciones span { display: inline-block; padding: 8px 12px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-cell); font-size: 0.82rem; font-weight: 700; color: var(--text-main); cursor: pointer; transition: 0.15s; }
+        .rc-acciones input:checked + span { background: #0a84ff; border-color: #0a84ff; color: #fff; }
+        .rc-acciones input:focus-visible + span { outline: 2px solid var(--accent-light); }
+        .rc-fila { display: grid; grid-template-columns: 1fr auto 1fr; gap: 8px; align-items: end; }
+        .rc-fila.dos { grid-template-columns: 1fr 1fr; }
+        .rc-eq { padding-bottom: 10px; color: var(--text-muted); font-weight: 800; }
+        .rc-conv { font-size: 0.72rem; color: var(--text-muted); margin-top: 4px; min-height: 1em; }
+        .rec-est { display: inline-block; font-size: 0.72rem; font-weight: 800; padding: 3px 8px; border-radius: 8px; color: #fff; }
+        .rec-est.pend { background: #0a84ff; } .rec-est.anal { background: var(--orange); } .rec-est.ok { background: #2a9d4b; } .rec-est.rech { background: #6e6e73; }
+        .prio-tag { font-size: 0.65rem; font-weight: 800; padding: 1px 6px; border-radius: 6px; background: rgba(255,69,58,0.18); color: var(--red); margin-left: 4px; }
+        .rec-tabla small { display: block; color: var(--text-muted); font-size: 0.68rem; }
+        .muted { color: var(--text-muted); }
+
+        /* ===== v6: toneladas arriba a la izquierda ===== */
+        .tn-tag { left: 2px; top: 2px; right: auto; bottom: auto; }
+        .mold-warn { top: auto; bottom: 3px; }
+        .test-marker { z-index: 6; }
+
+        /* ===== v6: cumplimiento en carriles ===== */
+        .gantt-table.lanes td.lane { height: 26px; padding: 0 !important; border-right: none !important; border-bottom: none !important; overflow: visible; cursor: pointer; }
+        .gantt-table.lanes tr.lane-row.plan td.lane { box-shadow: inset 0 -1px 0 rgba(0,0,0,0.25); }
+        .gantt-table.lanes td.lane.vacia { background: transparent; }
+        .gantt-table.lanes tr.real td.lane.vacia:not(.futura) { background: repeating-linear-gradient(135deg, rgba(255,69,58,0.18) 0 4px, transparent 4px 8px); }
+        .gantt-table.lanes tr.real td.lane.futura { background: transparent; box-shadow: inset 0 1px 0 rgba(127,127,127,0.25), inset 0 -1px 0 rgba(127,127,127,0.25); }
+        .lane-lbl { position: absolute; left: 3px; top: 50%; transform: translateY(-50%); z-index: 3; font-size: 0.62rem; font-weight: 800; white-space: nowrap; pointer-events: none; text-shadow: 0 1px 1px rgba(0,0,0,0.15); }
+        td.lane.inicio { box-shadow: inset 2px 0 0 rgba(255,255,255,0.55) !important; }
+        .gantt-table.lanes td.lane-head { padding: 4px 6px !important; text-align: left; vertical-align: middle; background: var(--bg-panel); border-bottom: 3px solid var(--border) !important; }
+        .lane-head b { display: block; font-size: 0.95rem; color: var(--accent-light); }
+        .lane-head span { display: block; font-size: 0.58rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; line-height: 2.2; }
+        .gantt-table.lanes td.lane-st { height: 24px; padding: 0 !important; border-right: 1px solid rgba(127,127,127,0.15) !important; border-bottom: none !important; overflow: visible; cursor: pointer; }
+        .gantt-table.lanes tr.lane-row.st td { border-bottom: 3px solid var(--border) !important; }
+        .ls-ico { font-size: 0.8rem; font-weight: 900; }
+        .ls-cumplido .ls-ico { color: #2fbf57; }
+        .ls-parcial { background: rgba(255,159,10,0.16); } .ls-parcial .ls-ico { color: var(--orange); font-size: 0.62rem; }
+        .ls-desvio { background: rgba(255,69,58,0.18); } .ls-desvio .ls-ico { color: var(--red); }
+        .ls-noplan { background: rgba(94,92,230,0.18); } .ls-noplan .ls-ico { color: #8e8cff; }
+        .ls-hoy .ls-ico { color: var(--accent-light); font-size: 0.7rem; }
+        .ls-test, .ls-just { position: absolute; top: 50%; transform: translateY(-50%); width: 13px; height: 13px; border-radius: 50%; font-size: 7px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 900; z-index: 2; }
+        .ls-test { right: 1px; }
+        td.lane-st:has(.ls-just) .ls-ico { margin-left: 12px; }
+        td.lane-st:has(.ls-test) .ls-ico { margin-right: 10px; }
+        .ls-just { left: 1px; cursor: pointer; }
+        .ls-just.pend { background: var(--orange); animation: justPulse 2.4s ease-in-out infinite; }
+        .ls-just.ok { background: #0a84ff; }
+        td.turno-actual-l { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.85) !important; animation: turnoGlowL 2.6s ease-in-out infinite; }
+        @keyframes turnoGlowL { 50% { box-shadow: inset 0 0 0 2px rgba(255,255,255,0.25) !important; } }
+        .gantt-table.lanes td.lane:hover, .gantt-table.lanes td.lane-st:hover { filter: brightness(1.12); }
+
+        .lanes-m td.lm-cell { padding: 3px !important; height: auto; vertical-align: top; }
+        .lm-band { position: relative; height: 22px; border-radius: 5px; margin-bottom: 3px; overflow: hidden; }
+        .lm-band.vacia { box-shadow: inset 0 0 0 1px rgba(127,127,127,0.3); }
+        .lm-band .lane-lbl { left: 5px; }
+        .lm-st { position: relative; height: 18px; border-radius: 5px; display: flex; align-items: center; justify-content: center; }
+        .lm-cumplido .lm-st .ls-ico { color: #2fbf57; }
+        .lm-parcial .lm-st { background: rgba(255,159,10,0.18); } .lm-parcial .ls-ico { color: var(--orange); font-size: 0.7rem; }
+        .lm-desvio .lm-st { background: rgba(255,69,58,0.2); } .lm-desvio .ls-ico { color: var(--red); }
+        .lm-noplan .lm-st { background: rgba(94,92,230,0.2); } .lm-noplan .ls-ico { color: #8e8cff; }
+
+        @media screen and (max-width: 768px) {
+            .brand h1 { font-size: 1.3rem; }
+            .hdr-right { width: 100%; justify-content: space-between; }
+            .reloj { flex: 1 1 auto; }
+            .reloj-hora { font-size: 1.7rem; }
+            .reloj-info { min-width: 0; }
+            .hdr-acciones { width: 100%; justify-content: flex-end; }
+            .hdr-acciones .btn-new-plan { flex: 1 1 auto; }
+            .mn-mes { font-size: 1.5rem; }
+            .mn-title { min-width: 0; }
+            .modos-grid { grid-template-columns: 1fr; }
+            .rc-grid { grid-template-columns: 1fr 1fr; }
+            .modo-banner { margin-top: 0; }
+        }
+
         /* ================= IMPRESIÓN (una carilla A4) ================= */
         body.printing { --bg-body: #fff; --bg-panel: #fff; --bg-cell: #f2f2f2; --border: #9a9a9a; --text-main: #000; --text-muted: #444; --shadow: none; --shadow-3d: none; --cell-h: 52px; --sunday-bg: rgba(0,0,0,0.04); background: #fff !important; color: #000; padding: 0 !important; min-height: 0; font-family: var(--font); }
         body.printing *, body.printing *::before, body.printing *::after { transition: none !important; animation: none !important; }
@@ -681,6 +877,16 @@
         body.printing .desv-tabla td { padding: 1px 4px; }
         body.printing .desv-tabla .desv-just span { display: none; }
 
+        body.printing .modo-banner, body.printing .compras-bar, body.printing #recsInfo, body.printing .top-loader, body.printing .rec-badge, body.printing .ls-just.pend, body.printing .mold-warn.static { display: none !important; }
+        body.printing .gantt-table.lanes td.lane { height: 16px; }
+        body.printing .gantt-table.lanes td.lane-st { height: 14px; }
+        body.printing .lane-lbl { font-size: 0.45rem; }
+        body.printing .lane-head b { font-size: 0.7rem; }
+        body.printing .lane-head span { font-size: 0.42rem; line-height: 1.9; }
+        body.printing .ls-ico { font-size: 0.55rem; }
+        body.printing .ls-test, body.printing .ls-just { width: 9px; height: 9px; font-size: 5px; }
+        body.printing td.turno-actual-l { box-shadow: none !important; animation: none; }
+
         @media print {
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: A4 landscape; margin: 8mm; }
@@ -691,18 +897,34 @@
     </style>
 </head>
 <body class="view-prod">
-    <!-- Encabezado Físico (Solo Impresión) -->
     <div id="printHeader">
         <h1 id="printTitleMain">Cronograma de Producción</h1>
         <h2 id="printTitleSub">Vista</h2>
     </div>
 
-    <!-- Loader -->
     <div id="loader" class="loader-container">
-        <div class="spinner"></div>
-        <h2>Sincronizando...</h2>
-        <p>Procesando datos del servidor Planta CEVIL</p>
+        <div class="splash">
+            <div class="splash-escena" aria-hidden="true">
+                <div class="splash-muro">
+                    <i style="--f:0;--c:0"></i><i style="--f:0;--c:1"></i><i style="--f:0;--c:2"></i><i style="--f:0;--c:3"></i>
+                    <i class="medio" style="--f:1;--c:0"></i><i style="--f:1;--c:1"></i><i style="--f:1;--c:2"></i><i style="--f:1;--c:3"></i><i class="medio" style="--f:1;--c:4"></i>
+                    <i style="--f:2;--c:0"></i><i style="--f:2;--c:1"></i><i style="--f:2;--c:2"></i><i style="--f:2;--c:3"></i>
+                </div>
+                <div class="splash-horno"><span></span><span></span><span></span></div>
+            </div>
+            <img class="splash-logo" src="img/logo CMP.png" alt="Cerámica Marcos Paz">
+            <h2>Cronograma de Producción</h2>
+            <p class="splash-sub">Planta CEVIL · sincronizando datos</p>
+            <div class="splash-bar"><span id="splashBar"></span></div>
+            <ul class="splash-pasos">
+                <li id="pasoPlan">Planificación</li>
+                <li id="pasoReal">Producción real</li>
+                <li id="pasoCat">Catálogo de moldes</li>
+                <li id="pasoExt">Informe de producción y moldes</li>
+            </ul>
+        </div>
     </div>
+    <div class="top-loader" id="topLoader"><span></span></div>
 
     <div class="overlay" id="overlay" onclick="cerrarSelectorMes()"></div>
     <div class="month-selector" id="monthSelector">
@@ -713,24 +935,37 @@
     </div>
 
     <header class="app-header">
-        <div class="logo-container">
-            <img src="img/logo CMP.png" alt="Cerámica Marcos Paz">
-            <div class="title-block">
+        <div class="brand">
+            <div class="brand-logo"><img src="img/logo CMP.png" alt="Cerámica Marcos Paz"></div>
+            <div class="brand-txt">
+                <span class="brand-kicker">Cerámica Marcos Paz · Planta CEVIL</span>
                 <h1>Cronograma de Producción</h1>
-                <small>Cerámica Marcos Paz – Planta CEVIL</small>
             </div>
         </div>
-        <div class="header-right">
-            <div class="header-top-row">
-                <div class="live-clock" id="liveClock"></div>
-                <button class="theme-btn" onclick="toggleTheme()">🌓</button>
+        <div class="hdr-right">
+            <div class="reloj">
+                <div class="reloj-hora" id="relojHora">--:--</div>
+                <div class="reloj-info">
+                    <div class="reloj-fecha" id="relojFecha"></div>
+                    <div class="reloj-turno">
+                        <span class="turno-chip" id="turnoChip">Turno</span>
+                        <span class="turno-horario" id="turnoHorario"></span>
+                    </div>
+                    <div class="turno-prog" title="Avance del turno"><span id="turnoProg"></span></div>
+                    <div class="turno-resta" id="turnoResta"></div>
+                </div>
             </div>
-            <a href="admin.html" class="btn-new-plan" title="Cargar una nueva planificación de producción o prueba">
-                <span class="bnp-icon"><img src="img/moldes/H12.png" alt="" onerror="this.style.display='none'"><span class="bnp-plus">+</span></span>
-                <span class="bnp-text"><strong>Nuevo plan</strong><small>Producción o prueba</small></span>
-            </a>
+            <div class="hdr-acciones">
+                <a href="admin.html" class="btn-new-plan solo-prod" title="Cargar una nueva planificación de producción o prueba">
+                    <span class="bnp-icon"><img src="img/moldes/H12.png" alt="" onerror="this.style.display='none'"><span class="bnp-plus">+</span></span>
+                    <span class="bnp-text"><strong>Nuevo plan</strong><small>Producción o prueba</small></span>
+                </a>
+                <button class="icon-btn" id="btnModo" onclick="abrirModos()" title="Modo edición (Producción / Compras)" aria-label="Modo edición">⚙️</button>
+                <button class="icon-btn" onclick="toggleTheme()" title="Tema claro / oscuro" aria-label="Cambiar tema">🌓</button>
+            </div>
         </div>
     </header>
+    <div class="modo-banner" id="modoBanner"></div>
 
     <div class="views-container">
         <div class="seg" id="segVistas" role="tablist" aria-label="Vista">
@@ -741,21 +976,24 @@
         </div>
         <button class="action-btn" onclick="imprimirPlan()">🖨️ Imprimir vista</button>
     </div>
-
-    <div class="kpi-container" id="kpiContainer"></div>
+    <div class="compras-bar" id="comprasBar"></div>
 
     <div class="month-nav">
-        <div class="month-nav-row">
-            <button onclick="cambiarMes(-1)">◀</button>
-            <span class="month-title" id="monthTitle" onclick="abrirSelectorMes()">Cargando...</span>
-            <button onclick="cambiarMes(1)">▶</button>
-        </div>
-        <button class="btn-today" onclick="irAHoy()">📅 Ir a Hoy</button>
+        <button class="mn-arrow" onclick="cambiarMes(-1)" aria-label="Mes anterior">‹</button>
+        <button class="mn-title" onclick="abrirSelectorMes()" title="Elegir mes">
+            <span class="mn-mes" id="mnMes">…</span>
+            <span class="mn-anio" id="mnAnio"></span>
+        </button>
+        <button class="mn-arrow" onclick="cambiarMes(1)" aria-label="Mes siguiente">›</button>
+        <button class="mn-hoy" id="mnHoy" onclick="irAHoy()">Hoy</button>
+        <div class="mn-valid" id="mnValid"></div>
     </div>
 
+    <div class="kpi-container" id="kpiContainer"></div>
     <div class="gantt-wrapper" id="ganttWrapper"></div>
     <div id="legendContainer"></div>
     <div class="analisis-info" id="analisisInfo"></div>
+    <div class="recs-info desvios-info" id="recsInfo"></div>
     <div class="desvios-info" id="desviosInfo"></div>
     <div class="pruebas-info" id="pruebasInfo"></div>
 
@@ -769,13 +1007,104 @@
             <textarea id="jfDetalle" maxlength="1500" placeholder="¿Qué pasó y por qué no se cumplió lo planificado?"></textarea>
             <label for="jfAutor">Responsable</label>
             <input id="jfAutor" maxlength="80" placeholder="Nombre">
-            <label for="jfPwd">Contraseña</label>
-            <input id="jfPwd" type="password" autocomplete="current-password" placeholder="Contraseña de edición" onkeydown="if (event.key === 'Enter') guardarJustificacion()">
             <div class="jf-acciones">
                 <button onclick="cerrarJustificacion()">Cancelar</button>
                 <button class="prim" id="jfGuardar" onclick="guardarJustificacion()">Guardar</button>
             </div>
             <div class="jf-msg" id="jfMsg"></div>
+        </div>
+    </div>
+
+    <div class="jf-overlay" id="modosModal" onclick="if (event.target === this) cerrarModos()">
+        <div class="jf-box modos-box" role="dialog" aria-modal="true" aria-labelledby="mdTitulo">
+            <h3 id="mdTitulo">⚙️ Modo de edición</h3>
+            <p class="modos-sub">El cronograma se ve en modo lectura. Para editar, ingresá a tu modo con su contraseña.</p>
+            <div id="modoActivo"></div>
+            <div class="modos-grid">
+                <button class="modo-card" data-m="produccion" onclick="elegirModo('produccion')"><span class="mc-ico">🏭</span><b>Editor de Producción</b><small>Cargar planes, justificar desvíos y responder a Compras</small></button>
+                <button class="modo-card" data-m="compras" onclick="elegirModo('compras')"><span class="mc-ico">🛒</span><b>Editor de Compras</b><small>Validar el plan y recomendar cambios por bloque</small></button>
+            </div>
+            <div class="modo-login" id="modoLogin" hidden>
+                <label for="modoPwdInput">Contraseña · <span id="modoNombre"></span></label>
+                <input id="modoPwdInput" type="password" autocomplete="current-password" onkeydown="if (event.key === 'Enter') ingresarModo()">
+                <div class="jf-acciones">
+                    <button onclick="cerrarModos()">Cancelar</button>
+                    <button class="prim" id="modoBtn" onclick="ingresarModo()">Ingresar</button>
+                </div>
+                <div class="jf-msg" id="modoMsg"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="jf-overlay" id="recModal" onclick="if (event.target === this) cerrarRecomendacion()">
+        <div class="jf-box rec-box" role="dialog" aria-modal="true" aria-labelledby="rcTitulo">
+            <h3 id="rcTitulo">🛒 Recomendación</h3>
+            <div class="jf-resumen" id="rcResumen"></div>
+            <div id="rcAccionWrap">
+                <label>¿Qué recomendás?</label>
+                <div class="rc-acciones">
+                    <label><input type="radio" name="rcAccion" value="Agregar días" checked onchange="actualizarFormRec()"><span>➕ Agregar días</span></label>
+                    <label><input type="radio" name="rcAccion" value="Reducir días" onchange="actualizarFormRec()"><span>➖ Reducir días</span></label>
+                    <label><input type="radio" name="rcAccion" value="Cambiar tipo de ladrillo" onchange="actualizarFormRec()"><span>🔁 Cambiar tipo</span></label>
+                </div>
+            </div>
+            <div class="rc-fila">
+                <div><label for="rcDias" id="rcDiasLbl">Días</label><input id="rcDias" type="number" min="0" step="0.5" inputmode="decimal" oninput="convertirRec('dias')"></div>
+                <div class="rc-eq">⇄</div>
+                <div><label for="rcPallets">Pallets</label><input id="rcPallets" type="number" min="0" step="1" inputmode="numeric" oninput="convertirRec('pallets')"></div>
+            </div>
+            <p class="rc-conv" id="rcConv"></p>
+            <label for="rcTipo" id="rcTipoLbl">Tipo de ladrillo</label>
+            <select id="rcTipo" onchange="convertirRec('dias')"></select>
+            <label for="rcDetalle">Necesidad / motivo</label>
+            <textarea id="rcDetalle" maxlength="1500" placeholder="Ej.: stock bajo de H12 para pedidos de noviembre"></textarea>
+            <div class="rc-fila dos">
+                <div><label for="rcPrioridad">Prioridad</label><select id="rcPrioridad"><option>Normal</option><option>Alta</option><option>Urgente</option></select></div>
+                <div><label for="rcAutor">Responsable</label><input id="rcAutor" maxlength="80" placeholder="Nombre"></div>
+            </div>
+            <div class="jf-acciones">
+                <button onclick="cerrarRecomendacion()">Cancelar</button>
+                <button class="prim" id="rcGuardar" onclick="guardarRecomendacion()">Enviar a Producción</button>
+            </div>
+            <div class="jf-msg" id="rcMsg"></div>
+        </div>
+    </div>
+
+    <div class="jf-overlay" id="validModal" onclick="if (event.target === this) cerrarValidacion()">
+        <div class="jf-box" role="dialog" aria-modal="true" aria-labelledby="vlTitulo">
+            <h3 id="vlTitulo">✔ Validar planificación · <span id="vlMes"></span></h3>
+            <div class="rc-acciones">
+                <label><input type="radio" name="vlEstado" value="Validada" checked><span>✔ Validada</span></label>
+                <label><input type="radio" name="vlEstado" value="Con observaciones"><span>⚠ Con observaciones</span></label>
+                <label><input type="radio" name="vlEstado" value="Sin validar"><span>↺ Quitar validación</span></label>
+            </div>
+            <label for="vlComentario">Comentario</label>
+            <textarea id="vlComentario" maxlength="1500" placeholder="Observaciones para Producción (opcional si está validada)"></textarea>
+            <label for="vlAutor">Responsable</label>
+            <input id="vlAutor" maxlength="80" placeholder="Nombre">
+            <div class="jf-acciones">
+                <button onclick="cerrarValidacion()">Cancelar</button>
+                <button class="prim" id="vlGuardar" onclick="guardarValidacion()">Guardar</button>
+            </div>
+            <div class="jf-msg" id="vlMsg"></div>
+        </div>
+    </div>
+
+    <div class="jf-overlay" id="respModal" onclick="if (event.target === this) cerrarRespuesta()">
+        <div class="jf-box" role="dialog" aria-modal="true" aria-labelledby="rpTitulo">
+            <h3 id="rpTitulo">🏭 Responder a Compras</h3>
+            <div class="jf-resumen" id="rpResumen"></div>
+            <label for="rpEstado">Decisión</label>
+            <select id="rpEstado"><option>Aceptada</option><option>En análisis</option><option>Rechazada</option></select>
+            <label for="rpRespuesta">Respuesta</label>
+            <textarea id="rpRespuesta" maxlength="1500" placeholder="Ej.: se agregan 2 días de H12 desde el 26/10"></textarea>
+            <label for="rpAutor">Responsable</label>
+            <input id="rpAutor" maxlength="80" placeholder="Nombre">
+            <div class="jf-acciones">
+                <button onclick="cerrarRespuesta()">Cancelar</button>
+                <button class="prim" id="rpGuardar" onclick="guardarRespuesta()">Enviar respuesta</button>
+            </div>
+            <div class="jf-msg" id="rpMsg"></div>
         </div>
     </div>
 
@@ -817,7 +1146,7 @@
         let isMobileState = window.innerWidth <= 768;
         let catalogo = { exacto: new Map(), porTipoNum: new Map(), cargado: false };
         let matchPruebas = { plan: new Map(), real: new Map() };
-        let moldesExt = { estados: new Map(), prod: new Map(), turnosInf: new Map(), promedios: new Map(), justif: new Map(), informe: false, cargado: false, rango: '', diasPromedio: 365 };
+        let moldesExt = { estados: new Map(), prod: new Map(), turnosInf: new Map(), promedios: new Map(), justif: new Map(), base: new Map(), recomendaciones: [], validaciones: new Map(), informe: false, cargado: false, rango: '', diasPromedio: 365 };
         let printState = null;
         let desviosMes = { lista: [], porInicio: new Map() };
         const colorCache = {};
@@ -1013,48 +1342,119 @@
 
         function rangoMes(year, month) { return { desde: sumarDias(formatYYYYMMDD(new Date(year, month, 1)), -1), hasta: sumarDias(formatYYYYMMDD(new Date(year, month + 1, 0)), 1) }; }
 
-        async function cargarMoldesExt(year, month, forzar) {
+        async function fetchExt(year, month) {
             const { desde, hasta } = rangoMes(year, month);
-            const rango = desde + '|' + hasta;
-            if (!forzar && moldesExt.rango === rango) return false;
             const ctrl = new AbortController();
             const timer = setTimeout(() => ctrl.abort(), 25000);
             try {
                 const r = await fetch(`${URL_SCRIPT}?accion=datos&desde=${desde}&hasta=${hasta}`, { signal: ctrl.signal });
                 const j = await r.json();
                 if (j.result !== 'success') throw new Error(j.message || 'Respuesta inválida');
-                const estados = new Map();
-                (j.estados || []).forEach(e => {
-                    const num = (String(e.numero).match(/\d+/) || [])[0];
-                    if (!num) return;
-                    const res = resolverMolde(`${String(e.molde).trim()} (${num})`);
-                    if (res.ok) estados.set(res.molde, e);
-                });
-                const prod = new Map();
-                (j.produccion || []).forEach(p => {
-                    const res = resolverMolde(p.molde);
-                    const k = key(p.fecha, p.turno);
-                    if (!prod.has(k)) prod.set(k, []);
-                    prod.get(k).push({ molde: res.molde, variante: res.variante, tn: Number(p.tn) || 0, min: Number(p.min) || 0 });
-                });
-                const turnosInf = new Map();
-                (j.turnos || []).forEach(t => {
-                    const k = key(t.fecha, t.turno);
-                    if (!turnosInf.has(k)) turnosInf.set(k, []);
-                    turnosInf.get(k).push({ tipo: String(t.tipo), tn: Number(t.tn) || 0, zorras: Number(t.zorras) || 0 });
-                });
-                const promedios = new Map();
-                Object.keys(j.promedios || {}).forEach(t => promedios.set(claveTipo(t), j.promedios[t]));
-                const justif = new Map();
-                (j.justificaciones || []).forEach(x => justif.set(key(x.fecha, x.turno), x));
-                moldesExt = { estados, prod, turnosInf, promedios, justif, informe: !!j.turnos, cargado: true, rango, diasPromedio: j.diasPromedio || 365 };
+                return { j, rango: desde + '|' + hasta };
+            } finally {
+                clearTimeout(timer);
+            }
+        }
+
+        function extVacio(rango) {
+            return { estados: new Map(), prod: new Map(), turnosInf: new Map(), promedios: new Map(), justif: new Map(), base: new Map(), recomendaciones: [], validaciones: new Map(), informe: false, cargado: false, rango: rango || '', diasPromedio: 365 };
+        }
+
+        function procesarExt(j, rango) {
+            const ext = extVacio(rango);
+            (j.estados || []).forEach(e => {
+                const num = (String(e.numero).match(/\d+/) || [])[0];
+                if (!num) return;
+                const res = resolverMolde(`${String(e.molde).trim()} (${num})`);
+                if (res.ok) ext.estados.set(res.molde, e);
+            });
+            (j.produccion || []).forEach(p => {
+                const res = resolverMolde(p.molde);
+                const k = key(p.fecha, p.turno);
+                if (!ext.prod.has(k)) ext.prod.set(k, []);
+                ext.prod.get(k).push({ molde: res.molde, variante: res.variante, tn: Number(p.tn) || 0, min: Number(p.min) || 0 });
+            });
+            (j.turnos || []).forEach(t => {
+                const k = key(t.fecha, t.turno);
+                if (!ext.turnosInf.has(k)) ext.turnosInf.set(k, []);
+                ext.turnosInf.get(k).push({ tipo: String(t.tipo), tn: Number(t.tn) || 0, zorras: Number(t.zorras) || 0 });
+            });
+            Object.keys(j.promedios || {}).forEach(t => ext.promedios.set(claveTipo(t), j.promedios[t]));
+            Object.keys(j.base || {}).forEach(t => ext.base.set(claveTipo(t), j.base[t]));
+            (j.justificaciones || []).forEach(x => ext.justif.set(key(x.fecha, x.turno), x));
+            ext.recomendaciones = (j.recomendaciones || []).map(r => ({
+                id: r['ID'], marca: r['Marca temporal'], mes: r['Mes'], tipo: r['Tipo de ladrillo'], accion: r['Acción'], desde: r['Bloque desde'], hasta: r['Bloque hasta'],
+                moldes: r['Moldes'], dias: Number(String(r['Días']).replace(',', '.')) || 0, pallets: Number(String(r['Pallets']).replace(/\./g, '').replace(',', '.')) || 0,
+                tipoAfectado: r['Tipo afectado'], detalle: r['Detalle'], prioridad: r['Prioridad'], autor: r['Autor'], estado: r['Estado'] || 'Pendiente',
+                respuesta: r['Respuesta'], respondidoPor: r['Respondido por'], fechaRespuesta: r['Fecha respuesta']
+            }));
+            (j.validaciones || []).forEach(v => ext.validaciones.set(v['Mes'], { estado: v['Estado'], comentario: v['Comentario'], autor: v['Autor'], marca: v['Marca temporal'] }));
+            ext.informe = !!j.turnos;
+            ext.cargado = true;
+            ext.diasPromedio = j.diasPromedio || 365;
+            return ext;
+        }
+
+        async function cargarMoldesExt(year, month, forzar) {
+            const { desde, hasta } = rangoMes(year, month);
+            const rango = desde + '|' + hasta;
+            if (!forzar && moldesExt.rango === rango && moldesExt.cargado) return false;
+            try {
+                const { j } = await fetchExt(year, month);
+                moldesExt = procesarExt(j, rango);
                 return true;
             } catch (err) {
                 console.warn('Datos externos no disponibles:', err);
-                moldesExt = { estados: new Map(), prod: new Map(), turnosInf: new Map(), promedios: new Map(), justif: new Map(), informe: false, cargado: false, rango, diasPromedio: 365 };
+                if (moldesExt.rango !== rango) moldesExt = extVacio(rango);
                 return false;
+            }
+        }
+
+        function marcarPaso(id, estado) {
+            const li = document.getElementById(id);
+            if (li) li.className = estado;
+            const total = document.querySelectorAll('.splash-pasos li').length;
+            const listos = document.querySelectorAll('.splash-pasos li.ok, .splash-pasos li.err').length;
+            const bar = document.getElementById('splashBar');
+            if (bar) bar.style.width = Math.round(listos / total * 100) + '%';
+        }
+
+        function seguir(promesa, id) {
+            marcarPaso(id, 'run');
+            return promesa.then(v => { marcarPaso(id, 'ok'); return v; }, e => { marcarPaso(id, 'err'); throw e; });
+        }
+
+        let cargaInicial = true;
+        async function loadData(silencioso) {
+            const loader = document.getElementById('loader');
+            const barra = document.getElementById('topLoader');
+            const year = currentDate.getFullYear(), month = currentDate.getMonth();
+            const { desde, hasta } = rangoMes(year, month);
+            const rango = desde + '|' + hasta;
+            if (cargaInicial) loader.classList.remove('hidden');
+            else if (!silencioso) barra.classList.add('on');
+            try {
+                const extP = (silencioso || moldesExt.rango !== rango || !moldesExt.cargado)
+                    ? seguir(fetchExt(year, month), 'pasoExt').catch(err => { console.warn('Datos externos no disponibles:', err); return null; })
+                    : (marcarPaso('pasoExt', 'ok'), Promise.resolve('cache'));
+                const [planRows, realRows, moldRows] = await Promise.all([
+                    seguir(fetchCSV(CSV_PLAN), 'pasoPlan'),
+                    seguir(fetchCSV(CSV_REAL), 'pasoReal'),
+                    seguir(fetchCSV(CSV_MOLDES), 'pasoCat').catch(() => [])
+                ]);
+                construirCatalogo(moldRows);
+                planData = processData(planRows); realData = processData(realRows);
+                construirMatchPruebas();
+                const ext = await extP;
+                if (ext && ext !== 'cache') moldesExt = procesarExt(ext.j, ext.rango);
+                else if (!ext && moldesExt.rango !== rango) moldesExt = extVacio(rango);
+                if (!printState) renderGantt();
+            } catch (error) {
+                console.error(error);
+                if (!silencioso) document.getElementById('ganttWrapper').innerHTML = '<p style="color:var(--red); text-align:center; font-weight:bold; margin-top: 20px;">Error al cargar datos.</p>';
             } finally {
-                clearTimeout(timer);
+                barra.classList.remove('on');
+                if (cargaInicial) { cargaInicial = false; setTimeout(() => loader.classList.add('hidden'), 450); }
             }
         }
 
@@ -1125,25 +1525,6 @@
         function extTurno(k, t) {
             const lista = moldesExt.prod.get(k) || [];
             return lista.filter(e => e.molde === t.moldeCompleto && (e.variante || '') === (t.variante || '')).reduce((acc, e) => ({ tn: acc.tn + e.tn, min: acc.min + e.min }), { tn: 0, min: 0 });
-        }
-
-        async function loadData(silencioso) {
-            const loader = document.getElementById('loader');
-            try {
-                if (!silencioso) loader.classList.remove('hidden');
-                const [planRows, realRows, moldRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL), fetchCSV(CSV_MOLDES).catch(() => [])]);
-                construirCatalogo(moldRows);
-                planData = processData(planRows); realData = processData(realRows);
-                construirMatchPruebas();
-                renderGantt();
-                setTimeout(() => loader.classList.add('hidden'), 300);
-                const nuevo = await cargarMoldesExt(currentDate.getFullYear(), currentDate.getMonth(), !!silencioso);
-                if (nuevo && !printState) renderGantt();
-            } catch (error) {
-                console.error(error);
-                if (!silencioso) document.getElementById('ganttWrapper').innerHTML = '<p style="color:var(--red); text-align:center; font-weight:bold; margin-top: 20px;">Error al cargar datos.</p>';
-                loader.classList.add('hidden');
-            }
         }
 
         function getProdSeq(tasks) {
@@ -1409,13 +1790,64 @@
             return `<span class="tn-r ${claseRatio(r)}" title="Real ${fmtTn0(real || 0)} Tn · Plan ${fmtTn0(comp || 0)} Tn${r !== null ? ' (' + Math.round(r * 100) + '%)' : ''}">${fmtTn0(real || 0)}</span>`;
         }
 
+        function calcularBloques(year, month) {
+            const lista = [], porTurno = new Map(), abiertos = new Map();
+            const dias = new Date(year, month + 1, 0).getDate();
+            for (let d = 1; d <= dias; d++) {
+                const ds = formatYYYYMMDD(new Date(year, month, d));
+                TURNOS.forEach(t => {
+                    const k = key(ds, t);
+                    const seq = getProdSeq(planData[k]);
+                    const tipos = [...new Set(seq.map(m => tipoProducto(m)))];
+                    [...abiertos.keys()].forEach(tp => { if (!tipos.includes(tp)) abiertos.delete(tp); });
+                    tipos.forEach(tp => {
+                        let b = abiertos.get(tp);
+                        if (!b) {
+                            const m0 = seq.find(m => tipoProducto(m) === tp);
+                            b = { id: 'b' + lista.length, tipo: tp, base: m0.baseName, moldes: new Set(), desde: { ds, t }, hasta: { ds, t }, keys: [], turnos: 0, tn: 0 };
+                            lista.push(b); abiertos.set(tp, b);
+                        }
+                        const propios = seq.filter(m => tipoProducto(m) === tp);
+                        propios.forEach(m => b.moldes.add(m.moldeCompleto));
+                        b.turnos += propios.length / seq.length;
+                        propios.forEach(m => { const p = promedioProducto(m); if (p) b.tn += p.tn / seq.length; });
+                        b.hasta = { ds, t };
+                        b.keys.push(k);
+                        if (!porTurno.has(k)) porTurno.set(k, []);
+                        porTurno.get(k).push(b.id);
+                    });
+                });
+            }
+            lista.forEach(b => {
+                b.etiqueta = `${b.desde.ds} ${b.desde.t}`;
+                b.recs = moldesExt.recomendaciones.filter(r => r.tipo === b.tipo && r.desde === b.etiqueta);
+            });
+            return { lista, porTurno, porId: new Map(lista.map(b => [b.id, b])) };
+        }
+
+        function renderMesTitulo() {
+            const mes = currentDate.toLocaleDateString('es-AR', { month: 'long' });
+            document.getElementById('mnMes').textContent = mes.charAt(0).toUpperCase() + mes.slice(1);
+            document.getElementById('mnAnio').textContent = currentDate.getFullYear();
+            const h = new Date();
+            const esActual = h.getFullYear() === currentDate.getFullYear() && h.getMonth() === currentDate.getMonth();
+            document.getElementById('mnHoy').classList.toggle('activo', esActual);
+            const v = moldesExt.validaciones.get(mesClave());
+            const cont = document.getElementById('mnValid');
+            if (v && v.estado && v.estado !== 'Sin validar') {
+                const ok = v.estado === 'Validada';
+                cont.innerHTML = `<span class="sello ${ok ? 'ok' : 'obs'}" title="${escAttr((v.comentario || '') + (v.autor ? ' · ' + v.autor : '') + (v.marca ? ' · ' + v.marca : ''))}">${ok ? '✔ Plan validado por Compras' : '⚠ Plan con observaciones de Compras'}</span>`;
+            } else cont.innerHTML = modo === 'compras' ? '<span class="sello pend">Plan sin validar</span>' : '';
+        }
+
+        function mesClave() { return `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`; }
+
         function renderGantt() {
             const wrapper = document.getElementById('ganttWrapper');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
             const todayStr = hoyStr();
-
-            document.getElementById('monthTitle').textContent = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
+            renderMesTitulo();
 
             const turnoWidth = isMobileState ? 65 : 74;
             const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
@@ -1450,33 +1882,69 @@
             }
 
             desviosMes = calcularDesvios(year, month);
+            bloquesMes = calcularBloques(year, month);
             const tnDias = calcularTnDias(year, month);
             renderKPIs(daysInMonth, year, month);
 
             const registrarVisibles = pre => pre.seq.forEach(m => { const tp = getTipo(m.baseName); if (!visibles.has(tp)) visibles.set(tp, new Map()); visibles.get(tp).set(m.number, { baseName: m.baseName, molde: m.moldeCompleto }); });
+            const seleccionCompras = modo === 'compras' && currentView === 'plan';
 
             const renderTd = (dateStr, turno, dateObj, extraCls, extraStyle, idx) => {
                 const k = key(dateStr, turno);
-                const preP = precalc['plan_' + k], preR = precalc['real_' + k];
-                const pre = currentView === 'plan' ? preP : preR;
+                const pre = currentView === 'plan' ? precalc['plan_' + k] : precalc['real_' + k];
                 registrarVisibles(pre);
-                if (currentView === 'cumpl') registrarVisibles(preP);
                 pre.fuera.forEach(f => fueraVisibles.add(f));
-                if (pre.multi || (currentView === 'cumpl' && preP.multi)) hayMulti = true;
+                if (pre.multi) hayMulti = true;
                 let tnHtml = '';
                 if (currentView === 'plan') { const tp = tnPlanTurno(k); if (tp) tnHtml = `<span class="tn-tag plan">≈${fmtTn0(tp.tn)}</span>`; }
                 else { const tr = tnRealTurno(k); if (tr) tnHtml = `<span class="tn-tag">${fmtTn0(tr.tn)}</span>`; }
-                let parts;
-                if (currentView === 'cumpl') parts = buildCumplCellV5(preP, preR, dateStr, turno, k);
-                else { parts = buildCellParts(pre, false); parts.content += tnHtml; }
+                const parts = buildCellParts(pre, false);
                 const aviso = avisoEstadoMolde(pre, dateStr);
                 if (aviso) hayAviso = true;
-                const conPrueba = currentView === 'cumpl' ? (preP.hasTest || preR.hasTest) : pre.hasTest;
-                let markers = conPrueba && currentView !== 'cumpl' ? `<div class="test-marker"></div>` : '';
+                let markers = pre.hasTest ? `<div class="test-marker"></div>` : '';
                 if (aviso) markers += `<div class="mold-warn mw-${aviso.nivel}">!</div>`;
-                const cls = `${extraCls} ${parts.cls}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}`;
-                const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso);
-                return `<td class="${cls}" style="--d:${idx};${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="abrirGantt('${dateStr}')">${markers}${parts.content}</td>`;
+                let extraAttr = '', onclick = `abrirGantt('${dateStr}')`;
+                if (currentView === 'plan') {
+                    const ids = bloquesMes.porTurno.get(k) || [];
+                    if (ids.length) {
+                        const recs = ids.flatMap(id => bloquesMes.porId.get(id).keys[0] === k ? bloquesMes.porId.get(id).recs : []);
+                        if (recs.length) {
+                            const pend = recs.some(r => r.estado === 'Pendiente' || r.estado === 'En análisis');
+                            markers += `<span class="rec-badge ${pend ? 'pend' : 'ok'}" title="${recs.length} recomendación(es) de Compras">🛒</span>`;
+                        }
+                        if (seleccionCompras) { extraAttr = ` data-bq="${ids.join(' ')}"`; onclick = `abrirBloque('${ids[ids.length - 1]}')`; }
+                    }
+                }
+                const cls = `${extraCls} ${parts.cls}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}${seleccionCompras && extraAttr ? ' bq-sel' : ''}`;
+                const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (seleccionCompras && extraAttr ? '\n\n🛒 Clic para recomendar cambios en este bloque' : '');
+                return `<td class="${cls}"${extraAttr} style="--d:${idx};${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="${onclick}">${tnHtml}${markers}${parts.content}</td>`;
+            };
+
+            const iconosSt = { cumplido: '✓', desvio: '✕', noplan: '+', hoy: '⏱', pendiente: '', vacio: '' };
+            const laneStatus = (dateStr, turno, k) => {
+                const ev = evaluarProduccion(dateStr, turno);
+                const pr = evaluarPruebas(dateStr, turno);
+                const ep = desviosMes.porInicio.get(k);
+                const ico = ev.status === 'parcial' ? `${Math.round(ev.score * 100)}%` : (ev.status === 'hoy' && ev.emoji === '⏳' ? '⏳' : iconosSt[ev.status]);
+                let extra = '';
+                if (pr) extra += `<span class="ls-test ct-${pr.status}" title="Prueba: ${escAttr(pr.msg)}">🔬</span>`;
+                if (ep) {
+                    const j = moldesExt.justif.get(k);
+                    if (j) extra += `<span class="ls-just ok" title="${escAttr('Justificado: ' + j.motivo + (j.detalle ? ' – ' + j.detalle : ''))}">💬</span>`;
+                    else if (modo === 'produccion') extra += `<span class="ls-just pend" title="Desvío sin justificar · clic para registrar" onclick="event.stopPropagation(); abrirJustificacion('${k}')">✎</span>`;
+                }
+                const partes = [];
+                if (ev.status !== 'vacio') partes.push(`🏭 ${ev.msg}${ev.detalle.length ? '\n' + ev.detalle.join('\n') : ''}`);
+                if (pr) partes.push(`🔬 Pruebas: ${pr.msg}`);
+                return { ev, html: `<span class="ls-ico">${ico}</span>${extra}`, tip: partes.join('\n\n') };
+            };
+            const laneCell = (pre, k, dateStr, tipo) => {
+                const et = estadoTurno(dateStr, k.slice(-2));
+                if (!pre.seq.length) return { cls: `lane ${tipo} vacia${tipo === 'real' && et !== 'pasado' ? ' futura' : ''}`, style: '', html: '' };
+                const last = pre.seq[pre.seq.length - 1];
+                const c = getBrickColor(last.baseName, last.number);
+                const lbl = pre.showDetail ? `<span class="lane-lbl" style="color:${pickTextColor(c)}">${etiquetaMolde(last)}</span>` : '';
+                return { cls: `lane ${tipo}${pre.showDetail ? ' inicio' : ''}`, style: fondoSeqH(pre.seq), html: lbl };
             };
 
             const indicadores = dateStr => {
@@ -1490,7 +1958,7 @@
 
             let html = '';
             if (isMobileState) {
-                html += `<table class="gantt-table mobile-gantt"><thead><tr><th style="width:${turnoWidth}px; z-index:30;">DÍA</th>`;
+                html += `<table class="gantt-table mobile-gantt${currentView === 'cumpl' ? ' lanes-m' : ''}"><thead><tr><th style="width:${turnoWidth}px; z-index:30;">DÍA</th>`;
                 TURNOS.forEach(t => html += `<th>${t}</th>`);
                 html += `</tr></thead><tbody>`;
                 for (let d = 1; d <= daysInMonth; d++) {
@@ -1501,7 +1969,15 @@
                     if (esDomingo) trClass += ' sunday-row';
                     const thClass = dateStr === todayStr ? 'today-col' : (esDomingo ? 'sunday-cell' : '');
                     html += `<tr class="day-row ${trClass}"><th class="${thClass}"><div class="day-header"><div class="day-name">${DAY_NAMES[dateObj.getDay()]}</div><div class="day-number">${d}</div>${indicadores(dateStr)}</div></th>`;
-                    TURNOS.forEach(turno => { html += renderTd(dateStr, turno, dateObj, esDomingo ? 'sunday-cell' : '', '', d); });
+                    TURNOS.forEach(turno => {
+                        if (currentView !== 'cumpl') { html += renderTd(dateStr, turno, dateObj, esDomingo ? 'sunday-cell' : '', '', d); return; }
+                        const k = key(dateStr, turno);
+                        const preP = precalc['plan_' + k], preR = precalc['real_' + k];
+                        registrarVisibles(preP); registrarVisibles(preR);
+                        const lp = laneCell(preP, k, dateStr, 'plan'), lr = laneCell(preR, k, dateStr, 'real');
+                        const st = laneStatus(dateStr, turno, k);
+                        html += `<td class="lm-cell lm-${st.ev.status}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}" style="--d:${d}" title="${escAttr(st.tip)}" onclick="abrirGantt('${dateStr}')"><div class="lm-band ${lp.cls}" style="${lp.style}">${lp.html}</div><div class="lm-band ${lr.cls}" style="${lr.style}">${lr.html}</div><div class="lm-st">${st.html}</div></td>`;
+                    });
                     html += `</tr>`;
                     if (hayTn) {
                         const info = tnDias[dateStr];
@@ -1511,7 +1987,7 @@
                 }
                 html += `</tbody></table>`;
             } else {
-                html += `<table class="gantt-table"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
+                html += `<table class="gantt-table${currentView === 'cumpl' ? ' lanes' : ''}"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateObj = new Date(year, month, d);
                     const dateStr = formatYYYYMMDD(dateObj);
@@ -1521,15 +1997,40 @@
                 }
                 html += '</tr></thead><tbody>';
                 TURNOS.forEach(turno => {
-                    html += `<tr class="${turno === 'T3' ? 't3-row' : ''}"><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
+                    if (currentView !== 'cumpl') {
+                        html += `<tr class="${turno === 'T3' ? 't3-row' : ''}"><td class="turn-label" style="width:${turnoWidth}px;">${turno}</td>`;
+                        for (let d = 1; d <= daysInMonth; d++) {
+                            const dateObj = new Date(year, month, d);
+                            const dateStr = formatYYYYMMDD(dateObj);
+                            let cls = dateObj.getDay() === 0 ? 'sunday-cell' : '';
+                            if (dateStr === todayStr) cls += ' today-col';
+                            html += renderTd(dateStr, turno, dateObj, cls, `width:${colWidthCalc}; `, d);
+                        }
+                        html += '</tr>';
+                        return;
+                    }
+                    const filas = { plan: '', real: '', st: '' };
                     for (let d = 1; d <= daysInMonth; d++) {
                         const dateObj = new Date(year, month, d);
                         const dateStr = formatYYYYMMDD(dateObj);
-                        let cls = dateObj.getDay() === 0 ? 'sunday-cell' : '';
-                        if (dateStr === todayStr) cls += ' today-col';
-                        html += renderTd(dateStr, turno, dateObj, cls, `width:${colWidthCalc}; `, d);
+                        const k = key(dateStr, turno);
+                        const preP = precalc['plan_' + k], preR = precalc['real_' + k];
+                        registrarVisibles(preP); registrarVisibles(preR);
+                        if (preP.multi || preR.multi) hayMulti = true;
+                        let base = dateObj.getDay() === 0 ? 'sunday-cell' : '';
+                        if (dateStr === todayStr) base += ' today-col';
+                        const lp = laneCell(preP, k, dateStr, 'plan'), lr = laneCell(preR, k, dateStr, 'real');
+                        const st = laneStatus(dateStr, turno, k);
+                        const tipP = `📋 Plan ${fechaCorta(dateStr)} ${turno}: ${seqTexto(preP.seq)}${lineasTnPlan(k) ? '\n' + lineasTnPlan(k) : ''}`;
+                        const tipR = `🏭 Real ${fechaCorta(dateStr)} ${turno}: ${seqTexto(preR.seq)}${lineasTnReal(k) ? '\n' + lineasTnReal(k) : ''}`;
+                        const actual = estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual-l' : '';
+                        filas.plan += `<td class="${base} ${lp.cls}${actual}" style="--d:${d};${lp.style}" title="${escAttr(tipP)}" onclick="abrirGantt('${dateStr}')">${lp.html}</td>`;
+                        filas.real += `<td class="${base} ${lr.cls}${actual}" style="--d:${d};${lr.style}" title="${escAttr(tipR)}" onclick="abrirGantt('${dateStr}')">${lr.html}</td>`;
+                        filas.st += `<td class="${base} lane-st ls-${st.ev.status}" style="--d:${d}" title="${escAttr(st.tip)}" onclick="abrirGantt('${dateStr}')">${st.html}</td>`;
                     }
-                    html += '</tr>';
+                    html += `<tr class="lane-row plan"><td class="lane-head" rowspan="3"><b>${turno}</b><span>Plan</span><span>Real</span></td>${filas.plan}</tr>`;
+                    html += `<tr class="lane-row real">${filas.real}</tr>`;
+                    html += `<tr class="lane-row st${turno === 'T3' ? ' ultimo' : ''}">${filas.st}</tr>`;
                 });
                 if (hayTn) {
                     (currentView === 'cumpl' ? [false] : [false, true]).forEach(acum => {
@@ -1552,7 +2053,7 @@
             renderAnalisis(tnDias, year, month);
 
             const table = wrapper.querySelector('.gantt-table');
-            if (!isMobileState) {
+            if (!isMobileState && currentView !== 'cumpl') {
                 table.addEventListener('mouseover', e => {
                     const td = e.target.closest('td, th'); if (!td || td.cellIndex === 0) return;
                     const idx = td.cellIndex; Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.add('hover-col'); });
@@ -1562,6 +2063,19 @@
                     const idx = td.cellIndex; Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.remove('hover-col'); });
                 });
             }
+            if (seleccionCompras) {
+                table.addEventListener('mouseover', e => {
+                    const td = e.target.closest('td[data-bq]');
+                    table.querySelectorAll('.bq-hover').forEach(x => x.classList.remove('bq-hover'));
+                    if (!td) return;
+                    const ids = td.dataset.bq.split(' ');
+                    const id = ids[ids.length - 1];
+                    table.querySelectorAll(`td[data-bq~="${id}"]`).forEach(x => x.classList.add('bq-hover'));
+                });
+                table.addEventListener('mouseleave', () => table.querySelectorAll('.bq-hover').forEach(x => x.classList.remove('bq-hover')));
+            }
+            renderComprasBar();
+            renderRecomendaciones();
             renderDesvios();
             renderPruebasInfo();
         }
@@ -1601,9 +2115,10 @@
                 h += `<div class="legend-item"><span class="lg-st cs-parcial">%</span><span>Parcial</span></div>`;
                 h += `<div class="legend-item"><span class="lg-st cs-desvio">✕</span><span>Desvío</span></div>`;
                 h += `<div class="legend-item"><span class="lg-st cs-noplan">+</span><span>Producción sin plan</span></div>`;
-                h += `<div class="legend-item"><span class="lg-franjas"><i style="background:${ejB}"></i><i style="background:${ejA}"></i></span><span>Franja sup. = molde planificado · inf. = real</span></div>`;
+                h += `<div class="legend-item"><span class="lg-franjas"><i style="background:${ejB}"></i><i style="background:${ejA}"></i></span><span>Carril PLAN arriba · REAL abajo (si el color cambia, hubo desvío)</span></div>`;
                 h += `<div class="legend-item"><span class="cs-test ct-cumplido static">🔬</span><span>Prueba</span></div>`;
-                h += `<div class="legend-item"><span class="cs-just pend static">✎</span><span>Desvío a justificar</span></div>`;
+                if (modo === 'produccion') h += `<div class="legend-item"><span class="cs-just pend static">✎</span><span>Desvío a justificar</span></div>`;
+                h += `<div class="legend-item"><span class="cs-just ok static">💬</span><span>Desvío justificado</span></div>`;
             }
             h += '</div></div>';
             if (fueraVisibles.size > 0) h += `<div class="legend-warn">⚠️ Nombres que no figuran en el catálogo de Moldes: <strong>${[...fueraVisibles].sort().map(escAttr).join(' · ')}</strong></div>`;
@@ -1768,28 +2283,6 @@
 
         function etiquetaMolde(t) { return t ? `${nombreProducto(t)}·${t.number}` : ''; }
 
-        function buildCumplCellV5(preP, preR, dateStr, turno, k) {
-            const ev = evaluarProduccion(dateStr, turno);
-            const pr = evaluarPruebas(dateStr, turno);
-            const ep = desviosMes.porInicio.get(k);
-            const iconos = { cumplido: '✓', desvio: '✕', noplan: '+', hoy: ev.emoji === '⏳' ? '⏳' : '⏱', pendiente: '', vacio: '' };
-            const ico = ev.status === 'parcial' ? `${Math.round(ev.score * 100)}%` : iconos[ev.status];
-            let sub = '';
-            if (['desvio', 'parcial', 'noplan'].includes(ev.status)) {
-                const r = preR.seq[preR.seq.length - 1];
-                sub = `<span class="cs-sub">${r ? etiquetaMolde(r) : 'sin prod.'}</span>`;
-            }
-            let marcas = '';
-            if (pr) marcas += `<span class="cs-test ct-${pr.status}" title="Prueba: ${escAttr(pr.msg)}">🔬</span>`;
-            if (ep) {
-                const j = moldesExt.justif.get(k);
-                marcas += `<span class="cs-just ${j ? 'ok' : 'pend'}" title="${j ? escAttr('Justificado: ' + j.motivo) : 'Desvío sin justificar · clic para registrar'}" onclick="event.stopPropagation(); abrirJustificacion('${k}')">${j ? '💬' : '✎'}</span>`;
-            }
-            const franja = (seq, cls) => seq.length ? `<div class="cs-franja ${cls}" style="${fondoSeqH(seq)}"></div>` : `<div class="cs-franja ${cls} vacia"></div>`;
-            const content = `${franja(preP.seq, 'plan')}<div class="cs-body"><span class="cs-ico">${ico}</span>${sub}</div>${franja(preR.seq, 'real')}${marcas}`;
-            return { content, style: '', cls: `cs-cell cs-${ev.status}` };
-        }
-
         function graficoAcumulado(tnDias, year, month) {
             const dias = new Date(year, month + 1, 0).getDate();
             const hoy = hoyStr();
@@ -1893,7 +2386,7 @@
                     <td>${escAttr(e.plan)}</td>
                     <td>${escAttr(e.real)}</td>
                     <td class="desv-just">${j ? `<b>${escAttr(j.motivo)}</b>${j.detalle ? `<span>${escAttr(j.detalle)}</span>` : ''}` : '<span class="desv-pend">Pendiente</span>'}</td>
-                    <td><button class="desv-btn" onclick="abrirJustificacion('${e.k}')">${j ? 'Editar' : 'Justificar'}</button></td>
+                    <td>${modo === 'produccion' ? `<button class="desv-btn" onclick="abrirJustificacion('${e.k}')">${j ? 'Editar' : 'Justificar'}</button>` : ''}</td>
                 </tr>`;
             });
             cont.innerHTML = html + '</tbody></table>';
@@ -1903,6 +2396,7 @@
         let justifActual = null;
 
         function abrirJustificacion(k) {
+            if (modo !== 'produccion') return;
             const ep = desviosMes.porInicio.get(k);
             if (!ep) return;
             justifActual = ep;
@@ -1915,7 +2409,6 @@
             let autor = j.autor || '';
             try { autor = autor || localStorage.getItem('jfAutor') || ''; } catch (e) { }
             document.getElementById('jfAutor').value = autor;
-            document.getElementById('jfPwd').value = '';
             document.getElementById('jfMsg').textContent = '';
             document.getElementById('jfMsg').className = 'jf-msg';
             document.getElementById('jfGuardar').disabled = false;
@@ -1931,17 +2424,12 @@
             const motivo = document.getElementById('jfMotivo').value;
             const detalle = document.getElementById('jfDetalle').value.trim();
             const autor = document.getElementById('jfAutor').value.trim();
-            const pwd = document.getElementById('jfPwd').value;
             const msg = document.getElementById('jfMsg');
             if (!motivo) { msg.textContent = 'Elegí un motivo.'; msg.className = 'jf-msg err'; return; }
-            if (!pwd) { msg.textContent = 'Ingresá la contraseña.'; msg.className = 'jf-msg err'; return; }
             const btn = document.getElementById('jfGuardar');
             btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
             try {
-                const params = new URLSearchParams({ accion: 'justificacion', password: pwd, fecha: ep.fecha, turno: ep.turno, planificado: ep.plan, real: ep.real, motivo, detalle, autor, turnos: String(ep.turnos) });
-                const r = await fetch(URL_SCRIPT, { method: 'POST', body: params });
-                const j = await r.json();
-                if (j.result !== 'success') throw new Error(j.message || 'No se pudo guardar');
+                await postEditor({ accion: 'justificacion', fecha: ep.fecha, turno: ep.turno, planificado: ep.plan, real: ep.real, motivo, detalle, autor, turnos: String(ep.turnos) });
                 try { localStorage.setItem('jfAutor', autor); } catch (e) { }
                 moldesExt.justif.set(ep.k, { fecha: ep.fecha, turno: ep.turno, planificado: ep.plan, real: ep.real, motivo, detalle, autor, turnos: String(ep.turnos), marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }) });
                 msg.textContent = '✅ Justificación guardada'; msg.className = 'jf-msg ok';
@@ -1967,7 +2455,7 @@
         function prepararImpresion() {
             if (printState) return;
             printState = { mobile: isMobileState };
-            const mesStr = document.getElementById('monthTitle').textContent;
+            const mesStr = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
             const sub = currentView === 'plan' ? 'Planificación mensual' : currentView === 'prod' ? 'Producción Real' : 'Análisis de Cumplimiento';
             document.getElementById('printTitleMain').textContent = `Cronograma de Producción · ${mesStr}`;
             document.getElementById('printTitleSub').textContent = `${sub} · Cerámica Marcos Paz – Planta CEVIL · Impreso ${new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })}`;
@@ -2066,7 +2554,7 @@
                 const ep = desviosMes.porInicio.get(kk);
                 if (ep) {
                     const j = moldesExt.justif.get(kk);
-                    cel += `<div class="mg-just ${j ? 'ok' : 'pend'}">${j ? `<div><b>📝 ${escAttr(j.motivo)}</b></div>${j.detalle ? `<p>${escAttr(j.detalle)}</p>` : ''}<small>${escAttr(j.autor || '')}</small>` : '<div>📝 Inicio de desvío sin justificar</div>'}<button onclick="abrirJustificacion('${kk}')">${j ? '✏️ Editar' : '✎ Justificar'}</button></div>`;
+                    if (j || modo === 'produccion') cel += `<div class="mg-just ${j ? 'ok' : 'pend'}">${j ? `<div><b>📝 ${escAttr(j.motivo)}</b></div>${j.detalle ? `<p>${escAttr(j.detalle)}</p>` : ''}<small>${escAttr(j.autor || '')}</small>` : '<div>📝 Inicio de desvío sin justificar</div>'}${modo === 'produccion' ? `<button onclick="abrirJustificacion('${kk}')">${j ? '✏️ Editar' : '✎ Justificar'}</button>` : ''}</div>`;
                 }
                 html += `<div class="mg-comp-wrap">${cel}</div>`;
             });
@@ -2097,13 +2585,355 @@
         function irAMes() { currentDate = new Date(parseInt(document.getElementById('selYear').value), parseInt(document.getElementById('selMonth').value), 1); cerrarSelectorMes(); loadData(); }
         function cambiarMes(delta) { currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + delta, 1); loadData(); }
         function irAHoy() { const h = new Date(); currentDate = new Date(h.getFullYear(), h.getMonth(), 1); loadData(); }
-        function updateClock() { const now = new Date(); document.getElementById('liveClock').textContent = now.toLocaleDateString('es-AR', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' }) + ' · ' + now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit' }); }
+        const MODOS = { produccion: { nombre: 'Editor de Producción', ico: '🏭' }, compras: { nombre: 'Editor de Compras', ico: '🛒' } };
+        let modo = null, modoPwd = '', modoElegido = null;
+        let bloquesMes = { lista: [], porTurno: new Map(), porId: new Map() };
+
+        function abrirModos() {
+            modoElegido = null;
+            document.getElementById('modoLogin').hidden = true;
+            document.querySelectorAll('.modo-card').forEach(c => c.classList.toggle('activo', c.dataset.m === modo));
+            const act = document.getElementById('modoActivo');
+            act.innerHTML = modo ? `<div class="modo-actual">${MODOS[modo].ico} Estás en <b>${MODOS[modo].nombre}</b><button onclick="salirModo()">Salir a modo lectura</button></div>` : '<div class="modo-actual lectura">👁️ Modo lectura (usuarios)</div>';
+            document.getElementById('modosModal').classList.add('open');
+        }
+
+        function cerrarModos() { document.getElementById('modosModal').classList.remove('open'); }
+
+        function elegirModo(m) {
+            modoElegido = m;
+            document.querySelectorAll('.modo-card').forEach(c => c.classList.toggle('elegido', c.dataset.m === m));
+            document.getElementById('modoNombre').textContent = MODOS[m].nombre;
+            document.getElementById('modoLogin').hidden = false;
+            document.getElementById('modoMsg').textContent = '';
+            const inp = document.getElementById('modoPwdInput');
+            inp.value = '';
+            setTimeout(() => inp.focus(), 50);
+        }
+
+        async function ingresarModo() {
+            if (!modoElegido) return;
+            const pwd = document.getElementById('modoPwdInput').value;
+            const msg = document.getElementById('modoMsg');
+            const btn = document.getElementById('modoBtn');
+            if (!pwd) { msg.textContent = 'Ingresá la contraseña.'; msg.className = 'jf-msg err'; return; }
+            btn.disabled = true; msg.textContent = 'Verificando…'; msg.className = 'jf-msg';
+            try {
+                const r = await fetch(URL_SCRIPT, { method: 'POST', body: new URLSearchParams({ accion: 'login', modo: modoElegido, password: pwd }) });
+                const j = await r.json();
+                if (j.result !== 'success') throw new Error(j.message || 'Contraseña incorrecta');
+                activarModo(modoElegido, pwd);
+                msg.textContent = '✅ Acceso concedido'; msg.className = 'jf-msg ok';
+                setTimeout(cerrarModos, 400);
+            } catch (err) {
+                msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err';
+            } finally {
+                btn.disabled = false;
+            }
+        }
+
+        function activarModo(m, pwd) {
+            modo = m; modoPwd = pwd;
+            try { sessionStorage.setItem('modoEditor', JSON.stringify({ m, pwd })); } catch (e) { }
+            aplicarModo();
+            if (m === 'compras' && currentView !== 'plan') setView('plan'); else renderGantt();
+        }
+
+        function salirModo() {
+            modo = null; modoPwd = '';
+            try { sessionStorage.removeItem('modoEditor'); } catch (e) { }
+            aplicarModo();
+            cerrarModos();
+            renderGantt();
+        }
+
+        function restaurarModo() {
+            try { const s = JSON.parse(sessionStorage.getItem('modoEditor') || 'null'); if (s && MODOS[s.m]) { modo = s.m; modoPwd = s.pwd; } } catch (e) { }
+            aplicarModo();
+        }
+
+        function aplicarModo() {
+            document.body.classList.toggle('modo-produccion', modo === 'produccion');
+            document.body.classList.toggle('modo-compras', modo === 'compras');
+            const b = document.getElementById('modoBanner');
+            if (!modo) { b.classList.remove('on'); b.innerHTML = ''; }
+            else {
+                b.classList.add('on');
+                b.className = `modo-banner on mb-${modo}`;
+                b.innerHTML = `<span>${MODOS[modo].ico} <b>${MODOS[modo].nombre}</b> · los cambios se guardan en la planilla</span><button onclick="salirModo()">Salir</button>`;
+            }
+            document.getElementById('btnModo').classList.toggle('activo', !!modo);
+        }
+
+        async function postEditor(params) {
+            const r = await fetch(URL_SCRIPT, { method: 'POST', body: new URLSearchParams(Object.assign({ password: modoPwd }, params)) });
+            const j = await r.json();
+            if (j.result !== 'success') throw new Error(j.message || 'No se pudo guardar');
+            return j;
+        }
+
+        function renderComprasBar() {
+            const bar = document.getElementById('comprasBar');
+            if (modo !== 'compras') { bar.classList.remove('on'); bar.innerHTML = ''; return; }
+            bar.classList.add('on');
+            const v = moldesExt.validaciones.get(mesClave());
+            const estado = v ? v.estado : 'Sin validar';
+            const cls = estado === 'Validada' ? 'ok' : estado === 'Con observaciones' ? 'obs' : 'pend';
+            const mesTxt = `${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()}`;
+            bar.innerHTML = `<div class="cb-info"><b>Plan de ${mesTxt}</b><span class="sello ${cls}">${estado}</span>${currentView === 'plan' ? '<span class="cb-tip">👆 Tocá un bloque del calendario para recomendar cambios</span>' : '<button class="cb-btn" onclick="setView(\'plan\')">Ir a Planificación</button>'}</div>
+                <div class="cb-acc"><button class="cb-btn" onclick="abrirValidacion()">✔ Validar planificación</button><button class="cb-btn prim" onclick="abrirRecomendacion(null)">📝 Solicitar modificación total</button></div>`;
+        }
+
+        function tiposDisponibles() {
+            const s = new Set();
+            catalogo.exacto.forEach(m => s.add(getTipo(getBaseName(m))));
+            bloquesMes.lista.forEach(b => s.add(b.tipo));
+            moldesExt.base.forEach((v, k) => { if (/^[A-Z]+\d/.test(k) && !/5C|126|\(/.test(k)) s.add(k.replace('X', 'x')); });
+            return [...s].sort();
+        }
+
+        function baseTipo(nombre) {
+            const c = claveTipo(nombre);
+            if (moldesExt.base.has(c)) return moldesExt.base.get(c);
+            for (const [k, v] of moldesExt.base) if (k.replace(/[,.].*$/, '') === c) return v;
+            const t = claveTipo(getTipo(nombre));
+            return moldesExt.base.get(t) || null;
+        }
+
+        function promedioTipo(nombre) {
+            const c = claveTipo(nombre);
+            return moldesExt.promedios.get(c) || moldesExt.promedios.get(claveTipo(getTipo(nombre))) || null;
+        }
+
+        function palletsPorTurno(nombre) {
+            const b = baseTipo(nombre), p = promedioTipo(nombre);
+            if (!b || !p || !b.kgPallet) return null;
+            return p.tn * 1000 / b.kgPallet;
+        }
+
+        let recActual = null;
+        function abrirBloque(id) { if (modo === 'compras') abrirRecomendacion(id); }
+
+        function abrirRecomendacion(id) {
+            if (modo !== 'compras') return;
+            const b = id ? bloquesMes.porId.get(id) : null;
+            recActual = { bloque: b };
+            const res = document.getElementById('rcResumen');
+            if (b) {
+                const ppt = palletsPorTurno(b.tipo);
+                const c = getBrickColor(b.base, 2);
+                res.innerHTML = `<div class="rc-head"><span class="tipo-chip" style="background:${c}"></span><b>${escAttr(b.tipo)}</b><span>${[...b.moldes].join(', ')}</span></div>
+                    <div class="rc-grid"><div><small>Desde</small>${fechaCorta(b.desde.ds)} ${b.desde.t}</div><div><small>Hasta</small>${fechaCorta(b.hasta.ds)} ${b.hasta.t}</div><div><small>Turnos</small>${b.turnos.toLocaleString('es-AR', { maximumFractionDigits: 1 })} (≈${(b.turnos / 3).toLocaleString('es-AR', { maximumFractionDigits: 1 })} días)</div><div><small>Tn esperadas</small>${b.tn ? '≈' + fmtTn0(b.tn) : '–'}</div><div><small>Pallets esperados</small>${ppt ? '≈' + fmtTn0(ppt * b.turnos) : '–'}</div></div>
+                    ${b.recs.length ? `<div class="rc-prev">Ya tiene ${b.recs.length} recomendación(es): ${b.recs.map(r => `${r.accion} (${r.estado})`).join(' · ')}</div>` : ''}`;
+            } else {
+                res.innerHTML = `<div class="rc-head"><b>Modificación total de la planificación</b><span>${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()}</span></div><p class="rc-nota">Indicá qué necesita Compras: tipo de ladrillo, días de producción o pallets.</p>`;
+            }
+            document.getElementById('rcTitulo').textContent = b ? '🛒 Recomendación sobre el bloque' : '📝 Solicitar modificación total';
+            document.getElementById('rcAccionWrap').hidden = !b;
+            document.querySelectorAll('input[name="rcAccion"]').forEach((r, i) => { r.checked = i === 0; });
+            const sel = document.getElementById('rcTipo');
+            sel.innerHTML = '<option value="">Seleccionar…</option>' + tiposDisponibles().filter(t => !b || t !== b.tipo).map(t => `<option>${escAttr(t)}</option>`).join('');
+            ['rcDias', 'rcPallets', 'rcDetalle'].forEach(i => { document.getElementById(i).value = ''; });
+            document.getElementById('rcPrioridad').value = 'Normal';
+            let autor = '';
+            try { autor = localStorage.getItem('rcAutor') || ''; } catch (e) { }
+            document.getElementById('rcAutor').value = autor;
+            document.getElementById('rcMsg').textContent = '';
+            document.getElementById('rcGuardar').disabled = false;
+            actualizarFormRec();
+            document.getElementById('recModal').classList.add('open');
+        }
+
+        function cerrarRecomendacion() { document.getElementById('recModal').classList.remove('open'); recActual = null; }
+
+        function accionRec() {
+            if (!recActual || !recActual.bloque) return 'Modificación total';
+            const r = document.querySelector('input[name="rcAccion"]:checked');
+            return r ? r.value : 'Agregar días';
+        }
+
+        function tipoConversion() {
+            const a = accionRec();
+            const t = document.getElementById('rcTipo').value;
+            if (a === 'Cambiar tipo de ladrillo' || a === 'Modificación total') return t;
+            return recActual && recActual.bloque ? recActual.bloque.tipo : t;
+        }
+
+        function actualizarFormRec() {
+            const a = accionRec();
+            const etiquetas = { 'Agregar días': '¿A qué tipo de ladrillo se le quitan esos días?', 'Reducir días': '¿A qué tipo de ladrillo se le asignan esos días?', 'Cambiar tipo de ladrillo': 'Tipo de ladrillo a producir en su lugar', 'Modificación total': 'Tipo de ladrillo necesario' };
+            document.getElementById('rcTipoLbl').textContent = etiquetas[a];
+            document.getElementById('rcDiasLbl').textContent = a === 'Reducir días' ? 'Días a reducir' : a === 'Agregar días' ? 'Días a agregar' : 'Días de producción';
+            convertirRec('dias');
+        }
+
+        function convertirRec(origen) {
+            const t = tipoConversion();
+            const ppt = t ? palletsPorTurno(t) : null;
+            const nota = document.getElementById('rcConv');
+            if (!ppt) { nota.textContent = t ? `Sin datos de conversión para ${t}.` : 'Elegí el tipo para convertir días ↔ pallets.'; return; }
+            const porDia = ppt * 3;
+            const dias = document.getElementById('rcDias'), pal = document.getElementById('rcPallets');
+            if (origen === 'dias' && dias.value !== '') pal.value = Math.round(Number(dias.value) * porDia);
+            if (origen === 'pallets' && pal.value !== '') dias.value = (Number(pal.value) / porDia).toFixed(1);
+            const b = baseTipo(t);
+            nota.textContent = `${t}: ≈${fmtTn0(porDia)} pallets/día (${fmtTn0(ppt)} por turno · ${b.kgPallet.toLocaleString('es-AR')} kg/pallet · ${b.ladrillosPallet} ladrillos/pallet)`;
+        }
+
+        async function guardarRecomendacion() {
+            const b = recActual && recActual.bloque;
+            const accion = accionRec();
+            const tipoAfectado = document.getElementById('rcTipo').value;
+            const dias = document.getElementById('rcDias').value;
+            const pallets = document.getElementById('rcPallets').value;
+            const detalle = document.getElementById('rcDetalle').value.trim();
+            const autor = document.getElementById('rcAutor').value.trim();
+            const msg = document.getElementById('rcMsg');
+            if ((accion === 'Cambiar tipo de ladrillo' || accion === 'Modificación total') && !tipoAfectado) { msg.textContent = 'Elegí el tipo de ladrillo.'; msg.className = 'jf-msg err'; return; }
+            if (accion !== 'Cambiar tipo de ladrillo' && !dias && !pallets && !detalle) { msg.textContent = 'Indicá días, pallets o el detalle de la necesidad.'; msg.className = 'jf-msg err'; return; }
+            const btn = document.getElementById('rcGuardar');
+            btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
+            const datos = { accion: 'recomendacion', mes: mesClave(), tipo: b ? b.tipo : tipoAfectado, accionRec: accion, desde: b ? b.etiqueta : '', hasta: b ? `${b.hasta.ds} ${b.hasta.t}` : '', moldes: b ? [...b.moldes].join(', ') : '', dias, pallets, tipoAfectado, detalle, prioridad: document.getElementById('rcPrioridad').value, autor };
+            try {
+                const j = await postEditor(datos);
+                try { localStorage.setItem('rcAutor', autor); } catch (e) { }
+                moldesExt.recomendaciones.push({ id: j.id, marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }), mes: datos.mes, tipo: datos.tipo, accion, desde: datos.desde, hasta: datos.hasta, moldes: datos.moldes, dias: Number(dias) || 0, pallets: Number(pallets) || 0, tipoAfectado, detalle, prioridad: datos.prioridad, autor, estado: 'Pendiente', respuesta: '', respondidoPor: '', fechaRespuesta: '' });
+                msg.textContent = '✅ Recomendación enviada a Producción'; msg.className = 'jf-msg ok';
+                setTimeout(() => { cerrarRecomendacion(); renderGantt(); }, 600);
+            } catch (err) {
+                msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err'; btn.disabled = false;
+            }
+        }
+
+        function abrirValidacion() {
+            if (modo !== 'compras') return;
+            const v = moldesExt.validaciones.get(mesClave()) || {};
+            document.getElementById('vlMes').textContent = `${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()}`;
+            document.querySelectorAll('input[name="vlEstado"]').forEach(r => { r.checked = r.value === (v.estado || 'Validada'); });
+            document.getElementById('vlComentario').value = v.comentario || '';
+            let autor = v.autor || '';
+            try { autor = autor || localStorage.getItem('rcAutor') || ''; } catch (e) { }
+            document.getElementById('vlAutor').value = autor;
+            document.getElementById('vlMsg').textContent = '';
+            document.getElementById('vlGuardar').disabled = false;
+            document.getElementById('validModal').classList.add('open');
+        }
+
+        function cerrarValidacion() { document.getElementById('validModal').classList.remove('open'); }
+
+        async function guardarValidacion() {
+            const estado = (document.querySelector('input[name="vlEstado"]:checked') || {}).value || 'Validada';
+            const comentario = document.getElementById('vlComentario').value.trim();
+            const autor = document.getElementById('vlAutor').value.trim();
+            const msg = document.getElementById('vlMsg');
+            if (estado === 'Con observaciones' && !comentario) { msg.textContent = 'Contá cuáles son las observaciones.'; msg.className = 'jf-msg err'; return; }
+            const btn = document.getElementById('vlGuardar');
+            btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
+            try {
+                await postEditor({ accion: 'validacion', mes: mesClave(), estado, comentario, autor });
+                moldesExt.validaciones.set(mesClave(), { estado, comentario, autor, marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }) });
+                msg.textContent = '✅ Guardado'; msg.className = 'jf-msg ok';
+                setTimeout(() => { cerrarValidacion(); renderGantt(); }, 500);
+            } catch (err) {
+                msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err'; btn.disabled = false;
+            }
+        }
+
+        function renderRecomendaciones() {
+            const cont = document.getElementById('recsInfo');
+            const recs = moldesExt.recomendaciones.filter(r => r.mes === mesClave());
+            if (currentView !== 'plan' || (!recs.length && modo !== 'compras')) { cont.style.display = 'none'; cont.innerHTML = ''; return; }
+            cont.style.display = 'block';
+            if (!recs.length) { cont.innerHTML = '<h3>🛒 Recomendaciones de Compras</h3><p class="desv-vacio">Todavía no hay recomendaciones para este mes.</p>'; return; }
+            const estCls = { 'Pendiente': 'pend', 'En análisis': 'anal', 'Aceptada': 'ok', 'Rechazada': 'rech' };
+            let html = `<h3>🛒 Recomendaciones de Compras <small>${recs.filter(r => r.estado === 'Pendiente' || r.estado === 'En análisis').length} pendientes de respuesta</small></h3>
+                <table class="desv-tabla rec-tabla"><thead><tr><th>Bloque</th><th>Acción</th><th>Cantidad</th><th>Tipo afectado</th><th>Necesidad</th><th>Estado</th><th>Respuesta de Producción</th><th></th></tr></thead><tbody>`;
+            recs.slice().reverse().forEach(r => {
+                const bloque = r.desde ? `<b>${escAttr(r.tipo)}</b> ${fechaCorta(r.desde.slice(0, 10))} ${r.desde.slice(11)} → ${r.hasta ? fechaCorta(r.hasta.slice(0, 10)) + ' ' + r.hasta.slice(11) : ''}` : `<b>Plan completo</b>`;
+                const cant = [r.dias ? `${r.dias.toLocaleString('es-AR')} días` : '', r.pallets ? `${fmtTn0(r.pallets)} pallets` : ''].filter(Boolean).join(' · ') || '–';
+                html += `<tr class="${r.prioridad === 'Alta' || r.prioridad === 'Urgente' ? 'prio' : ''}">
+                    <td>${bloque}</td>
+                    <td>${escAttr(r.accion)}${r.prioridad && r.prioridad !== 'Normal' ? ` <span class="prio-tag">${escAttr(r.prioridad)}</span>` : ''}</td>
+                    <td>${cant}</td>
+                    <td>${escAttr(r.tipoAfectado || '–')}</td>
+                    <td class="desv-just">${r.detalle ? `<span>${escAttr(r.detalle)}</span>` : ''}<small>${escAttr(r.autor || '')}${r.marca ? ' · ' + escAttr(r.marca) : ''}</small></td>
+                    <td><span class="rec-est ${estCls[r.estado] || 'pend'}">${escAttr(r.estado)}</span></td>
+                    <td class="desv-just">${r.respuesta ? `<span>${escAttr(r.respuesta)}</span><small>${escAttr(r.respondidoPor || '')}</small>` : '<span class="muted">–</span>'}</td>
+                    <td>${modo === 'produccion' ? `<button class="desv-btn" onclick="abrirRespuesta('${r.id}')">Responder</button>` : ''}</td>
+                </tr>`;
+            });
+            cont.innerHTML = html + '</tbody></table>';
+        }
+
+        let respActual = null;
+        function abrirRespuesta(id) {
+            if (modo !== 'produccion') return;
+            const r = moldesExt.recomendaciones.find(x => x.id === id);
+            if (!r) return;
+            respActual = r;
+            document.getElementById('rpResumen').innerHTML = `<b>${escAttr(r.accion)}</b> · ${escAttr(r.tipo)}${r.desde ? ` (${fechaCorta(r.desde.slice(0, 10))} ${r.desde.slice(11)})` : ''}<br>${r.dias ? r.dias + ' días ' : ''}${r.pallets ? '· ' + fmtTn0(r.pallets) + ' pallets ' : ''}${r.tipoAfectado ? '· tipo afectado: ' + escAttr(r.tipoAfectado) : ''}${r.detalle ? `<br><i>${escAttr(r.detalle)}</i>` : ''}`;
+            document.getElementById('rpEstado').value = r.estado === 'Pendiente' ? 'Aceptada' : r.estado;
+            document.getElementById('rpRespuesta').value = r.respuesta || '';
+            let autor = '';
+            try { autor = localStorage.getItem('jfAutor') || ''; } catch (e) { }
+            document.getElementById('rpAutor').value = autor;
+            document.getElementById('rpMsg').textContent = '';
+            document.getElementById('rpGuardar').disabled = false;
+            document.getElementById('respModal').classList.add('open');
+        }
+
+        function cerrarRespuesta() { document.getElementById('respModal').classList.remove('open'); respActual = null; }
+
+        async function guardarRespuesta() {
+            const r = respActual;
+            if (!r) return;
+            const estado = document.getElementById('rpEstado').value;
+            const respuesta = document.getElementById('rpRespuesta').value.trim();
+            const autor = document.getElementById('rpAutor').value.trim();
+            const msg = document.getElementById('rpMsg');
+            const btn = document.getElementById('rpGuardar');
+            btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
+            try {
+                await postEditor({ accion: 'respuesta', id: r.id, estado, respuesta, autor });
+                Object.assign(r, { estado, respuesta, respondidoPor: autor });
+                try { localStorage.setItem('jfAutor', autor); } catch (e) { }
+                msg.textContent = '✅ Respuesta enviada'; msg.className = 'jf-msg ok';
+                setTimeout(() => { cerrarRespuesta(); renderGantt(); }, 500);
+            } catch (err) {
+                msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err'; btn.disabled = false;
+            }
+        }
+
+        function turnoActual(now) {
+            const h = now.getHours() + now.getMinutes() / 60;
+            if (h >= 22) return { t: 'T1', ini: 22, fin: 30, txt: '22:00 – 06:00', h: h };
+            if (h < 6) return { t: 'T1', ini: -2, fin: 6, txt: '22:00 – 06:00', h: h };
+            if (h < 14) return { t: 'T2', ini: 6, fin: 14, txt: '06:00 – 14:00', h: h };
+            return { t: 'T3', ini: 14, fin: 22, txt: '14:00 – 22:00', h: h };
+        }
+
+        function updateClock() {
+            const now = new Date();
+            document.getElementById('relojHora').textContent = now.toLocaleTimeString('es-AR', { hour: '2-digit', minute: '2-digit', hour12: false });
+            const f = now.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('relojFecha').textContent = f.charAt(0).toUpperCase() + f.slice(1);
+            const ta = turnoActual(now);
+            const prog = Math.min(100, Math.max(0, (ta.h - ta.ini) / (ta.fin - ta.ini) * 100));
+            document.getElementById('turnoChip').textContent = `Turno ${ta.t}`;
+            document.getElementById('turnoHorario').textContent = ta.txt;
+            document.getElementById('turnoProg').style.width = prog.toFixed(1) + '%';
+            const restan = Math.round((ta.fin - ta.h) * 60);
+            document.getElementById('turnoResta').textContent = `faltan ${Math.floor(restan / 60)} h ${String(restan % 60).padStart(2, '0')} min`;
+        }
+
         function leerTema() { try { return localStorage.getItem('theme'); } catch (e) { return null; } }
         function toggleTheme() { themeDark = !themeDark; document.body.classList.toggle('light-mode', !themeDark); try { localStorage.setItem('theme', themeDark ? 'dark' : 'light'); } catch (e) { } }
 
         window.addEventListener('load', () => {
             if (leerTema() === 'light') { document.body.classList.add('light-mode'); themeDark = false; }
-            updateClock(); setInterval(updateClock, 30000);
+            restaurarModo();
+            updateClock(); setInterval(updateClock, 15000);
+            document.addEventListener('keydown', e => { if (e.key === 'Escape') { cerrarGantt(); cerrarJustificacion(); cerrarModos(); cerrarRecomendacion(); cerrarValidacion(); cerrarRespuesta(); } });
             setInterval(() => { if (!printState && document.visibilityState === 'visible') loadData(true); }, RECARGA_MIN * 60000);
             window.addEventListener('resize', () => {
                 const currentIsMobile = window.innerWidth <= 768;
