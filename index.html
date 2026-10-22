@@ -153,17 +153,18 @@
         @keyframes moveDown { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(2px); } }
 
         .change-marker { position: absolute; top: 0; left: 0; width: 0; height: 0; border-top: 22px solid; border-right: 22px solid transparent; z-index: 5; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); }
-        .test-marker { position: absolute; top: 0; right: 0; width: 0; height: 0; border-top: 22px solid #000; border-left: 22px solid transparent; z-index: 5; }
+        .test-marker { position: absolute; top: 0; right: 0; width: 0; height: 0; border-top: 22px solid #000; border-left: 22px solid transparent; z-index: 5; filter: drop-shadow(-1px 1px 0 rgba(255,255,255,0.9)); }
 
         td.multi-mold { padding: 0 !important; }
-        .split-wrap { position: absolute; inset: 0; display: flex; flex-direction: column; justify-content: space-between; padding: 4px 3px; z-index: 2; pointer-events: none; }
-        .split-lbl { font-size: 0.62rem; font-weight: 800; line-height: 1.05; text-shadow: 0 1px 2px rgba(0,0,0,0.55); white-space: nowrap; }
-        .split-lbl b { font-size: 0.68rem; }
-        .split-swap { align-self: center; font-size: 0.85rem; line-height: 1; color: #fff; text-shadow: 0 0 4px rgba(0,0,0,0.9); animation: swapPulse 1.6s ease-in-out infinite; }
-        .split-sweep { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(115deg, transparent 0%, transparent 38%, rgba(255,255,255,0.55) 50%, transparent 62%, transparent 100%); background-size: 250% 100%; animation: splitSweep 2.8s ease-in-out infinite; mix-blend-mode: overlay; }
-        @keyframes splitSweep { 0% { background-position: 120% 0; } 60%, 100% { background-position: -20% 0; } }
-        @keyframes swapPulse { 0%, 100% { transform: scale(1); opacity: 0.85; } 50% { transform: scale(1.25); opacity: 1; } }
-        @media (prefers-reduced-motion: reduce) { .split-sweep, .split-swap { animation: none; } }
+        .cell-content.cc-change { position: relative; z-index: 2; justify-content: flex-end; padding-bottom: 4px; gap: 0; }
+        .cc-change .mold-image { width: 22px; height: 22px; margin-bottom: 1px; }
+        .cc-change .mold-label-text { font-size: 0.52rem; white-space: nowrap; }
+        .cc-change .mold-label-text b { font-size: 0.7rem; }
+        .txt-dark .mold-base, .txt-dark .mold-number { text-shadow: 0 1px 2px rgba(255,255,255,0.45); }
+        .txt-dark .mold-image { background: rgba(0,0,0,0.08); }
+        .split-sweep { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(170deg, transparent 0%, transparent 30%, rgba(255,255,255,0.4) 42%, transparent 54%, transparent 100%); background-size: 100% 260%; animation: splitSweep 2.6s ease-in-out infinite; mix-blend-mode: soft-light; }
+        @keyframes splitSweep { 0% { background-position: 0 100%; } 65%, 100% { background-position: 0 0; } }
+        @media (prefers-reduced-motion: reduce) { .split-sweep { animation: none; } }
 
         .ci-noplan { background: #5e5ce6; }
         .ci-pendiente, .ci-hoy { background: transparent; box-shadow: none; border: 1px dashed var(--border); }
@@ -172,7 +173,12 @@
 
         .legend-section + .legend-section { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
         .legend-swatch-split { width: 34px; height: 22px; border-radius: 6px; position: relative; overflow: hidden; box-shadow: inset 0 2px 4px rgba(0,0,0,0.2), 0 2px 4px rgba(0,0,0,0.4); }
-        .legend-tri { width: 0; height: 0; border-top: 16px solid #000; border-left: 16px solid transparent; }
+        .legend-tri { width: 0; height: 0; border-top: 16px solid #000; border-left: 16px solid transparent; filter: drop-shadow(-1px 1px 0 rgba(255,255,255,0.9)); }
+        .legend-molds { display: flex; gap: 3px; }
+        .legend-mold { width: 22px; height: 22px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 0.72rem; font-weight: 800; box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 2px 4px rgba(0,0,0,0.35); }
+        .legend-warn { margin-top: 14px; padding: 8px 12px; border-radius: 8px; border: 1px dashed var(--orange); color: var(--text-main); font-size: 0.8rem; text-align: center; }
+        .mg-test { display: flex; align-items: center; gap: 6px; background: #111; color: #fff; border-left: 6px solid; border-radius: 8px; padding: 6px 8px; margin-bottom: 4px; font-size: 0.75rem; box-shadow: 0 2px 6px rgba(0,0,0,0.35); }
+        .mg-test-ico { font-size: 1rem; }
         body.light-mode .legend-tri { border-top-color: #000; }
 
         .mg-change { text-align: center; font-size: 0.7rem; font-weight: 800; color: var(--accent-light); margin: -2px 0 2px; letter-spacing: 0.5px; }
@@ -398,27 +404,134 @@
         let themeDark = true;
         let isMobileState = window.innerWidth <= 768;
 
-        const typeColorMap = { 'H8': 15, 'H12': 35, 'H18': 55, 'P12': 195, 'P18': 225, 'L12': 275, 'L16': 315, 'DM20': 110, 'DM27': 150, 'KB': 0 };
+        const CSV_MOLDES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=164840916&single=true&output=csv';
+        const TIPO_COLOR = { 'H12': { h: 55 }, 'H18': { h: 140 }, 'H8': { h: 0 }, 'P12': { h: 250 }, 'P18': { h: 205 }, 'DM20': { h: 95 }, 'DM27': { h: 175 }, 'L12,5': { h: 295 }, 'L16': { h: 325 }, 'KB': { h: 60, c: 0.045 } };
+        const L_MOLDE = [0.80, 0.68, 0.56, 0.45];
+        const C_MAX = 0.20;
+        const TOLERANCIA_PRUEBA_DIAS = 1;
+        const colorCache = {};
+        const nombresFueraCatalogo = new Set();
+        let catalogo = { exacto: new Map(), porTipoNum: new Map(), cargado: false };
+        let matchPruebas = { plan: new Map(), real: new Map() };
 
-        function getBaseHue(baseName) {
-            const key = baseName.toUpperCase();
-            if (typeColorMap.hasOwnProperty(key)) return typeColorMap[key];
-            let hash = 0;
-            for (let i = 0; i < key.length; i++) hash = key.charCodeAt(i) + ((hash << 5) - hash);
-            return Math.abs(hash) % 360;
+        function getTipo(nombre) { return String(nombre).split(' (')[0].trim().split(/\s+/)[0].split(/[xX]/)[0].toUpperCase(); }
+
+        function oklchToLinRgb(L, C, h) {
+            const a = C * Math.cos(h * Math.PI / 180), b = C * Math.sin(h * Math.PI / 180);
+            const l = Math.pow(L + 0.3963377774 * a + 0.2158037573 * b, 3);
+            const m = Math.pow(L - 0.1055613458 * a - 0.0638541728 * b, 3);
+            const s = Math.pow(L - 0.0894841775 * a - 1.2914855480 * b, 3);
+            return [4.0767416621 * l - 3.3077115913 * m + 0.2309699292 * s, -1.2684380046 * l + 2.6097574011 * m - 0.3413193965 * s, -0.0041960863 * l - 0.7034186147 * m + 1.7076147010 * s];
         }
+
+        function enGamut(rgb) { return rgb.every(v => v >= -1e-4 && v <= 1.0001); }
 
         function getBrickColor(baseName, number) {
-            const hue = getBaseHue(baseName);
-            let light = 65 - ((number - 1) * 15); 
-            if (light < 25) light = 25; 
-            return `hsl(${hue}, 85%, ${light}%)`;
+            const tipo = getTipo(baseName);
+            const n = Math.max(1, parseInt(number) || 1);
+            const ck = tipo + '|' + n;
+            if (colorCache[ck]) return colorCache[ck];
+            let cfg = TIPO_COLOR[tipo];
+            if (!cfg) { let hash = 0; for (let i = 0; i < tipo.length; i++) hash = tipo.charCodeAt(i) + ((hash << 5) - hash); cfg = { h: Math.abs(hash) % 360 }; }
+            const L = n <= L_MOLDE.length ? L_MOLDE[n - 1] : Math.max(0.3, L_MOLDE[L_MOLDE.length - 1] - (n - L_MOLDE.length) * 0.05);
+            let lo = 0, hi = cfg.c || C_MAX;
+            if (enGamut(oklchToLinRgb(L, hi, cfg.h))) lo = hi;
+            else for (let i = 0; i < 18; i++) { const mid = (lo + hi) / 2; if (enGamut(oklchToLinRgb(L, mid, cfg.h))) lo = mid; else hi = mid; }
+            const hex = '#' + oklchToLinRgb(L, lo, cfg.h).map(v => {
+                const c = Math.min(1, Math.max(0, v));
+                const g = c <= 0.0031308 ? 12.92 * c : 1.055 * Math.pow(c, 1 / 2.4) - 0.055;
+                return Math.round(g * 255).toString(16).padStart(2, '0');
+            }).join('');
+            colorCache[ck] = hex;
+            return hex;
         }
 
-        function pickTextColor(hslColor) {
-            const m = hslColor.match(/hsl\((\d+),\s*(\d+)%,\s*(\d+)%\)/);
+        function pickTextColor(color) {
+            const m = /^#([0-9a-f]{6})$/i.exec(color);
             if (!m) return '#000';
-            return parseInt(m[3]) > 55 ? '#000' : '#fff';
+            const lin = [0, 2, 4].map(i => { const v = parseInt(m[1].substr(i, 2), 16) / 255; return v <= 0.04045 ? v / 12.92 : Math.pow((v + 0.055) / 1.055, 2.4); });
+            const Y = 0.2126 * lin[0] + 0.7152 * lin[1] + 0.0722 * lin[2];
+            return (Y + 0.05) / 0.05 >= 1.05 / (Y + 0.05) ? '#000' : '#fff';
+        }
+
+        function normNombre(s) { return String(s || '').toUpperCase().replace(/\s+/g, ' ').replace(/\s*\(\s*/g, ' (').replace(/\s*\)/g, ')').trim(); }
+        function tipoPrefijo(s) { return String(s).split(' (')[0].trim().split(/\s+/)[0].toUpperCase(); }
+
+        function construirCatalogo(rows) {
+            const exacto = new Map(), porTipoNum = new Map();
+            rows.forEach(r => {
+                const molde = String(r['MOLDE'] || '').trim();
+                if (!molde) return;
+                exacto.set(normNombre(molde), molde);
+                const num = (molde.match(/\((\d+)\)/) || [])[1];
+                if (!num) return;
+                const k = tipoPrefijo(molde) + '|' + num;
+                if (!porTipoNum.has(k)) porTipoNum.set(k, []);
+                porTipoNum.get(k).push(molde);
+            });
+            catalogo = { exacto, porTipoNum, cargado: exacto.size > 0 };
+        }
+
+        function canonMolde(raw) {
+            const limpio = String(raw || '').trim().replace(/\s+/g, ' ');
+            if (!limpio || !catalogo.cargado) return limpio;
+            const ex = catalogo.exacto.get(normNombre(limpio));
+            if (ex) return ex;
+            const num = (limpio.match(/\((\d+)\)/) || [])[1];
+            if (num) {
+                const cands = catalogo.porTipoNum.get(tipoPrefijo(limpio) + '|' + num) || [];
+                if (cands.length === 1) return cands[0];
+            }
+            nombresFueraCatalogo.add(limpio);
+            return limpio;
+        }
+
+        function sumarDias(ds, n) { const d = new Date(ds + 'T00:00:00'); d.setDate(d.getDate() + n); return formatYYYYMMDD(d); }
+        function fechaCorta(ds) { const p = ds.split('-'); return `${parseInt(p[2])}/${parseInt(p[1])}`; }
+
+        function construirMatchPruebas() {
+            const hoy = formatYYYYMMDD(actualSystemDate);
+            const listar = (data, soloPasado) => {
+                const s = new Map();
+                Object.keys(data).forEach(k => {
+                    const ds = k.slice(0, 10);
+                    if (soloPasado && ds >= hoy) return;
+                    data[k].forEach(x => { if (x.tarea === 'Prueba') s.set(ds + '|' + x.moldeCompleto, { ds, molde: x.moldeCompleto }); });
+                });
+                return s;
+            };
+            const planes = [...listar(planData, false).values()].sort((a, b) => a.ds.localeCompare(b.ds));
+            const reales = listar(realData, true);
+            const plan = new Map(), real = new Map();
+            const asignar = (p, ds) => {
+                const kr = ds + '|' + p.molde;
+                if (!reales.has(kr) || real.has(kr)) return false;
+                plan.set(p.ds + '|' + p.molde, { fecha: ds, delta: Math.round((new Date(ds) - new Date(p.ds)) / 86400000) });
+                real.set(kr, p.ds);
+                return true;
+            };
+            planes.forEach(p => asignar(p, p.ds));
+            for (let t = 1; t <= TOLERANCIA_PRUEBA_DIAS; t++) {
+                planes.forEach(p => {
+                    if (plan.has(p.ds + '|' + p.molde)) return;
+                    if (!asignar(p, sumarDias(p.ds, t))) asignar(p, sumarDias(p.ds, -t));
+                });
+            }
+            matchPruebas = { plan, real };
+        }
+
+        function textoDesfase(mt) {
+            if (!mt || !mt.delta) return '';
+            const n = Math.abs(mt.delta);
+            return ` (${n} día${n > 1 ? 's' : ''} ${mt.delta > 0 ? 'después' : 'antes'}: ${fechaCorta(mt.fecha)})`;
+        }
+
+        function estadoPruebaPlan(ds, molde, todayStr) {
+            const mt = matchPruebas.plan.get(ds + '|' + molde);
+            if (mt) return { estado: 'ok', mt };
+            if (ds >= todayStr) return { estado: 'futura' };
+            if (sumarDias(ds, TOLERANCIA_PRUEBA_DIAS) >= todayStr) return { estado: 'tolerancia' };
+            return { estado: 'omitida' };
         }
 
         function formatYYYYMMDD(date) { const y = date.getFullYear(), m = String(date.getMonth()+1).padStart(2,'0'), d = String(date.getDate()).padStart(2,'0'); return `${y}-${m}-${d}`; }
@@ -448,7 +561,7 @@
         function processData(rows) {
             const data = {};
             rows.forEach(row => {
-                const molde = (row['LADRILLO'] || '').trim();
+                const molde = canonMolde(row['LADRILLO']);
                 let tarea = (row['TAREA'] || '').trim(); tarea = normalizarTarea(tarea);
                 const fi = (row['FECHA INICIO'] || '').trim(); const ti = (row['TURNO INICIO'] || '').trim();
                 const ff = (row['FECHA FIN'] || '').trim(); const tf = (row['TURNO FIN'] || '').trim();
@@ -485,8 +598,11 @@
         async function loadData() {
             try {
                 document.getElementById('loader').classList.remove('hidden');
-                const [planRows, realRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL)]);
+                const [planRows, realRows, moldRows] = await Promise.all([fetchCSV(CSV_PLAN), fetchCSV(CSV_REAL), fetchCSV(CSV_MOLDES).catch(() => [])]);
+                construirCatalogo(moldRows);
+                nombresFueraCatalogo.clear();
                 planData = processData(planRows); realData = processData(realRows);
+                construirMatchPruebas();
                 renderGantt();
                 setTimeout(() => document.getElementById('loader').classList.add('hidden'), 500); 
             } catch (error) {
@@ -518,12 +634,6 @@
 
         function seqTexto(seq) { return seq.length ? seq.map(m => m.moldeCompleto).join(' → ') : '-'; }
 
-        function testsRealesDia(dateStr) {
-            const s = new Set();
-            TURNOS.forEach(t => (realData[key(dateStr, t)] || []).forEach(x => { if (x.tarea === 'Prueba') s.add(x.moldeCompleto); }));
-            return s;
-        }
-
         function evaluarCumplimiento(dateStr, turno, todayStr) {
             const k = key(dateStr, turno);
             const planProd = [...new Set(getProdSeq(planData[k]).map(x => x.moldeCompleto))];
@@ -534,11 +644,10 @@
             if (dateStr === todayStr) return { status: 'hoy', score: null, emoji: '', msg: 'En curso (hoy)', detalle: [] };
 
             const realProd = [...new Set(getProdSeq(realData[k]).map(x => x.moldeCompleto))];
-            const realTests = testsRealesDia(dateStr);
             const detalle = [];
             const sinMatch = [];
             const restoReal = [...realProd];
-            let aciertos = 0;
+            let aciertos = 0, pruebasEnTolerancia = 0;
 
             planProd.forEach(m => {
                 const i = restoReal.indexOf(m);
@@ -546,20 +655,24 @@
                 else sinMatch.push(m);
             });
             sinMatch.forEach(m => {
-                const base = getBaseName(m);
-                const i = restoReal.findIndex(r => getBaseName(r) === base);
+                const tipo = getTipo(m);
+                const i = restoReal.findIndex(r => getTipo(r) === tipo);
                 if (i >= 0) { aciertos += PESO_MISMO_LADRILLO; detalle.push(`≈ ${m} plan. → se usó ${restoReal[i]}`); restoReal.splice(i, 1); }
                 else detalle.push(`✖ ${m} no producido`);
             });
             restoReal.forEach(r => detalle.push(`➕ ${r} no planificado`));
             planTests.forEach(m => {
-                if (realTests.has(m)) { aciertos += 1; detalle.push(`✔ Prueba ${m} realizada`); }
-                else detalle.push(`✖ Prueba ${m} omitida`);
+                const ep = estadoPruebaPlan(dateStr, m, todayStr);
+                if (ep.estado === 'ok') { aciertos += 1; detalle.push(`✔ Prueba ${m} realizada${textoDesfase(ep.mt)}`); }
+                else if (ep.estado === 'tolerancia') { pruebasEnTolerancia++; detalle.push(`⏳ Prueba ${m} dentro de la tolerancia (±${TOLERANCIA_PRUEBA_DIAS} día)`); }
+                else detalle.push(`✖ Prueba ${m} no realizada`);
             });
 
             if (!hayPlan) return restoReal.length ? { status: 'noplan', score: null, emoji: '➕', msg: 'Producción sin plan', detalle } : EVAL_VACIO;
 
-            const score = aciertos / (planProd.length + planTests.length + restoReal.length);
+            const denom = planProd.length + planTests.length - pruebasEnTolerancia + restoReal.length;
+            if (denom === 0) return { status: 'pendiente', score: null, emoji: '⏳', msg: 'Prueba en tolerancia', detalle };
+            const score = aciertos / denom;
             if (score >= 0.999) return { status: 'cumplido', score: 1, emoji: '✅', msg: 'Cumplido', detalle };
             if (score > 0) return { status: 'parcial', score, emoji: '⚠️', msg: `Parcial (${Math.round(score * 100)}%)`, detalle };
             return { status: 'desvio', score: 0, emoji: '❌', msg: 'Desvío', detalle };
@@ -574,28 +687,38 @@
             return { pre: { seq, tests, mold: last.moldeCompleto, multi: seq.length > 1, showDetail: isChange, hasTest: tests.length > 0 }, last: last.moldeCompleto, isChange };
         }
 
+        function moldeDetalleHtml(m, compacto) {
+            const img = `<img src="${getImageSrc(m.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${m.baseName}">`;
+            if (compacto) return `<div class="cell-content cc-change">${img}<span class="mold-base">${m.baseName}</span><span class="mold-label-text">Molde <b>${m.number}</b></span></div>`;
+            return `<div class="cell-content">${img}<span class="mold-base">${m.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${m.number}</span></div>`;
+        }
+
         function buildCellParts(pre) {
             if (!pre.mold) return { content: '', style: '', cls: '' };
+            const ultimo = pre.seq[pre.seq.length - 1];
+            const bgUltimo = getBrickColor(ultimo.baseName, ultimo.number);
+            const txt = pickTextColor(bgUltimo);
+            const clsTxt = txt === '#000' ? 'txt-dark' : '';
             if (pre.multi) {
                 const n = pre.seq.length;
-                const colors = pre.seq.map(m => getBrickColor(m.baseName, m.number));
-                const stops = colors.map((c, i) => {
-                    const a = i === 0 ? 0 : (i * 100 / n) + 4;
-                    const b = i === n - 1 ? 100 : ((i + 1) * 100 / n) - 4;
-                    return `${c} ${a.toFixed(1)}%, ${c} ${b.toFixed(1)}%`;
+                const CORTE = 36, LINEA = 1.2;
+                const LINEA_COLOR = 'rgba(255,255,255,0.95)';
+                const limite = i => i * CORTE / (n - 1);
+                const stops = pre.seq.map((m, i) => {
+                    const c = getBrickColor(m.baseName, m.number);
+                    const a = i === 0 ? 0 : limite(i) + LINEA;
+                    const b = i === n - 1 ? 100 : limite(i + 1) - LINEA;
+                    const sep = i === n - 1 ? '' : `, ${LINEA_COLOR} ${b.toFixed(1)}%, ${LINEA_COLOR} ${(limite(i + 1) + LINEA).toFixed(1)}%`;
+                    return `${c} ${a.toFixed(1)}%, ${c} ${b.toFixed(1)}%${sep}`;
                 }).join(', ');
-                const labels = pre.seq.map((m, i) => {
-                    const align = i === 0 ? 'flex-start' : (i === n - 1 ? 'flex-end' : 'center');
-                    return `<span class="split-lbl" style="color:${pickTextColor(colors[i])}; align-self:${align};">${m.baseName} <b>${m.number}</b></span>`;
-                }).join('<span class="split-swap">⇄</span>');
-                return { content: `<div class="split-sweep"></div><div class="split-wrap">${labels}</div>`, style: `background:linear-gradient(115deg, ${stops});`, cls: 'multi-mold' };
+                return {
+                    content: `<div class="split-sweep"></div>${moldeDetalleHtml(ultimo, true)}`,
+                    style: `background:linear-gradient(170deg, ${stops}); color:${txt};`,
+                    cls: `multi-mold ${clsTxt}`
+                };
             }
-            const m = pre.seq[0];
-            const bg = getBrickColor(m.baseName, m.number);
-            const content = pre.showDetail
-                ? `<div class="cell-content"><img src="${getImageSrc(m.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" alt="${m.baseName}"><span class="mold-base">${m.baseName}</span><span class="mold-label-text">Molde</span><span class="mold-number">${m.number}</span></div>`
-                : ARROW_SVG;
-            return { content, style: `background-color:${bg}; color:${pickTextColor(bg)};`, cls: '' };
+            const content = pre.showDetail ? moldeDetalleHtml(ultimo, false) : ARROW_SVG;
+            return { content, style: `background-color:${bgUltimo}; color:${txt};`, cls: clsTxt };
         }
 
         function buildTooltip(dateStr, turno, dateObj, pre, k, todayStr) {
@@ -630,13 +753,8 @@
             const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
 
             const precalc = {}; const changeDays = new Set(); const testDays = new Set();
-            const dayRealTestsMap = {}; const visibleBases = new Set();
+            const visibles = new Map();
             let hayMulti = false;
-
-            for (let d = 1; d <= daysInMonth; d++) {
-                const ds = formatYYYYMMDD(new Date(year, month, d));
-                dayRealTestsMap[ds] = [...testsRealesDia(ds)];
-            }
 
             let prevMoldPlan = null, prevMoldReal = null;
             for (let d = 1; d <= daysInMonth; d++) {
@@ -672,7 +790,7 @@
             const renderTd = (dateStr, turno, dateObj, extraCls, extraStyle) => {
                 const k = key(dateStr, turno);
                 const pre = (currentView === 'plan') ? precalc['plan_' + k] : precalc['real_' + k];
-                pre.seq.forEach(m => visibleBases.add(m.baseName));
+                pre.seq.forEach(m => { const tp = getTipo(m.baseName); if (!visibles.has(tp)) visibles.set(tp, new Map()); visibles.get(tp).set(m.number, { baseName: m.baseName, molde: m.moldeCompleto }); });
                 if (pre.multi) hayMulti = true;
                 const parts = buildCellParts(pre);
                 const markers = pre.hasTest ? `<div class="test-marker"></div>` : '';
@@ -746,7 +864,7 @@
             }
 
             wrapper.innerHTML = html;
-            renderLeyenda(visibleBases, hayMulti);
+            renderLeyenda(visibles, hayMulti);
 
             const table = wrapper.querySelector('.gantt-table');
             if (!isMobileState) {
@@ -760,25 +878,31 @@
                 });
             }
 
-            renderPruebasInfo(dayRealTestsMap, todayStr);
+            renderPruebasInfo(todayStr);
         }
 
-        function renderLeyenda(visibleBases, hayMulti) {
+        function renderLeyenda(visibles, hayMulti) {
             const cont = document.getElementById('legendContainer');
-            if (visibleBases.size === 0 && currentView !== 'cumpl') { cont.style.display = 'none'; cont.innerHTML = ''; return; }
+            if (visibles.size === 0 && currentView !== 'cumpl') { cont.style.display = 'none'; cont.innerHTML = ''; return; }
             let h = '';
-            if (visibleBases.size > 0) {
-                h += '<div class="legend-section"><div class="legend-title">🎨 Leyenda de colores del mes</div><div class="legend-items">';
-                Array.from(visibleBases).sort().forEach(base => {
-                    h += `<div class="legend-item"><div class="legend-color" style="background:${getBrickColor(base, 1)};"></div><span>${base}</span></div>`;
+            if (visibles.size > 0) {
+                h += '<div class="legend-section"><div class="legend-title">🎨 Color = tipo de ladrillo · Intensidad = N° de molde</div><div class="legend-items">';
+                [...visibles.keys()].sort().forEach(tipo => {
+                    const moldes = [...visibles.get(tipo).entries()].sort((a, b) => a[0] - b[0]);
+                    const chips = moldes.map(([num, info]) => {
+                        const c = getBrickColor(info.baseName, num);
+                        return `<div class="legend-mold" style="background:${c}; color:${pickTextColor(c)};" title="${escAttr(info.molde)}">${num}</div>`;
+                    }).join('');
+                    h += `<div class="legend-item"><span>${tipo}</span><div class="legend-molds">${chips}</div></div>`;
                 });
                 h += '</div></div>';
             }
             const ejA = getBrickColor('H18', 2), ejB = getBrickColor('H12', 2);
             h += '<div class="legend-section"><div class="legend-title">🔎 Símbolos</div><div class="legend-items">';
-            h += `<div class="legend-item"><div class="legend-swatch-split" style="background:linear-gradient(115deg, ${ejA} 0%, ${ejA} 46%, ${ejB} 54%, ${ejB} 100%);"><div class="split-sweep"></div></div><span>Cambio de molde dentro del turno${hayMulti ? '' : ' (sin casos este mes)'}</span></div>`;
+            h += `<div class="legend-item"><div class="legend-swatch-split" style="background:linear-gradient(170deg, ${ejA} 0%, ${ejA} 40%, #fff 40%, #fff 44%, ${ejB} 44%, ${ejB} 100%);"><div class="split-sweep"></div></div><span>Cambio de molde a mitad de turno${hayMulti ? '' : ' (sin casos este mes)'}</span></div>`;
+            h += `<div class="legend-item"><div class="legend-color" style="background:${ejB};"></div><span>Cambio al inicio del turno: color pleno</span></div>`;
             h += `<div class="legend-item"><span class="indicator-change">🔄️</span><span>Día con cambio de molde</span></div>`;
-            h += `<div class="legend-item"><div class="legend-tri"></div><span>Turno con prueba</span></div>`;
+            h += `<div class="legend-item"><div class="legend-tri"></div><span>Turno con prueba (no es producción)</span></div>`;
             if (currentView === 'cumpl') {
                 h += `<div class="legend-item"><div class="legend-color ci-cumplido"></div><span>Cumplido</span></div>`;
                 h += `<div class="legend-item"><div class="legend-color ci-parcial"></div><span>Parcial (%)</span></div>`;
@@ -786,6 +910,9 @@
                 h += `<div class="legend-item"><div class="legend-color ci-noplan"></div><span>Producción sin plan</span></div>`;
             }
             h += '</div></div>';
+            if (nombresFueraCatalogo.size > 0) {
+                h += `<div class="legend-warn">⚠️ Nombres que no figuran en el catálogo de Moldes: <strong>${[...nombresFueraCatalogo].sort().map(escAttr).join(' · ')}</strong></div>`;
+            }
             cont.innerHTML = h;
             cont.style.display = 'block';
         }
@@ -799,7 +926,6 @@
             for (let d = 1; d <= daysInMonth; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
                 const esPasado = ds < todayStr;
-                const realTests = esPasado ? testsRealesDia(ds) : new Set();
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
                     const seqP = getProdSeq(planData[k]);
@@ -810,8 +936,11 @@
 
                     if (!esPasado) return;
                     getProdSeq(realData[k]).forEach(m => { if (prevR !== null && m.moldeCompleto !== prevR) cambiosReal++; prevR = m.moldeCompleto; });
-                    pruebasPlanPas += testsP.length;
-                    pruebasHechas += testsP.filter(x => realTests.has(x.moldeCompleto)).length;
+                    testsP.forEach(x => {
+                        const ep = estadoPruebaPlan(ds, x.moldeCompleto, todayStr);
+                        if (ep.estado === 'ok') { pruebasHechas++; pruebasPlanPas++; }
+                        else if (ep.estado === 'omitida') pruebasPlanPas++;
+                    });
 
                     const ev = evaluarCumplimiento(ds, t, todayStr);
                     if (ev.status === 'noplan') nNoPlan++;
@@ -827,53 +956,48 @@
             document.getElementById('kpiContainer').innerHTML = `
                 <div class="kpi-card"><div class="kpi-value">${diasPlan.size}</div><div class="kpi-label">Días c/ Plan</div></div>
                 <div class="kpi-card"><div class="kpi-value">${cambiosPlan} / ${cambiosReal}</div><div class="kpi-label">Cambios Plan / Real</div><div class="kpi-sub">real hasta ayer</div></div>
-                <div class="kpi-card" style="${pctPr === null ? '' : `border-top-color:${colorPct(pctPr)};`}"><div class="kpi-value">${pruebasHechas} / ${pruebasPlanPas}</div><div class="kpi-label">Pruebas Realiz. / Plan.</div><div class="kpi-sub">${pruebasMes} planificadas en el mes</div></div>
+                <div class="kpi-card" style="${pctPr === null ? '' : `border-top-color:${colorPct(pctPr)};`}"><div class="kpi-value">${pruebasHechas} / ${pruebasPlanPas}</div><div class="kpi-label">Pruebas Realiz. / Plan.</div><div class="kpi-sub">${pruebasMes} planificadas en el mes · tolerancia ±${TOLERANCIA_PRUEBA_DIAS} día</div></div>
                 <div class="kpi-card" style="border-top-color:${colorPct(pct)};"><div class="kpi-value">${pct}%</div><div class="kpi-label">Efectividad Total</div><div class="kpi-sub">${nEval} turnos evaluados</div></div>
                 <div class="kpi-card"><div class="kpi-value" style="font-size:1.4rem;">✅${nCump} ⚠️${nParc} ❌${nDesv}</div><div class="kpi-label">Turnos</div><div class="kpi-sub">${nNoPlan > 0 ? `➕ ${nNoPlan} con producción sin plan` : 'sin producción fuera de plan'}</div></div>
                 <div class="kpi-card"><div class="kpi-value">${moldesSet.size}</div><div class="kpi-label">Variedad Ladrillos</div></div>
             `;
         }
 
-        function renderPruebasInfo(dayRealTestsMap, todayStr) {
+        function renderPruebasInfo(todayStr) {
             const container = document.getElementById('pruebasInfo');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const pruebas = [];
-            
+
             for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
-                const esPendiente = ds >= todayStr;
-                if (ds > todayStr && currentView === 'prod') continue;
                 TURNOS.forEach(t => {
                     const k = key(ds, t);
-                    const dayPlanTests = (planData[k] || []).filter(p => p.tarea === 'Prueba');
-                    let shiftRealTests = (realData[k] || []).filter(p => p.tarea === 'Prueba');
-
-                    if (esPendiente) shiftRealTests = [];
-
+                    const planT = getTestList(planData[k]);
+                    const realT = ds < todayStr ? getTestList(realData[k]) : [];
                     if (currentView === 'plan') {
-                        dayPlanTests.forEach(p => pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: esPendiente ? '⏳ Pendiente' : '-' }));
+                        planT.forEach(p => pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado: ds >= todayStr ? '⏳ Pendiente' : '-' }));
                     } else if (currentView === 'prod') {
-                        shiftRealTests.forEach(rt => pruebas.push({ fecha: ds, turno: t, molde: rt.moldeCompleto, tipo: 'Prueba Ejecutada', estado: 'Realizada ✅' }));
+                        realT.forEach(r => pruebas.push({ fecha: ds, turno: t, molde: r.moldeCompleto, tipo: 'Prueba Ejecutada', estado: 'Realizada ✅' }));
                     } else {
-                        dayPlanTests.forEach(p => {
-                            const cumplida = dayRealTestsMap[ds].includes(p.moldeCompleto);
-                            const estado = esPendiente ? '⏳ Pendiente' : (cumplida ? '✅ Realizada' : '❌ No realizada');
+                        planT.forEach(p => {
+                            const ep = estadoPruebaPlan(ds, p.moldeCompleto, todayStr);
+                            const estado = ep.estado === 'ok' ? `✅ Realizada${textoDesfase(ep.mt)}`
+                                : ep.estado === 'futura' ? '⏳ Pendiente'
+                                : ep.estado === 'tolerancia' ? `⏳ En tolerancia (±${TOLERANCIA_PRUEBA_DIAS} día)`
+                                : '❌ No realizada';
                             pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', estado });
                         });
-                        shiftRealTests.forEach(rt => {
-                            const estabaPlanificadaHoy = TURNOS.some(turnoBusqueda => (planData[key(ds, turnoBusqueda)] || []).some(x => x.moldeCompleto === rt.moldeCompleto));
-                            if (!estabaPlanificadaHoy) {
-                                pruebas.push({ fecha: ds, turno: t, molde: rt.moldeCompleto, tipo: 'Prueba Ejecutada', estado: '📌 No planificada hoy' });
-                            }
+                        realT.forEach(r => {
+                            if (!matchPruebas.real.has(ds + '|' + r.moldeCompleto)) pruebas.push({ fecha: ds, turno: t, molde: r.moldeCompleto, tipo: 'Prueba Ejecutada', estado: '📌 No planificada' });
                         });
                     }
                 });
             }
-            
+
             if (pruebas.length === 0) {
                 container.innerHTML = '<h3>🔬 Detalle de Pruebas</h3><p style="color:var(--text-muted);">Sin información de pruebas para la vista actual.</p>';
             } else {
-                let title = currentView === 'plan' ? 'Pruebas Planificadas' : currentView === 'prod' ? 'Pruebas Ejecutadas' : 'Cruce de Pruebas (Plan vs Real)';
+                const title = currentView === 'plan' ? 'Pruebas Planificadas' : currentView === 'prod' ? 'Pruebas Ejecutadas' : `Cruce de Pruebas (Plan vs Real · tolerancia ±${TOLERANCIA_PRUEBA_DIAS} día)`;
                 let html = `<h3>🔬 ${title}</h3><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th><th>Estado</th></tr></thead><tbody>`;
                 pruebas.forEach(p => html += `<tr><td>${p.fecha}</td><td>${p.turno}</td><td><strong>${p.molde}</strong></td><td>${p.tipo}</td><td>${p.estado}</td></tr>`);
                 html += '</tbody></table>';
@@ -925,18 +1049,21 @@
             const seq = getProdSeq(tasks);
             const tests = getTestList(tasks);
             if (!seq.length && !tests.length) return `<div class="mg-cell empty">Sin Asignación</div>`;
-            const bloque = (task, esPrueba) => {
+            const bloqueProd = task => {
                 const color = getBrickColor(task.baseName, task.number);
                 const txt = pickTextColor(color);
-                const icono = esPrueba ? '🔬' : `<img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" style="width:30px; height:30px; display:block; margin:0 auto;">`;
                 return `<div class="mg-sub-block" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:${color}; color:${txt}; border-radius:8px; padding:4px; margin-bottom:4px; min-height:60px;">
-                        ${icono}
-                        <span style="font-weight:800; font-size:0.9rem; text-shadow:0 1px 3px rgba(0,0,0,0.5);">${task.baseName}</span>
-                        <span style="font-size:0.7rem; opacity:0.9;">${esPrueba ? 'Prueba · ' : ''}Molde ${task.number}</span>
+                        <img src="${getImageSrc(task.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" style="width:30px; height:30px; display:block; margin:0 auto;">
+                        <span style="font-weight:800; font-size:0.9rem;">${task.baseName}</span>
+                        <span style="font-size:0.7rem; opacity:0.9;">Molde ${task.number}</span>
                     </div>`;
             };
-            let html = seq.map(t => bloque(t, false)).join('<div class="mg-change">⇣ cambio de molde</div>');
-            html += tests.map(t => bloque(t, true)).join('');
+            const bloquePrueba = task => {
+                const color = getBrickColor(task.baseName, task.number);
+                return `<div class="mg-test" style="border-left-color:${color};"><span class="mg-test-ico">🔬</span><span><strong>Prueba</strong> ${task.baseName} · M${task.number}</span></div>`;
+            };
+            let html = seq.map(bloqueProd).join('<div class="mg-change">⇣ cambio de molde</div>');
+            html += tests.map(bloquePrueba).join('');
             return `<div class="mg-cell" style="background:transparent; box-shadow:none; padding:0;">${html}</div>`;
         }
 
