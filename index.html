@@ -204,19 +204,70 @@
         .pruebas-table th { background: var(--bg-cell); font-weight: 800; color: var(--accent-light); text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.5px;}
         .pruebas-table tbody tr:last-child td { border-bottom: none; }
         .pruebas-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+        .pruebas-table tr.pr-hoy td { padding: 0; height: 0; border: none; position: relative; background: none !important; box-shadow: none !important; }
+        .pruebas-table tr.pr-hoy td::before { content: ''; position: absolute; left: 0; right: 0; top: -1px; height: 2px; background: linear-gradient(90deg, transparent, var(--accent) 12%, var(--accent) 88%, transparent); opacity: 0.75; }
+        .pruebas-table tr.pr-hoy span { position: absolute; left: 50%; top: -9px; transform: translateX(-50%); z-index: 1; font-size: 0.62rem; font-weight: 800; letter-spacing: 0.4px; text-transform: uppercase; color: var(--accent-light); background: var(--bg-panel); padding: 1px 8px; border-radius: 999px; border: 1px solid var(--accent); }
+        .pruebas-table tr.pasado td { opacity: 0.82; }
+        body.printing .pr-hoy { display: none; }
+        body:not(.printing) #legendContainer { display: none !important; }
+        .gantt-table thead th.th-esquina { vertical-align: middle; padding: 4px !important; }
+        .btn-leyenda { display: inline-flex; flex-direction: column; align-items: center; gap: 2px; width: 100%; padding: 6px 4px; border-radius: 10px; border: 1px dashed var(--border); background: transparent; color: var(--text-muted); font-family: var(--font); cursor: pointer; transition: 0.2s; }
+        .btn-leyenda span { font-size: 1.05rem; transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .btn-leyenda small { font-size: 0.55rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; }
+        .btn-leyenda:hover { border-color: var(--accent); color: var(--accent-light); background: rgba(224,123,76,0.08); }
+        .btn-leyenda:hover span { transform: scale(1.2) rotate(-8deg); }
+        body.printing .btn-leyenda { display: none; }
+        .leyenda-box { max-width: 860px; max-height: 88vh; overflow-y: auto; }
+        .ly-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .ly-head h3 { margin: 0; }
+        .ly-cerrar { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); cursor: pointer; transition: 0.2s; }
+        .ly-cerrar:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+        #lyCuerpo .legend-section { animation: cardIn 0.35s ease both; }
+        #lyCuerpo .legend-section + .legend-section { animation-delay: 0.08s; }
+        .tt { position: fixed; left: 0; top: 0; z-index: 9000; max-width: 340px; min-width: 200px; pointer-events: none; opacity: 0; transform: translate(-9999px, -9999px); background: rgba(28,28,30,0.97); color: #f5f5f7; border: 1px solid #3a3a3c; border-radius: 12px; box-shadow: 0 14px 40px rgba(0,0,0,0.55); backdrop-filter: blur(8px); font-size: 0.76rem; line-height: 1.35; overflow: hidden; transition: opacity 0.16s ease; }
+        .tt.on { opacity: 1; }
+        body.light-mode .tt { background: rgba(255,255,255,0.98); color: #1c1c1e; border-color: #d1d1d6; box-shadow: 0 14px 40px rgba(0,0,0,0.18); }
+        .tt-tit { display: flex; align-items: center; gap: 8px; padding: 9px 12px; font-weight: 800; font-size: 0.8rem; background: rgba(127,127,127,0.12); }
+        .tt-tit i { width: 12px; height: 12px; border-radius: 4px; flex: 0 0 auto; box-shadow: 0 0 0 1px rgba(255,255,255,0.4); }
+        .tt-sec { padding: 7px 12px; display: flex; flex-direction: column; gap: 3px; }
+        .tt-sec + .tt-sec { border-top: 1px solid rgba(127,127,127,0.25); }
+        .tt-fila { display: grid; grid-template-columns: 18px auto 1fr; gap: 6px; align-items: baseline; }
+        .tt-ico { text-align: center; }
+        .tt-k { color: #98989d; font-weight: 700; white-space: nowrap; }
+        .tt-v { font-weight: 600; }
+        .tt-v.full { grid-column: 2 / 4; }
+        .tt-fila:not(:has(.tt-ico)) .tt-v.full { grid-column: 1 / 4; color: #98989d; }
+        .mold-image { transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1); animation: imgIn 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) both; animation-delay: calc(var(--d, 0) * 18ms); }
+        @keyframes imgIn { from { transform: scale(0.3) rotate(-12deg); opacity: 0; } to { transform: none; opacity: 1; } }
+        .gantt-table td:hover .mold-image { transform: translateY(-3px) scale(1.12) rotate(-4deg); animation: imgIn 0.55s both, flotar 1.6s 0.55s ease-in-out infinite; }
+        @keyframes flotar { 0%, 100% { translate: 0 0; } 50% { translate: 0 -2px; } }
+        .gantt-table thead th:hover .indicator-change { display: inline-block; animation: girar 0.9s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        @keyframes girar { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+        .indicator-pr { position: relative; overflow: hidden; }
+        .indicator-pr::after { content: ''; position: absolute; top: 0; bottom: 0; width: 40%; left: -60%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.75), transparent); animation: brillo 3.2s ease-in-out infinite; }
+        @keyframes brillo { 0%, 70% { left: -60%; } 100% { left: 130%; } }
+        .tn-tag { animation: tagIn 0.4s ease both; animation-delay: calc(var(--d, 0) * 15ms + 0.2s); }
+        @keyframes tagIn { from { opacity: 0; transform: translateY(-3px); } to { opacity: 1; transform: none; } }
+        .test-marker { animation: marcaIn 0.45s ease both; }
+        @keyframes marcaIn { from { opacity: 0; transform: scale(0.2); transform-origin: top right; } to { opacity: 1; transform: none; } }
+        .gantt-table td .mold-warn { animation: popIn 0.4s both, avisoLatido 2.2s 0.4s ease-in-out infinite; }
+        @keyframes avisoLatido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+        @media (prefers-reduced-motion: reduce) { .mold-image, .tn-tag, .test-marker, .indicator-pr::after, .gantt-table td .mold-warn, .mv { animation: none !important; } }
+        body.printing .mold-image, body.printing .tn-tag, body.printing .test-marker, body.printing .mold-warn { animation: none !important; }
+        body.printing .indicator-pr::after { display: none; }
         .pr-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
         .pr-head h3 { margin: 0; }
         .pr-head h3 small { font-size: 0.72rem; font-weight: 600; color: var(--text-muted); margin-left: 6px; }
         .pr-resumen { display: flex; gap: 6px; flex-wrap: wrap; }
         .pr-chip { display: inline-block; padding: 3px 10px; border-radius: 999px; font-size: 0.74rem; font-weight: 700; color: #26262b; background: var(--pc, #e5e5ea); border: 1px solid var(--pb, transparent); white-space: nowrap; }
         .pr-chip b { font-weight: 900; margin-left: 2px; }
-        .pr-ok { --pc: #c9ecd5; --pb: #9fd8b3; } .pr-pend { --pc: #dce6f5; --pb: #b9cbe8; } .pr-tol { --pc: #fbe8c4; --pb: #f1cf8c; } .pr-no { --pc: #f8d2cf; --pb: #eeaaa4; } .pr-extra { --pc: #e4dcf8; --pb: #c6b6ef; }
+        .pr-ok { --pc: #c9ecd5; --pb: #9fd8b3; } .pr-pend { --pc: #dce6f5; --pb: #b9cbe8; } .pr-tol { --pc: #fbe8c4; --pb: #f1cf8c; } .pr-pos { --pc: #f6dcc8; --pb: #e8b48d; } .pr-no { --pc: #f8d2cf; --pb: #eeaaa4; } .pr-extra { --pc: #e4dcf8; --pb: #c6b6ef; }
         .pr-m-ok { --pc: #d6f0e0; } .pr-m-amber { --pc: #fbecd0; } .pr-m-red { --pc: #f9dbd8; }
         .pr-sub { display: block; margin-top: 3px; font-size: 0.68rem; color: var(--text-muted); font-weight: 600; }
         .pruebas-table tr.pr-row td { transition: background 0.2s; }
         .pr-row-ok td { background: rgba(201,236,213,0.06); } .pr-row-no td { background: rgba(248,210,207,0.07); } .pr-row-tol td { background: rgba(251,232,196,0.06); } .pr-row-extra td { background: rgba(228,220,248,0.06); }
         .pr-row td:first-child { box-shadow: inset 3px 0 0 var(--pb, transparent); }
-        .pr-row-ok { --pb: #9fd8b3; } .pr-row-no { --pb: #eeaaa4; } .pr-row-tol { --pb: #f1cf8c; } .pr-row-extra { --pb: #c6b6ef; } .pr-row-pend { --pb: #b9cbe8; }
+        .pr-row-pos { --pb: #e8b48d; } .pr-row-pos td { background: rgba(246,220,200,0.06); } .pr-row-ok { --pb: #9fd8b3; } .pr-row-no { --pb: #eeaaa4; } .pr-row-tol { --pb: #f1cf8c; } .pr-row-extra { --pb: #c6b6ef; } .pr-row-pend { --pb: #b9cbe8; }
 
         /* Modal Gantt */
         .gantt-modal { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.75); backdrop-filter: blur(8px); display: none; justify-content: center; align-items: center; z-index: 3000; }
@@ -400,6 +451,13 @@
         body.printing .gantt-table tr.tn-row.tn-objrow td { height: 24px; background: #eef3fb !important; }
         body.printing .tn-o.fut { font-size: 0.8em; letter-spacing: -0.5px; }
         .tn-obj-m .tn-o { display: inline-flex; flex-direction: row; gap: 4px; }
+        .tn-o.plan { color: #8fb8ff; }
+        .tn-op { font-size: 0.86em; font-weight: 800; padding: 0 3px; border-radius: 4px; }
+        .tn-op.ok { color: #6ee09a; background: rgba(48,209,88,0.14); } .tn-op.mid { color: #ffc266; background: rgba(255,159,10,0.14); } .tn-op.low { color: #ff8f86; background: rgba(255,69,58,0.14); }
+        body.light-mode .tn-o.plan { color: #2f6fd6; } body.light-mode .tn-op.ok { color: #1f8a46; } body.light-mode .tn-op.mid { color: #b06a00; } body.light-mode .tn-op.low { color: #c43c33; }
+        .tipo-pal { display: inline-flex; align-items: baseline; gap: 3px; margin-left: 10px; font-size: 0.78rem; font-weight: 800; color: var(--accent-light); }
+        .tipo-pal small { font-size: 0.68rem; color: var(--text-muted); font-weight: 600; }
+        @media (max-width: 768px) { .tipo-pal { display: flex; margin: 3px 0 0; white-space: nowrap; } }
         .tn-obj-m .tn-label { color: #6fa8ff !important; }
 
         .tn-m-ac .tn-r, .tn-m-ac .tn-p { display: inline; }
@@ -932,7 +990,7 @@
         .gp { position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 14px; font-size: 0.68rem; white-space: nowrap; border: 1.5px solid; background: var(--bg-panel); animation: popIn 0.5s 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
         .gp b { font-weight: 800; }
         .gp-ok { border-color: #2fbf57; color: #2fbf57; } .gp-ok-desf { border-color: #2fbf57; color: #2fbf57; border-style: dashed; }
-        .gp-no { border-color: var(--red); color: var(--red); } .gp-pend { border-color: var(--text-muted); color: var(--text-muted); border-style: dashed; } .gp-extra { border-color: #5e5ce6; color: #8e8cff; }
+        .gp-no { border-color: var(--red); color: var(--red); } .gp-pend { border-color: var(--text-muted); color: var(--text-muted); border-style: dashed; } .gp-extra { border-color: #5e5ce6; color: #8e8cff; } .gp-pos { border-color: #e8b48d; color: #e8b48d; border-style: dashed; }
         .gd-cards { margin-top: 6px; align-items: start; }
         .gd-cards-in { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
         .gt-card { background: var(--bg-cell); border-radius: 12px; padding: 10px 12px; border-top: 3px solid var(--border); font-size: 0.78rem; display: flex; flex-direction: column; gap: 6px; animation: cardIn 0.45s 0.7s ease both; }
@@ -1198,6 +1256,13 @@
     <div class="kpi-container" id="kpiContainer"></div>
     <div class="gantt-wrapper" id="ganttWrapper"></div>
     <div id="legendContainer"></div>
+    <div class="jf-overlay" id="leyendaModal" onclick="if (event.target === this) cerrarLeyenda()">
+        <div class="jf-box leyenda-box" role="dialog" aria-modal="true" aria-labelledby="lyTitulo">
+            <div class="ly-head"><h3 id="lyTitulo">ℹ️ Referencias del calendario</h3><button class="ly-cerrar" onclick="cerrarLeyenda()" aria-label="Cerrar">✕</button></div>
+            <div id="lyCuerpo"></div>
+        </div>
+    </div>
+    <div class="tt" id="tooltip" role="tooltip"></div>
     <div class="analisis-info" id="analisisInfo"></div>
     <div class="recs-info desvios-info" id="recsInfo"></div>
     <div class="desvios-info" id="desviosInfo"></div>
@@ -1374,6 +1439,7 @@
         const L_MOLDE = [0.80, 0.68, 0.56, 0.45];
         const C_MAX = 0.20;
         const TOLERANCIA_PRUEBA_DIAS = 7;
+        const PRUEBA_POSPUESTA_DIAS = 21;
         const RECARGA_MIN = 10;
         const GRACIA_CARGA_HORAS = 3;
         const A4_PX = { w: 1062, h: 733 };
@@ -1387,8 +1453,8 @@
         let themeDark = true;
         let isMobileState = window.innerWidth <= 768;
         let catalogo = { exacto: new Map(), porTipoNum: new Map(), cargado: false };
-        let matchPruebas = { plan: new Map(), real: new Map() };
-        let moldesExt = { estados: new Map(), prod: new Map(), turnosInf: new Map(), promedios: new Map(), justif: new Map(), coment: new Map(), objetivos: new Map(), base: new Map(), recomendaciones: [], validaciones: new Map(), informe: false, cargado: false, rango: '', diasPromedio: 365 };
+        let matchPruebas = { plan: new Map(), real: new Map(), porMolde: new Map() };
+        let moldesExt = { estados: new Map(), prod: new Map(), turnosInf: new Map(), horas: new Map(), promedios: new Map(), justif: new Map(), coment: new Map(), objetivos: new Map(), base: new Map(), recomendaciones: [], validaciones: new Map(), informe: false, cargado: false, rango: '', diasPromedio: 365 };
         let printState = null;
         let desviosMes = { lista: [], porInicio: new Map() };
         const colorCache = {};
@@ -1579,7 +1645,9 @@
                     if (!asignar(p, sumarDias(p.ds, t))) asignar(p, sumarDias(p.ds, -t));
                 });
             }
-            matchPruebas = { plan, real };
+            const porMolde = new Map();
+            planes.forEach(p => { if (!porMolde.has(p.molde)) porMolde.set(p.molde, []); porMolde.get(p.molde).push(p.ds); });
+            matchPruebas = { plan, real, porMolde };
         }
 
         function rangoMes(year, month) { return { desde: sumarDias(formatYYYYMMDD(new Date(year, month, 1)), -1), hasta: sumarDias(formatYYYYMMDD(new Date(year, month + 1, 0)), 1) }; }
@@ -1599,7 +1667,7 @@
         }
 
         function extVacio(rango) {
-            return { estados: new Map(), prod: new Map(), turnosInf: new Map(), promedios: new Map(), justif: new Map(), coment: new Map(), objetivos: new Map(), base: new Map(), recomendaciones: [], validaciones: new Map(), informe: false, cargado: false, rango: rango || '', diasPromedio: 365 };
+            return { estados: new Map(), prod: new Map(), turnosInf: new Map(), horas: new Map(), promedios: new Map(), justif: new Map(), coment: new Map(), objetivos: new Map(), base: new Map(), recomendaciones: [], validaciones: new Map(), informe: false, cargado: false, rango: rango || '', diasPromedio: 365 };
         }
 
         function normalizarEstadoRec(e) {
@@ -1641,6 +1709,7 @@
                 if (!ext.turnosInf.has(k)) ext.turnosInf.set(k, []);
                 ext.turnosInf.get(k).push({ tipo: String(t.tipo), tn: Number(t.tn) || 0, zorras: Number(t.zorras) || 0 });
             });
+            Object.keys(j.horas || {}).forEach(x => { const [f, t] = x.split('|'); const h = Number(j.horas[x]); if (f && /^T[123]$/.test(t) && h >= 0) ext.horas.set(key(f, t), h); });
             Object.keys(j.promedios || {}).forEach(t => ext.promedios.set(claveTipo(t), j.promedios[t]));
             Object.keys(j.base || {}).forEach(t => ext.base.set(claveTipo(t), j.base[t]));
             (j.justificaciones || []).forEach(x => { const k = key(x.fecha, x.turno); if (String(x.tipo || '').toLowerCase() === 'comentario') { if (x.detalle) ext.coment.set(k, x); } else ext.justif.set(k, x); });
@@ -1753,12 +1822,17 @@
             return p ? { tn: p.tn, n: p.n, fuente: 'prom' } : null;
         }
 
+        const HORAS_TURNO = 8;
+        function horasTurno(k) { return moldesExt.horas.has(k) ? moldesExt.horas.get(k) : null; }
+        function factorHoras(k) { const h = horasTurno(k); return h === null ? 1 : h / HORAS_TURNO; }
+
         function tnPlanTurno(k, fuente) {
             const seq = getProdSeq(planData[k]);
             if (!seq.length || (!moldesExt.promedios.size && !moldesExt.objetivos.size)) return null;
             const partes = seq.map(t => ({ t, p: refProducto(t, fuente) }));
-            const tn = partes.reduce((a, x) => a + (x.p ? x.p.tn / seq.length : 0), 0);
-            return { tn, completo: partes.every(x => x.p), partes };
+            const f = factorHoras(k);
+            const tn = partes.reduce((a, x) => a + (x.p ? x.p.tn / seq.length : 0), 0) * f;
+            return { tn, completo: partes.every(x => x.p), partes, horas: horasTurno(k), factor: f };
         }
 
         function tnRealTurno(k) {
@@ -1855,6 +1929,8 @@
             const mt = matchPruebas.plan.get(ds + '|' + molde);
             if (mt) return { estado: 'ok', mt };
             if (ds >= hoy) return { estado: 'futura' };
+            const siguiente = ((matchPruebas.porMolde || new Map()).get(molde) || []).find(d => d > ds && d <= sumarDias(ds, PRUEBA_POSPUESTA_DIAS));
+            if (siguiente) return { estado: 'pospuesta', a: siguiente, cumplida: !!matchPruebas.plan.get(siguiente + '|' + molde) };
             if (sumarDias(ds, TOLERANCIA_PRUEBA_DIAS) >= hoy) return { estado: 'tolerancia' };
             return { estado: 'omitida' };
         }
@@ -1863,6 +1939,7 @@
             if (ep.estado === 'ok') return `✔ Prueba ${molde} realizada${textoDesfase(ep.mt)}`;
             if (ep.estado === 'futura') return `⏳ Prueba ${molde} pendiente`;
             if (ep.estado === 'tolerancia') return `⏳ Prueba ${molde} dentro de la tolerancia (±${TOLERANCIA_PRUEBA_DIAS} días)`;
+            if (ep.estado === 'pospuesta') return `↪ Prueba ${molde} pospuesta al ${fechaCorta(ep.a)}${ep.cumplida ? ' (realizada)' : ''}`;
             return `✖ Prueba ${molde} no realizada`;
         }
 
@@ -1875,6 +1952,7 @@
                 return et === 'actual' ? { status: 'hoy', score: null, emoji: '⏱️', msg: 'Turno en curso', detalle: [] } : { status: 'pendiente', score: null, emoji: '', msg: 'Pendiente', detalle: [] };
             }
             const seqR = getProdSeq(realData[k]);
+            if (horasTurno(k) === 0 && !seqR.length) return { ...EVAL_VACIO, msg: 'Turno no trabajado (0 h en Bal-Paradas)' };
             if (!seqR.length && planProd.length && !tnRealTurno(k) && new Date() < new Date(limiteTurno(dateStr, turno, 'fin').getTime() + GRACIA_CARGA_HORAS * 3600000)) {
                 return { status: 'hoy', score: null, emoji: '⏳', msg: 'Esperando carga del turno', detalle: [] };
             }
@@ -1902,8 +1980,9 @@
             if (!tests.length) return null;
             const items = tests.map(m => ({ molde: m, ep: estadoPruebaPlan(dateStr, m) }));
             const ok = items.filter(i => i.ep.estado === 'ok').length;
-            const om = items.filter(i => i.ep.estado === 'omitida').length;
+            const om = items.filter(i => i.ep.estado === 'omitida' || i.ep.estado === 'pospuesta').length;
             const detalle = items.map(i => textoPrueba(i.molde, i.ep));
+            if (ok === 0 && om > 0 && items.every(i => i.ep.estado === 'pospuesta' || i.ep.estado === 'ok')) return { status: 'desvio', msg: 'Pospuesta', detalle, ok, om };
             if (ok + om === 0) return { status: 'pendiente', msg: 'Pendiente', detalle, ok, om };
             if (om === 0) return { status: 'cumplido', msg: 'Realizada', detalle, ok, om };
             if (ok === 0) return { status: 'desvio', msg: 'No realizada', detalle, ok, om };
@@ -2011,6 +2090,8 @@
         function buildTooltip(dateStr, turno, dateObj, pre, k, aviso) {
             let tip = `📅 ${DAY_NAMES[dateObj.getDay()]} ${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()} - ${turno}\n`;
             if (estadoTurno(dateStr, turno) === 'actual') tip += `⏱️ Turno en curso\n`;
+            const hs = horasTurno(k);
+            if (hs !== null && hs !== HORAS_TURNO) tip += `⏳ Turno de ${fmtDias(hs)} h (Bal-Paradas) · esperado y objetivo ajustados a ${Math.round(hs / HORAS_TURNO * 100)}%\n`;
             if (pre.multi) tip += `🔄 Cambio de molde dentro del turno${pre.proporcion ? ` (según extrusora: ${pre.proporcion.map(p => Math.round(p * 100) + '%').join(' / ')})` : ''}\n`;
             const pruebas = pre.tests.length ? pre.tests.map(t => t.moldeCompleto).join(', ') : 'No';
             const lp = lineasTnPlan(k), lr = lineasTnReal(k);
@@ -2112,6 +2193,16 @@
             if (acum ? !(info.acReal > 0) : real === null) return '';
             const d = deltaObj(info, acum);
             return `<span class="tn-r${d ? ' tx-' + d.sufijo : ''}"${d ? ` title="${escAttr(tipDelta(info, acum, d))}"` : ''}>${fmtTn0(real)}</span>`;
+        }
+
+        function celdaObjetivoPlan(info, acum) {
+            if (!info) return '';
+            const o = acum ? info.acObj : info.obj;
+            if (!o) return '';
+            const esp = acum ? info.acPlan : info.plan;
+            const r = esp && o ? esp / o : null;
+            const tip = `Objetivo de Dirección para lo planificado: ${fmtTn0(o)} Tn${esp ? `\nTn esperadas (promedio histórico): ${fmtTn0(esp)} Tn · ${Math.round(r * 100)}% del objetivo` : ''}`;
+            return `<span class="tn-o plan" title="${escAttr(tip)}">${fmtTn0(o)}${r !== null ? `<span class="tn-op ${r >= 0.97 ? 'ok' : r >= 0.85 ? 'mid' : 'low'}">${Math.round(r * 100)}%</span>` : ''}</span>`;
         }
 
         function celdaObjetivo(info, acum) {
@@ -2269,7 +2360,8 @@
                 const partes = [];
                 if (ev.status !== 'vacio') partes.push(`🏭 ${ev.msg}${ev.detalle.length ? '\n' + ev.detalle.join('\n') : ''}`);
                 if (pr) partes.push(`🔬 Pruebas: ${pr.msg}`);
-                return { ev, html: `<span class="ls-ico">${ico}</span>${extra}`, tip: partes.join('\n\n') };
+                const d0 = new Date(dateStr + 'T00:00:00');
+                return { ev, html: `<span class="ls-ico">${ico}</span>${extra}`, tip: `${DAY_NAMES[d0.getDay()]} ${fechaCorta(dateStr)} · ${turno}\n\n` + partes.join('\n\n') };
             };
             const laneCell = (pre, k, dateStr, tipo) => {
                 const et = estadoTurno(dateStr, k.slice(-2));
@@ -2291,7 +2383,7 @@
 
             let html = '';
             if (isMobileState) {
-                html += `<table class="gantt-table mobile-gantt${currentView === 'cumpl' ? ' lanes-m' : ''}"><thead><tr><th style="width:${turnoWidth}px; z-index:30;">DÍA</th>`;
+                html += `<table class="gantt-table mobile-gantt${currentView === 'cumpl' ? ' lanes-m' : ''}"><thead><tr><th class="th-esquina" style="width:${turnoWidth}px; z-index:30;"><button class="btn-leyenda" onclick="abrirLeyenda()" aria-label="Ver referencias"><span>ℹ️</span></button></th>`;
                 TURNOS.forEach(t => html += `<th>${t}</th>`);
                 html += `</tr></thead><tbody>`;
                 for (let d = 1; d <= daysInMonth; d++) {
@@ -2317,15 +2409,15 @@
                         const dia = currentView === 'prod' ? celdaRealObj(info, false) : celdaTn(info, false);
                         const ac = currentView === 'cumpl' ? '' : currentView === 'prod' ? celdaRealObj(info, true) : celdaTn(info, true);
                         if (dia || ac) html += `<tr class="tn-row-m ${trClass}"><td class="tn-label">${etiquetaTn}</td><td colspan="3"><span class="tn-m-dia">${dia || '–'}</span>${ac ? `<span class="tn-m-ac">Acum. ${ac}</span>` : ''}</td></tr>`;
-                        if (currentView === 'prod') {
-                            const od = celdaObjetivo(info, false), oa = celdaObjetivo(info, true);
+                        if (currentView === 'prod' || (currentView === 'plan' && moldesExt.objetivos.size)) {
+                            const od = currentView === 'plan' ? celdaObjetivoPlan(info, false) : celdaObjetivo(info, false), oa = currentView === 'plan' ? celdaObjetivoPlan(info, true) : celdaObjetivo(info, true);
                             if (od || oa) html += `<tr class="tn-row-m tn-obj-m ${trClass}"><td class="tn-label">Obj.</td><td colspan="3"><span class="tn-m-dia">${od || '–'}</span>${oa ? `<span class="tn-m-ac">Acum. ${oa}</span>` : ''}</td></tr>`;
                         }
                     }
                 }
                 html += `</tbody></table>`;
             } else {
-                html += `<table class="gantt-table${currentView === 'cumpl' ? ' lanes' : ''}"><thead><tr><th style="width:${turnoWidth}px;"></th>`;
+                html += `<table class="gantt-table${currentView === 'cumpl' ? ' lanes' : ''}"><thead><tr><th class="th-esquina" style="width:${turnoWidth}px;"><button class="btn-leyenda" onclick="abrirLeyenda()" title="Ver referencias del calendario" aria-label="Ver referencias"><span>ℹ️</span><small>Referencias</small></button></th>`;
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateObj = new Date(year, month, d);
                     const dateStr = formatYYYYMMDD(dateObj);
@@ -2372,10 +2464,11 @@
                 });
                 if (hayTn) {
                     const conObj = currentView === 'prod' && (moldesExt.objetivos.size || moldesExt.promedios.size);
-                    const filasTn = currentView === 'cumpl' ? [{ acum: false }] : conObj ? [{ acum: false }, { acum: false, obj: true }, { acum: true }, { acum: true, obj: true }] : [{ acum: false }, { acum: true }];
+                    const objPlan = currentView === 'plan' && moldesExt.objetivos.size > 0;
+                    const filasTn = currentView === 'cumpl' ? [{ acum: false }] : (conObj || objPlan) ? [{ acum: false }, { acum: false, obj: true }, { acum: true }, { acum: true, obj: true }] : [{ acum: false }, { acum: true }];
                     filasTn.forEach(f => {
-                        const cls = ['tn-row', f.acum ? 'tn-acum' : '', f.obj ? 'tn-objrow' : '', conObj && !f.obj ? 'tn-realrow' : ''].filter(Boolean).join(' ');
-                        const etiqueta = f.obj ? (f.acum ? 'Obj. acum.' : 'Obj.') : (f.acum ? 'Acum.' : etiquetaTn);
+                        const cls = ['tn-row', f.acum ? 'tn-acum' : '', f.obj ? 'tn-objrow' : '', (conObj || objPlan) && !f.obj ? 'tn-realrow' : ''].filter(Boolean).join(' ');
+                        const etiqueta = f.obj ? (f.acum ? 'Obj. acum.' : (objPlan ? 'Tn obj.' : 'Obj.')) : (f.acum ? 'Acum.' : etiquetaTn);
                         html += `<tr class="${cls}"><td class="tn-label"${f.obj ? ' title="Objetivo de Dirección (ObjetivosProduccion) aplicado a lo planificado · Δ = real − objetivo de turnos cerrados"' : ''}>${etiqueta}</td>`;
                         for (let d = 1; d <= daysInMonth; d++) {
                             const dateObj = new Date(year, month, d);
@@ -2383,7 +2476,7 @@
                             let c = dateObj.getDay() === 0 ? 'sunday-cell' : '';
                             if (dateStr === todayStr) c += ' today-col';
                             const info = tnDias[dateStr];
-                            html += `<td class="${c}">${f.obj ? celdaObjetivo(info, f.acum) : conObj ? celdaRealObj(info, f.acum) : celdaTn(info, f.acum)}</td>`;
+                            html += `<td class="${c}">${f.obj ? (objPlan ? celdaObjetivoPlan(info, f.acum) : celdaObjetivo(info, f.acum)) : conObj ? celdaRealObj(info, f.acum) : celdaTn(info, f.acum)}</td>`;
                         }
                         html += '</tr>';
                     });
@@ -2392,6 +2485,7 @@
             }
 
             wrapper.innerHTML = html;
+            activarTooltips(wrapper);
             renderLeyenda(visibles, hayMulti, hayAviso, fueraVisibles);
             renderAnalisis(tnDias, year, month);
 
@@ -2532,7 +2626,9 @@
                         <div class="tipo-sub">${f.plan > 0 ? `${r === null ? '–' : Math.round(r * 100) + '%'} del plan a la fecha` : 'sin plan este mes'}</div>`;
                 } else {
                     const turnos = modo === 'prod' ? f.turnosReal : f.turnosPlan;
-                    cuerpo = `<div class="tipo-val">${fmtTn0(base)}<small> Tn</small></div>
+                    const bt = modo === 'plan' ? baseTipo(f.nombre) : null;
+                    const pal = bt && bt.kgPallet > 0 && base > 0 ? Math.floor(base * 1000 / bt.kgPallet) : null;
+                    cuerpo = `<div class="tipo-val">${fmtTn0(base)}<small> Tn</small>${pal !== null ? `<span class="tipo-pal" title="Pallets máximos: suponen que todo lo extruido llega a la descarga (${bt.kgPallet.toLocaleString('es-AR')} kg/pallet)">📦 ${fmtTn0(pal)} <small>pallets máx.</small></span>` : ''}</div>
                         <div class="tipo-bar"><span class="fill" style="width:${share}%; background:${f.color}"></span></div>
                         <div class="tipo-sub">${turnos.toLocaleString('es-AR', { maximumFractionDigits: 1 })} turnos${modo === 'plan' && f.prom ? ` · ≈${fmtTn0(f.prom.tn)} Tn/turno` : ''}${f.sinProm && modo === 'plan' ? ' · ⚠ sin promedio' : ''}</div>`;
                 }
@@ -2601,6 +2697,7 @@
             }
             if (ep.estado === 'futura') return { cls: 'pend', html: chipPrueba('pend', '⏳ Pendiente') };
             if (ep.estado === 'tolerancia') return { cls: 'tol', html: chipPrueba('tol', '⏳ En tolerancia', `hasta el ${fechaCorta(sumarDias(ds, TOLERANCIA_PRUEBA_DIAS))}`) };
+            if (ep.estado === 'pospuesta') return { cls: 'pos', html: chipPrueba('pos', `↪ Pospuesta al ${fechaCorta(ep.a)}`, ep.cumplida ? 'no se hizo en esta fecha · se realizó en la reprogramada' : 'no se hizo en esta fecha · reprogramada') };
             return { cls: 'no', html: chipPrueba('no', '✖ No realizada', `sin ejecución entre ${fechaCorta(sumarDias(ds, -TOLERANCIA_PRUEBA_DIAS))} y ${fechaCorta(sumarDias(ds, TOLERANCIA_PRUEBA_DIAS))}`) };
         }
 
@@ -2642,10 +2739,17 @@
             const title = currentView === 'plan' ? 'Pruebas Planificadas' : currentView === 'prod' ? 'Pruebas Ejecutadas' : 'Cruce de Pruebas (Plan vs Real)';
             const cuenta = {};
             pruebas.forEach(p => { cuenta[p.cls] = (cuenta[p.cls] || 0) + 1; });
-            const nombres = { ok: currentView === 'prod' ? 'Realizadas' : 'Cumplidas', tol: 'En tolerancia', no: 'No realizadas', pend: 'Pendientes', extra: 'Sin plan' };
+            const nombres = { ok: currentView === 'prod' ? 'Realizadas' : 'Cumplidas', pos: 'Pospuestas', tol: 'En tolerancia', no: 'No realizadas', pend: 'Pendientes', extra: 'Sin plan' };
             const resumen = Object.keys(nombres).filter(c => cuenta[c]).map(c => `<span class="pr-chip pr-${c}">${nombres[c]} <b>${cuenta[c]}</b></span>`).join('');
             let html = `<div class="pr-head"><h3>🔬 ${title} <small>tolerancia ±${TOLERANCIA_PRUEBA_DIAS} días · por molde</small></h3><div class="pr-resumen">${resumen}</div></div><table class="pruebas-table"><thead><tr><th>Fecha</th><th>Turno</th><th>Molde</th><th>Tipo</th><th class="col-estado">Estado</th></tr></thead><tbody>`;
-            pruebas.forEach(p => html += `<tr class="pr-row pr-row-${p.cls}"><td>${fechaCorta(p.fecha)}</td><td>${p.turno}</td><td><strong>${p.molde}</strong></td><td>${p.tipo}</td><td class="col-estado">${p.html}</td></tr>`);
+            const mesActual = hoy.slice(0, 7) === mesClave();
+            let marcaHoy = !mesActual;
+            const lineaHoy = () => `<tr class="pr-hoy" aria-hidden="true"><td colspan="5"><span>Hoy · ${fechaCorta(hoy)}</span></td></tr>`;
+            pruebas.forEach(p => {
+                if (!marcaHoy && p.fecha >= hoy) { html += lineaHoy(); marcaHoy = true; }
+                html += `<tr class="pr-row pr-row-${p.cls}${mesActual && p.fecha < hoy ? ' pasado' : ''}"><td>${fechaCorta(p.fecha)}</td><td>${p.turno}</td><td><strong>${p.molde}</strong></td><td>${p.tipo}</td><td class="col-estado">${p.html}</td></tr>`;
+            });
+            if (!marcaHoy) html += lineaHoy();
             container.innerHTML = html + '</tbody></table>';
         }
 
@@ -2989,8 +3093,8 @@
                 todos.forEach(m => {
                     const enPlan = plan.includes(m), enReal = real.includes(m);
                     const ep = enPlan ? estadoPruebaPlan(dateStr, m) : null;
-                    const cls = enPlan && enReal ? 'ok' : enPlan ? (ep.estado === 'ok' ? 'ok-desf' : ep.estado === 'omitida' ? 'no' : 'pend') : 'extra';
-                    const txt = enPlan && enReal ? 'Planificada y realizada' : enPlan ? (ep.estado === 'ok' ? `Realizada${textoDesfase(ep.mt)}` : ep.estado === 'omitida' ? 'No realizada' : 'Pendiente') : 'Realizada sin planificar';
+                    const cls = enPlan && enReal ? 'ok' : enPlan ? (ep.estado === 'ok' ? 'ok-desf' : ep.estado === 'omitida' ? 'no' : ep.estado === 'pospuesta' ? 'pos' : 'pend') : 'extra';
+                    const txt = enPlan && enReal ? 'Planificada y realizada' : enPlan ? (ep.estado === 'ok' ? `Realizada${textoDesfase(ep.mt)}` : ep.estado === 'omitida' ? 'No realizada' : ep.estado === 'pospuesta' ? `Pospuesta al ${fechaCorta(ep.a)}` : 'Pendiente') : 'Realizada sin planificar';
                     h += `<div class="gp gp-${cls}" title="🔬 Prueba ${escAttr(m)} · ${txt}"><span>🔬</span><b>${escAttr(m.replace(/ \((\d+)\)/, '·$1'))}</b></div>`;
                 });
                 h += '</div>';
@@ -3661,6 +3765,71 @@
             }
         }
 
+        function abrirLeyenda() {
+            document.getElementById('lyCuerpo').innerHTML = document.getElementById('legendContainer').innerHTML;
+            document.getElementById('leyendaModal').classList.add('open');
+        }
+        function cerrarLeyenda() { document.getElementById('leyendaModal').classList.remove('open'); }
+
+        const tooltipEstado = { el: null, timer: null, x: 0, y: 0 };
+        function escTt(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
+        function formatoTooltip(texto, color) {
+            const secciones = String(texto).split(/\n\s*\n/);
+            const linea = l => {
+                const m = l.match(/^(\S+)\s+([^:]{2,28}):\s*(.*)$/u);
+                if (m && !/^\d/.test(m[1])) return `<div class="tt-fila"><span class="tt-ico">${escTt(m[1])}</span><span class="tt-k">${escTt(m[2])}</span><span class="tt-v">${escTt(m[3])}</span></div>`;
+                const e = l.match(/^(\p{Extended_Pictographic}\uFE0F?|[✔✖✕✓➕≈↳↪⏳⏱])\s*(.*)$/u);
+                if (e) return `<div class="tt-fila"><span class="tt-ico">${escTt(e[1])}</span><span class="tt-v full">${escTt(e[2])}</span></div>`;
+                return `<div class="tt-fila"><span class="tt-v full">${escTt(l)}</span></div>`;
+            };
+            return secciones.map((sec, i) => {
+                const lineas = sec.split('\n').filter(x => x.trim());
+                if (!lineas.length) return '';
+                if (i === 0) {
+                    const tit = lineas.shift();
+                    return `<div class="tt-tit">${color ? `<i style="background:${color}"></i>` : ''}${escTt(tit.replace(/^📅\s*/u, ''))}</div>${lineas.length ? `<div class="tt-sec">${lineas.map(linea).join('')}</div>` : ''}`;
+                }
+                return `<div class="tt-sec">${lineas.map(linea).join('')}</div>`;
+            }).join('');
+        }
+        function moverTooltip() {
+            const el = tooltipEstado.el; if (!el) return;
+            const tt = document.getElementById('tooltip');
+            const w = tt.offsetWidth, h = tt.offsetHeight, m = 14;
+            let x = tooltipEstado.x + m, y = tooltipEstado.y + m;
+            if (x + w > window.innerWidth - 8) x = tooltipEstado.x - w - m;
+            if (y + h > window.innerHeight - 8) y = tooltipEstado.y - h - m;
+            tt.style.transform = `translate(${Math.max(8, x)}px, ${Math.max(8, y)}px)`;
+        }
+        function ocultarTooltip() { clearTimeout(tooltipEstado.timer); tooltipEstado.el = null; document.getElementById('tooltip').classList.remove('on'); }
+        function iniciarTooltips() {
+            if (!window.matchMedia || !window.matchMedia('(hover: hover)').matches) return;
+            document.addEventListener('mouseover', e => {
+                const el = e.target.closest('[data-tip]');
+                if (el === tooltipEstado.el) return;
+                ocultarTooltip();
+                if (!el) return;
+                tooltipEstado.el = el;
+                tooltipEstado.timer = setTimeout(() => {
+                    if (tooltipEstado.el !== el) return;
+                    const td = el.closest('td');
+                    let color = '';
+                    if (td) { const bg = getComputedStyle(td).backgroundColor; if (bg && !/rgba\(0, 0, 0, 0\)|transparent/.test(bg)) color = bg; }
+                    const tt = document.getElementById('tooltip');
+                    tt.innerHTML = formatoTooltip(el.dataset.tip, color);
+                    moverTooltip();
+                    tt.classList.add('on');
+                }, 260);
+            });
+            document.addEventListener('mousemove', e => { tooltipEstado.x = e.clientX; tooltipEstado.y = e.clientY; if (tooltipEstado.el) moverTooltip(); }, { passive: true });
+            document.addEventListener('scroll', ocultarTooltip, { passive: true, capture: true });
+            document.addEventListener('mousedown', ocultarTooltip);
+        }
+        function activarTooltips(raiz) {
+            if (!raiz) return;
+            raiz.querySelectorAll('[title]').forEach(el => { if (el.closest('.btn-leyenda')) return; el.dataset.tip = el.getAttribute('title'); el.removeAttribute('title'); });
+        }
+
         function turnoActual(now) {
             const h = now.getHours() + now.getMinutes() / 60;
             if (h >= 22) return { t: 'T1', ini: 22, fin: 30, txt: '22:00 – 06:00', h: h };
@@ -3690,7 +3859,8 @@
             if (leerTema() === 'light') { document.body.classList.add('light-mode'); themeDark = false; }
             restaurarModo();
             updateClock(); setInterval(updateClock, 15000);
-            document.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' && ganttFecha && document.getElementById('ganttModal').style.display === 'flex' && !document.querySelector('.jf-overlay.open')) abrirGantt(sumarDias(ganttFecha, -1)); if (e.key === 'ArrowRight' && ganttFecha && document.getElementById('ganttModal').style.display === 'flex' && !document.querySelector('.jf-overlay.open')) abrirGantt(sumarDias(ganttFecha, 1)); if (e.key === 'Escape') { cerrarGantt(); cerrarJustificacion(); cerrarModos(); cerrarRecomendacion(); cerrarValidacion(); cerrarRespuesta(); } });
+            iniciarTooltips();
+            document.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' && ganttFecha && document.getElementById('ganttModal').style.display === 'flex' && !document.querySelector('.jf-overlay.open')) abrirGantt(sumarDias(ganttFecha, -1)); if (e.key === 'ArrowRight' && ganttFecha && document.getElementById('ganttModal').style.display === 'flex' && !document.querySelector('.jf-overlay.open')) abrirGantt(sumarDias(ganttFecha, 1)); if (e.key === 'Escape') { ocultarTooltip(); cerrarLeyenda(); cerrarMails(); cerrarGantt(); cerrarJustificacion(); cerrarModos(); cerrarRecomendacion(); cerrarValidacion(); cerrarRespuesta(); } });
             setInterval(() => { if (!printState && document.visibilityState === 'visible') loadData(true); }, RECARGA_MIN * 60000);
             window.addEventListener('resize', () => {
                 const currentIsMobile = window.innerWidth <= 768;
