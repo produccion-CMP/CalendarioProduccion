@@ -381,21 +381,27 @@
         .tn-row-m td[colspan] { text-align: left; }
         .tn-row-m .tn-r, .tn-row-m .tn-p { display: inline; }
         .tn-m-ac { float: right; color: var(--text-muted); }
-        .gantt-table tr.tn-delta td { height: 26px; }
-        .gantt-table tr.tn-delta:not(.tn-delta-ac) td { border-top: 1px dashed var(--border); }
-        .gantt-table tr.tn-row.tn-acum + tr.tn-delta td { border-top: none; }
-        .gantt-table tr.tn-row.tn-acum:has(+ tr.tn-delta) td { border-bottom: 1px solid var(--border); }
-        .gantt-table tr.tn-delta-ac td { border-bottom: 3px solid var(--border); }
-        .tn-delta .tn-label, .tn-delta-m .tn-label { color: var(--text-muted) !important; }
-        .dl { display: inline-block; min-width: 34px; padding: 2px 3px; border-radius: 6px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.3px; transition: transform 0.15s; animation: dlIn 0.5s ease both; }
+        .gantt-table tr.tn-row.tn-objrow td { height: 34px; background: color-mix(in srgb, var(--bg-panel) 92%, var(--blue)); border-top: none; }
+        .gantt-table tr.tn-row.tn-acum.tn-realrow td { border-bottom: 1px solid var(--border); border-top: 2px solid var(--border); }
+        .gantt-table tr.tn-row.tn-realrow:not(.tn-acum) td { border-bottom: none; }
+        .tn-objrow .tn-label { color: #6fa8ff !important; }
+        .tn-o { display: flex; flex-direction: column; align-items: center; gap: 1px; font-weight: 700; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+        .tn-o.fut { opacity: 0.75; font-weight: 600; }
+        .tn-r.tx-p1, .tn-r.tx-p2 { color: #45c46f; } .tn-r.tx-p3 { color: #30d158; } .tn-r.tx-n1, .tn-r.tx-n2 { color: #ff7a70; } .tn-r.tx-n3 { color: #ff453a; }
+        body.light-mode .tn-r.tx-p1, body.light-mode .tn-r.tx-p2, body.light-mode .tn-r.tx-p3 { color: #1f8a46; } body.light-mode .tn-r.tx-n1, body.light-mode .tn-r.tx-n2, body.light-mode .tn-r.tx-n3 { color: #c43c33; }
+        .dl { display: inline-block; min-width: 30px; padding: 1px 3px; border-radius: 5px; font-size: 0.92em; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: -0.3px; line-height: 1.15; transition: transform 0.15s; animation: dlIn 0.5s ease both; }
         .dl:hover { transform: scale(1.12); }
         @keyframes dlIn { from { opacity: 0; transform: translateY(3px); } to { opacity: 1; transform: none; } }
-        .dl-0 { color: var(--text-muted); background: rgba(127,127,127,0.12); }
-        .dl-p1 { color: #2f9e57; background: rgba(48,209,88,0.12); } .dl-p2 { color: #1f8a46; background: rgba(48,209,88,0.24); } .dl-p3 { color: #fff; background: #2fa857; }
-        .dl-n1 { color: #d9534a; background: rgba(255,69,58,0.12); } .dl-n2 { color: #c43c33; background: rgba(255,69,58,0.24); } .dl-n3 { color: #fff; background: #e0463d; }
+        .dl-0 { color: var(--text-muted); background: rgba(127,127,127,0.14); }
+        .dl-p1 { color: #2f9e57; background: rgba(48,209,88,0.14); } .dl-p2 { color: #1f8a46; background: rgba(48,209,88,0.26); } .dl-p3 { color: #fff; background: #2fa857; }
+        .dl-n1 { color: #d9534a; background: rgba(255,69,58,0.14); } .dl-n2 { color: #c43c33; background: rgba(255,69,58,0.26); } .dl-n3 { color: #fff; background: #e0463d; }
         body:not(.light-mode):not(.printing) .dl-p1, body:not(.light-mode):not(.printing) .dl-p2 { color: #6ee09a; } body:not(.light-mode):not(.printing) .dl-n1, body:not(.light-mode):not(.printing) .dl-n2 { color: #ff8f86; }
         body.printing .dl { animation: none; padding: 0 2px; min-width: 0; }
-        .tn-delta-m .dl { min-width: 0; padding: 1px 6px; margin-left: 4px; }
+        body.printing .gantt-table tr.tn-row.tn-objrow td { height: 24px; background: #eef3fb !important; }
+        body.printing .tn-o.fut { font-size: 0.8em; letter-spacing: -0.5px; }
+        .tn-obj-m .tn-o { display: inline-flex; flex-direction: row; gap: 4px; }
+        .tn-obj-m .tn-label { color: #6fa8ff !important; }
+
         .tn-m-ac .tn-r, .tn-m-ac .tn-p { display: inline; }
 
         /* ===== v4: celda de cumplimiento plan vs real ===== */
@@ -662,6 +668,39 @@
         .modo-banner { display: none; align-items: center; justify-content: space-between; gap: 12px; margin: -8px 0 16px; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; color: #fff; animation: cardIn 0.35s ease both; }
         .modo-banner.on { display: flex; }
         .modo-banner.mb-produccion { background: linear-gradient(90deg, #b9572c, var(--accent)); }
+        .mb-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+        .modo-config { display: flex; flex-direction: column; align-items: flex-start; gap: 2px; width: 100%; margin: 0 0 12px; padding: 12px 14px; border-radius: 12px; border: 1px dashed var(--accent); background: rgba(224,123,76,0.08); color: var(--text-main); font-family: var(--font); font-weight: 800; font-size: 0.9rem; cursor: pointer; text-align: left; transition: 0.2s; }
+        .modo-config small { font-weight: 600; color: var(--text-muted); font-size: 0.74rem; }
+        .modo-config:hover { background: rgba(224,123,76,0.16); }
+        .mails-box { max-width: 640px; }
+        .ml-head, .ml-fila { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr) 62px 52px 32px; gap: 6px; align-items: center; }
+        .ml-head { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-muted); padding: 0 2px 6px; }
+        .ml-head span:nth-child(3), .ml-head span:nth-child(4) { text-align: center; }
+        .ml-lista { display: flex; flex-direction: column; gap: 6px; max-height: 46vh; overflow-y: auto; }
+        .ml-fila { animation: cardIn 0.3s ease both; }
+        .ml-fila input[type="email"], .ml-fila input[type="text"] { width: 100%; padding: 9px 10px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); font-family: var(--font); font-size: 0.82rem; }
+        .ml-fila input:focus { outline: none; border-color: var(--accent); }
+        .ml-fila.invalido input[type="email"] { border-color: var(--red); box-shadow: 0 0 0 2px rgba(255,69,58,0.2); }
+        .jf-box label.ml-sw { position: relative; display: flex; justify-content: center; cursor: pointer; margin: 0; text-transform: none; letter-spacing: 0; }
+        .ml-sw input { position: absolute; opacity: 0; pointer-events: none; }
+        .ml-sw span { display: block; flex: 0 0 auto; width: 38px; height: 22px; border-radius: 11px; background: var(--border); position: relative; transition: background 0.2s; }
+        .ml-sw span::after { content: ''; position: absolute; top: 3px; left: 3px; width: 16px; height: 16px; border-radius: 50%; background: #fff; transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1); }
+        .ml-sw input:checked + span { background: var(--green); }
+        .ml-sw input:checked + span::after { transform: translateX(16px); }
+        .ml-sw input:focus-visible + span { box-shadow: 0 0 0 2px var(--accent); }
+        .ml-quitar { width: 30px; height: 30px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); cursor: pointer; transition: 0.2s; }
+        .ml-quitar:hover { border-color: var(--red); color: var(--red); }
+        .ml-agregar { margin-top: 10px; width: 100%; padding: 10px; border-radius: 10px; border: 1px dashed var(--border); background: transparent; color: var(--accent-light); font-family: var(--font); font-weight: 800; cursor: pointer; transition: 0.2s; }
+        .ml-agregar:hover { border-color: var(--accent); background: rgba(224,123,76,0.08); }
+        @media (max-width: 600px) {
+            .ml-head { display: none; }
+            .ml-fila { grid-template-columns: 1fr 1fr 32px; padding: 8px; border-radius: 10px; background: rgba(127,127,127,0.06); }
+            .ml-fila input[type="email"] { grid-column: 1 / 3; }
+            .ml-fila .ml-quitar { grid-column: 3; grid-row: 1; }
+            .ml-fila input[type="text"] { grid-column: 1 / 4; }
+            .ml-sw::before { content: attr(title); font-size: 0.66rem; color: var(--text-muted); margin-right: 6px; align-self: center; max-width: 90px; line-height: 1.1; }
+            .jf-box label.ml-sw { justify-content: flex-start; }
+        }
         .modo-banner button { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: #fff; font-family: var(--font); font-weight: 700; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
 
         /* ===== v6: navegación de mes ===== */
@@ -1171,6 +1210,21 @@
         </div>
     </div>
 
+    <div class="jf-overlay" id="mailsModal" onclick="if (event.target === this) cerrarMails()">
+        <div class="jf-box mails-box" role="dialog" aria-modal="true" aria-labelledby="mlTitulo">
+            <h3 id="mlTitulo">📧 Casillas de mail</h3>
+            <p class="modos-sub">Reciben las solicitudes que envía Comercial. Marcá qué avisos le llegan a cada una.</p>
+            <div class="ml-head"><span>Email</span><span>Nombre</span><span title="Recomendaciones y modificaciones solicitadas por Comercial">Modific.</span><span title="Validaciones del plan">Valid.</span><span></span></div>
+            <div class="ml-lista" id="mlLista"></div>
+            <button class="ml-agregar" onclick="agregarMail()">＋ Agregar casilla</button>
+            <div class="jf-acciones">
+                <button onclick="cerrarMails()">Cancelar</button>
+                <button class="prim" id="mlGuardar" onclick="guardarMails()">Guardar</button>
+            </div>
+            <div class="jf-msg" id="mlMsg"></div>
+        </div>
+    </div>
+
     <div class="jf-overlay" id="recModal" onclick="if (event.target === this) cerrarRecomendacion()">
         <div class="jf-box rec-box" role="dialog" aria-modal="true" aria-labelledby="rcTitulo">
             <h3 id="rcTitulo">🛒 Recomendación</h3>
@@ -1609,7 +1663,8 @@
         }
 
         function claveTipo(s) { return String(s || '').toUpperCase().replace(/\s+/g, ''); }
-        function tipoProducto(t) { return getTipo(t.baseName) + (t.variante || ''); }
+        function tipoProducto(t) { return categoriaCumpl(t); }
+        function tipoVelocidad(t) { return getTipo(t.baseName || t.moldeCompleto) + (t.variante || ''); }
 
         function promedioProducto(t) {
             const claves = [claveTipo(nombreProducto(t)), claveTipo(tipoProducto(t)), claveTipo(getTipo(t.baseName))];
@@ -1619,7 +1674,7 @@
 
         const TURNOS_POR_DIA = 3;
         function objetivoProducto(t) {
-            for (const c of [claveTipo(nombreProducto(t)), claveTipo(tipoProducto(t))]) { const v = moldesExt.objetivos.get(c); if (v > 0) return { tn: v / TURNOS_POR_DIA, dia: v, fuente: 'obj' }; }
+            for (const c of [claveTipo(nombreProducto(t)), claveTipo(tipoProducto(t)), claveTipo(tipoVelocidad(t))]) { const v = moldesExt.objetivos.get(c); if (v > 0) return { tn: v / TURNOS_POR_DIA, dia: v, fuente: 'obj' }; }
             return null;
         }
         function fuenteActual() { return currentView === 'cumpl' && moldesExt.objetivos.size ? 'obj' : 'prom'; }
@@ -1933,7 +1988,7 @@
         function calcularTnDias(year, month) {
             const dias = new Date(year, month + 1, 0).getDate();
             const out = {};
-            let acP = 0, acR = 0, acPC = 0, acOC = 0, hayReal = false;
+            let acP = 0, acR = 0, acPC = 0, acOC = 0, acO = 0, hayReal = false;
             for (let d = 1; d <= dias; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
                 let p = 0, r = 0, pc = 0, o = 0, oc = 0, conReal = false, conPlan = false, turnosCerrados = 0;
@@ -1947,8 +2002,8 @@
                     if (cerrado) { turnosCerrados++; if (tp) pc += tp.tn; if (to) oc += to.tn; }
                 });
                 if (conReal) hayReal = true;
-                acP += p; acR += r; acPC += pc; acOC += oc;
-                out[ds] = { plan: conPlan ? p : null, real: conReal ? r : null, planComp: pc, acPlan: acP, acReal: acR, acPlanComp: acPC, obj: o, objComp: oc, acObjComp: acOC, turnosCerrados, pasado: ds <= hoyStr(), conReal };
+                acP += p; acR += r; acPC += pc; acOC += oc; acO += o;
+                out[ds] = { plan: conPlan ? p : null, real: conReal ? r : null, planComp: pc, acPlan: acP, acReal: acR, acPlanComp: acPC, obj: o, objComp: oc, acObjComp: acOC, acObj: acO, turnosCerrados, pasado: ds <= hoyStr(), conReal };
             }
             out.hayReal = hayReal;
             return out;
@@ -1966,19 +2021,37 @@
             return `<span class="tn-r ${claseRatio(r)}" title="Real ${fmtTn0(real || 0)} Tn · ${fuenteActual() === 'obj' ? 'Objetivo' : 'Plan'} ${fmtTn0(comp || 0)} Tn${r !== null ? ' (' + Math.round(r * 100) + '%)' : ''}">${fmtTn0(real || 0)}</span>`;
         }
 
-        function celdaDelta(info, acum) {
-            if (!info || !info.pasado || !info.turnosCerrados) return '';
+        function deltaObj(info, acum) {
+            if (!info || !info.pasado || !info.turnosCerrados) return null;
             const obj = acum ? info.acObjComp : info.objComp;
             const real = acum ? info.acReal : (info.real || 0);
-            if (!obj && !real) return '';
+            if (!obj && !real) return null;
             const delta = real - obj;
-            const base = acum ? Math.max(obj, 1) : Math.max(info.obj || obj, 1);
-            const rel = delta / base;
+            const rel = delta / Math.max(acum ? obj : (info.obj || obj), 1);
             const nivel = Math.abs(rel) < 0.03 ? 0 : Math.abs(rel) < 0.1 ? 1 : Math.abs(rel) < 0.25 ? 2 : 3;
-            const cls = nivel === 0 ? 'dl-0' : (delta > 0 ? 'dl-p' : 'dl-n') + nivel;
-            const parcial = !acum && info.turnosCerrados < TURNOS.length ? ` · ${info.turnosCerrados} de 3 turnos cerrados` : '';
-            const tip = `${acum ? 'Acumulado' : 'Día'}: real ${fmtTn0(real)} Tn · objetivo ${fmtTn0(obj)} Tn${parcial}\nDiferencia ${delta >= 0 ? '+' : '−'}${fmtTn0(Math.abs(delta))} Tn (${delta >= 0 ? '+' : '−'}${Math.round(Math.abs(rel) * 100)}%)`;
-            return `<span class="dl ${cls}" title="${escAttr(tip)}">${delta >= 0.5 ? '+' : delta <= -0.5 ? '−' : ''}${fmtTn0(Math.abs(delta))}</span>`;
+            return { obj, real, delta, rel, sufijo: nivel === 0 ? '0' : (delta > 0 ? 'p' : 'n') + nivel };
+        }
+
+        function tipDelta(info, acum, d) {
+            const parcial = !acum && info.turnosCerrados < TURNOS.length ? ` (${info.turnosCerrados} de 3 turnos cerrados)` : '';
+            return `${acum ? 'Acumulado' : 'Día'}: real ${fmtTn0(d.real)} Tn · objetivo de Dirección ${fmtTn0(d.obj)} Tn${parcial}\nDiferencia ${d.delta >= 0 ? '+' : '−'}${fmtTn0(Math.abs(d.delta))} Tn (${d.delta >= 0 ? '+' : '−'}${Math.round(Math.abs(d.rel) * 100)}%)`;
+        }
+
+        function celdaRealObj(info, acum) {
+            if (!info || !info.pasado) return '';
+            const real = acum ? info.acReal : info.real;
+            if (acum ? !(info.acReal > 0) : real === null) return '';
+            const d = deltaObj(info, acum);
+            return `<span class="tn-r${d ? ' tx-' + d.sufijo : ''}"${d ? ` title="${escAttr(tipDelta(info, acum, d))}"` : ''}>${fmtTn0(real)}</span>`;
+        }
+
+        function celdaObjetivo(info, acum) {
+            if (!info) return '';
+            if (!info.pasado) { const o = acum ? info.acObj : info.obj; return o ? `<span class="tn-o fut" title="Objetivo de Dirección para lo planificado">≈${fmtTn0(o)}</span>` : ''; }
+            const d = deltaObj(info, acum);
+            if (!d) { const o = acum ? info.acObj : info.obj; return o ? `<span class="tn-o">${fmtTn0(o)}</span>` : ''; }
+            const signo = d.delta >= 0.5 ? '+' : d.delta <= -0.5 ? '−' : '';
+            return `<span class="tn-o" title="${escAttr(tipDelta(info, acum, d))}">${fmtTn0(d.obj)}<span class="dl dl-${d.sufijo}">${signo}${fmtTn0(Math.abs(d.delta))}</span></span>`;
         }
 
         function calcularBloques(year, month) {
@@ -2174,11 +2247,12 @@
                     html += `</tr>`;
                     if (hayTn) {
                         const info = tnDias[dateStr];
-                        const dia = celdaTn(info, false), ac = currentView === 'cumpl' ? '' : celdaTn(info, true);
+                        const dia = currentView === 'prod' ? celdaRealObj(info, false) : celdaTn(info, false);
+                        const ac = currentView === 'cumpl' ? '' : currentView === 'prod' ? celdaRealObj(info, true) : celdaTn(info, true);
                         if (dia || ac) html += `<tr class="tn-row-m ${trClass}"><td class="tn-label">${etiquetaTn}</td><td colspan="3"><span class="tn-m-dia">${dia || '–'}</span>${ac ? `<span class="tn-m-ac">Acum. ${ac}</span>` : ''}</td></tr>`;
                         if (currentView === 'prod') {
-                            const dd = celdaDelta(info, false), da = celdaDelta(info, true);
-                            if (dd || da) html += `<tr class="tn-row-m tn-delta-m ${trClass}"><td class="tn-label">Δ Obj.</td><td colspan="3"><span class="tn-m-dia">Día ${dd || '–'}</span>${da ? `<span class="tn-m-ac">Acum. ${da}</span>` : ''}</td></tr>`;
+                            const od = celdaObjetivo(info, false), oa = celdaObjetivo(info, true);
+                            if (od || oa) html += `<tr class="tn-row-m tn-obj-m ${trClass}"><td class="tn-label">Obj.</td><td colspan="3"><span class="tn-m-dia">${od || '–'}</span>${oa ? `<span class="tn-m-ac">Acum. ${oa}</span>` : ''}</td></tr>`;
                         }
                     }
                 }
@@ -2230,30 +2304,22 @@
                     html += `<tr class="lane-row st${turno === 'T3' ? ' ultimo' : ''}">${filas.st}</tr>`;
                 });
                 if (hayTn) {
-                    (currentView === 'cumpl' ? [false] : [false, true]).forEach(acum => {
-                        html += `<tr class="tn-row${acum ? ' tn-acum' : ''}"><td class="tn-label">${acum ? 'Acum.' : etiquetaTn}</td>`;
+                    const conObj = currentView === 'prod' && (moldesExt.objetivos.size || moldesExt.promedios.size);
+                    const filasTn = currentView === 'cumpl' ? [{ acum: false }] : conObj ? [{ acum: false }, { acum: false, obj: true }, { acum: true }, { acum: true, obj: true }] : [{ acum: false }, { acum: true }];
+                    filasTn.forEach(f => {
+                        const cls = ['tn-row', f.acum ? 'tn-acum' : '', f.obj ? 'tn-objrow' : '', conObj && !f.obj ? 'tn-realrow' : ''].filter(Boolean).join(' ');
+                        const etiqueta = f.obj ? (f.acum ? 'Obj. acum.' : 'Obj.') : (f.acum ? 'Acum.' : etiquetaTn);
+                        html += `<tr class="${cls}"><td class="tn-label"${f.obj ? ' title="Objetivo de Dirección (ObjetivosProduccion) aplicado a lo planificado · Δ = real − objetivo de turnos cerrados"' : ''}>${etiqueta}</td>`;
                         for (let d = 1; d <= daysInMonth; d++) {
                             const dateObj = new Date(year, month, d);
                             const dateStr = formatYYYYMMDD(dateObj);
-                            let cls = dateObj.getDay() === 0 ? 'sunday-cell' : '';
-                            if (dateStr === todayStr) cls += ' today-col';
-                            html += `<td class="${cls}">${celdaTn(tnDias[dateStr], acum)}</td>`;
+                            let c = dateObj.getDay() === 0 ? 'sunday-cell' : '';
+                            if (dateStr === todayStr) c += ' today-col';
+                            const info = tnDias[dateStr];
+                            html += `<td class="${c}">${f.obj ? celdaObjetivo(info, f.acum) : conObj ? celdaRealObj(info, f.acum) : celdaTn(info, f.acum)}</td>`;
                         }
                         html += '</tr>';
                     });
-                    if (currentView === 'prod' && (moldesExt.objetivos.size || moldesExt.promedios.size)) {
-                        [false, true].forEach(acum => {
-                            html += `<tr class="tn-row tn-delta${acum ? ' tn-delta-ac' : ''}"><td class="tn-label" title="Diferencia entre lo producido y el objetivo de Dirección para lo planificado (solo turnos cerrados)">${acum ? 'Δ Acum.' : 'Δ Día'}</td>`;
-                            for (let d = 1; d <= daysInMonth; d++) {
-                                const dateObj = new Date(year, month, d);
-                                const dateStr = formatYYYYMMDD(dateObj);
-                                let cls = dateObj.getDay() === 0 ? 'sunday-cell' : '';
-                                if (dateStr === todayStr) cls += ' today-col';
-                                html += `<td class="${cls}">${celdaDelta(tnDias[dateStr], acum)}</td>`;
-                            }
-                            html += '</tr>';
-                        });
-                    }
                 }
                 html += '</tbody></table>';
             }
@@ -2352,7 +2418,8 @@
                     const pasado = estadoTurno(ds, t) === 'pasado';
                     if (seq.length) turnosPlan++;
                     seq.forEach(m => {
-                        const it = item(claveTipo(tipoProducto(m)), tipoProducto(m), m.baseName);
+                        const nomTipo = currentView === 'plan' ? tipoProducto(m) : tipoVelocidad(m);
+                        const it = item(claveTipo(nomTipo), nomTipo, m.baseName);
                         const p = refProducto(m);
                         it.turnosPlan += 1 / seq.length;
                         if (p) { it.plan += p.tn / seq.length; it.prom = p; if (pasado) it.planComp += p.tn / seq.length; }
@@ -2487,7 +2554,10 @@
                         realT.forEach(r => pruebas.push({ fecha: ds, turno: t, molde: r.moldeCompleto, tipo: 'Prueba Ejecutada', ...estadoEjecutadaCelda(k, ds, r) }));
                         return;
                     }
-                    planT.forEach(p => pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', ...estadoPruebaCelda(ds, p.moldeCompleto) }));
+                    planT.forEach(p => {
+                        const ec = estadoPruebaCelda(ds, p.moldeCompleto);
+                        pruebas.push({ fecha: ds, turno: t, molde: p.moldeCompleto, tipo: 'Prueba Planificada', ...(currentView === 'plan' && ec.cls === 'tol' ? { cls: 'vacio', html: '' } : ec) });
+                    });
                     if (currentView === 'cumpl') realT.forEach(r => { if (!matchPruebas.real.has(ds + '|' + r.moldeCompleto)) pruebas.push({ fecha: ds, turno: t, molde: r.moldeCompleto, tipo: 'Prueba Ejecutada', cls: 'extra', html: chipPrueba('extra', '📌 No planificada', `sin plan entre ${fechaCorta(sumarDias(ds, -TOLERANCIA_PRUEBA_DIAS))} y ${fechaCorta(sumarDias(ds, TOLERANCIA_PRUEBA_DIAS))}`) }); });
                 });
             }
@@ -2949,7 +3019,7 @@
             document.getElementById('modoLogin').hidden = true;
             document.querySelectorAll('.modo-card').forEach(c => c.classList.toggle('activo', c.dataset.m === modo));
             const act = document.getElementById('modoActivo');
-            act.innerHTML = modo ? `<div class="modo-actual">${MODOS[modo].ico} Estás en <b>${MODOS[modo].nombre}</b><button onclick="salirModo()">Salir a modo lectura</button></div>` : '<div class="modo-actual lectura">👁️ Modo lectura (usuarios)</div>';
+            act.innerHTML = modo ? `<div class="modo-actual">${MODOS[modo].ico} Estás en <b>${MODOS[modo].nombre}</b><button onclick="salirModo()">Salir a modo lectura</button></div>${modo === 'produccion' ? '<button class="modo-config" onclick="cerrarModos(); abrirMails()">📧 Configurar casillas de mail<small>A quién se envían las recomendaciones y validaciones de Comercial</small></button>' : ''}` : '<div class="modo-actual lectura">👁️ Modo lectura (usuarios)</div>';
             document.getElementById('modosModal').classList.add('open');
         }
 
@@ -3015,7 +3085,7 @@
             else {
                 b.classList.add('on');
                 b.className = `modo-banner on mb-${modo}`;
-                b.innerHTML = `<span>${MODOS[modo].ico} <b>${MODOS[modo].nombre}</b> · los cambios se guardan en la planilla</span><button onclick="salirModo()">Salir</button>`;
+                b.innerHTML = `<span>${MODOS[modo].ico} <b>${MODOS[modo].nombre}</b> · los cambios se guardan en la planilla</span><span class="mb-btns">${modo === 'produccion' ? '<button onclick="abrirMails()">📧 Casillas de mail</button>' : ''}<button onclick="salirModo()">Salir</button></span>`;
             }
             document.getElementById('btnModo').classList.toggle('activo', !!modo);
         }
@@ -3027,11 +3097,79 @@
             return j;
         }
 
+        let mailsLista = [];
+
+        async function abrirMails() {
+            if (modo !== 'produccion') return;
+            const msg = document.getElementById('mlMsg');
+            document.getElementById('mlLista').innerHTML = '<p class="rc-nota">Cargando…</p>';
+            msg.textContent = ''; msg.className = 'jf-msg';
+            document.getElementById('mlGuardar').disabled = true;
+            document.getElementById('mailsModal').classList.add('open');
+            try {
+                const j = await postEditor({ accion: 'notificaciones', op: 'listar' });
+                mailsLista = (j.lista || []).map(x => ({ email: x.email, nombre: x.nombre || '', recomendaciones: !!x.recomendaciones, validaciones: !!x.validaciones }));
+                if (!mailsLista.length) mailsLista.push({ email: '', nombre: '', recomendaciones: true, validaciones: true });
+                renderMails();
+                document.getElementById('mlGuardar').disabled = false;
+            } catch (err) {
+                document.getElementById('mlLista').innerHTML = '';
+                msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err';
+            }
+        }
+
+        function cerrarMails() { document.getElementById('mailsModal').classList.remove('open'); }
+
+        function emailValido(e) { return /^[^\s@,;]+@[^\s@,;]+\.[^\s@,;]+$/.test(e); }
+
+        function renderMails() {
+            document.getElementById('mlLista').innerHTML = mailsLista.map((m, i) => `<div class="ml-fila${m.email && !emailValido(m.email) ? ' invalido' : ''}">
+                <input type="email" value="${escAttr(m.email)}" placeholder="nombre@empresa.com" oninput="editarMail(${i}, 'email', this.value)" aria-label="Email">
+                <input type="text" value="${escAttr(m.nombre)}" placeholder="Opcional" maxlength="80" oninput="editarMail(${i}, 'nombre', this.value)" aria-label="Nombre">
+                <label class="ml-sw" title="Recomendaciones y modificaciones de Comercial"><input type="checkbox" ${m.recomendaciones ? 'checked' : ''} onchange="editarMail(${i}, 'recomendaciones', this.checked)"><span></span></label>
+                <label class="ml-sw" title="Validaciones del plan"><input type="checkbox" ${m.validaciones ? 'checked' : ''} onchange="editarMail(${i}, 'validaciones', this.checked)"><span></span></label>
+                <button class="ml-quitar" onclick="quitarMail(${i})" title="Quitar" aria-label="Quitar">✕</button>
+            </div>`).join('');
+        }
+
+        function editarMail(i, campo, valor) {
+            mailsLista[i][campo] = typeof valor === 'string' ? valor.trim() : valor;
+            if (campo === 'email') document.querySelectorAll('#mlLista .ml-fila')[i].classList.toggle('invalido', !!mailsLista[i].email && !emailValido(mailsLista[i].email));
+        }
+
+        function agregarMail() {
+            mailsLista.push({ email: '', nombre: '', recomendaciones: true, validaciones: true });
+            renderMails();
+            const filas = document.querySelectorAll('#mlLista .ml-fila input[type="email"]');
+            filas[filas.length - 1].focus();
+        }
+
+        function quitarMail(i) { mailsLista.splice(i, 1); renderMails(); }
+
+        async function guardarMails() {
+            const msg = document.getElementById('mlMsg');
+            const lista = mailsLista.filter(m => m.email);
+            const malo = lista.find(m => !emailValido(m.email));
+            if (malo) { msg.textContent = `Revisá el email: ${malo.email}`; msg.className = 'jf-msg err'; return; }
+            if (lista.length && !lista.some(m => m.recomendaciones)) { msg.textContent = 'Ninguna casilla recibe las modificaciones de Comercial.'; msg.className = 'jf-msg err'; return; }
+            const btn = document.getElementById('mlGuardar');
+            btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
+            try {
+                const j = await postEditor({ accion: 'notificaciones', op: 'guardar', lista: JSON.stringify(lista) });
+                mailsLista = j.lista || lista;
+                msg.textContent = `✅ ${mailsLista.length} casilla${mailsLista.length === 1 ? '' : 's'} guardada${mailsLista.length === 1 ? '' : 's'}`; msg.className = 'jf-msg ok';
+                setTimeout(() => { cerrarMails(); toast('📧 Casillas de mail actualizadas', 'ok'); }, 600);
+            } catch (err) {
+                msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err';
+                btn.disabled = false;
+            }
+        }
+
         function tiposDisponibles() {
             const s = new Set();
-            catalogo.exacto.forEach(m => s.add(getTipo(getBaseName(m))));
+            catalogo.exacto.forEach(m => s.add(categoriaCumpl({ baseName: getBaseName(m) })));
             bloquesMes.lista.forEach(b => s.add(b.tipo));
-            moldesExt.base.forEach((v, k) => { if (/^[A-Z]+\d/.test(k) && !/5C|126|\(/.test(k)) s.add(k.replace('X', 'x')); });
+            moldesExt.base.forEach((v, k) => { if (/^[A-Z]+\d/.test(k) && !/5C|126|\(|9T/.test(k)) s.add(k.replace('X', 'x')); });
             return [...s].sort();
         }
 

@@ -100,6 +100,12 @@
         .rango { position: relative; height: 8px; border-radius: 4px; background: var(--bg-cell); margin: 12px 0 4px; }
         .rango i { position: absolute; top: 0; bottom: 0; border-radius: 4px; background: linear-gradient(90deg, var(--orange), var(--green)); }
         .rango u { position: absolute; top: -3px; width: 3px; height: 14px; border-radius: 2px; background: #fff; box-shadow: 0 0 6px rgba(255,255,255,0.6); }
+        .rango u.obj { background: var(--blue); box-shadow: 0 0 6px var(--blue); }
+        .rango.turnos { margin-top: 22px; }
+        .rango u span { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); font-size: 0.62rem; font-weight: 800; color: var(--accent-light); }
+        .rango-lbl.centro { justify-content: center; }
+        .pt-obj { display: inline-block; width: 8px; height: 8px; border-radius: 2px; background: var(--blue); margin-right: 5px; }
+        .rango u span { white-space: nowrap; }
         .rango-lbl { display: flex; justify-content: space-between; font-size: 0.68rem; color: var(--text-muted); font-weight: 700; font-variant-numeric: tabular-nums; }
         .estim-nota { margin-top: 8px; font-size: 0.72rem; color: var(--text-muted); line-height: 1.4; }
         .estim-nota b { color: var(--text-main); }
@@ -387,44 +393,67 @@
         }
         function tipoBase(lad) { return String(lad).split(/\s+/)[0].split(/[xX]/)[0].toUpperCase(); }
 
-        function estimar(nTurnos) {
-            if (!stats || !nTurnos) return null;
+        function refTipo() {
+            if (!stats) return null;
             const nombres = [state.lad, tipoBase(state.lad)];
             const p = buscar(stats.promedios, nombres);
             if (!p) return { sinDatos: true };
-            const pr = p.v;
-            const lo = pr.p10 > 0 ? pr.p10 : (pr.min > 0 ? pr.min : pr.tn);
-            const hi = pr.p90 > 0 ? pr.p90 : (pr.max > 0 ? pr.max : pr.tn);
             const b = buscar(stats.base, nombres);
             const o = buscar(stats.objetivos, nombres);
-            const kg = b && b.v.kgPallet > 0 ? b.v.kgPallet : 0;
-            return {
-                n: nTurnos, dias: nTurnos / 3, tipo: p.clave, muestras: pr.n, diasHist: stats.diasPromedio || 365,
-                tnMin: lo * nTurnos, tnMax: hi * nTurnos, tnProm: pr.tn * nTurnos,
-                turnoMin: lo, turnoMax: hi, turnoProm: pr.tn, absMin: pr.min, absMax: pr.max,
-                palMax: kg ? Math.floor(hi * nTurnos * 1000 / kg) : null, palMin: kg ? Math.floor(lo * nTurnos * 1000 / kg) : null, palProm: kg ? Math.floor(pr.tn * nTurnos * 1000 / kg) : null,
-                kgPallet: kg, tipoBase: b ? b.clave : null,
-                tnObj: o ? o.v / 3 * nTurnos : null
-            };
+            return { tipo: p.clave, prom: p.v.tn, sd: p.v.sd > 0 ? p.v.sd : null, muestras: p.v.n, diasHist: stats.diasPromedio || 365, kg: b && b.v.kgPallet > 0 ? b.v.kgPallet : 0, kgTipo: b ? b.clave : null, objDia: o ? o.v : null };
+        }
+
+        function estimar(n) {
+            const r = refTipo();
+            if (!r || r.sinDatos) return r ? { sinDatos: true, n } : null;
+            const tn = r.prom * n;
+            return { n, dias: n / 3, tn, sd: r.sd ? r.sd * Math.sqrt(n) : null, pal: r.kg ? Math.floor(tn * 1000 / r.kg) : null, obj: r.objDia ? r.objDia / 3 * n : null, r };
+        }
+
+        function notaEstim(r) {
+            return `<div class="estim-nota">Promedio por turno completo de <b>${r.tipo}</b>: <b>${fmt1(r.prom)} Tn</b>${r.sd ? ` (σ ${fmt1(r.sd)} Tn)` : ''} · ${r.muestras} turnos de los últimos ${r.diasHist} días${r.objDia ? ` · objetivo de Dirección ${fmt0(r.objDia)} Tn/día` : ''}.<br>Los pallets son <b>máximos</b>: suponen que todo lo extruido llega a la descarga (${r.kg ? `${fmt1(r.kg)} kg/pallet${r.kgTipo && r.kgTipo !== r.tipo ? ` de ${r.kgTipo}` : ''}` : 'sin dato en la hoja Base'}); los descartes en carga de secos y descarga de cocidos los reducen.</div>`;
         }
 
         function htmlEstim(e, titulo, extra) {
             if (!stats) return `<div class="estim vacio">⏳ Cargando histórico de producción…</div>`;
             if (!e) return '';
-            if (e.sinDatos) return `<div class="estim vacio">Sin histórico de turnos completos para ${state.lad}.<br><b>${fmt1((e.n || 0) / 3)}</b> días de producción.</div>`;
-            const lo = Math.min(e.tnMin, e.tnObj || Infinity), hi = Math.max(e.tnMax, e.tnObj || 0);
-            const pad = Math.max((hi - lo) * 0.1, 1);
+            if (e.sinDatos) return `<div class="estim vacio">Sin histórico de turnos completos para ${state.lad}.<br><b>${fmt1((e.n || 0) / 3)}</b> días de producción (${e.n} turnos).</div>`;
+            const lo = Math.min(e.tn - (e.sd || 0), e.obj || Infinity), hi = Math.max(e.tn + (e.sd || 0), e.obj || 0);
+            const pad = Math.max((hi - lo) * 0.15, 1);
             const pos = v => Math.max(0, Math.min(100, (v - lo + pad) / (hi - lo + 2 * pad) * 100)).toFixed(1);
             return `<div class="estim">
                 <div class="estim-tit">${titulo}<span>${extra || ''}</span></div>
                 <div class="estim-grid">
                     <div class="estim-kpi"><small>Días de producción</small><b>${fmt1(e.dias)}</b><em>${e.n} turno${e.n === 1 ? '' : 's'}</em></div>
-                    <div class="estim-kpi"><small>Toneladas esperadas</small><b>${fmt0(e.tnMin)}–${fmt0(e.tnMax)}</b><em>prom. ${fmt0(e.tnProm)} Tn</em></div>
-                    <div class="estim-kpi dest"><small>Pallets máximos</small><b>${e.palMax !== null ? fmt0(e.palMax) : '–'}</b><em>${e.palMin !== null ? `mín. ${fmt0(e.palMin)} · ${fmt0(e.kgPallet)} kg/pallet` : 'sin dato en hoja Base'}</em></div>
+                    <div class="estim-kpi"><small>Toneladas esperadas</small><b>${fmt0(e.tn)}</b><em>${e.sd ? `± ${fmt0(e.sd)} Tn (1σ)` : 'promedio histórico'}</em></div>
+                    <div class="estim-kpi dest"><small>Pallets máximos</small><b>${e.pal !== null ? fmt0(e.pal) : '–'}</b><em>sin descarte</em></div>
                 </div>
-                <div class="rango"><i style="left:${pos(e.tnMin)}%; right:${(100 - pos(e.tnMax)).toFixed(1)}%"></i><u style="left:${pos(e.tnProm)}%" title="Promedio"></u>${e.tnObj ? `<u style="left:${pos(e.tnObj)}%; background:var(--blue); box-shadow:0 0 6px var(--blue)" title="Objetivo de Dirección"></u>` : ''}</div>
-                <div class="rango-lbl"><span>${fmt0(e.tnMin)} Tn</span><span>${e.tnObj ? `🎯 obj. ${fmt0(e.tnObj)} Tn` : ''}</span><span>${fmt0(e.tnMax)} Tn</span></div>
-                <div class="estim-nota">Rango habitual por turno completo de <b>${e.tipo}</b>: <b>${fmt1(e.turnoMin)}–${fmt1(e.turnoMax)} Tn</b> (P10–P90, prom. ${fmt1(e.turnoProm)}${e.absMin ? ` · extremos ${fmt1(e.absMin)}–${fmt1(e.absMax)}` : ''}) · ${e.muestras} turnos de los últimos ${e.diasHist} días.</div>
+                ${e.sd ? `<div class="rango"><i style="left:${pos(e.tn - e.sd)}%; right:${(100 - pos(e.tn + e.sd)).toFixed(1)}%"></i><u style="left:${pos(e.tn)}%" title="Promedio"></u>${e.obj ? `<u class="obj" style="left:${pos(e.obj)}%" title="Objetivo de Dirección"></u>` : ''}</div>
+                <div class="rango-lbl"><span>${fmt0(e.tn - e.sd)} Tn</span><span>${e.obj ? `🎯 obj. ${fmt0(e.obj)} Tn` : ''}</span><span>${fmt0(e.tn + e.sd)} Tn</span></div>` : ''}
+                ${notaEstim(e.r)}
+            </div>`;
+        }
+
+        function htmlEstimRango(ests, titulo) {
+            if (!stats) return `<div class="estim vacio">⏳ Cargando histórico de producción…</div>`;
+            const v = ests.filter(x => x.e);
+            if (!v.length) return '';
+            const a = v[0].e, b = v[v.length - 1].e;
+            if (a.sinDatos) return `<div class="estim vacio">Sin histórico de turnos completos para ${state.lad}.<br><b>${fmt1(a.n / 3)}${v.length > 1 ? `–${fmt1(b.n / 3)}` : ''}</b> días de producción según el turno de cierre.</div>`;
+            const rango = (x, y, f) => v.length > 1 && f(x) !== f(y) ? `${f(x)}–${f(y)}` : f(y);
+            const lo = a.tn, hi = Math.max(b.tn, b.obj || 0);
+            const pad = Math.max((hi - lo) * 0.12, 1);
+            const pos = val => Math.max(0, Math.min(100, (val - lo + pad) / (hi - lo + 2 * pad) * 100)).toFixed(1);
+            return `<div class="estim">
+                <div class="estim-tit">${titulo}<span>mín. cierre ${v[0].t} · máx. cierre ${v[v.length - 1].t}</span></div>
+                <div class="estim-grid">
+                    <div class="estim-kpi"><small>Días de producción</small><b>${rango(a, b, x => fmt1(x.dias))}</b><em>${rango(a, b, x => String(x.n))} turnos</em></div>
+                    <div class="estim-kpi"><small>Toneladas esperadas</small><b>${rango(a, b, x => fmt0(x.tn))}</b><em>${b.sd ? `± ${fmt0(a.sd)}${v.length > 1 ? `–${fmt0(b.sd)}` : ''} Tn (1σ)` : 'promedio histórico'}</em></div>
+                    <div class="estim-kpi dest"><small>Pallets máximos</small><b>${b.pal !== null ? rango(a, b, x => fmt0(x.pal)) : '–'}</b><em>sin descarte</em></div>
+                </div>
+                <div class="rango turnos"><i style="left:${pos(a.tn)}%; right:${(100 - pos(b.tn)).toFixed(1)}%"></i>${v.map(x => `<u style="left:${pos(x.e.tn)}%"><span>${x.t} · ${fmt0(x.e.tn)}</span></u>`).join('')}${b.obj ? `<u class="obj" style="left:${pos(b.obj)}%" title="Objetivo de Dirección hasta T3"></u>` : ''}</div>
+                <div class="rango-lbl centro">${b.obj ? `<span><i class="pt-obj"></i>Objetivo de Dirección hasta T3: ${fmt0(b.obj)} Tn</span>` : ''}</div>
+                ${notaEstim(b.r)}
             </div>`;
         }
 
@@ -582,13 +611,13 @@
             const cont = document.getElementById('estimFin');
             const ff = document.getElementById('fFinInput').value;
             if (!ff || ff < state.fInicio) { cont.innerHTML = ff ? '<div class="estim vacio">La fecha de fin no puede ser anterior al inicio.</div>' : ''; return; }
-            const lista = turnosRango(state.fInicio, state.tInicio, ff, 'T3');
-            const n = lista.filter(x => !state.excl.has(x.k)).length;
+            const ests = TURNOS.filter(t => ff !== state.fInicio || TURNOS.indexOf(t) >= TURNOS.indexOf(state.tInicio)).map(t => {
+                const n = turnosRango(state.fInicio, state.tInicio, ff, t).filter(x => !state.excl.has(x.k)).length;
+                return { t, e: estimar(n) };
+            });
             const finde = findeEnRango(ff);
-            const e = estimar(n);
-            const extra = state.excl.size ? `${state.excl.size} turno(s) sin trabajar` : '';
-            cont.innerHTML = (stats && e && !e.sinDatos ? htmlEstim(e, `Si termina el ${fechaCorta(ff)} en T3`, extra) : htmlEstim(e || (stats ? { sinDatos: true, n } : null), '', '')) +
-                (finde.length ? `<div class="aviso-finde">📅 Incluye ${finde.length} día${finde.length > 1 ? 's' : ''} de fin de semana (${finde.map(fechaCorta).join(', ')}). En el siguiente paso elegís qué turnos no se trabajan.</div>` : '');
+            cont.innerHTML = htmlEstimRango(ests, `Cierre el ${fechaCorta(ff)}`) +
+                (finde.length ? `<div class="aviso-finde">📅 Incluye ${finde.length} día${finde.length > 1 ? 's' : ''} de fin de semana (${finde.map(fechaCorta).join(', ')}). En el siguiente paso elegís qué turnos no se trabajan; la estimación se ajusta.</div>` : '');
         }
 
         function saveFFin() {
@@ -620,7 +649,8 @@
         function resumenFinde() {
             const lista = turnosRango(state.fInicio, state.tInicio, state.fFin, 'T3');
             const n = lista.filter(x => !state.excl.has(x.k)).length;
-            document.getElementById('findeRes').innerHTML = `Turnos productivos hasta el ${fechaCorta(state.fFin)} T3: <b>${n}</b> (≈${fmt1(n / 3)} días) · sin trabajar: <b>${state.excl.size}</b>`;
+            const e = estimar(n);
+            document.getElementById('findeRes').innerHTML = `Hasta el ${fechaCorta(state.fFin)} T3: <b>${n}</b> turnos (≈${fmt1(n / 3)} días) · sin trabajar: <b>${state.excl.size}</b>${e && !e.sinDatos ? `<br>≈ <b>${fmt0(e.tn)}</b>${e.sd ? ` ± ${fmt0(e.sd)}` : ''} Tn · máx. <b>${e.pal !== null ? fmt0(e.pal) : '–'}</b> pallets` : ''}`;
         }
 
         function toggleTurno(k) {
@@ -653,7 +683,7 @@
                 let est = '';
                 if (!valido) est = '<span>Anterior al turno de inicio</span>';
                 else if (excluido) est = '<span>Marcado como no trabajado</span>';
-                else if (e && !e.sinDatos) est = `<span><b>${fmt1(e.dias)}</b> días</span><span><b>${fmt0(e.tnMin)}–${fmt0(e.tnMax)}</b> Tn</span><span>máx. <b>${e.palMax !== null ? fmt0(e.palMax) : '–'}</b> pallets</span>`;
+                else if (e && !e.sinDatos) est = `<span><b>${fmt1(e.dias)}</b> días</span><span><b>${fmt0(e.tn)}</b>${e.sd ? ` ± ${fmt0(e.sd)}` : ''} Tn</span><span>máx. <b>${e.pal !== null ? fmt0(e.pal) : '–'}</b> pallets</span>`;
                 else est = `<span><b>${fmt1(n / 3)}</b> días · ${n} turnos</span>${stats ? '' : '<span>⏳ cargando histórico…</span>'}`;
                 return `<button class="option-btn turno-btn" ${valido && !excluido && n > 0 ? '' : 'disabled'} onclick="selectTFin('${t}')"><span class="tb-ico">${ICONO_T[t]}</span><span class="tb-tit">${t}<small>${t === 'T1' ? '22:00 (día anterior) a 06:00' : t === 'T2' ? '06:00 a 14:00' : '14:00 a 22:00'}</small></span><span class="tb-est">${est}</span></button>`;
             }).join('');
@@ -682,7 +712,7 @@
                 if (excl.length) html += `<br><strong>🚫 No se trabaja:</strong><div class="excl-lista">${excl.map(x => `<span>${fechaCorta(x.ds)} ${x.t}</span>`).join('')}</div>`;
                 html += `<br><strong>🗂 Registros a crear (${segs.length}):</strong><div class="seg-lista">${segs.map(s => `<div class="seg"><span>${textoSeg(s)}</span><small>${s.n} turno${s.n > 1 ? 's' : ''}</small></div>`).join('')}</div>`;
                 const n = segs.reduce((a, s) => a + s.n, 0);
-                document.getElementById('estimResumen').innerHTML = htmlEstim(estimar(n) || (stats ? { sinDatos: true, n } : null), 'Producción esperada', `${state.lad}`);
+                document.getElementById('estimResumen').innerHTML = htmlEstim(estimar(n), 'Producción esperada', `${state.lad} · ${segs.length} tramo${segs.length > 1 ? 's' : ''}`);
                 document.getElementById('btnSubmit').textContent = segs.length > 1 ? `Registrar ${segs.length} tramos de producción` : 'Registrar Planificación de Producción';
             } else {
                 document.getElementById('estimResumen').innerHTML = '';
