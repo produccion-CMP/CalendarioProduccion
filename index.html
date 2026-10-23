@@ -745,6 +745,32 @@
         .cb-btn.prim { background: #0a84ff; border-color: #0a84ff; color: #fff; }
         td.bq-sel { cursor: copy; }
         td.bq-hover { box-shadow: inset 0 0 0 3px #0a84ff !important; filter: brightness(1.1); }
+        .mv-wrap { position: absolute; left: 2px; top: 17px; z-index: 7; display: flex; flex-direction: column; align-items: flex-start; gap: 2px; pointer-events: none; }
+        .mv { pointer-events: auto; display: inline-flex; align-items: center; justify-content: center; min-width: 17px; height: 17px; padding: 0 3px; border-radius: 9px; font-size: 10px; font-weight: 900; line-height: 1; color: #fff; box-shadow: 0 0 0 1.5px rgba(255,255,255,0.9), 0 2px 4px rgba(0,0,0,0.4); cursor: help; transition: transform 0.15s; animation: popIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+        .mv:hover { transform: scale(1.25); }
+        .mv.static { position: static; animation: none; cursor: default; margin-right: 3px; }
+        .mv-sol.pend, .mv-sol.anal { background: #0a84ff; animation: popIn 0.4s both, justPulse 2.4s 0.4s ease-in-out infinite; }
+        .mv-sol.anal { background: var(--orange); }
+        .mv-sol.ok { background: #2a9d4b; } .mv-sol.rech { background: #6e6e73; }
+        .mv-apl { background: #30d158; color: #06310f; font-size: 10px; }
+        .mv-prop { font-size: 8.5px; letter-spacing: -0.3px; }
+        .mv-prop.menos { background: #d9534a; } .mv-prop.mas { background: #2a9d4b; }
+        .mv-prop.est-pend, .mv-prop.est-anal { opacity: 0.8; background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.18) 0 3px, transparent 3px 6px); }
+        .rec-resumen { display: flex; gap: 6px; flex-wrap: wrap; }
+        .rec-resumen .rec-est b { margin-left: 3px; }
+        .rec-acc { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+        .rec-af.menos { background: rgba(255,69,58,0.14); color: #ff8f86; } .rec-af.mas { background: rgba(48,209,88,0.14); color: #6ee09a; }
+        body.light-mode .rec-af.menos { color: #c43c33; } body.light-mode .rec-af.mas { color: #1f8a46; }
+        .rec-fila td:first-child { box-shadow: inset 3px 0 0 var(--rc, transparent); }
+        .rec-fila.est-pend { --rc: #0a84ff; } .rec-fila.est-anal { --rc: var(--orange); } .rec-fila.est-ok { --rc: #2a9d4b; } .rec-fila.est-rech { --rc: #6e6e73; }
+        .rr { display: flex; align-items: center; flex-wrap: nowrap; }
+        .rr i { flex: 0 0 10px; height: 2px; background: var(--border); }
+        .rr-paso { display: inline-flex; flex-direction: column; align-items: center; gap: 1px; padding: 3px 5px; border-radius: 8px; background: var(--bg-cell); font-size: 0.85rem; line-height: 1; animation: cardIn 0.35s ease both; }
+        .rr-paso small { font-size: 0.6rem; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+        .rr-paso.ok, .rr-paso.apl { background: rgba(48,209,88,0.14); } .rr-paso.rech { background: rgba(127,127,127,0.18); } .rr-paso.anal { background: rgba(255,159,10,0.14); }
+        .rr-paso:nth-child(3) { animation-delay: 0.08s; } .rr-paso:nth-child(5) { animation-delay: 0.16s; } .rr-paso:nth-child(7) { animation-delay: 0.24s; }
+        .rp-acciones { margin-bottom: 4px; }
+        body.printing .mv-wrap { display: none !important; }
         .rec-badge { position: absolute; right: 2px; bottom: 2px; z-index: 6; width: 16px; height: 16px; border-radius: 50%; font-size: 9px; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 0 1.5px #fff; }
         .rec-badge.pend { background: #0a84ff; animation: justPulse 2.4s ease-in-out infinite; }
         .rec-badge.ok { background: #6e6e73; }
@@ -845,6 +871,14 @@
         .rc-bq-chk { width: 18px; height: 18px; flex: 0 0 auto; border-radius: 5px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; color: #fff; }
         .rc-bq.on .rc-bq-chk { background: #0a84ff; border-color: #0a84ff; }
         .rc-bq-txt small { color: var(--text-muted); }
+        .rc-bq-txt { flex: 1; min-width: 0; }
+        .rc-bq.mismo { opacity: 0.6; }
+        .rc-bq-rep { flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-end; padding: 4px 8px; border-radius: 8px; font-variant-numeric: tabular-nums; animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+        .rc-bq-rep b { font-size: 0.85rem; } .rc-bq-rep small { font-size: 0.66rem; font-weight: 700; opacity: 0.85; }
+        .rc-bq-rep.menos { background: rgba(255,69,58,0.14); color: #ff8f86; } .rc-bq-rep.mas { background: rgba(48,209,88,0.14); color: #6ee09a; }
+        body.light-mode .rc-bq-rep.menos { color: #c43c33; } body.light-mode .rc-bq-rep.mas { color: #1f8a46; }
+        .rc-fila.tres { grid-template-columns: 1fr auto 1fr auto 1fr; }
+        #rcBloquesLbl small { text-transform: none; letter-spacing: 0; font-weight: 600; }
         .rec-af { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; margin: 1px 2px 1px 0; border-radius: 6px; background: rgba(10,132,255,0.14); color: #5ea8ff; white-space: nowrap; }
         .toast { position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; z-index: 6000; max-width: min(560px, 92vw); padding: 12px 18px; border-radius: 12px; background: #1c1c1e; color: #fff; font-size: 0.86rem; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #3a3a3c; transition: opacity 0.25s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
         .toast.on { opacity: 1; transform: translate(-50%, 0); }
@@ -1237,20 +1271,22 @@
                     <label><input type="radio" name="rcAccion" value="Cambiar tipo de ladrillo" onchange="actualizarFormRec()"><span>🔁 Cambiar tipo</span></label>
                 </div>
             </div>
-            <div class="rc-fila">
+            <div id="rcTipoWrap">
+                <label for="rcTipo" id="rcTipoLbl">Tipo de ladrillo</label>
+                <select id="rcTipo" onchange="cambioTipoRec()"></select>
+            </div>
+            <div class="rc-fila tres">
                 <div><label for="rcDias" id="rcDiasLbl">Días</label><input id="rcDias" type="number" min="0" step="0.5" inputmode="decimal" oninput="convertirRec('dias')"></div>
                 <div class="rc-eq">⇄</div>
                 <div><label for="rcPallets">Pallets</label><input id="rcPallets" type="number" min="0" step="1" inputmode="numeric" oninput="convertirRec('pallets')"></div>
+                <div class="rc-eq">⇄</div>
+                <div><label for="rcTn">Toneladas</label><input id="rcTn" type="number" min="0" step="1" inputmode="numeric" oninput="convertirRec('tn')"></div>
             </div>
             <p class="rc-conv" id="rcConv"></p>
             <p class="rc-aviso" id="rcAviso"></p>
             <div id="rcBloquesWrap" hidden>
                 <label id="rcBloquesLbl">Bloques afectados</label>
                 <div class="rc-bloques" id="rcBloques"></div>
-            </div>
-            <div id="rcTipoWrap">
-                <label for="rcTipo" id="rcTipoLbl">Tipo de ladrillo</label>
-                <select id="rcTipo" onchange="convertirRec('dias')"></select>
             </div>
             <label for="rcDetalle">Necesidad / motivo</label>
             <textarea id="rcDetalle" maxlength="1500" placeholder="Ej.: stock bajo de H12 para pedidos de noviembre"></textarea>
@@ -1287,15 +1323,27 @@
         <div class="jf-box" role="dialog" aria-modal="true" aria-labelledby="rpTitulo">
             <h3 id="rpTitulo">🏭 Responder a Comercial</h3>
             <div class="jf-resumen" id="rpResumen"></div>
-            <label for="rpEstado">Decisión</label>
-            <select id="rpEstado"><option>Aceptada</option><option>En análisis</option><option>Rechazada</option></select>
-            <label for="rpRespuesta">Respuesta</label>
+            <label>Decisión</label>
+            <div class="rc-acciones rp-acciones">
+                <label><input type="radio" name="rpEstado" value="Aplicada" onchange="actualizarFormResp()"><span>✅ Tomada en cuenta</span></label>
+                <label><input type="radio" name="rpEstado" value="En análisis" onchange="actualizarFormResp()"><span>🔎 En análisis</span></label>
+                <label><input type="radio" name="rpEstado" value="Desestimada" onchange="actualizarFormResp()"><span>⛔ Desestimada</span></label>
+            </div>
+            <div id="rpAplWrap">
+                <label>¿Desde cuándo se aplica el cambio?</label>
+                <div class="rc-fila dos">
+                    <input id="rpAplFecha" type="date" aria-label="Fecha de aplicación">
+                    <select id="rpAplTurno" aria-label="Turno de aplicación"><option>T1</option><option>T2</option><option>T3</option></select>
+                </div>
+                <p class="rc-nota">Se marca con ✔ en ese turno de la Planificación. Cargá el nuevo plan desde “Nuevo plan”.</p>
+            </div>
+            <label for="rpRespuesta" id="rpRespuestaLbl">Respuesta</label>
             <textarea id="rpRespuesta" maxlength="1500" placeholder="Ej.: se agregan 2 días de H12 desde el 26/10"></textarea>
             <label for="rpAutor">Responsable</label>
             <input id="rpAutor" maxlength="80" placeholder="Nombre">
             <div class="jf-acciones">
                 <button onclick="cerrarRespuesta()">Cancelar</button>
-                <button class="prim" id="rpGuardar" onclick="guardarRespuesta()">Enviar respuesta</button>
+                <button class="prim" id="rpGuardar" onclick="guardarRespuesta()">Guardar respuesta</button>
             </div>
             <div class="jf-msg" id="rpMsg"></div>
         </div>
@@ -1554,6 +1602,26 @@
             return { estados: new Map(), prod: new Map(), turnosInf: new Map(), promedios: new Map(), justif: new Map(), coment: new Map(), objetivos: new Map(), base: new Map(), recomendaciones: [], validaciones: new Map(), informe: false, cargado: false, rango: rango || '', diasPromedio: 365 };
         }
 
+        function normalizarEstadoRec(e) {
+            const v = String(e || '').trim();
+            if (v === 'Aceptada') return 'Aplicada';
+            if (v === 'Rechazada') return 'Desestimada';
+            return v || 'Pendiente';
+        }
+
+        function leerPropuesta(txt) {
+            try { const l = JSON.parse(txt || '[]'); return Array.isArray(l) ? l.filter(x => x && /^\d{4}-\d{2}-\d{2}_T[123]$/.test(x.k)) : []; } catch (e) { return []; }
+        }
+
+        function fechaDeMarca(txt) {
+            const iso = String(txt || '').match(/(\d{4})-(\d{2})-(\d{2})/);
+            if (iso) return `${iso[1]}-${iso[2]}-${iso[3]}`;
+            const m = String(txt || '').match(/(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+            if (!m) return '';
+            const y = m[3].length === 2 ? '20' + m[3] : m[3];
+            return `${y}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}`;
+        }
+
         function procesarExt(j, rango) {
             const ext = extVacio(rango);
             (j.estados || []).forEach(e => {
@@ -1580,8 +1648,9 @@
             ext.recomendaciones = (j.recomendaciones || []).map(r => ({
                 id: r['ID'], marca: r['Marca temporal'], mes: r['Mes'], tipo: r['Tipo de ladrillo'], accion: r['Acción'], desde: r['Bloque desde'], hasta: r['Bloque hasta'],
                 moldes: r['Moldes'], dias: Number(String(r['Días']).replace(',', '.')) || 0, pallets: Number(String(r['Pallets']).replace(/\./g, '').replace(',', '.')) || 0,
-                tipoAfectado: r['Tipo afectado'], detalle: r['Detalle'], prioridad: r['Prioridad'], autor: r['Autor'], estado: r['Estado'] || 'Pendiente',
-                respuesta: r['Respuesta'], respondidoPor: r['Respondido por'], fechaRespuesta: r['Fecha respuesta'], afectados: r['Bloques afectados'] || '', notificado: r['Notificado'] || ''
+                tipoAfectado: r['Tipo afectado'], detalle: r['Detalle'], prioridad: r['Prioridad'], autor: r['Autor'], estado: normalizarEstadoRec(r['Estado']),
+                respuesta: r['Respuesta'], respondidoPor: r['Respondido por'], fechaRespuesta: r['Fecha respuesta'], afectados: r['Bloques afectados'] || '', notificado: r['Notificado'] || '',
+                aplicadoEn: r['Aplicado en'] || '', propuesta: leerPropuesta(r['Propuesta'])
             }));
             (j.validaciones || []).forEach(v => ext.validaciones.set(v['Mes'], { estado: v['Estado'], comentario: v['Comentario'], autor: v['Autor'], marca: v['Marca temporal'] }));
             ext.informe = !!j.turnos;
@@ -2148,6 +2217,7 @@
             desviosMes = calcularDesvios(year, month);
             bloquesMes = calcularBloques(year, month);
             const tnDias = calcularTnDias(year, month);
+            const movPlan = currentView === 'plan' ? eventosPlanificacion() : new Map();
             renderKPIs(daysInMonth, year, month);
 
             const registrarVisibles = pre => pre.seq.forEach(m => { const tp = getTipo(m.baseName); if (!visibles.has(tp)) visibles.set(tp, new Map()); visibles.get(tp).set(m.number, { baseName: m.baseName, molde: m.moldeCompleto }); });
@@ -2170,12 +2240,9 @@
                 let extraAttr = '', onclick = `abrirGantt('${dateStr}')`;
                 if (currentView === 'plan') {
                     const ids = bloquesMes.porTurno.get(k) || [];
+                    const mov = movPlan.get(k);
+                    if (mov) markers += badgesMovimiento(mov);
                     if (ids.length) {
-                        const recs = ids.flatMap(id => bloquesMes.porId.get(id).keys[0] === k ? bloquesMes.porId.get(id).recs : []);
-                        if (recs.length) {
-                            const pend = recs.some(r => r.estado === 'Pendiente' || r.estado === 'En análisis');
-                            markers += `<span class="rec-badge ${pend ? 'pend' : 'ok'}" title="${recs.length} recomendación(es) de Comercial">💼</span>`;
-                        }
                         if (seleccionCompras) { extraAttr = ` data-bq="${ids.join(' ')}"`; onclick = `abrirBloque('${ids[ids.length - 1]}')`; }
                     }
                 }
@@ -2382,6 +2449,13 @@
             else h += `<div class="legend-item"><span class="tn-tag static">250</span><span>Tn producidas en el turno</span></div>`;
             }
             h += `<div class="legend-item lg-live"><div class="legend-now"></div><span>Turno en curso</span></div>`;
+            if (currentView === 'plan' && moldesExt.recomendaciones.some(r => r.mes === mesClave())) {
+                h += `<div class="legend-item lg-live"><span class="mv mv-sol pend static">💼</span><span>Solicitud de Comercial (pendiente / en análisis)</span></div>`;
+                h += `<div class="legend-item lg-live"><span class="mv mv-sol ok static">💼</span><span>Solicitud tomada en cuenta</span></div>`;
+                h += `<div class="legend-item lg-live"><span class="mv mv-sol rech static">⛔</span><span>Solicitud desestimada</span></div>`;
+                h += `<div class="legend-item lg-live"><span class="mv mv-apl static">✔</span><span>Cambio aplicado por solicitud</span></div>`;
+                h += `<div class="legend-item lg-live"><span class="mv mv-prop menos static">−1 d</span><span class="mv mv-prop mas static">+1 d</span><span>Días propuestos por Comercial</span></div>`;
+            }
             if (currentView === 'plan' && moldesExt.cargado) {
                 h += `<div class="legend-item lg-live"><div class="mold-warn mw-amber static">!</div><span>Molde en calibración</span></div>`;
                 h += `<div class="legend-item lg-live"><div class="mold-warn mw-red static">!</div><span>Molde no operativo${hayAviso ? '' : ' · sin casos'}</span></div>`;
@@ -3210,7 +3284,7 @@
             const mesTxt = `${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()}`;
             const sinNotificar = moldesExt.recomendaciones.filter(r => r.mes === mesClave() && !r.notificado).length;
             bar.innerHTML = `<div class="cb-info"><b>Plan de ${mesTxt}</b><span class="sello ${cls}">${estado}</span>${currentView === 'plan' ? '<span class="cb-tip">👆 Tocá un bloque del calendario para recomendar cambios</span>' : '<button class="cb-btn" onclick="setView(\'plan\')">Ir a Planificación</button>'}</div>
-                <div class="cb-acc"><button class="cb-btn" onclick="abrirValidacion()">✔ Validar planificación</button><button class="cb-btn" onclick="abrirRecomendacion(null)">📝 Modificación total</button><button class="cb-btn prim" id="btnNotificar" onclick="finalizarYNotificar()" ${sinNotificar ? '' : 'disabled'} title="Envía por mail a Producción las recomendaciones nuevas">📨 Finalizar y notificar${sinNotificar ? ` <span class="cb-n">${sinNotificar}</span>` : ''}</button></div>`;
+                <div class="cb-acc"><button class="cb-btn" onclick="abrirValidacion()">✔ Validar planificación</button><button class="cb-btn" onclick="abrirRecomendacion(null, true)">📦 Pedido por cantidad</button><button class="cb-btn" onclick="abrirRecomendacion(null)">📝 Modificación total</button><button class="cb-btn prim" id="btnNotificar" onclick="finalizarYNotificar()" ${sinNotificar ? '' : 'disabled'} title="Envía por mail a Producción las recomendaciones nuevas">📨 Finalizar y notificar${sinNotificar ? ` <span class="cb-n">${sinNotificar}</span>` : ''}</button></div>`;
         }
 
         async function finalizarYNotificar() {
@@ -3239,10 +3313,10 @@
         let recActual = null;
         function abrirBloque(id) { if (modo === 'comercial') abrirRecomendacion(id); }
 
-        function abrirRecomendacion(id) {
+        function abrirRecomendacion(id, cantidad) {
             if (modo !== 'comercial') return;
             const b = id ? bloquesMes.porId.get(id) : null;
-            recActual = { bloque: b, futuros: bloquesFuturos(null), sel: new Set() };
+            recActual = { bloque: b, futuros: bloquesFuturos(null), sel: new Set(), cantidad: !!cantidad };
             const propio = b ? recActual.futuros.findIndex(f => f.b.id === b.id) : -1;
             if (propio >= 0) recActual.sel.add(propio);
             const res = document.getElementById('rcResumen');
@@ -3252,46 +3326,73 @@
                 res.innerHTML = `<div class="rc-head"><span class="tipo-chip" style="background:${c}"></span><b>${escAttr(b.tipo)}</b><span>${[...b.moldes].join(', ')}</span></div>
                     <div class="rc-grid"><div><small>Desde</small>${fechaCorta(b.desde.ds)} ${b.desde.t}</div><div><small>Hasta</small>${fechaCorta(b.hasta.ds)} ${b.hasta.t}</div><div><small>Turnos</small>${b.turnos.toLocaleString('es-AR', { maximumFractionDigits: 1 })} (≈${(b.turnos / 3).toLocaleString('es-AR', { maximumFractionDigits: 1 })} días)</div><div><small>Tn esperadas</small>${b.tn ? '≈' + fmtTn0(b.tn) : '–'}</div><div><small>Pallets esperados</small>${ppt ? '≈' + fmtTn0(ppt * b.turnos) : '–'}</div></div>
                     ${b.recs.length ? `<div class="rc-prev">Ya tiene ${b.recs.length} recomendación(es): ${b.recs.map(r => `${r.accion} (${r.estado})`).join(' · ')}</div>` : ''}`;
+            } else if (cantidad) {
+                res.innerHTML = `<div class="rc-head"><b>Plan de ${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()}</b></div><p class="rc-nota">Indicá el producto y la cantidad (pallets, Tn o días). Se calcula cuántos días de producción hacen falta y se sugiere de qué bloques planificados desde hoy quitarlos, <b>en proporción a los días que les quedan</b>.</p>`;
             } else {
                 res.innerHTML = `<div class="rc-head"><b>Modificación total de la planificación</b><span>${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()}</span></div><p class="rc-nota">Indicá qué necesita Comercial: tipo de ladrillo, días de producción o pallets.</p>`;
             }
-            document.getElementById('rcTitulo').textContent = b ? '💼 Recomendación sobre el bloque' : '📝 Solicitar modificación total';
+            document.getElementById('rcTitulo').textContent = b ? '💼 Recomendación sobre el bloque' : cantidad ? '📦 Pedido por cantidad' : '📝 Solicitar modificación total';
             document.getElementById('rcAccionWrap').hidden = !b;
             document.querySelectorAll('input[name="rcAccion"]').forEach((r, i) => { r.checked = i === 0; });
             const sel = document.getElementById('rcTipo');
             sel.innerHTML = '<option value="">Seleccionar…</option>' + tiposDisponibles().filter(t => !b || t !== b.tipo).map(t => `<option>${escAttr(t)}</option>`).join('');
-            ['rcDias', 'rcPallets', 'rcDetalle'].forEach(i => { document.getElementById(i).value = ''; });
+            ['rcDias', 'rcPallets', 'rcTn', 'rcDetalle'].forEach(i => { document.getElementById(i).value = ''; });
             document.getElementById('rcPrioridad').value = 'Normal';
             document.getElementById('rcMsg').textContent = '';
             document.getElementById('rcGuardar').disabled = false;
-            renderBloquesFuturos();
             actualizarFormRec();
             document.getElementById('recModal').classList.add('open');
+            if (cantidad) setTimeout(() => sel.focus(), 80);
         }
+
+        function signoRec() { const a = accionRec(); return a === 'Agregar días' ? 1 : -1; }
+
+        function repartoRec() {
+            const out = new Map();
+            if (!recActual || !recActual.sel.size) return { mapa: out, total: 0, pedido: 0 };
+            const pedido = Math.max(0, Number(document.getElementById('rcDias').value) || 0);
+            const elegidos = [...recActual.sel].map(i => ({ i, d: recActual.futuros[i].turnos / 3 }));
+            const total = elegidos.reduce((a, x) => a + x.d, 0);
+            elegidos.forEach(x => {
+                let share = total > 0 ? pedido * x.d / total : 0;
+                if (signoRec() < 0) share = Math.min(share, x.d);
+                out.set(x.i, share);
+            });
+            return { mapa: out, total, pedido };
+        }
+
+        function fmtDias(d) { return d.toLocaleString('es-AR', { maximumFractionDigits: 1 }); }
 
         function renderBloquesFuturos() {
             const cont = document.getElementById('rcBloques');
             const lista = recActual.futuros;
             if (!lista.length) { cont.innerHTML = '<p class="rc-nota">No hay bloques planificados a partir de hoy en este mes.</p>'; return; }
+            const rep = repartoRec();
+            const s = signoRec() > 0 ? '+' : '−';
+            const tipoPedido = recActual.cantidad ? document.getElementById('rcTipo').value : '';
             cont.innerHTML = lista.map((f, i) => {
                 const c = getBrickColor(f.b.base, 2);
                 const on = recActual.sel.has(i);
-                return `<button type="button" class="rc-bq${on ? ' on' : ''}" onclick="toggleBloqueFuturo(${i})" aria-pressed="${on}">
+                const share = rep.mapa.get(i) || 0;
+                const ppt = palletsPorTurno(f.b.tipo);
+                const mismo = tipoPedido && f.b.tipo === tipoPedido;
+                return `<button type="button" class="rc-bq${on ? ' on' : ''}${mismo ? ' mismo' : ''}" onclick="toggleBloqueFuturo(${i})" aria-pressed="${on}">
                     <span class="rc-bq-chk">${on ? '✓' : ''}</span><span class="tipo-chip" style="background:${c}"></span>
-                    <span class="rc-bq-txt"><b>${escAttr(f.b.tipo)}</b> <small>${[...f.b.moldes].join(', ')}${recActual.bloque && f.b.id === recActual.bloque.id ? ' · bloque elegido' : ''}</small><br>${fechaCorta(f.desde.slice(0, 10))} ${f.desde.slice(-2)} → ${fechaCorta(f.hasta.slice(0, 10))} ${f.hasta.slice(-2)} · quedan ${f.turnos.toLocaleString('es-AR', { maximumFractionDigits: 1 })} turnos (≈${(f.turnos / 3).toLocaleString('es-AR', { maximumFractionDigits: 1 })} días)</span>
+                    <span class="rc-bq-txt"><b>${escAttr(f.b.tipo)}</b> <small>${[...f.b.moldes].join(', ')}${recActual.bloque && f.b.id === recActual.bloque.id ? ' · bloque elegido' : ''}${mismo ? ' · mismo producto pedido' : ''}</small><br>${fechaCorta(f.desde.slice(0, 10))} ${f.desde.slice(-2)} → ${fechaCorta(f.hasta.slice(0, 10))} ${f.hasta.slice(-2)} · quedan ${fmtDias(f.turnos / 3)} días</span>
+                    ${on && share > 0.005 ? `<span class="rc-bq-rep ${s === '+' ? 'mas' : 'menos'}"><b>${s}${fmtDias(share)} d</b>${ppt ? `<small>${s}${fmtTn0(share * 3 * ppt)} pal.</small>` : ''}</span>` : ''}
                 </button>`;
             }).join('');
         }
 
         function toggleBloqueFuturo(i) {
             if (recActual.sel.has(i)) recActual.sel.delete(i); else recActual.sel.add(i);
-            renderBloquesFuturos();
             convertirRec('dias');
         }
 
         function cerrarRecomendacion() { document.getElementById('recModal').classList.remove('open'); recActual = null; }
 
         function accionRec() {
+            if (recActual && recActual.cantidad) return 'Pedido por cantidad';
             if (!recActual || !recActual.bloque) return 'Modificación total';
             const r = document.querySelector('input[name="rcAccion"]:checked');
             return r ? r.value : 'Agregar días';
@@ -3300,64 +3401,92 @@
         function tipoConversion() {
             const a = accionRec();
             const t = document.getElementById('rcTipo').value;
-            if (a === 'Cambiar tipo de ladrillo' || a === 'Modificación total') return t;
+            if (a === 'Cambiar tipo de ladrillo' || a === 'Modificación total' || a === 'Pedido por cantidad') return t;
             if (recActual && recActual.sel.size) { const ts = [...new Set([...recActual.sel].map(i => recActual.futuros[i].b.tipo))]; if (ts.length === 1) return ts[0]; }
             return recActual && recActual.bloque ? recActual.bloque.tipo : t;
         }
 
+        function cambioTipoRec() {
+            if (recActual && recActual.cantidad) {
+                const t = document.getElementById('rcTipo').value;
+                recActual.sel = new Set(recActual.futuros.map((f, i) => f.b.tipo !== t ? i : -1).filter(i => i >= 0));
+            }
+            convertirRec(document.getElementById('rcPallets').value !== '' ? 'pallets' : document.getElementById('rcTn').value !== '' ? 'tn' : 'dias');
+        }
+
         function actualizarFormRec() {
             const a = accionRec();
-            const conBloques = a === 'Agregar días' || a === 'Reducir días';
+            const cant = a === 'Pedido por cantidad';
+            const conBloques = a === 'Agregar días' || a === 'Reducir días' || cant;
             document.getElementById('rcBloquesWrap').hidden = !conBloques;
-            document.getElementById('rcTipoWrap').hidden = conBloques;
-            document.getElementById('rcBloquesLbl').textContent = a === 'Agregar días' ? 'Bloques planificados (desde hoy) a los que se agregan días' : 'Bloques planificados (desde hoy) a los que se reducen días';
-            document.getElementById('rcTipoLbl').textContent = a === 'Cambiar tipo de ladrillo' ? 'Tipo de ladrillo a producir en su lugar' : 'Tipo de ladrillo necesario';
-            document.getElementById('rcDiasLbl').textContent = a === 'Reducir días' ? 'Días a reducir' : a === 'Agregar días' ? 'Días a agregar' : 'Días de producción';
-            convertirRec('dias');
+            document.getElementById('rcTipoWrap').hidden = conBloques && !cant;
+            document.getElementById('rcBloquesLbl').innerHTML = cant ? 'Bloques de los que se sugiere quitar días <small>· proporcional a los días restantes</small>' : a === 'Agregar días' ? 'Bloques planificados (desde hoy) a los que se agregan días <small>· proporcional</small>' : 'Bloques planificados (desde hoy) a los que se reducen días <small>· proporcional</small>';
+            document.getElementById('rcTipoLbl').textContent = cant ? 'Producto pedido' : a === 'Cambiar tipo de ladrillo' ? 'Tipo de ladrillo a producir en su lugar' : 'Tipo de ladrillo necesario';
+            document.getElementById('rcDiasLbl').textContent = a === 'Reducir días' ? 'Días a reducir' : a === 'Agregar días' ? 'Días a agregar' : cant ? 'Días necesarios' : 'Días de producción';
+            if (cant) cambioTipoRec(); else convertirRec('dias');
         }
 
         function validarDiasRec() {
             const nota = document.getElementById('rcAviso');
             nota.textContent = '';
-            if (!recActual || accionRec() !== 'Reducir días' || !recActual.sel.size) return;
+            if (!recActual || !recActual.sel.size) return;
+            const a = accionRec();
+            if (a !== 'Reducir días' && a !== 'Pedido por cantidad') return;
             const dias = Number(document.getElementById('rcDias').value) || 0;
-            const disp = [...recActual.sel].reduce((a, i) => a + recActual.futuros[i].turnos / 3, 0);
-            if (dias > disp + 0.01) nota.textContent = `⚠ A los bloques elegidos les quedan ≈${disp.toLocaleString('es-AR', { maximumFractionDigits: 1 })} días; se piden reducir ${dias}.`;
+            const disp = [...recActual.sel].reduce((s, i) => s + recActual.futuros[i].turnos / 3, 0);
+            if (dias > disp + 0.01) nota.textContent = `⚠ A los bloques elegidos les quedan ≈${fmtDias(disp)} días; ${a === 'Pedido por cantidad' ? 'el pedido necesita' : 'se piden reducir'} ${fmtDias(dias)}. Faltan ≈${fmtDias(dias - disp)} días.`;
         }
 
         function convertirRec(origen) {
             const t = tipoConversion();
             const ppt = t ? palletsPorTurno(t) : null;
+            const pt = t ? promedioTipo(t) : null;
             const nota = document.getElementById('rcConv');
-            if (!ppt) { nota.textContent = t ? `Sin datos de conversión para ${t}.` : 'Elegí el tipo para convertir días ⇄ pallets.'; validarDiasRec(); return; }
-            const porDia = ppt * 3;
-            const dias = document.getElementById('rcDias'), pal = document.getElementById('rcPallets');
-            if (origen === 'dias' && dias.value !== '') pal.value = Math.round(Number(dias.value) * porDia);
-            if (origen === 'pallets' && pal.value !== '') dias.value = (Number(pal.value) / porDia).toFixed(1);
-            const b = baseTipo(t);
-            nota.textContent = `${t}: ≈${fmtTn0(porDia)} pallets/día (${fmtTn0(ppt)} por turno · ${b.kgPallet.toLocaleString('es-AR')} kg/pallet · ${b.ladrillosPallet} ladrillos/pallet)`;
+            const dias = document.getElementById('rcDias'), pal = document.getElementById('rcPallets'), tn = document.getElementById('rcTn');
+            if (ppt && pt) {
+                const porDia = ppt * 3, tnDia = pt.tn * 3;
+                if (origen === 'pallets' && pal.value !== '') dias.value = (Number(pal.value) / porDia).toFixed(2);
+                if (origen === 'tn' && tn.value !== '') dias.value = (Number(tn.value) / tnDia).toFixed(2);
+                if (origen !== 'pallets') pal.value = dias.value !== '' ? Math.round(Number(dias.value) * porDia) : '';
+                if (origen !== 'tn') tn.value = dias.value !== '' ? Math.round(Number(dias.value) * tnDia) : '';
+                const b = baseTipo(t);
+                nota.textContent = `${t}: ≈${fmtTn0(porDia)} pallets/día · ≈${fmtTn0(tnDia)} Tn/día (${fmtTn0(ppt)} pallets por turno · ${b.kgPallet.toLocaleString('es-AR')} kg/pallet · ${b.ladrillosPallet} ladrillos/pallet)`;
+            } else {
+                nota.textContent = t ? `Sin datos de conversión para ${t}.` : 'Elegí el tipo para convertir días ⇄ pallets ⇄ Tn.';
+            }
             validarDiasRec();
+            if (!document.getElementById('rcBloquesWrap').hidden) renderBloquesFuturos();
         }
 
         async function guardarRecomendacion() {
             const b = recActual && recActual.bloque;
             const accion = accionRec();
-            const conBloques = accion === 'Agregar días' || accion === 'Reducir días';
-            const elegidos = conBloques ? [...recActual.sel].map(i => recActual.futuros[i]) : [];
-            const tipoAfectado = conBloques ? [...new Set(elegidos.map(f => f.b.tipo))].join(', ') : document.getElementById('rcTipo').value;
+            const cant = accion === 'Pedido por cantidad';
+            const conBloques = accion === 'Agregar días' || accion === 'Reducir días' || cant;
+            const rep = repartoRec();
+            const elegidos = conBloques ? [...recActual.sel].map(i => ({ f: recActual.futuros[i], share: rep.mapa.get(i) || 0 })) : [];
+            const s = signoRec();
+            const tipoPedido = document.getElementById('rcTipo').value;
+            const tipoAfectado = conBloques ? [...new Set(elegidos.map(x => x.f.b.tipo))].join(', ') : tipoPedido;
             const dias = document.getElementById('rcDias').value;
             const pallets = document.getElementById('rcPallets').value;
             const detalle = document.getElementById('rcDetalle').value.trim();
             const msg = document.getElementById('rcMsg');
-            if (conBloques && !elegidos.length) { msg.textContent = accion === 'Agregar días' ? 'Elegí a qué bloque(s) se agregan los días.' : 'Elegí a qué bloque(s) se reducen los días.'; msg.className = 'jf-msg err'; return; }
-            if (conBloques && !dias && !pallets) { msg.textContent = 'Indicá cuántos días o pallets.'; msg.className = 'jf-msg err'; return; }
-            if (!conBloques && !tipoAfectado) { msg.textContent = 'Elegí el tipo de ladrillo.'; msg.className = 'jf-msg err'; return; }
+            const error = t => { msg.textContent = t; msg.className = 'jf-msg err'; };
+            if (cant && !tipoPedido) return error('Elegí el producto pedido.');
+            if (cant && !(Number(dias) > 0)) return error('Indicá la cantidad pedida (pallets, Tn o días).');
+            if (!cant && conBloques && !elegidos.length) return error(accion === 'Agregar días' ? 'Elegí a qué bloque(s) se agregan los días.' : 'Elegí a qué bloque(s) se reducen los días.');
+            if (!cant && conBloques && !dias && !pallets) return error('Indicá cuántos días o pallets.');
+            if (!conBloques && !tipoPedido) return error('Elegí el tipo de ladrillo.');
             const btn = document.getElementById('rcGuardar');
             btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
-            const datos = { accion: 'recomendacion', mes: mesClave(), tipo: b ? b.tipo : tipoAfectado, accionRec: accion, desde: b ? b.etiqueta : '', hasta: b ? `${b.hasta.ds} ${b.hasta.t}` : '', moldes: b ? [...b.moldes].join(', ') : '', dias, pallets, tipoAfectado, afectados: elegidos.map(f => f.etiqueta).join(' | '), detalle, prioridad: document.getElementById('rcPrioridad').value, autor: 'Comercial' };
+            const signo = s > 0 ? '+' : '−';
+            const propuesta = elegidos.filter(x => x.share > 0.005).map(x => { const ppt = palletsPorTurno(x.f.b.tipo); return { k: x.f.desde, etiqueta: x.f.etiqueta, tipo: x.f.b.tipo, dias: Math.round(s * x.share * 100) / 100, pallets: ppt ? Math.round(s * x.share * 3 * ppt) : 0 }; });
+            const afectados = elegidos.map(x => `${x.f.etiqueta}${x.share > 0.005 ? ` (${signo}${fmtDias(x.share)} d)` : ''}`).join(' | ');
+            const datos = { accion: 'recomendacion', mes: mesClave(), tipo: b ? b.tipo : tipoPedido, accionRec: accion, desde: b ? b.etiqueta : '', hasta: b ? `${b.hasta.ds} ${b.hasta.t}` : '', moldes: b ? [...b.moldes].join(', ') : '', dias, pallets, tipoAfectado, afectados, propuesta: JSON.stringify(propuesta), detalle, prioridad: document.getElementById('rcPrioridad').value, autor: 'Comercial' };
             try {
                 const j = await postEditor(datos);
-                moldesExt.recomendaciones.push({ id: j.id, marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }), mes: datos.mes, tipo: datos.tipo, accion, desde: datos.desde, hasta: datos.hasta, moldes: datos.moldes, dias: Number(dias) || 0, pallets: Number(pallets) || 0, tipoAfectado, afectados: datos.afectados, detalle, prioridad: datos.prioridad, autor: 'Comercial', estado: 'Pendiente', respuesta: '', respondidoPor: '', fechaRespuesta: '', notificado: '' });
+                moldesExt.recomendaciones.push({ id: j.id, marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }), mes: datos.mes, tipo: datos.tipo, accion, desde: datos.desde, hasta: datos.hasta, moldes: datos.moldes, dias: Number(dias) || 0, pallets: Number(pallets) || 0, tipoAfectado, afectados, detalle, prioridad: datos.prioridad, autor: 'Comercial', estado: 'Pendiente', respuesta: '', respondidoPor: '', fechaRespuesta: '', notificado: '', aplicadoEn: '', propuesta });
                 msg.textContent = '✅ Guardada'; msg.className = 'jf-msg ok';
                 setTimeout(() => { cerrarRecomendacion(); renderGantt(); toast('✅ Recomendación guardada · cuando termines, tocá “Finalizar y notificar”', 'ok'); }, 450);
             } catch (err) {
@@ -3397,28 +3526,77 @@
             }
         }
 
+        const EST_REC = { 'Pendiente': { cls: 'pend', ico: '💼', txt: 'Pendiente' }, 'En análisis': { cls: 'anal', ico: '🔎', txt: 'En análisis' }, 'Aplicada': { cls: 'ok', ico: '✅', txt: 'Tomada en cuenta' }, 'Desestimada': { cls: 'rech', ico: '⛔', txt: 'Desestimada' } };
+        function infoEstadoRec(e) { return EST_REC[e] || EST_REC['Pendiente']; }
+        function keyDeEtiqueta(et) { const m = String(et || '').match(/^(\d{4}-\d{2}-\d{2}) (T[123])$/); return m ? key(m[1], m[2]) : ''; }
+        function anclaRec(r) { return keyDeEtiqueta(r.desde) || (r.propuesta && r.propuesta[0] ? r.propuesta[0].k : ''); }
+
+        function eventosPlanificacion() {
+            const mapa = new Map();
+            const add = (k, ev) => { if (!k) return; if (!mapa.has(k)) mapa.set(k, []); mapa.get(k).push(ev); };
+            moldesExt.recomendaciones.forEach(r => {
+                add(anclaRec(r), { tipo: 'sol', r });
+                if (r.estado === 'Aplicada' && r.aplicadoEn) add(keyDeEtiqueta(r.aplicadoEn), { tipo: 'apl', r });
+                if (r.estado !== 'Desestimada') (r.propuesta || []).forEach(p => add(p.k, { tipo: 'prop', r, p }));
+            });
+            return mapa;
+        }
+
+        function badgesMovimiento(lista) {
+            const tip = ev => {
+                const r = ev.r, ie = infoEstadoRec(r.estado);
+                if (ev.tipo === 'apl') return `✔ Cambio aplicado desde ${fechaCorta(r.aplicadoEn.slice(0, 10))} ${r.aplicadoEn.slice(11)}\n${r.accion} · ${r.tipo}${r.respuesta ? '\n' + r.respuesta : ''}`;
+                if (ev.tipo === 'prop') return `${ie.ico} Propuesta de Comercial (${ie.txt}): ${ev.p.dias > 0 ? '+' : '−'}${fmtDias(Math.abs(ev.p.dias))} días de ${ev.p.tipo}${ev.p.pallets ? ` (${fmtTn0(Math.abs(ev.p.pallets))} pallets)` : ''}\nPor: ${r.accion} · ${r.tipo}`;
+                return `${ie.ico} Solicitud de Comercial · ${ie.txt}\n${r.accion} · ${r.tipo} · ${textoCantidadRec(r)}${r.detalle ? '\n' + r.detalle : ''}${r.respuesta ? '\n🏭 ' + r.respuesta : ''}`;
+            };
+            const clic = ev => modo === 'produccion' ? ` onclick="event.stopPropagation(); abrirRespuesta('${ev.r.id}')"` : '';
+            const vistos = new Set();
+            const html = lista.filter(ev => { const id = ev.tipo + ev.r.id; if (vistos.has(id)) return false; vistos.add(id); return true; }).slice(0, 3).map(ev => {
+                const ie = infoEstadoRec(ev.r.estado);
+                if (ev.tipo === 'apl') return `<span class="mv mv-apl" title="${escAttr(tip(ev))}"${clic(ev)}>✔</span>`;
+                if (ev.tipo === 'prop') return `<span class="mv mv-prop ${ev.p.dias < 0 ? 'menos' : 'mas'} est-${ie.cls}" title="${escAttr(tip(ev))}"${clic(ev)}>${ev.p.dias > 0 ? '+' : '−'}${fmtDias(Math.abs(ev.p.dias))}d</span>`;
+                return `<span class="mv mv-sol ${ie.cls}" title="${escAttr(tip(ev))}"${clic(ev)}>${ev.r.estado === 'Desestimada' ? '⛔' : '💼'}</span>`;
+            }).join('');
+            return `<div class="mv-wrap">${html}</div>`;
+        }
+
+        function recorridoRec(r) {
+            const ie = infoEstadoRec(r.estado);
+            const fSol = fechaDeMarca(r.marca), fResp = fechaDeMarca(r.fechaRespuesta);
+            const pasos = [`<span class="rr-paso sol" title="Solicitud de Comercial">💼<small>${fSol ? fechaCorta(fSol) : 'Solicitud'}</small></span>`];
+            if (r.notificado) pasos.push(`<span class="rr-paso not" title="Notificada por mail">📨<small>${fechaDeMarca(r.notificado) ? fechaCorta(fechaDeMarca(r.notificado)) : 'mail'}</small></span>`);
+            if (r.estado !== 'Pendiente') pasos.push(`<span class="rr-paso ${ie.cls}" title="${escAttr(ie.txt)}">${ie.ico}<small>${fResp ? fechaCorta(fResp) : ie.txt}</small></span>`);
+            if (r.estado === 'Aplicada' && r.aplicadoEn) pasos.push(`<span class="rr-paso apl" title="Cambio aplicado en el plan">✔<small>${fechaCorta(r.aplicadoEn.slice(0, 10))} ${r.aplicadoEn.slice(11)}</small></span>`);
+            return `<div class="rr">${pasos.join('<i></i>')}</div>`;
+        }
+
+        function textoCantidadRec(r) {
+            return [r.dias ? `${r.dias.toLocaleString('es-AR')} día${r.dias === 1 ? '' : 's'}` : '', r.pallets ? `${fmtTn0(r.pallets)} pallets` : ''].filter(Boolean).join(' · ') || '–';
+        }
+
         function renderRecomendaciones() {
             const cont = document.getElementById('recsInfo');
             const recs = moldesExt.recomendaciones.filter(r => r.mes === mesClave());
             if (currentView !== 'plan' || (!recs.length && modo !== 'comercial')) { cont.style.display = 'none'; cont.innerHTML = ''; return; }
             cont.style.display = 'block';
-            if (!recs.length) { cont.innerHTML = '<h3>💼 Recomendaciones de Comercial</h3><p class="desv-vacio">Todavía no hay recomendaciones para este mes.</p>'; return; }
-            const estCls = { 'Pendiente': 'pend', 'En análisis': 'anal', 'Aceptada': 'ok', 'Rechazada': 'rech' };
-            let html = `<h3>💼 Recomendaciones de Comercial <small>${recs.filter(r => r.estado === 'Pendiente' || r.estado === 'En análisis').length} pendientes de respuesta</small></h3>
-                <table class="desv-tabla rec-tabla"><thead><tr><th>Bloque</th><th>Acción</th><th>Cantidad</th><th>Bloques / tipo afectado</th><th>Necesidad</th><th>Estado</th><th>Respuesta de Producción</th><th></th></tr></thead><tbody>`;
+            if (!recs.length) { cont.innerHTML = '<h3>💼 Solicitudes de Comercial</h3><p class="desv-vacio">Todavía no hay solicitudes para este mes.</p>'; return; }
+            const cuenta = {};
+            recs.forEach(r => { cuenta[r.estado] = (cuenta[r.estado] || 0) + 1; });
+            const chips = Object.keys(EST_REC).filter(e => cuenta[e]).map(e => `<span class="rec-est ${EST_REC[e].cls}">${EST_REC[e].ico} ${EST_REC[e].txt} <b>${cuenta[e]}</b></span>`).join('');
+            let html = `<div class="desv-head"><h3>💼 Solicitudes de Comercial <small>movimientos de la planificación</small></h3><div class="rec-resumen">${chips}</div></div>
+                <table class="desv-tabla rec-tabla"><thead><tr><th>Solicitud</th><th>Cantidad</th><th>Propuesta / bloques afectados</th><th>Necesidad</th><th>Recorrido</th><th>Respuesta de Producción</th><th></th></tr></thead><tbody>`;
             recs.slice().reverse().forEach(r => {
-                const bloque = r.desde ? `<b>${escAttr(r.tipo)}</b> ${fechaCorta(r.desde.slice(0, 10))} ${r.desde.slice(11)} → ${r.hasta ? fechaCorta(r.hasta.slice(0, 10)) + ' ' + r.hasta.slice(11) : ''}` : `<b>Plan completo</b>`;
-                const cant = [r.dias ? `${r.dias.toLocaleString('es-AR')} días` : '', r.pallets ? `${fmtTn0(r.pallets)} pallets` : ''].filter(Boolean).join(' · ') || '–';
-                const afect = r.afectados ? r.afectados.split(' | ').map(x => `<span class="rec-af">${escAttr(x)}</span>`).join('') : escAttr(r.tipoAfectado || '–');
-                html += `<tr class="${r.prioridad === 'Alta' || r.prioridad === 'Urgente' ? 'prio' : ''}">
-                    <td>${bloque}</td>
-                    <td>${escAttr(r.accion)}${r.prioridad && r.prioridad !== 'Normal' ? ` <span class="prio-tag">${escAttr(r.prioridad)}</span>` : ''}</td>
-                    <td>${cant}</td>
-                    <td>${afect}</td>
-                    <td class="desv-just">${r.detalle ? `<span>${escAttr(r.detalle)}</span>` : ''}<small>${r.marca ? escAttr(r.marca) : ''}${r.notificado ? ' · 📨 notificada' : ' · sin notificar'}</small></td>
-                    <td><span class="rec-est ${estCls[r.estado] || 'pend'}">${escAttr(r.estado)}</span></td>
-                    <td class="desv-just">${r.respuesta ? `<span>${escAttr(r.respuesta)}</span><small>${escAttr(r.respondidoPor || '')}</small>` : '<span class="muted">–</span>'}</td>
-                    <td>${modo === 'produccion' ? `<button class="desv-btn" onclick="abrirRespuesta('${r.id}')">Responder</button>` : ''}</td>
+                const ie = infoEstadoRec(r.estado);
+                const bloque = r.desde ? `<b>${escAttr(r.tipo)}</b> ${fechaCorta(r.desde.slice(0, 10))} ${r.desde.slice(11)} → ${r.hasta ? fechaCorta(r.hasta.slice(0, 10)) + ' ' + r.hasta.slice(11) : ''}` : r.accion === 'Pedido por cantidad' ? `<b>📦 ${escAttr(r.tipo)}</b>` : `<b>Plan completo</b>`;
+                const prop = r.propuesta && r.propuesta.length ? r.propuesta.map(p => `<span class="rec-af ${p.dias < 0 ? 'menos' : 'mas'}">${escAttr(p.tipo)} ${fechaCorta(p.k.slice(0, 10))} <b>${p.dias > 0 ? '+' : '−'}${fmtDias(Math.abs(p.dias))} d</b>${p.pallets ? ` · ${p.dias > 0 ? '+' : '−'}${fmtTn0(Math.abs(p.pallets))} pal.` : ''}</span>`).join('') : r.afectados ? r.afectados.split(' | ').map(x => `<span class="rec-af">${escAttr(x)}</span>`).join('') : escAttr(r.tipoAfectado || '–');
+                html += `<tr class="rec-fila est-${ie.cls}${r.prioridad === 'Alta' || r.prioridad === 'Urgente' ? ' prio' : ''}">
+                    <td>${bloque}<div class="rec-acc">${escAttr(r.accion)}${r.prioridad && r.prioridad !== 'Normal' ? ` <span class="prio-tag">${escAttr(r.prioridad)}</span>` : ''}</div></td>
+                    <td>${textoCantidadRec(r)}</td>
+                    <td>${prop}</td>
+                    <td class="desv-just">${r.detalle ? `<span>${escAttr(r.detalle)}</span>` : '<span class="muted">–</span>'}</td>
+                    <td>${recorridoRec(r)}</td>
+                    <td class="desv-just">${r.respuesta ? `<span>${escAttr(r.respuesta)}</span>` : r.estado === 'Desestimada' ? '<span class="muted">Sin justificación</span>' : '<span class="muted">–</span>'}${r.respondidoPor ? `<small>${escAttr(r.respondidoPor)}</small>` : ''}</td>
+                    <td>${modo === 'produccion' ? `<button class="desv-btn" onclick="abrirRespuesta('${r.id}')">${r.estado === 'Pendiente' ? 'Responder' : 'Editar'}</button>` : ''}</td>
                 </tr>`;
             });
             cont.innerHTML = html + '</tbody></table>';
@@ -3430,16 +3608,32 @@
             const r = moldesExt.recomendaciones.find(x => x.id === id);
             if (!r) return;
             respActual = r;
-            document.getElementById('rpResumen').innerHTML = `<b>${escAttr(r.accion)}</b> · ${escAttr(r.tipo)}${r.desde ? ` (${fechaCorta(r.desde.slice(0, 10))} ${r.desde.slice(11)})` : ''}<br>${r.dias ? r.dias + ' días ' : ''}${r.pallets ? '· ' + fmtTn0(r.pallets) + ' pallets ' : ''}${r.tipoAfectado ? '· tipo afectado: ' + escAttr(r.tipoAfectado) : ''}${r.detalle ? `<br><i>${escAttr(r.detalle)}</i>` : ''}`;
-            document.getElementById('rpEstado').value = r.estado === 'Pendiente' ? 'Aceptada' : r.estado;
+            const prop = r.propuesta && r.propuesta.length ? `<br><span>Propuesta:</span> ${r.propuesta.map(p => `${escAttr(p.tipo)} ${fechaCorta(p.k.slice(0, 10))} ${p.dias > 0 ? '+' : '−'}${fmtDias(Math.abs(p.dias))} d`).join(' · ')}` : '';
+            document.getElementById('rpResumen').innerHTML = `<b>${escAttr(r.accion)}</b> · ${escAttr(r.tipo)}${r.desde ? ` (${fechaCorta(r.desde.slice(0, 10))} ${r.desde.slice(11)})` : ''}<br>${textoCantidadRec(r)}${r.tipoAfectado ? ' · afecta: ' + escAttr(r.tipoAfectado) : ''}${prop}${r.detalle ? `<br><i>${escAttr(r.detalle)}</i>` : ''}`;
+            const est = r.estado === 'Pendiente' ? 'Aplicada' : r.estado;
+            document.querySelectorAll('input[name="rpEstado"]').forEach(x => { x.checked = x.value === est; });
+            let ancla = r.aplicadoEn ? keyDeEtiqueta(r.aplicadoEn) : anclaRec(r);
+            if (!ancla) { const ta = turnoActual(new Date()); ancla = key(hoyStr(), ta.t); }
+            document.getElementById('rpAplFecha').value = ancla.slice(0, 10);
+            document.getElementById('rpAplTurno').value = ancla.slice(-2);
             document.getElementById('rpRespuesta').value = r.respuesta || '';
-            let autor = '';
-            try { autor = localStorage.getItem('jfAutor') || ''; } catch (e) { }
+            let autor = r.respondidoPor || '';
+            try { autor = autor || localStorage.getItem('jfAutor') || ''; } catch (e) { }
             document.getElementById('rpAutor').value = autor;
             document.getElementById('rpTitulo').textContent = '🏭 Responder a Comercial';
             document.getElementById('rpMsg').textContent = '';
             document.getElementById('rpGuardar').disabled = false;
+            actualizarFormResp();
             document.getElementById('respModal').classList.add('open');
+        }
+
+        function estadoResp() { const x = document.querySelector('input[name="rpEstado"]:checked'); return x ? x.value : 'Aplicada'; }
+
+        function actualizarFormResp() {
+            const e = estadoResp();
+            document.getElementById('rpAplWrap').hidden = e !== 'Aplicada';
+            document.getElementById('rpRespuestaLbl').textContent = e === 'Desestimada' ? 'Justificación (opcional)' : e === 'Aplicada' ? 'Detalle del cambio (opcional)' : 'Comentario (opcional)';
+            document.getElementById('rpRespuesta').placeholder = e === 'Desestimada' ? 'Ej.: el molde H18 (2) está en reparación hasta noviembre' : e === 'Aplicada' ? 'Ej.: se agregan 2 días de H12 desde el 26/10' : 'Ej.: se revisa con mantenimiento la disponibilidad del molde';
         }
 
         function cerrarRespuesta() { document.getElementById('respModal').classList.remove('open'); respActual = null; }
@@ -3447,17 +3641,20 @@
         async function guardarRespuesta() {
             const r = respActual;
             if (!r) return;
-            const estado = document.getElementById('rpEstado').value;
+            const estado = estadoResp();
             const respuesta = document.getElementById('rpRespuesta').value.trim();
             const autor = document.getElementById('rpAutor').value.trim();
+            const f = document.getElementById('rpAplFecha').value, t = document.getElementById('rpAplTurno').value;
+            const aplicadoEn = estado === 'Aplicada' && f ? `${f} ${t}` : '';
             const msg = document.getElementById('rpMsg');
+            if (estado === 'Aplicada' && !f) { msg.textContent = 'Indicá desde qué fecha se aplica.'; msg.className = 'jf-msg err'; return; }
             const btn = document.getElementById('rpGuardar');
             btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
             try {
-                await postEditor({ accion: 'respuesta', id: r.id, estado, respuesta, autor });
-                Object.assign(r, { estado, respuesta, respondidoPor: autor });
+                await postEditor({ accion: 'respuesta', id: r.id, estado, respuesta, autor, aplicadoEn });
+                Object.assign(r, { estado, respuesta, respondidoPor: autor, aplicadoEn, fechaRespuesta: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }) });
                 try { localStorage.setItem('jfAutor', autor); } catch (e) { }
-                msg.textContent = '✅ Respuesta enviada'; msg.className = 'jf-msg ok';
+                msg.textContent = '✅ Respuesta guardada'; msg.className = 'jf-msg ok';
                 setTimeout(() => { cerrarRespuesta(); renderGantt(); }, 500);
             } catch (err) {
                 msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err'; btn.disabled = false;
