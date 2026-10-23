@@ -634,7 +634,6 @@
         .modo-banner { display: none; align-items: center; justify-content: space-between; gap: 12px; margin: -8px 0 16px; padding: 8px 16px; border-radius: 12px; font-size: 0.85rem; color: #fff; animation: cardIn 0.35s ease both; }
         .modo-banner.on { display: flex; }
         .modo-banner.mb-produccion { background: linear-gradient(90deg, #b9572c, var(--accent)); }
-        .modo-banner.mb-compras { background: linear-gradient(90deg, #1f5fbf, #0a84ff); }
         .modo-banner button { background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.4); color: #fff; font-family: var(--font); font-weight: 700; padding: 5px 12px; border-radius: 8px; cursor: pointer; }
 
         /* ===== v6: navegación de mes ===== */
@@ -764,6 +763,111 @@
             .rc-grid { grid-template-columns: 1fr 1fr; }
             .modo-banner { margin-top: 0; }
         }
+
+
+        /* ===== v7: comercial, toast, comentarios ===== */
+        .modo-banner.mb-comercial { background: linear-gradient(90deg, #1f5fbf, #0a84ff); }
+        .cb-btn:disabled { opacity: 0.5; cursor: default; }
+        .cb-n { display: inline-block; min-width: 18px; padding: 0 5px; margin-left: 4px; border-radius: 9px; background: #fff; color: #0a84ff; font-size: 0.72rem; font-weight: 900; }
+        .rc-aviso { font-size: 0.75rem; color: var(--orange); font-weight: 700; min-height: 0; }
+        .rc-aviso:empty { display: none; }
+        .rc-bloques { display: grid; gap: 6px; max-height: 230px; overflow-y: auto; padding-right: 2px; }
+        .rc-bq { display: flex; align-items: center; gap: 8px; text-align: left; width: 100%; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); font-family: var(--font); font-size: 0.78rem; cursor: pointer; transition: 0.15s; }
+        .rc-bq:hover { border-color: #0a84ff; }
+        .rc-bq.on { border-color: #0a84ff; background: rgba(10,132,255,0.14); box-shadow: 0 0 0 2px rgba(10,132,255,0.25); }
+        .rc-bq-chk { width: 18px; height: 18px; flex: 0 0 auto; border-radius: 5px; border: 2px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 900; color: #fff; }
+        .rc-bq.on .rc-bq-chk { background: #0a84ff; border-color: #0a84ff; }
+        .rc-bq-txt small { color: var(--text-muted); }
+        .rec-af { display: inline-block; font-size: 0.7rem; font-weight: 700; padding: 2px 6px; margin: 1px 2px 1px 0; border-radius: 6px; background: rgba(10,132,255,0.14); color: #5ea8ff; white-space: nowrap; }
+        .toast { position: fixed; left: 50%; bottom: 22px; transform: translate(-50%, 20px); opacity: 0; pointer-events: none; z-index: 6000; max-width: min(560px, 92vw); padding: 12px 18px; border-radius: 12px; background: #1c1c1e; color: #fff; font-size: 0.86rem; font-weight: 600; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #3a3a3c; transition: opacity 0.25s, transform 0.35s cubic-bezier(0.22, 1, 0.36, 1); }
+        .toast.on { opacity: 1; transform: translate(-50%, 0); }
+        .toast.ok { border-color: rgba(48,209,88,0.6); } .toast.err { border-color: rgba(255,69,58,0.7); }
+        .ls-com { position: absolute; left: 50%; bottom: 1px; width: 5px; height: 5px; margin-left: -2.5px; border-radius: 50%; background: #5ea8ff; box-shadow: 0 0 0 1px var(--bg-panel); }
+        .desv-tabla .desv-just small { display: block; margin-top: 2px; }
+
+        /* ===== v7: detalle del día como Gantt progresivo ===== */
+        .gantt-content { max-width: 1040px; padding: 22px 24px; max-height: 94vh; overflow-y: auto; }
+        #ganttTitulo { display: flex; align-items: center; gap: 10px; font-size: 1.25rem; }
+        .gd-nav { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); font-size: 1.2rem; line-height: 1; cursor: pointer; transition: 0.2s; }
+        .gd-nav:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .close-btn { width: 36px; height: 36px; padding: 0 !important; border-radius: 50% !important; font-size: 1rem; }
+        .gd { --lbl: 92px; display: flex; flex-direction: column; gap: 6px; }
+        .gd-row { display: grid; grid-template-columns: var(--lbl) minmax(0, 1fr); align-items: center; }
+        .gd-turnos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 4px; }
+        .gd-turno { display: flex; align-items: baseline; justify-content: center; gap: 8px; padding: 7px 6px; border-radius: 10px; background: var(--bg-cell); border-bottom: 3px solid var(--border); }
+        .gd-turno b { color: var(--accent-light); font-size: 0.95rem; }
+        .gd-turno span { font-size: 0.72rem; color: var(--text-muted); font-weight: 600; font-variant-numeric: tabular-nums; }
+        .gd-turno.gs-cumplido { border-bottom-color: #2fbf57; } .gd-turno.gs-parcial { border-bottom-color: var(--orange); } .gd-turno.gs-desvio { border-bottom-color: var(--red); } .gd-turno.gs-noplan { border-bottom-color: #5e5ce6; }
+        .gd-turno.actual { box-shadow: inset 0 0 0 1.5px var(--accent); }
+        .gd-ticks { position: relative; height: 16px; }
+        .gd-tick { position: absolute; top: 0; transform: translateX(-50%); font-size: 0.62rem; font-weight: 600; color: var(--text-muted); font-variant-numeric: tabular-nums; }
+        .gd-tick.fuerte { color: var(--text-main); font-weight: 800; }
+        .gd-tick:first-child { transform: none; } .gd-tick:last-child { transform: translateX(-100%); }
+        .gd-cuerpo { position: relative; display: flex; flex-direction: column; gap: 8px; padding: 8px 0; border-radius: 12px; background: repeating-linear-gradient(90deg, transparent 0, transparent calc((100% - var(--lbl)) / 12 - 1px), rgba(127,127,127,0.10) calc((100% - var(--lbl)) / 12 - 1px), rgba(127,127,127,0.10) calc((100% - var(--lbl)) / 12)); background-position: var(--lbl) 0; background-size: calc(100% - var(--lbl)) 100%; background-repeat: no-repeat; }
+        .gd-lbl { font-size: 0.75rem; font-weight: 800; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; }
+        .gd-pista { position: relative; height: 46px; border-radius: 10px; background: rgba(127,127,127,0.08); }
+        .gd-pista.real { height: 52px; }
+        .gd-pista.pr { height: auto; min-height: 30px; background: transparent; display: grid; grid-template-columns: repeat(3, 1fr); }
+        .gp-turno { position: static; display: flex; flex-wrap: wrap; justify-content: center; align-content: center; gap: 4px; padding: 2px 4px; grid-row: 1; }
+        .gd-vacio { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 0.78rem; color: var(--text-muted); font-weight: 600; background: repeating-linear-gradient(135deg, rgba(127,127,127,0.10) 0 6px, transparent 6px 12px); border-radius: 10px; }
+        .gb { position: absolute; top: 3px; bottom: 3px; display: flex; align-items: center; gap: 6px; padding: 0 8px; border-radius: 8px; overflow: hidden; white-space: nowrap; box-shadow: 0 2px 6px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.25); transform-origin: left center; animation: gbCrece 0.75s cubic-bezier(0.22, 1, 0.36, 1) both; animation-delay: calc(var(--i) * 110ms); }
+        .gb + .gb { box-shadow: -2px 0 0 var(--bg-panel), 0 2px 6px rgba(0,0,0,0.3); }
+        .gb-real { animation-delay: calc(0.35s + var(--i) * 110ms); }
+        @keyframes gbCrece { from { transform: scaleX(0); opacity: 0.4; } to { transform: scaleX(1); opacity: 1; } }
+        .gb img { width: 24px; height: 24px; object-fit: contain; flex: 0 0 auto; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.4)); }
+        .gb-lbl { font-size: 0.8rem; font-weight: 800; }
+        .gb-lbl b { font-size: 0.72rem; opacity: 0.85; margin-left: 2px; }
+        .gb-dato { font-size: 0.68rem; font-weight: 700; opacity: 0.9; padding: 2px 6px; border-radius: 6px; background: rgba(0,0,0,0.2); }
+        .gb-cont { font-size: 0.6rem; opacity: 0.75; }
+        .gb-cont.der { margin-left: auto; }
+        .gb.en-curso { border-radius: 8px 0 0 8px; }
+        .gb.en-curso::after { content: ''; position: absolute; top: 0; right: 0; bottom: 0; width: 18px; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.55)); animation: progreso 1.4s ease-in-out infinite; }
+        @keyframes progreso { 0%, 100% { opacity: 0.25; } 50% { opacity: 1; } }
+        .gd-grid { position: absolute; inset: 0; pointer-events: none; display: grid; grid-template-columns: var(--lbl) minmax(0, 1fr); }
+        .gd-lineas { position: relative; }
+        .gd-lineas i { position: absolute; top: 0; bottom: 0; width: 0; border-left: 2px dashed rgba(127,127,127,0.45); }
+        .gd-ahora { position: absolute; top: -4px; bottom: -4px; width: 2px; margin-left: -1px; background: var(--accent); box-shadow: 0 0 8px var(--accent); animation: cardIn 0.6s 0.5s both; }
+        .gd-ahora span { position: absolute; bottom: -14px; left: 50%; transform: translateX(-50%); font-size: 0.6rem; font-weight: 900; color: #fff; background: var(--accent); padding: 1px 6px; border-radius: 6px; white-space: nowrap; }
+        .gp { position: relative; display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 14px; font-size: 0.68rem; white-space: nowrap; border: 1.5px solid; background: var(--bg-panel); animation: popIn 0.5s 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+        .gp b { font-weight: 800; }
+        .gp-ok { border-color: #2fbf57; color: #2fbf57; } .gp-ok-desf { border-color: #2fbf57; color: #2fbf57; border-style: dashed; }
+        .gp-no { border-color: var(--red); color: var(--red); } .gp-pend { border-color: var(--text-muted); color: var(--text-muted); border-style: dashed; } .gp-extra { border-color: #5e5ce6; color: #8e8cff; }
+        .gd-cards { margin-top: 6px; align-items: start; }
+        .gd-cards-in { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+        .gt-card { background: var(--bg-cell); border-radius: 12px; padding: 10px 12px; border-top: 3px solid var(--border); font-size: 0.78rem; display: flex; flex-direction: column; gap: 6px; animation: cardIn 0.45s 0.7s ease both; }
+        .gt-cumplido { border-top-color: #2fbf57; } .gt-parcial { border-top-color: var(--orange); } .gt-desvio { border-top-color: var(--red); } .gt-noplan { border-top-color: #5e5ce6; }
+        .gt-head { display: flex; justify-content: space-between; align-items: center; }
+        .gt-head b { color: var(--accent-light); }
+        .gt-st { font-size: 0.72rem; font-weight: 800; }
+        .gt-cumplido .gt-st { color: #2fbf57; } .gt-parcial .gt-st { color: var(--orange); } .gt-desvio .gt-st { color: var(--red); } .gt-noplan .gt-st { color: #8e8cff; } .gt-hoy .gt-st, .gt-pendiente .gt-st, .gt-vacio .gt-st { color: var(--text-muted); }
+        .gt-tn > div:first-child { font-size: 1.05rem; font-weight: 800; }
+        .gt-tn small { font-size: 0.7rem; color: var(--text-muted); font-weight: 600; }
+        .gt-bar { height: 5px; border-radius: 3px; background: rgba(127,127,127,0.2); margin-top: 3px; overflow: hidden; }
+        .gt-bar span { display: block; height: 100%; border-radius: 3px; background: linear-gradient(90deg, var(--accent-light), var(--accent)); transition: width 0.8s; }
+        .gt-det { list-style: none; font-size: 0.72rem; line-height: 1.4; color: var(--text-main); }
+        .gt-pr { font-size: 0.72rem; padding: 5px 8px; border-radius: 8px; color: #fff; }
+        .gt-just { border-radius: 8px; padding: 7px 9px; font-size: 0.74rem; background: rgba(255,159,10,0.10); border: 1px dashed var(--orange); display: flex; flex-direction: column; gap: 3px; }
+        .gt-just.ok { background: rgba(10,132,255,0.10); border: 1px solid rgba(10,132,255,0.6); }
+        .gt-just.sec { background: transparent; border: none; padding: 0; color: var(--text-muted); }
+        .gt-just p { margin: 0; }
+        .gt-just small, .gt-com small { color: var(--text-muted); font-size: 0.68rem; display: block; }
+        .gt-just button, .gt-com-btn { margin-top: 3px; background: var(--bg-panel); border: 1px solid var(--border); color: var(--text-main); font-family: var(--font); font-weight: 700; font-size: 0.74rem; padding: 6px 10px; border-radius: 8px; cursor: pointer; transition: 0.2s; }
+        .gt-just button:hover, .gt-com-btn:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .gt-com { font-size: 0.74rem; padding: 6px 9px; border-radius: 8px; background: rgba(94,168,255,0.10); border-left: 3px solid #5ea8ff; }
+        @media screen and (max-width: 768px) {
+            .gantt-content { padding: 14px 12px; }
+            #ganttTitulo { font-size: 0.95rem; gap: 6px; }
+            .gd { --lbl: 54px; }
+            .gd-lbl { font-size: 0.6rem; }
+            .gd-turno { flex-direction: column; align-items: center; gap: 0; }
+            .gb { padding: 0 4px; gap: 3px; }
+            .gb img, .gb-dato { display: none; }
+            .gb-lbl { font-size: 0.66rem; }
+            .gd-cards-in { grid-template-columns: 1fr; }
+            .gd-cards { grid-template-columns: 1fr; }
+            .gd-cards > div:first-child { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) { .gb, .gp, .gt-card, .gd-ahora { animation: none !important; } }
 
         /* ================= IMPRESIÓN (una carilla A4) ================= */
         body.printing { --bg-body: #fff; --bg-panel: #fff; --bg-cell: #f2f2f2; --border: #9a9a9a; --text-main: #000; --text-muted: #444; --shadow: none; --shadow-3d: none; --cell-h: 52px; --sunday-bg: rgba(0,0,0,0.04); background: #fff !important; color: #000; padding: 0 !important; min-height: 0; font-family: var(--font); }
@@ -960,7 +1064,7 @@
                     <span class="bnp-icon"><img src="img/moldes/H12.png" alt="" onerror="this.style.display='none'"><span class="bnp-plus">+</span></span>
                     <span class="bnp-text"><strong>Nuevo plan</strong><small>Producción o prueba</small></span>
                 </a>
-                <button class="icon-btn" id="btnModo" onclick="abrirModos()" title="Modo edición (Producción / Compras)" aria-label="Modo edición">⚙️</button>
+                <button class="icon-btn" id="btnModo" onclick="abrirModos()" title="Modo edición (Producción / Comercial)" aria-label="Modo edición">⚙️</button>
                 <button class="icon-btn" onclick="toggleTheme()" title="Tema claro / oscuro" aria-label="Cambiar tema">🌓</button>
             </div>
         </div>
@@ -1001,9 +1105,11 @@
         <div class="jf-box" role="dialog" aria-modal="true" aria-labelledby="jfTitulo">
             <h3 id="jfTitulo">📝 Justificar desvío</h3>
             <div class="jf-resumen" id="jfResumen"></div>
-            <label for="jfMotivo">Motivo</label>
-            <select id="jfMotivo"></select>
-            <label for="jfDetalle">Explicación</label>
+            <div id="jfMotivoWrap">
+                <label for="jfMotivo">Motivo</label>
+                <select id="jfMotivo"></select>
+            </div>
+            <label for="jfDetalle" id="jfDetalleLbl">Explicación</label>
             <textarea id="jfDetalle" maxlength="1500" placeholder="¿Qué pasó y por qué no se cumplió lo planificado?"></textarea>
             <label for="jfAutor">Responsable</label>
             <input id="jfAutor" maxlength="80" placeholder="Nombre">
@@ -1021,8 +1127,8 @@
             <p class="modos-sub">El cronograma se ve en modo lectura. Para editar, ingresá a tu modo con su contraseña.</p>
             <div id="modoActivo"></div>
             <div class="modos-grid">
-                <button class="modo-card" data-m="produccion" onclick="elegirModo('produccion')"><span class="mc-ico">🏭</span><b>Editor de Producción</b><small>Cargar planes, justificar desvíos y responder a Compras</small></button>
-                <button class="modo-card" data-m="compras" onclick="elegirModo('compras')"><span class="mc-ico">🛒</span><b>Editor de Compras</b><small>Validar el plan y recomendar cambios por bloque</small></button>
+                <button class="modo-card" data-m="produccion" onclick="elegirModo('produccion')"><span class="mc-ico">🏭</span><b>Editor de Producción</b><small>Cargar planes, justificar desvíos y responder a Comercial</small></button>
+                <button class="modo-card" data-m="comercial" onclick="elegirModo('comercial')"><span class="mc-ico">💼</span><b>Editor Comercial</b><small>Validar el plan y recomendar cambios por bloque</small></button>
             </div>
             <div class="modo-login" id="modoLogin" hidden>
                 <label for="modoPwdInput">Contraseña · <span id="modoNombre"></span></label>
@@ -1054,17 +1160,22 @@
                 <div><label for="rcPallets">Pallets</label><input id="rcPallets" type="number" min="0" step="1" inputmode="numeric" oninput="convertirRec('pallets')"></div>
             </div>
             <p class="rc-conv" id="rcConv"></p>
-            <label for="rcTipo" id="rcTipoLbl">Tipo de ladrillo</label>
-            <select id="rcTipo" onchange="convertirRec('dias')"></select>
+            <p class="rc-aviso" id="rcAviso"></p>
+            <div id="rcBloquesWrap" hidden>
+                <label id="rcBloquesLbl">Bloques afectados</label>
+                <div class="rc-bloques" id="rcBloques"></div>
+            </div>
+            <div id="rcTipoWrap">
+                <label for="rcTipo" id="rcTipoLbl">Tipo de ladrillo</label>
+                <select id="rcTipo" onchange="convertirRec('dias')"></select>
+            </div>
             <label for="rcDetalle">Necesidad / motivo</label>
             <textarea id="rcDetalle" maxlength="1500" placeholder="Ej.: stock bajo de H12 para pedidos de noviembre"></textarea>
-            <div class="rc-fila dos">
-                <div><label for="rcPrioridad">Prioridad</label><select id="rcPrioridad"><option>Normal</option><option>Alta</option><option>Urgente</option></select></div>
-                <div><label for="rcAutor">Responsable</label><input id="rcAutor" maxlength="80" placeholder="Nombre"></div>
-            </div>
+            <label for="rcPrioridad">Prioridad</label>
+            <select id="rcPrioridad"><option>Normal</option><option>Alta</option><option>Urgente</option></select>
             <div class="jf-acciones">
                 <button onclick="cerrarRecomendacion()">Cancelar</button>
-                <button class="prim" id="rcGuardar" onclick="guardarRecomendacion()">Enviar a Producción</button>
+                <button class="prim" id="rcGuardar" onclick="guardarRecomendacion()">Guardar recomendación</button>
             </div>
             <div class="jf-msg" id="rcMsg"></div>
         </div>
@@ -1080,8 +1191,7 @@
             </div>
             <label for="vlComentario">Comentario</label>
             <textarea id="vlComentario" maxlength="1500" placeholder="Observaciones para Producción (opcional si está validada)"></textarea>
-            <label for="vlAutor">Responsable</label>
-            <input id="vlAutor" maxlength="80" placeholder="Nombre">
+            <p class="rc-nota">Al guardar se envía un mail a las casillas configuradas.</p>
             <div class="jf-acciones">
                 <button onclick="cerrarValidacion()">Cancelar</button>
                 <button class="prim" id="vlGuardar" onclick="guardarValidacion()">Guardar</button>
@@ -1092,7 +1202,7 @@
 
     <div class="jf-overlay" id="respModal" onclick="if (event.target === this) cerrarRespuesta()">
         <div class="jf-box" role="dialog" aria-modal="true" aria-labelledby="rpTitulo">
-            <h3 id="rpTitulo">🏭 Responder a Compras</h3>
+            <h3 id="rpTitulo">🏭 Responder a Comercial</h3>
             <div class="jf-resumen" id="rpResumen"></div>
             <label for="rpEstado">Decisión</label>
             <select id="rpEstado"><option>Aceptada</option><option>En análisis</option><option>Rechazada</option></select>
@@ -1108,11 +1218,13 @@
         </div>
     </div>
 
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
     <div class="gantt-modal" id="ganttModal">
         <div class="gantt-content">
             <div class="modal-header-container">
                 <h3 id="ganttTitulo">Detalle del Día</h3>
-                <button class="close-btn" onclick="cerrarGantt()">X Cerrar</button>
+                <button class="close-btn" onclick="cerrarGantt()" aria-label="Cerrar">✕</button>
             </div>
             <div id="ganttDetalle"></div>
         </div>
@@ -1146,7 +1258,7 @@
         let isMobileState = window.innerWidth <= 768;
         let catalogo = { exacto: new Map(), porTipoNum: new Map(), cargado: false };
         let matchPruebas = { plan: new Map(), real: new Map() };
-        let moldesExt = { estados: new Map(), prod: new Map(), turnosInf: new Map(), promedios: new Map(), justif: new Map(), base: new Map(), recomendaciones: [], validaciones: new Map(), informe: false, cargado: false, rango: '', diasPromedio: 365 };
+        let moldesExt = { estados: new Map(), prod: new Map(), turnosInf: new Map(), promedios: new Map(), justif: new Map(), coment: new Map(), objetivos: new Map(), base: new Map(), recomendaciones: [], validaciones: new Map(), informe: false, cargado: false, rango: '', diasPromedio: 365 };
         let printState = null;
         let desviosMes = { lista: [], porInicio: new Map() };
         const colorCache = {};
@@ -1357,7 +1469,7 @@
         }
 
         function extVacio(rango) {
-            return { estados: new Map(), prod: new Map(), turnosInf: new Map(), promedios: new Map(), justif: new Map(), base: new Map(), recomendaciones: [], validaciones: new Map(), informe: false, cargado: false, rango: rango || '', diasPromedio: 365 };
+            return { estados: new Map(), prod: new Map(), turnosInf: new Map(), promedios: new Map(), justif: new Map(), coment: new Map(), objetivos: new Map(), base: new Map(), recomendaciones: [], validaciones: new Map(), informe: false, cargado: false, rango: rango || '', diasPromedio: 365 };
         }
 
         function procesarExt(j, rango) {
@@ -1381,12 +1493,13 @@
             });
             Object.keys(j.promedios || {}).forEach(t => ext.promedios.set(claveTipo(t), j.promedios[t]));
             Object.keys(j.base || {}).forEach(t => ext.base.set(claveTipo(t), j.base[t]));
-            (j.justificaciones || []).forEach(x => ext.justif.set(key(x.fecha, x.turno), x));
+            (j.justificaciones || []).forEach(x => { const k = key(x.fecha, x.turno); if (String(x.tipo || '').toLowerCase() === 'comentario') { if (x.detalle) ext.coment.set(k, x); } else ext.justif.set(k, x); });
+            Object.keys(j.objetivos || {}).forEach(t => { const v = Number(j.objetivos[t]); if (v > 0) ext.objetivos.set(claveTipo(t), v); });
             ext.recomendaciones = (j.recomendaciones || []).map(r => ({
                 id: r['ID'], marca: r['Marca temporal'], mes: r['Mes'], tipo: r['Tipo de ladrillo'], accion: r['Acción'], desde: r['Bloque desde'], hasta: r['Bloque hasta'],
                 moldes: r['Moldes'], dias: Number(String(r['Días']).replace(',', '.')) || 0, pallets: Number(String(r['Pallets']).replace(/\./g, '').replace(',', '.')) || 0,
                 tipoAfectado: r['Tipo afectado'], detalle: r['Detalle'], prioridad: r['Prioridad'], autor: r['Autor'], estado: r['Estado'] || 'Pendiente',
-                respuesta: r['Respuesta'], respondidoPor: r['Respondido por'], fechaRespuesta: r['Fecha respuesta']
+                respuesta: r['Respuesta'], respondidoPor: r['Respondido por'], fechaRespuesta: r['Fecha respuesta'], afectados: r['Bloques afectados'] || '', notificado: r['Notificado'] || ''
             }));
             (j.validaciones || []).forEach(v => ext.validaciones.set(v['Mes'], { estado: v['Estado'], comentario: v['Comentario'], autor: v['Autor'], marca: v['Marca temporal'] }));
             ext.informe = !!j.turnos;
@@ -1467,10 +1580,22 @@
             return null;
         }
 
-        function tnPlanTurno(k) {
+        const TURNOS_POR_DIA = 3;
+        function objetivoProducto(t) {
+            for (const c of [claveTipo(nombreProducto(t)), claveTipo(tipoProducto(t))]) { const v = moldesExt.objetivos.get(c); if (v > 0) return { tn: v / TURNOS_POR_DIA, dia: v, fuente: 'obj' }; }
+            return null;
+        }
+        function fuenteActual() { return currentView === 'cumpl' && moldesExt.objetivos.size ? 'obj' : 'prom'; }
+        function refProducto(t, fuente) {
+            if ((fuente || fuenteActual()) === 'obj') { const o = objetivoProducto(t); if (o) return o; }
+            const p = promedioProducto(t);
+            return p ? { tn: p.tn, n: p.n, fuente: 'prom' } : null;
+        }
+
+        function tnPlanTurno(k, fuente) {
             const seq = getProdSeq(planData[k]);
-            if (!seq.length || !moldesExt.promedios.size) return null;
-            const partes = seq.map(t => ({ t, p: promedioProducto(t) }));
+            if (!seq.length || (!moldesExt.promedios.size && !moldesExt.objetivos.size)) return null;
+            const partes = seq.map(t => ({ t, p: refProducto(t, fuente) }));
             const tn = partes.reduce((a, x) => a + (x.p ? x.p.tn / seq.length : 0), 0);
             return { tn, completo: partes.every(x => x.p), partes };
         }
@@ -1490,9 +1615,9 @@
         function claseRatio(r) { return r === null ? '' : r >= 0.95 ? 'rt-ok' : r >= 0.8 ? 'rt-mid' : 'rt-low'; }
 
         function calcularDesvios(year, month) {
-            const lista = [];
-            const porInicio = new Map();
+            const lista = [], porInicio = new Map(), porTurno = new Map();
             const dias = new Date(year, month + 1, 0).getDate();
+            const peso = { desvio: 3, parcial: 2, noplan: 1 };
             let previo = null;
             for (let d = 1; d <= dias; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
@@ -1500,17 +1625,33 @@
                     if (estadoTurno(ds, t) !== 'pasado') { previo = null; continue; }
                     const k = key(ds, t);
                     const ev = evaluarProduccion(ds, t);
-                    if (!['desvio', 'parcial', 'noplan'].includes(ev.status)) { previo = null; continue; }
+                    if (!peso[ev.status]) { previo = null; continue; }
                     const plan = seqTexto(getProdSeq(planData[k]));
                     const real = seqTexto(getProdSeq(realData[k]));
-                    const firma = plan + '>' + real;
-                    if (previo && previo.firma === firma) { previo.turnos++; previo.hasta = { fecha: ds, turno: t }; continue; }
-                    previo = { k, fecha: ds, turno: t, plan, real, status: ev.status, firma, turnos: 1, hasta: { fecha: ds, turno: t } };
+                    if (previo) {
+                        previo.turnos++;
+                        previo.hasta = { fecha: ds, turno: t };
+                        previo.keys.push(k);
+                        if (!previo.planes.includes(plan)) previo.planes.push(plan);
+                        if (!previo.reales.includes(real)) previo.reales.push(real);
+                        if (peso[ev.status] > peso[previo.status]) previo.status = ev.status;
+                        porTurno.set(k, previo);
+                        continue;
+                    }
+                    previo = { k, fecha: ds, turno: t, planes: [plan], reales: [real], status: ev.status, turnos: 1, hasta: { fecha: ds, turno: t }, keys: [k] };
                     lista.push(previo);
                     porInicio.set(k, previo);
+                    porTurno.set(k, previo);
                 }
             }
-            return { lista, porInicio };
+            lista.forEach(e => {
+                e.plan = e.planes.join(' · ');
+                e.real = e.reales.join(' · ');
+                const kj = e.keys.find(x => moldesExt.justif.has(x));
+                e.just = kj ? moldesExt.justif.get(kj) : null;
+                e.kJust = kj || e.k;
+            });
+            return { lista, porInicio, porTurno };
         }
 
         function estadoMolde(molde) {
@@ -1700,8 +1841,8 @@
         function lineasTnPlan(k) {
             const tp = tnPlanTurno(k);
             if (!tp) return '';
-            const det = tp.partes.map(x => x.p ? `${tipoProducto(x.t)} prom. ${fmtTn(x.p.tn)} Tn/turno` : `${tipoProducto(x.t)} sin promedio`).join(' · ');
-            return `📦 Esperado: ≈${fmtTn0(tp.tn)} Tn (${det})`;
+            const det = tp.partes.map(x => x.p ? (x.p.fuente === 'obj' ? `${tipoProducto(x.t)} objetivo ${fmtTn0(x.p.dia)} Tn/día` : `${tipoProducto(x.t)} prom. ${fmtTn(x.p.tn)} Tn/turno`) : `${tipoProducto(x.t)} sin dato`).join(' · ');
+            return `${tp.partes.some(x => x.p && x.p.fuente === 'obj') ? '🎯 Objetivo' : '📦 Esperado'}: ≈${fmtTn0(tp.tn)} Tn (${det})`;
         }
 
         function lineasTnReal(k) {
@@ -1735,7 +1876,7 @@
             if (ev.detalle.length) tip += '\n' + ev.detalle.join('\n');
             if (pr) tip += `\n\n🔬 PRUEBAS: ${pr.msg}\n${pr.detalle.join('\n')}`;
             const ep = desviosMes.porInicio.get(k);
-            if (ep) { const j = moldesExt.justif.get(k); tip += `\n\n📝 ${j ? 'Justificación: ' + j.motivo + (j.detalle ? ' – ' + j.detalle : '') : 'Desvío sin justificar (clic en el indicador para registrar)'}`; }
+            if (ep) { const j = ep.just; tip += `\n\n📝 ${j ? 'Justificación del bloque: ' + j.motivo + (j.detalle ? ' – ' + j.detalle : '') : 'Bloque de desvío sin justificar'}`; }
             return tip;
         }
 
@@ -1746,7 +1887,7 @@
             const inner = ev.status === 'parcial' ? `<span class="comp-pct">${Math.round(ev.score * 100)}%</span>` : ev.emoji;
             const badge = pr ? `<span class="ci-test ct-${pr.status}">🔬</span>` : '';
             const ep = desviosMes.porInicio.get(k);
-            const j = ep ? moldesExt.justif.get(k) : null;
+            const j = ep ? ep.just : null;
             const just = ep ? `<span class="ci-just ${j ? 'ok' : 'pend'}">${j ? '💬' : '✎'}</span>` : '';
             const partes = [];
             if (ev.status !== 'vacio') partes.push(`🏭 Producción: ${ev.msg}${ev.detalle.length ? '\n' + ev.detalle.join('\n') : ''}`);
@@ -1787,7 +1928,7 @@
             if (!info.pasado) return plan ? `<span class="tn-p muted">≈${fmtTn0(plan)}</span>` : '';
             if (real === null && !comp) return '';
             const r = comp > 0 ? (real || 0) / comp : null;
-            return `<span class="tn-r ${claseRatio(r)}" title="Real ${fmtTn0(real || 0)} Tn · Plan ${fmtTn0(comp || 0)} Tn${r !== null ? ' (' + Math.round(r * 100) + '%)' : ''}">${fmtTn0(real || 0)}</span>`;
+            return `<span class="tn-r ${claseRatio(r)}" title="Real ${fmtTn0(real || 0)} Tn · ${fuenteActual() === 'obj' ? 'Objetivo' : 'Plan'} ${fmtTn0(comp || 0)} Tn${r !== null ? ' (' + Math.round(r * 100) + '%)' : ''}">${fmtTn0(real || 0)}</span>`;
         }
 
         function calcularBloques(year, month) {
@@ -1836,8 +1977,8 @@
             const cont = document.getElementById('mnValid');
             if (v && v.estado && v.estado !== 'Sin validar') {
                 const ok = v.estado === 'Validada';
-                cont.innerHTML = `<span class="sello ${ok ? 'ok' : 'obs'}" title="${escAttr((v.comentario || '') + (v.autor ? ' · ' + v.autor : '') + (v.marca ? ' · ' + v.marca : ''))}">${ok ? '✔ Plan validado por Compras' : '⚠ Plan con observaciones de Compras'}</span>`;
-            } else cont.innerHTML = modo === 'compras' ? '<span class="sello pend">Plan sin validar</span>' : '';
+                cont.innerHTML = `<span class="sello ${ok ? 'ok' : 'obs'}" title="${escAttr((v.comentario || '') + (v.autor ? ' · ' + v.autor : '') + (v.marca ? ' · ' + v.marca : ''))}">${ok ? '✔ Plan validado por Comercial' : '⚠ Plan con observaciones de Comercial'}</span>`;
+            } else cont.innerHTML = modo === 'comercial' ? '<span class="sello pend">Plan sin validar</span>' : '';
         }
 
         function mesClave() { return `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`; }
@@ -1887,7 +2028,7 @@
             renderKPIs(daysInMonth, year, month);
 
             const registrarVisibles = pre => pre.seq.forEach(m => { const tp = getTipo(m.baseName); if (!visibles.has(tp)) visibles.set(tp, new Map()); visibles.get(tp).set(m.number, { baseName: m.baseName, molde: m.moldeCompleto }); });
-            const seleccionCompras = modo === 'compras' && currentView === 'plan';
+            const seleccionCompras = modo === 'comercial' && currentView === 'plan';
 
             const renderTd = (dateStr, turno, dateObj, extraCls, extraStyle, idx) => {
                 const k = key(dateStr, turno);
@@ -1910,13 +2051,13 @@
                         const recs = ids.flatMap(id => bloquesMes.porId.get(id).keys[0] === k ? bloquesMes.porId.get(id).recs : []);
                         if (recs.length) {
                             const pend = recs.some(r => r.estado === 'Pendiente' || r.estado === 'En análisis');
-                            markers += `<span class="rec-badge ${pend ? 'pend' : 'ok'}" title="${recs.length} recomendación(es) de Compras">🛒</span>`;
+                            markers += `<span class="rec-badge ${pend ? 'pend' : 'ok'}" title="${recs.length} recomendación(es) de Comercial">💼</span>`;
                         }
                         if (seleccionCompras) { extraAttr = ` data-bq="${ids.join(' ')}"`; onclick = `abrirBloque('${ids[ids.length - 1]}')`; }
                     }
                 }
                 const cls = `${extraCls} ${parts.cls}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}${seleccionCompras && extraAttr ? ' bq-sel' : ''}`;
-                const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (seleccionCompras && extraAttr ? '\n\n🛒 Clic para recomendar cambios en este bloque' : '');
+                const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (seleccionCompras && extraAttr ? '\n\n💼 Clic para recomendar cambios en este bloque' : '');
                 return `<td class="${cls}"${extraAttr} style="--d:${idx};${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="${onclick}">${tnHtml}${markers}${parts.content}</td>`;
             };
 
@@ -1929,10 +2070,12 @@
                 let extra = '';
                 if (pr) extra += `<span class="ls-test ct-${pr.status}" title="Prueba: ${escAttr(pr.msg)}">🔬</span>`;
                 if (ep) {
-                    const j = moldesExt.justif.get(k);
-                    if (j) extra += `<span class="ls-just ok" title="${escAttr('Justificado: ' + j.motivo + (j.detalle ? ' – ' + j.detalle : ''))}">💬</span>`;
-                    else if (modo === 'produccion') extra += `<span class="ls-just pend" title="Desvío sin justificar · clic para registrar" onclick="event.stopPropagation(); abrirJustificacion('${k}')">✎</span>`;
+                    const j = ep.just;
+                    if (j) extra += `<span class="ls-just ok" title="${escAttr('Bloque justificado: ' + j.motivo + (j.detalle ? ' – ' + j.detalle : ''))}">💬</span>`;
+                    else if (modo === 'produccion') extra += `<span class="ls-just pend" title="Bloque de desvío sin justificar (${ep.turnos} turno${ep.turnos > 1 ? 's' : ''}) · clic para registrar" onclick="event.stopPropagation(); abrirJustificacion('${k}')">✎</span>`;
                 }
+                const com = moldesExt.coment.get(k);
+                if (com) extra += `<span class="ls-com" title="${escAttr('🗨 ' + com.detalle)}"></span>`;
                 const partes = [];
                 if (ev.status !== 'vacio') partes.push(`🏭 ${ev.msg}${ev.detalle.length ? '\n' + ev.detalle.join('\n') : ''}`);
                 if (pr) partes.push(`🔬 Pruebas: ${pr.msg}`);
@@ -2143,7 +2286,7 @@
                     if (seq.length) turnosPlan++;
                     seq.forEach(m => {
                         const it = item(claveTipo(tipoProducto(m)), tipoProducto(m), m.baseName);
-                        const p = promedioProducto(m);
+                        const p = refProducto(m);
                         it.turnosPlan += 1 / seq.length;
                         if (p) { it.plan += p.tn / seq.length; it.prom = p; if (pasado) it.planComp += p.tn / seq.length; }
                         else it.sinProm = true;
@@ -2229,11 +2372,11 @@
                 const pct = nEval > 0 ? Math.round(sumScore / nEval * 100) : 0;
                 const pctPr = pruebasEval > 0 ? Math.round(pruebasHechas / pruebasEval * 100) : null;
                 const pctTn = res.planComp > 0 ? Math.round(res.realTotal / res.planComp * 100) : null;
-                const nJust = desviosMes.lista.filter(e => moldesExt.justif.has(e.k)).length;
+                const nJust = desviosMes.lista.filter(e => e.just).length;
                 h += `<div class="kpi-card kpi-main" style="--kc:${colorPct(pct)}"><div class="kpi-label">🏭 Cumplimiento de producción</div><div class="kpi-value">${pct}%</div><div class="kpi-ring"><span style="width:${pct}%"></span></div><div class="kpi-sub">✅ ${nCump} · ⚠️ ${nParc} · ❌ ${nDesv} de ${nEval} turnos${nNoPlan ? ` · ➕ ${nNoPlan} sin plan` : ''}</div></div>`;
-                h += `<div class="kpi-card" style="${pctTn === null ? '' : `--kc:${colorPct(pctTn)}`}"><div class="kpi-label">⚖️ Tn real vs plan</div><div class="kpi-value">${pctTn === null ? '–' : pctTn + '%'}</div><div class="kpi-sub">${fmtTn0(res.realTotal)} de ${fmtTn0(res.planComp)} Tn a la fecha</div></div>`;
+                h += `<div class="kpi-card" style="${pctTn === null ? '' : `--kc:${colorPct(pctTn)}`}"><div class="kpi-label">🎯 Tn real vs ${fuenteActual() === 'obj' ? 'objetivo' : 'plan'}</div><div class="kpi-value">${pctTn === null ? '–' : pctTn + '%'}</div><div class="kpi-sub">${fmtTn0(res.realTotal)} de ${fmtTn0(res.planComp)} Tn a la fecha</div></div>`;
                 h += `<div class="kpi-card" style="${pctPr === null ? '' : `--kc:${colorPct(pctPr)}`}"><div class="kpi-label">🔬 Cumplimiento de pruebas</div><div class="kpi-value">${pctPr === null ? '–' : pctPr + '%'}</div><div class="kpi-sub">${pruebasHechas} de ${pruebasEval} evaluadas · ${pruebasMes} plan. · ±${TOLERANCIA_PRUEBA_DIAS} día</div></div>`;
-                h += `<div class="kpi-card" style="--kc:${desviosMes.lista.length && nJust < desviosMes.lista.length ? 'var(--orange)' : 'var(--green)'}"><div class="kpi-label">📝 Desvíos sin justificar</div><div class="kpi-value">${desviosMes.lista.length - nJust}</div><div class="kpi-sub">de ${desviosMes.lista.length} desvíos en el mes</div></div>`;
+                h += `<div class="kpi-card" style="--kc:${desviosMes.lista.length && nJust < desviosMes.lista.length ? 'var(--orange)' : 'var(--green)'}"><div class="kpi-label">📝 Bloques de desvío sin justificar</div><div class="kpi-value">${desviosMes.lista.length - nJust}</div><div class="kpi-sub">de ${desviosMes.lista.length} bloques en el mes</div></div>`;
 
             }
             cont.innerHTML = h;
@@ -2323,10 +2466,10 @@
                 const yReal = y(ur.real) + 4;
                 if (x(up.d) - x(ur.d) < 90 && Math.abs(yPlan - yReal) < 14) yPlan = yReal + (ur.real >= up.v ? 14 : -14);
             }
-            svg += `<text x="${x(up.d) + 8}" y="${yPlan}" class="g-lbl">Plan ${fmtTn0(up.v)}</text>`;
+            svg += `<text x="${x(up.d) + 8}" y="${yPlan}" class="g-lbl">${fuenteActual() === 'obj' ? 'Objetivo' : 'Plan'} ${fmtTn0(up.v)}</text>`;
             const ancho = (W - ml - mr) / Math.max(1, dias - 1);
             pts.forEach(p => {
-                const t = `${p.d}/${month + 1}\nPlan acum.: ${fmtTn0(p.plan)} Tn${p.real !== null ? `\nReal acum.: ${fmtTn0(p.real)} Tn` : ''}${p.dia.real !== null ? `\nDel día: ${fmtTn0(p.dia.real)} Tn (plan ${fmtTn0(p.dia.planComp || p.dia.plan || 0)})` : ''}`;
+                const t = `${p.d}/${month + 1}\n${fuenteActual() === 'obj' ? 'Objetivo' : 'Plan'} acum.: ${fmtTn0(p.plan)} Tn${p.real !== null ? `\nReal acum.: ${fmtTn0(p.real)} Tn` : ''}${p.dia.real !== null ? `\nDel día: ${fmtTn0(p.dia.real)} Tn (${fuenteActual() === 'obj' ? 'objetivo' : 'plan'} ${fmtTn0(p.dia.planComp || p.dia.plan || 0)})` : ''}`;
                 svg += `<rect x="${(x(p.d) - ancho / 2).toFixed(1)}" y="${mt}" width="${ancho.toFixed(1)}" height="${H - mt - mb}" class="g-hit"><title>${t}</title></rect>`;
             });
             return svg + '</svg>';
@@ -2352,11 +2495,11 @@
             }).join('');
             cont.innerHTML = `
                 <div class="an-card">
-                    <div class="an-head"><h3>Toneladas acumuladas</h3><div class="an-leyenda"><span><i class="lg-real"></i>Real</span><span><i class="lg-plan"></i>Plan</span></div></div>
+                    <div class="an-head"><h3>Toneladas acumuladas</h3><div class="an-leyenda"><span><i class="lg-real"></i>Real</span><span><i class="lg-plan"></i>${fuenteActual() === 'obj' ? 'Objetivo de Dirección' : 'Plan'}</span></div></div>
                     ${hayTn ? graficoAcumulado(tnDias, year, month) : '<p class="an-vacio">Sin datos de toneladas.</p>'}
                 </div>
                 <div class="an-card">
-                    <div class="an-head"><h3>Por tipo de ladrillo</h3><div class="an-nota">real a la fecha / plan del mes · % vs plan a la fecha <i class="nota-marca"></i></div></div>
+                    <div class="an-head"><h3>Por tipo de ladrillo</h3><div class="an-nota">real a la fecha / ${fuenteActual() === 'obj' ? 'objetivo' : 'plan'} del mes · % vs ${fuenteActual() === 'obj' ? 'objetivo' : 'plan'} a la fecha <i class="nota-marca"></i></div></div>
                     <div class="at-lista">${tipos || '<p class="an-vacio">Sin datos.</p>'}</div>
                 </div>`;
         }
@@ -2370,23 +2513,24 @@
             cont.style.display = 'block';
             const todos = desviosMes.lista;
             if (!todos.length) { cont.innerHTML = '<h3>📝 Registro de desvíos</h3><p class="desv-vacio">Sin desvíos de producción en turnos cerrados este mes.</p>'; return; }
-            const pend = todos.filter(e => !moldesExt.justif.has(e.k));
+            const pend = todos.filter(e => !e.just);
             if (filtroDesvios === 'pend' && !pend.length) filtroDesvios = 'todos';
             const lista = filtroDesvios === 'pend' ? pend : todos;
             const etiquetas = { desvio: 'Desvío', parcial: 'Parcial', noplan: 'Sin plan' };
-            let html = `<div class="desv-head"><h3>📝 Registro de desvíos</h3>
-                <div class="desv-filtro"><button class="${filtroDesvios === 'pend' ? 'on' : ''}" onclick="setFiltroDesvios('pend')">Pendientes <b>${pend.length}</b></button><button class="${filtroDesvios === 'todos' ? 'on' : ''}" onclick="setFiltroDesvios('todos')">Todos <b>${todos.length}</b></button></div></div>
-                <table class="desv-tabla"><thead><tr><th>Inicio</th><th>Duración</th><th>Estado</th><th>Planificado</th><th>Real</th><th>Justificación</th><th></th></tr></thead><tbody>`;
+            let html = `<div class="desv-head"><h3>📝 Registro de desvíos <small>una justificación por bloque de desvío</small></h3>
+                <div class="desv-filtro"><button class="${filtroDesvios === 'pend' ? 'on' : ''}" onclick="setFiltroDesvios('pend')">Sin justificar <b>${pend.length}</b></button><button class="${filtroDesvios === 'todos' ? 'on' : ''}" onclick="setFiltroDesvios('todos')">Todos <b>${todos.length}</b></button></div></div>
+                <table class="desv-tabla"><thead><tr><th>Bloque</th><th>Duración</th><th>Estado</th><th>Planificado</th><th>Real</th><th>Justificación</th><th></th></tr></thead><tbody>`;
             lista.forEach(e => {
-                const j = moldesExt.justif.get(e.k);
-                html += `<tr class="${j ? 'ok' : 'pend'}">
-                    <td><b>${fechaCorta(e.fecha)}</b> ${e.turno}</td>
+                const j = e.just;
+                const coms = e.keys.filter(x => moldesExt.coment.has(x)).length;
+                html += `<tr class="${j ? 'ok' : 'pend'}" onclick="abrirGantt('${e.fecha}')" style="cursor:pointer">
+                    <td><b>${fechaCorta(e.fecha)}</b> ${e.turno}${e.turnos > 1 ? ` → <b>${fechaCorta(e.hasta.fecha)}</b> ${e.hasta.turno}` : ''}</td>
                     <td>${e.turnos} turno${e.turnos > 1 ? 's' : ''}</td>
                     <td><span class="desv-estado st-${e.status}">${etiquetas[e.status]}</span></td>
                     <td>${escAttr(e.plan)}</td>
                     <td>${escAttr(e.real)}</td>
-                    <td class="desv-just">${j ? `<b>${escAttr(j.motivo)}</b>${j.detalle ? `<span>${escAttr(j.detalle)}</span>` : ''}` : '<span class="desv-pend">Pendiente</span>'}</td>
-                    <td>${modo === 'produccion' ? `<button class="desv-btn" onclick="abrirJustificacion('${e.k}')">${j ? 'Editar' : 'Justificar'}</button>` : ''}</td>
+                    <td class="desv-just">${j ? `<b>${escAttr(j.motivo)}</b>${j.detalle ? `<span>${escAttr(j.detalle)}</span>` : ''}` : '<span class="desv-pend">Sin justificar</span>'}${coms ? `<small>🗨 ${coms} comentario${coms > 1 ? 's' : ''} en turnos</small>` : ''}</td>
+                    <td>${modo === 'produccion' ? `<button class="desv-btn" onclick="event.stopPropagation(); abrirJustificacion('${e.k}')">${j ? 'Editar' : 'Justificar'}</button>` : ''}</td>
                 </tr>`;
             });
             cont.innerHTML = html + '</tbody></table>';
@@ -2395,45 +2539,80 @@
         const MOTIVOS_DESVIO = ['Falla de equipo / mantenimiento correctivo', 'Molde no disponible o en reparación', 'Calibración o ajuste de molde', 'Falta de materia prima / arcilla', 'Problema de calidad', 'Cambio de prioridad comercial', 'Corte de energía o gas', 'Falta de personal', 'Error de planificación o de carga', 'Otro'];
         let justifActual = null;
 
+        function buscarDesvio(k) {
+            const ds = k.slice(0, 10);
+            const d = new Date(ds + 'T00:00:00');
+            const mismo = d.getFullYear() === currentDate.getFullYear() && d.getMonth() === currentDate.getMonth();
+            const dv = mismo ? desviosMes : calcularDesvios(d.getFullYear(), d.getMonth());
+            return dv.porTurno.get(k) || null;
+        }
+
         function abrirJustificacion(k) {
             if (modo !== 'produccion') return;
-            const ep = desviosMes.porInicio.get(k);
+            const ep = buscarDesvio(k);
             if (!ep) return;
-            justifActual = ep;
-            const j = moldesExt.justif.get(k) || {};
-            document.getElementById('jfResumen').innerHTML = `<b>${fechaCorta(ep.fecha)} · ${ep.turno}</b> · ${ep.turnos} turno${ep.turnos > 1 ? 's' : ''}<br><span>Plan:</span> ${escAttr(ep.plan)}<br><span>Real:</span> ${escAttr(ep.real)}`;
+            justifActual = { tipo: 'Bloque', ep, fecha: ep.just ? ep.just.fecha : ep.fecha, turno: ep.just ? ep.just.turno : ep.turno, k: ep.kJust };
+            const j = ep.just || {};
+            document.getElementById('jfTitulo').textContent = '📝 Justificar bloque de desvío';
+            document.getElementById('jfResumen').innerHTML = `<b>${fechaCorta(ep.fecha)} ${ep.turno}${ep.turnos > 1 ? ` → ${fechaCorta(ep.hasta.fecha)} ${ep.hasta.turno}` : ''}</b> · ${ep.turnos} turno${ep.turnos > 1 ? 's' : ''}<br><span>Plan:</span> ${escAttr(ep.plan)}<br><span>Real:</span> ${escAttr(ep.real)}`;
             const sel = document.getElementById('jfMotivo');
             sel.innerHTML = '<option value="">Seleccionar motivo…</option>' + MOTIVOS_DESVIO.map(m => `<option${m === j.motivo ? ' selected' : ''}>${m}</option>`).join('');
             if (j.motivo && !MOTIVOS_DESVIO.includes(j.motivo)) sel.innerHTML += `<option selected>${escAttr(j.motivo)}</option>`;
-            document.getElementById('jfDetalle').value = j.detalle || '';
-            let autor = j.autor || '';
-            try { autor = autor || localStorage.getItem('jfAutor') || ''; } catch (e) { }
-            document.getElementById('jfAutor').value = autor;
+            document.getElementById('jfMotivoWrap').hidden = false;
+            document.getElementById('jfDetalleLbl').textContent = 'Explicación';
+            document.getElementById('jfDetalle').placeholder = '¿Qué pasó y por qué no se cumplió lo planificado?';
+            prepararFormJust(j.detalle, j.autor);
+            setTimeout(() => sel.focus(), 60);
+        }
+
+        function abrirComentario(k) {
+            if (modo !== 'produccion') return;
+            const c = moldesExt.coment.get(k) || {};
+            const ds = k.slice(0, 10), t = k.slice(-2);
+            justifActual = { tipo: 'Comentario', fecha: ds, turno: t, k };
+            document.getElementById('jfTitulo').textContent = '🗨 Comentario del turno (opcional)';
+            document.getElementById('jfResumen').innerHTML = `<b>${fechaCorta(ds)} · ${t}</b><br><span>Plan:</span> ${escAttr(seqTexto(getProdSeq(planData[k])))}<br><span>Real:</span> ${escAttr(seqTexto(getProdSeq(realData[k])))}`;
+            document.getElementById('jfMotivoWrap').hidden = true;
+            document.getElementById('jfDetalleLbl').textContent = 'Comentario';
+            document.getElementById('jfDetalle').placeholder = 'Ej.: se cortó la energía 20 minutos; se ajustaron los dados';
+            prepararFormJust(c.detalle, c.autor);
+            setTimeout(() => document.getElementById('jfDetalle').focus(), 60);
+        }
+
+        function prepararFormJust(detalle, autor) {
+            document.getElementById('jfDetalle').value = detalle || '';
+            let a = autor || '';
+            try { a = a || localStorage.getItem('jfAutor') || ''; } catch (e) { }
+            document.getElementById('jfAutor').value = a;
             document.getElementById('jfMsg').textContent = '';
             document.getElementById('jfMsg').className = 'jf-msg';
             document.getElementById('jfGuardar').disabled = false;
             document.getElementById('justifModal').classList.add('open');
-            setTimeout(() => sel.focus(), 60);
         }
 
         function cerrarJustificacion() { document.getElementById('justifModal').classList.remove('open'); justifActual = null; }
 
         async function guardarJustificacion() {
-            const ep = justifActual;
-            if (!ep) return;
-            const motivo = document.getElementById('jfMotivo').value;
+            const ja = justifActual;
+            if (!ja) return;
+            const esBloque = ja.tipo === 'Bloque';
+            const motivo = esBloque ? document.getElementById('jfMotivo').value : 'Comentario';
             const detalle = document.getElementById('jfDetalle').value.trim();
             const autor = document.getElementById('jfAutor').value.trim();
             const msg = document.getElementById('jfMsg');
-            if (!motivo) { msg.textContent = 'Elegí un motivo.'; msg.className = 'jf-msg err'; return; }
+            if (esBloque && !motivo) { msg.textContent = 'Elegí un motivo.'; msg.className = 'jf-msg err'; return; }
             const btn = document.getElementById('jfGuardar');
             btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
+            const plan = esBloque ? ja.ep.plan : seqTexto(getProdSeq(planData[ja.k]));
+            const real = esBloque ? ja.ep.real : seqTexto(getProdSeq(realData[ja.k]));
             try {
-                await postEditor({ accion: 'justificacion', fecha: ep.fecha, turno: ep.turno, planificado: ep.plan, real: ep.real, motivo, detalle, autor, turnos: String(ep.turnos) });
+                await postEditor({ accion: 'justificacion', tipo: ja.tipo, fecha: ja.fecha, turno: ja.turno, planificado: plan, real, motivo, detalle, autor, turnos: esBloque ? String(ja.ep.turnos) : '1' });
                 try { localStorage.setItem('jfAutor', autor); } catch (e) { }
-                moldesExt.justif.set(ep.k, { fecha: ep.fecha, turno: ep.turno, planificado: ep.plan, real: ep.real, motivo, detalle, autor, turnos: String(ep.turnos), marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }) });
-                msg.textContent = '✅ Justificación guardada'; msg.className = 'jf-msg ok';
-                setTimeout(() => { cerrarJustificacion(); renderGantt(); if (document.getElementById('ganttModal').style.display === 'flex') abrirGantt(ep.fecha); }, 600);
+                const reg = { fecha: ja.fecha, turno: ja.turno, planificado: plan, real, motivo, detalle, autor, tipo: ja.tipo, marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }) };
+                if (esBloque) moldesExt.justif.set(ja.k, reg);
+                else if (detalle) moldesExt.coment.set(ja.k, reg); else moldesExt.coment.delete(ja.k);
+                msg.textContent = esBloque ? '✅ Justificación guardada' : '✅ Comentario guardado'; msg.className = 'jf-msg ok';
+                setTimeout(() => { cerrarJustificacion(); renderGantt(); if (document.getElementById('ganttModal').style.display === 'flex') abrirGantt(ganttFecha); }, 500);
             } catch (err) {
                 msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err';
                 btn.disabled = false;
@@ -2500,76 +2679,163 @@
         window.addEventListener('beforeprint', prepararImpresion);
         window.addEventListener('afterprint', restaurarImpresion);
 
-        function renderModalBlock(tasks, k, conExt) {
-            const seq = getProdSeq(tasks);
-            const tests = getTestList(tasks);
-            if (!seq.length && !tests.length) {
-                const tr = conExt ? tnRealTurno(k) : null;
-                return `<div class="mg-cell empty">Sin Asignación${tr ? `<span class="mg-tn">${fmtTn(tr.tn)} Tn en el informe</span>` : ''}</div>`;
+        let ganttFecha = null;
+        const HORA_INI_DIA = -2;
+
+        function segmentosDia(dateStr, data, usarExt) {
+            const segs = [];
+            TURNOS.forEach((t, i) => {
+                const k = key(dateStr, t);
+                const seq = getProdSeq(data[k]);
+                if (!seq.length) return;
+                const props = usarExt ? proporcionCambio(k, seq) : null;
+                let acc = 0;
+                seq.forEach((m, j) => {
+                    const f = props ? props[j] : 1 / seq.length;
+                    segs.push({ m, a: i * 8 + acc * 8, b: i * 8 + (acc + f) * 8, turnos: [t] });
+                    acc += f;
+                });
+            });
+            const out = [];
+            segs.forEach(s => {
+                const u = out[out.length - 1];
+                if (u && idSeq(u.m) === idSeq(s.m) && Math.abs(u.b - s.a) < 0.01) { u.b = s.b; s.turnos.forEach(t => { if (!u.turnos.includes(t)) u.turnos.push(t); }); }
+                else out.push(Object.assign({}, s, { turnos: s.turnos.slice() }));
+            });
+            return out;
+        }
+
+        function horaRelativa(dateStr) {
+            const ini = new Date(dateStr + 'T00:00:00');
+            ini.setHours(HORA_INI_DIA, 0, 0, 0);
+            return (Date.now() - ini.getTime()) / 3600000;
+        }
+
+        function continuaDesde(data, dateStr, primero) {
+            if (!primero) return false;
+            const sq = getProdSeq(data[key(sumarDias(dateStr, -1), 'T3')]);
+            return sq.length > 0 && idSeq(sq[sq.length - 1]) === idSeq(primero.m) && primero.a === 0;
+        }
+
+        function continuaHacia(data, dateStr, ultimo) {
+            if (!ultimo) return false;
+            const sq = getProdSeq(data[key(sumarDias(dateStr, 1), 'T1')]);
+            return sq.length > 0 && idSeq(sq[0]) === idSeq(ultimo.m) && ultimo.b >= 24;
+        }
+
+        function barrasHtml(segs, fila, dateStr, data, corte) {
+            const pct = h => (h / 24 * 100).toFixed(3) + '%';
+            return segs.map((s, i) => {
+                const fin = corte !== null ? Math.min(s.b, corte) : s.b;
+                if (fin <= s.a + 0.01) return '';
+                const c = getBrickColor(s.m.baseName, s.m.number);
+                const txt = pickTextColor(c);
+                const enCurso = corte !== null && corte < s.b;
+                let extra = '';
+                if (fila === 'real' && moldesExt.cargado) {
+                    const x = s.turnos.reduce((acc, t) => { const e = extTurno(key(dateStr, t), s.m); return { tn: acc.tn + e.tn, min: acc.min + e.min }; }, { tn: 0, min: 0 });
+                    if (x.min > 0) extra = `<span class="gb-dato">${fmtTn0(x.tn)} Tn · ${fmtHoras(x.min)}</span>`;
+                }
+                const desde = i === 0 && continuaDesde(data, dateStr, s) ? '<span class="gb-cont izq" title="Viene del día anterior">◀</span>' : '';
+                const hacia = i === segs.length - 1 && !enCurso && continuaHacia(data, dateStr, s) ? '<span class="gb-cont der" title="Continúa al día siguiente">▶</span>' : '';
+                const horaTxt = h => { const v = ((h + HORA_INI_DIA) % 24 + 24) % 24; const hh = Math.floor(v), mm = Math.round((v - hh) * 60); return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`; };
+                const tip = `${fila === 'plan' ? 'Plan' : 'Real'}: ${s.m.moldeCompleto}${s.m.variante ? ' [' + nombreProducto(s.m) + ']' : ''}\n${horaTxt(s.a)} → ${enCurso ? 'en curso' : horaTxt(s.b)}`;
+                return `<div class="gb gb-${fila}${enCurso ? ' en-curso' : ''}" style="left:${pct(s.a)}; width:${pct(fin - s.a)}; background:${c}; color:${txt}; --i:${i}" title="${escAttr(tip)}">${desde}<img src="${getImageSrc(s.m.baseName)}" onerror="this.style.display='none'" alt=""><span class="gb-lbl">${nombreProducto(s.m)} <b>${s.m.number}</b></span>${extra}${hacia}</div>`;
+            }).join('');
+        }
+
+        function marcasPruebas(dateStr) {
+            let h = '';
+            TURNOS.forEach((t, i) => {
+                const k = key(dateStr, t);
+                const plan = getTestList(planData[k]).map(x => x.moldeCompleto);
+                const real = getTestList(realData[k]).map(x => x.moldeCompleto);
+                const todos = [...new Set([...plan, ...real])];
+                if (!todos.length) return;
+                h += `<div class="gp-turno" style="grid-column:${i + 1}">`;
+                todos.forEach(m => {
+                    const enPlan = plan.includes(m), enReal = real.includes(m);
+                    const ep = enPlan ? estadoPruebaPlan(dateStr, m) : null;
+                    const cls = enPlan && enReal ? 'ok' : enPlan ? (ep.estado === 'ok' ? 'ok-desf' : ep.estado === 'omitida' ? 'no' : 'pend') : 'extra';
+                    const txt = enPlan && enReal ? 'Planificada y realizada' : enPlan ? (ep.estado === 'ok' ? `Realizada${textoDesfase(ep.mt)}` : ep.estado === 'omitida' ? 'No realizada' : 'Pendiente') : 'Realizada sin planificar';
+                    h += `<div class="gp gp-${cls}" title="🔬 Prueba ${escAttr(m)} · ${txt}"><span>🔬</span><b>${escAttr(m.replace(/ \((\d+)\)/, '·$1'))}</b></div>`;
+                });
+                h += '</div>';
+            });
+            return h;
+        }
+
+        function tarjetaTurno(dateStr, t, dv) {
+            const k = key(dateStr, t);
+            const ev = evaluarProduccion(dateStr, t);
+            const pr = evaluarPruebas(dateStr, t);
+            const et = estadoTurno(dateStr, t);
+            const tr = tnRealTurno(k);
+            const to = tnPlanTurno(k, 'obj');
+            const r = tr && to && to.tn > 0 ? tr.tn / to.tn : null;
+            const etiquetas = { cumplido: '✓ Cumplido', parcial: `Parcial ${ev.score !== null ? Math.round(ev.score * 100) + '%' : ''}`, desvio: '✕ Desvío', noplan: '+ Sin plan', hoy: ev.emoji === '⏳' ? '⏳ Esperando carga' : '⏱ En curso', pendiente: 'Pendiente', vacio: 'Sin plan' };
+            let h = `<div class="gt-card gt-${ev.status}"><div class="gt-head"><b>${t}</b><span class="gt-st">${etiquetas[ev.status]}</span></div>`;
+            if (tr || to) {
+                const ancho = r !== null ? Math.min(100, r * 100) : 0;
+                h += `<div class="gt-tn"><div><span class="${claseRatio(r)}">${tr ? fmtTn0(tr.tn) : '–'}</span><small> / ${to ? fmtTn0(to.tn) : '–'} Tn ${to && to.partes.some(x => x.p && x.p.fuente === 'obj') ? 'objetivo' : 'esperadas'}</small></div>${to ? `<div class="gt-bar"><span style="width:${ancho.toFixed(1)}%"></span></div>` : ''}</div>`;
+            } else if (et === 'futuro') h += `<div class="gt-tn muted">Turno no iniciado</div>`;
+            if (ev.detalle.length) h += `<ul class="gt-det">${ev.detalle.map(x => `<li>${x}</li>`).join('')}</ul>`;
+            if (pr) h += `<div class="gt-pr ct-${pr.status}">🔬 ${pr.detalle.map(x => x.replace(/^[✔✖⏳] /, '')).join(' · ')}</div>`;
+            const ep = dv.porTurno.get(k);
+            if (ep) {
+                const esInicio = ep.k === k;
+                const j = ep.just;
+                if (esInicio) {
+                    h += `<div class="gt-just ${j ? 'ok' : 'pend'}">${j ? `<b>📝 ${escAttr(j.motivo)}</b>${j.detalle ? `<p>${escAttr(j.detalle)}</p>` : ''}<small>Justifica el bloque de ${ep.turnos} turno${ep.turnos > 1 ? 's' : ''}${j.autor ? ' · ' + escAttr(j.autor) : ''}</small>` : `<b>📝 Inicio de desvío</b><small>Bloque de ${ep.turnos} turno${ep.turnos > 1 ? 's' : ''} sin justificar</small>`}${modo === 'produccion' ? `<button onclick="abrirJustificacion('${k}')">${j ? 'Editar justificación' : 'Justificar bloque'}</button>` : ''}</div>`;
+                } else {
+                    h += `<div class="gt-just sec">↳ Parte del desvío iniciado el ${fechaCorta(ep.fecha)} ${ep.turno}${j ? ` · <b>${escAttr(j.motivo)}</b>` : ''}</div>`;
+                }
             }
-            const datosExt = t => {
-                if (!conExt || !moldesExt.cargado) return '';
-                const x = extTurno(k, t);
-                return x.min > 0 ? `<span class="mg-ext">${fmtTn(x.tn)} Tn · ${fmtHoras(x.min)}</span>` : '';
-            };
-            const chipEstado = t => {
-                if (conExt || !moldesExt.cargado) return '';
-                const e = estadoMolde(t.moldeCompleto);
-                return e ? `<span class="mg-estado me-${e.nivel}" title="${escAttr(e.info.observaciones || '')}">● ${escAttr(e.texto)}</span>` : '';
-            };
-            const bloqueProd = t => {
-                const color = getBrickColor(t.baseName, t.number);
-                const txt = pickTextColor(color);
-                return `<div class="mg-sub-block" style="display:flex; flex-direction:column; align-items:center; justify-content:center; background:${color}; color:${txt}; border-radius:8px; padding:4px; margin-bottom:4px; min-height:60px;">
-                        <img src="${getImageSrc(t.baseName)}" class="mold-image" onerror="this.src='${FALLBACK_IMG}'" style="width:30px; height:30px; display:block; margin:0 auto;">
-                        <span style="font-weight:800; font-size:0.9rem;">${nombreProducto(t)}</span>
-                        <span style="font-size:0.7rem; opacity:0.9;">Molde ${t.number}</span>
-                        ${datosExt(t)}${chipEstado(t)}
-                    </div>`;
-            };
-            const bloquePrueba = t => `<div class="mg-test" style="border-left-color:${getBrickColor(t.baseName, t.number)};"><span class="mg-test-ico">🔬</span><span><strong>Prueba</strong> ${t.baseName} · M${t.number}${datosExt(t) ? '<br>' + datosExt(t) : ''}</span></div>`;
-            let html = seq.map(bloqueProd).join('<div class="mg-change">⇣ cambio de molde</div>');
-            html += tests.map(bloquePrueba).join('');
-            if (conExt) { const tr = tnRealTurno(k); if (tr) html += `<div class="mg-tn real">⚖️ ${fmtTn(tr.tn)} Tn producidas</div>`; }
-            else { const tp = tnPlanTurno(k); if (tp) html += `<div class="mg-tn">📦 ≈${fmtTn0(tp.tn)} Tn esperadas</div>`; }
-            return `<div class="mg-cell" style="background:transparent; box-shadow:none; padding:0;">${html}</div>`;
+            const c = moldesExt.coment.get(k);
+            if (c) h += `<div class="gt-com">🗨 ${escAttr(c.detalle)}${c.autor ? `<small>${escAttr(c.autor)}</small>` : ''}</div>`;
+            if (modo === 'produccion' && et !== 'futuro') h += `<button class="gt-com-btn" onclick="abrirComentario('${k}')">${c ? '✏️ Editar comentario' : '🗨 Agregar comentario'}</button>`;
+            return h + '</div>';
         }
 
         function abrirGantt(dateStr) {
+            ganttFecha = dateStr;
             const dObj = new Date(dateStr + 'T00:00:00');
-            document.getElementById('ganttTitulo').textContent = dObj.toLocaleDateString('es-AR', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' }).toUpperCase();
-            let html = `<div class="modal-grid"><div></div>`;
-            TURNOS.forEach(t => { html += `<div class="mg-header">${t}${estadoTurno(dateStr, t) === 'actual' ? ' <small class="mg-now">en curso</small>' : ''}</div>`; });
-            html += `<div class="mg-row-label">Planificación</div>`;
-            TURNOS.forEach(t => { html += renderModalBlock(planData[key(dateStr, t)], key(dateStr, t), false); });
-            html += `<div class="mg-row-label">Cumplimiento</div>`;
-            TURNOS.forEach(t => {
+            const tit = dObj.toLocaleDateString('es-AR', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+            document.getElementById('ganttTitulo').innerHTML = `<button class="gd-nav" onclick="abrirGantt('${sumarDias(dateStr, -1)}')" aria-label="Día anterior">‹</button><span>${tit.charAt(0).toUpperCase() + tit.slice(1)}</span><button class="gd-nav" onclick="abrirGantt('${sumarDias(dateStr, 1)}')" aria-label="Día siguiente">›</button>`;
+            const ahora = horaRelativa(dateStr);
+            const corte = ahora < 0 ? 0 : ahora < 24 ? ahora : null;
+            const segP = segmentosDia(dateStr, planData, false);
+            const segR = segmentosDia(dateStr, realData, true);
+            const mismo = dObj.getFullYear() === currentDate.getFullYear() && dObj.getMonth() === currentDate.getMonth();
+            const dv = mismo ? desviosMes : calcularDesvios(dObj.getFullYear(), dObj.getMonth());
+            let ticks = '';
+            for (let h = 0; h <= 24; h += 2) ticks += `<span class="gd-tick${h % 8 === 0 ? ' fuerte' : ''}" style="left:${(h / 24 * 100).toFixed(3)}%">${String(((h + HORA_INI_DIA) % 24 + 24) % 24).padStart(2, '0')}</span>`;
+            const turnosHead = TURNOS.map((t, i) => {
                 const ev = evaluarProduccion(dateStr, t);
-                const pr = evaluarPruebas(dateStr, t);
-                let cel = '';
-                if (ev.status === 'hoy' || ev.status === 'pendiente') cel += `<div class="mg-comp mg-comp-wait">${ev.status === 'hoy' ? '⏱️ Turno en curso' : '⏳ Pendiente'}</div>`;
-                else if (ev.status !== 'vacio') cel += `<div class="mg-comp ci-${ev.status}"><div>🏭 ${ev.emoji} <span style="margin-left:4px; font-size:0.85rem;">${ev.msg}</span></div>${ev.detalle.length ? `<ul class="mg-detail">${ev.detalle.map(x => `<li>${x}</li>`).join('')}</ul>` : ''}</div>`;
-                if (pr) cel += `<div class="mg-comp-test ct-${pr.status}"><div><strong>🔬 Pruebas:</strong> ${pr.msg}</div><ul class="mg-detail">${pr.detalle.map(x => `<li>${x}</li>`).join('')}</ul></div>`;
-                const kk = key(dateStr, t);
-                const ep = desviosMes.porInicio.get(kk);
-                if (ep) {
-                    const j = moldesExt.justif.get(kk);
-                    if (j || modo === 'produccion') cel += `<div class="mg-just ${j ? 'ok' : 'pend'}">${j ? `<div><b>📝 ${escAttr(j.motivo)}</b></div>${j.detalle ? `<p>${escAttr(j.detalle)}</p>` : ''}<small>${escAttr(j.autor || '')}</small>` : '<div>📝 Inicio de desvío sin justificar</div>'}${modo === 'produccion' ? `<button onclick="abrirJustificacion('${kk}')">${j ? '✏️ Editar' : '✎ Justificar'}</button>` : ''}</div>`;
-                }
-                html += `<div class="mg-comp-wrap">${cel}</div>`;
-            });
-            html += `<div class="mg-row-label">Prod. Real</div>`;
-            TURNOS.forEach(t => {
-                const k = key(dateStr, t);
-                const et = estadoTurno(dateStr, t);
-                const vacio = !(realData[k] || []).length;
-                html += vacio && et === 'futuro' ? `<div class="mg-cell empty">Turno no iniciado</div>` : vacio && et === 'actual' ? `<div class="mg-cell empty">Sin carga aún</div>` : renderModalBlock(realData[k], k, true);
-            });
-            document.getElementById('ganttDetalle').innerHTML = html + `</div>`;
+                return `<div class="gd-turno gs-${ev.status}${estadoTurno(dateStr, t) === 'actual' ? ' actual' : ''}"><b>${t}</b><span>${['22:00 – 06:00', '06:00 – 14:00', '14:00 – 22:00'][i]}</span></div>`;
+            }).join('');
+            const ahoraHtml = corte !== null && corte > 0 ? `<div class="gd-ahora" style="left:${(corte / 24 * 100).toFixed(3)}%"><span>ahora</span></div>` : '';
+            const sinPlan = !segP.length ? '<div class="gd-vacio">Sin producción planificada</div>' : '';
+            const sinReal = !segR.length ? `<div class="gd-vacio">${corte === 0 ? 'Día no iniciado' : 'Sin producción cargada'}</div>` : '';
+            const pruebas = marcasPruebas(dateStr);
+            const html = `
+                <div class="gd">
+                    <div class="gd-row gd-head"><div></div><div class="gd-turnos">${turnosHead}</div></div>
+                    <div class="gd-row gd-eje"><div></div><div class="gd-ticks">${ticks}</div></div>
+                    <div class="gd-cuerpo">
+                        <div class="gd-row"><div class="gd-lbl">📋 Plan</div><div class="gd-pista">${barrasHtml(segP, 'plan', dateStr, planData, null)}${sinPlan}</div></div>
+                        <div class="gd-row"><div class="gd-lbl">🏭 Real</div><div class="gd-pista real">${barrasHtml(segR, 'real', dateStr, realData, corte)}${sinReal}</div></div>
+                        ${pruebas ? `<div class="gd-row"><div class="gd-lbl">🔬 Pruebas</div><div class="gd-pista pr">${pruebas}</div></div>` : ''}
+                        <div class="gd-grid"><div></div><div class="gd-lineas"><i style="left:33.333%"></i><i style="left:66.667%"></i>${ahoraHtml}</div></div>
+                    </div>
+                    <div class="gd-row gd-cards"><div></div><div class="gd-cards-in">${TURNOS.map(t => tarjetaTurno(dateStr, t, dv)).join('')}</div></div>
+                </div>`;
+            document.getElementById('ganttDetalle').innerHTML = html;
             document.getElementById('ganttModal').style.display = 'flex';
         }
 
         function cerrarGantt() { document.getElementById('ganttModal').style.display = 'none'; }
+
         window.addEventListener('click', e => { if (e.target === document.getElementById('ganttModal')) cerrarGantt(); });
 
         function abrirSelectorMes() {
@@ -2585,7 +2851,7 @@
         function irAMes() { currentDate = new Date(parseInt(document.getElementById('selYear').value), parseInt(document.getElementById('selMonth').value), 1); cerrarSelectorMes(); loadData(); }
         function cambiarMes(delta) { currentDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + delta, 1); loadData(); }
         function irAHoy() { const h = new Date(); currentDate = new Date(h.getFullYear(), h.getMonth(), 1); loadData(); }
-        const MODOS = { produccion: { nombre: 'Editor de Producción', ico: '🏭' }, compras: { nombre: 'Editor de Compras', ico: '🛒' } };
+        const MODOS = { produccion: { nombre: 'Editor de Producción', ico: '🏭' }, comercial: { nombre: 'Editor Comercial', ico: '💼' } };
         let modo = null, modoPwd = '', modoElegido = null;
         let bloquesMes = { lista: [], porTurno: new Map(), porId: new Map() };
 
@@ -2636,7 +2902,7 @@
             modo = m; modoPwd = pwd;
             try { sessionStorage.setItem('modoEditor', JSON.stringify({ m, pwd })); } catch (e) { }
             aplicarModo();
-            if (m === 'compras' && currentView !== 'plan') setView('plan'); else renderGantt();
+            if (m === 'comercial' && currentView !== 'plan') setView('plan'); else renderGantt();
         }
 
         function salirModo() {
@@ -2654,7 +2920,7 @@
 
         function aplicarModo() {
             document.body.classList.toggle('modo-produccion', modo === 'produccion');
-            document.body.classList.toggle('modo-compras', modo === 'compras');
+            document.body.classList.toggle('modo-comercial', modo === 'comercial');
             const b = document.getElementById('modoBanner');
             if (!modo) { b.classList.remove('on'); b.innerHTML = ''; }
             else {
@@ -2670,18 +2936,6 @@
             const j = await r.json();
             if (j.result !== 'success') throw new Error(j.message || 'No se pudo guardar');
             return j;
-        }
-
-        function renderComprasBar() {
-            const bar = document.getElementById('comprasBar');
-            if (modo !== 'compras') { bar.classList.remove('on'); bar.innerHTML = ''; return; }
-            bar.classList.add('on');
-            const v = moldesExt.validaciones.get(mesClave());
-            const estado = v ? v.estado : 'Sin validar';
-            const cls = estado === 'Validada' ? 'ok' : estado === 'Con observaciones' ? 'obs' : 'pend';
-            const mesTxt = `${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()}`;
-            bar.innerHTML = `<div class="cb-info"><b>Plan de ${mesTxt}</b><span class="sello ${cls}">${estado}</span>${currentView === 'plan' ? '<span class="cb-tip">👆 Tocá un bloque del calendario para recomendar cambios</span>' : '<button class="cb-btn" onclick="setView(\'plan\')">Ir a Planificación</button>'}</div>
-                <div class="cb-acc"><button class="cb-btn" onclick="abrirValidacion()">✔ Validar planificación</button><button class="cb-btn prim" onclick="abrirRecomendacion(null)">📝 Solicitar modificación total</button></div>`;
         }
 
         function tiposDisponibles() {
@@ -2711,13 +2965,59 @@
             return p.tn * 1000 / b.kgPallet;
         }
 
+        function toast(texto, tipo) {
+            const t = document.getElementById('toast');
+            t.textContent = texto;
+            t.className = `toast on ${tipo || ''}`;
+            clearTimeout(toast._t);
+            toast._t = setTimeout(() => { t.className = 'toast'; }, 4200);
+        }
+
+        function renderComprasBar() {
+            const bar = document.getElementById('comprasBar');
+            if (modo !== 'comercial') { bar.classList.remove('on'); bar.innerHTML = ''; return; }
+            bar.classList.add('on');
+            const v = moldesExt.validaciones.get(mesClave());
+            const estado = v ? v.estado : 'Sin validar';
+            const cls = estado === 'Validada' ? 'ok' : estado === 'Con observaciones' ? 'obs' : 'pend';
+            const mesTxt = `${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()}`;
+            const sinNotificar = moldesExt.recomendaciones.filter(r => r.mes === mesClave() && !r.notificado).length;
+            bar.innerHTML = `<div class="cb-info"><b>Plan de ${mesTxt}</b><span class="sello ${cls}">${estado}</span>${currentView === 'plan' ? '<span class="cb-tip">👆 Tocá un bloque del calendario para recomendar cambios</span>' : '<button class="cb-btn" onclick="setView(\'plan\')">Ir a Planificación</button>'}</div>
+                <div class="cb-acc"><button class="cb-btn" onclick="abrirValidacion()">✔ Validar planificación</button><button class="cb-btn" onclick="abrirRecomendacion(null)">📝 Modificación total</button><button class="cb-btn prim" id="btnNotificar" onclick="finalizarYNotificar()" ${sinNotificar ? '' : 'disabled'} title="Envía por mail a Producción las recomendaciones nuevas">📨 Finalizar y notificar${sinNotificar ? ` <span class="cb-n">${sinNotificar}</span>` : ''}</button></div>`;
+        }
+
+        async function finalizarYNotificar() {
+            const btn = document.getElementById('btnNotificar');
+            if (btn) { btn.disabled = true; btn.textContent = 'Enviando…'; }
+            try {
+                const j = await postEditor({ accion: 'notificar', mes: mesClave() });
+                const ahora = new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
+                moldesExt.recomendaciones.forEach(r => { if (r.mes === mesClave() && !r.notificado) r.notificado = ahora; });
+                toast(`📨 Se notificaron ${j.enviadas} recomendación(es) a ${j.mail && j.mail.destinatarios ? j.mail.destinatarios + ' destinatario(s)' : 'Producción'}`, 'ok');
+            } catch (err) {
+                toast('❌ ' + err.message, 'err');
+            }
+            renderGantt();
+        }
+
+        function bloquesFuturos(excluirId) {
+            return bloquesMes.lista.filter(b => b.id !== excluirId).map(b => {
+                const fut = b.keys.filter(k => estadoTurno(k.slice(0, 10), k.slice(-2)) === 'futuro');
+                if (!fut.length) return null;
+                const turnos = fut.reduce((a, k) => { const seq = getProdSeq(planData[k]); const n = seq.filter(m => tipoProducto(m) === b.tipo).length; return a + (seq.length ? n / seq.length : 0); }, 0);
+                return { b, desde: fut[0], hasta: fut[fut.length - 1], turnos, etiqueta: `${b.tipo} ${fechaCorta(fut[0].slice(0, 10))} ${fut[0].slice(-2)} → ${fechaCorta(fut[fut.length - 1].slice(0, 10))} ${fut[fut.length - 1].slice(-2)}` };
+            }).filter(Boolean);
+        }
+
         let recActual = null;
-        function abrirBloque(id) { if (modo === 'compras') abrirRecomendacion(id); }
+        function abrirBloque(id) { if (modo === 'comercial') abrirRecomendacion(id); }
 
         function abrirRecomendacion(id) {
-            if (modo !== 'compras') return;
+            if (modo !== 'comercial') return;
             const b = id ? bloquesMes.porId.get(id) : null;
-            recActual = { bloque: b };
+            recActual = { bloque: b, futuros: bloquesFuturos(null), sel: new Set() };
+            const propio = b ? recActual.futuros.findIndex(f => f.b.id === b.id) : -1;
+            if (propio >= 0) recActual.sel.add(propio);
             const res = document.getElementById('rcResumen');
             if (b) {
                 const ppt = palletsPorTurno(b.tipo);
@@ -2726,22 +3026,40 @@
                     <div class="rc-grid"><div><small>Desde</small>${fechaCorta(b.desde.ds)} ${b.desde.t}</div><div><small>Hasta</small>${fechaCorta(b.hasta.ds)} ${b.hasta.t}</div><div><small>Turnos</small>${b.turnos.toLocaleString('es-AR', { maximumFractionDigits: 1 })} (≈${(b.turnos / 3).toLocaleString('es-AR', { maximumFractionDigits: 1 })} días)</div><div><small>Tn esperadas</small>${b.tn ? '≈' + fmtTn0(b.tn) : '–'}</div><div><small>Pallets esperados</small>${ppt ? '≈' + fmtTn0(ppt * b.turnos) : '–'}</div></div>
                     ${b.recs.length ? `<div class="rc-prev">Ya tiene ${b.recs.length} recomendación(es): ${b.recs.map(r => `${r.accion} (${r.estado})`).join(' · ')}</div>` : ''}`;
             } else {
-                res.innerHTML = `<div class="rc-head"><b>Modificación total de la planificación</b><span>${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()}</span></div><p class="rc-nota">Indicá qué necesita Compras: tipo de ladrillo, días de producción o pallets.</p>`;
+                res.innerHTML = `<div class="rc-head"><b>Modificación total de la planificación</b><span>${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()}</span></div><p class="rc-nota">Indicá qué necesita Comercial: tipo de ladrillo, días de producción o pallets.</p>`;
             }
-            document.getElementById('rcTitulo').textContent = b ? '🛒 Recomendación sobre el bloque' : '📝 Solicitar modificación total';
+            document.getElementById('rcTitulo').textContent = b ? '💼 Recomendación sobre el bloque' : '📝 Solicitar modificación total';
             document.getElementById('rcAccionWrap').hidden = !b;
             document.querySelectorAll('input[name="rcAccion"]').forEach((r, i) => { r.checked = i === 0; });
             const sel = document.getElementById('rcTipo');
             sel.innerHTML = '<option value="">Seleccionar…</option>' + tiposDisponibles().filter(t => !b || t !== b.tipo).map(t => `<option>${escAttr(t)}</option>`).join('');
             ['rcDias', 'rcPallets', 'rcDetalle'].forEach(i => { document.getElementById(i).value = ''; });
             document.getElementById('rcPrioridad').value = 'Normal';
-            let autor = '';
-            try { autor = localStorage.getItem('rcAutor') || ''; } catch (e) { }
-            document.getElementById('rcAutor').value = autor;
             document.getElementById('rcMsg').textContent = '';
             document.getElementById('rcGuardar').disabled = false;
+            renderBloquesFuturos();
             actualizarFormRec();
             document.getElementById('recModal').classList.add('open');
+        }
+
+        function renderBloquesFuturos() {
+            const cont = document.getElementById('rcBloques');
+            const lista = recActual.futuros;
+            if (!lista.length) { cont.innerHTML = '<p class="rc-nota">No hay bloques planificados a partir de hoy en este mes.</p>'; return; }
+            cont.innerHTML = lista.map((f, i) => {
+                const c = getBrickColor(f.b.base, 2);
+                const on = recActual.sel.has(i);
+                return `<button type="button" class="rc-bq${on ? ' on' : ''}" onclick="toggleBloqueFuturo(${i})" aria-pressed="${on}">
+                    <span class="rc-bq-chk">${on ? '✓' : ''}</span><span class="tipo-chip" style="background:${c}"></span>
+                    <span class="rc-bq-txt"><b>${escAttr(f.b.tipo)}</b> <small>${[...f.b.moldes].join(', ')}${recActual.bloque && f.b.id === recActual.bloque.id ? ' · bloque elegido' : ''}</small><br>${fechaCorta(f.desde.slice(0, 10))} ${f.desde.slice(-2)} → ${fechaCorta(f.hasta.slice(0, 10))} ${f.hasta.slice(-2)} · quedan ${f.turnos.toLocaleString('es-AR', { maximumFractionDigits: 1 })} turnos (≈${(f.turnos / 3).toLocaleString('es-AR', { maximumFractionDigits: 1 })} días)</span>
+                </button>`;
+            }).join('');
+        }
+
+        function toggleBloqueFuturo(i) {
+            if (recActual.sel.has(i)) recActual.sel.delete(i); else recActual.sel.add(i);
+            renderBloquesFuturos();
+            convertirRec('dias');
         }
 
         function cerrarRecomendacion() { document.getElementById('recModal').classList.remove('open'); recActual = null; }
@@ -2756,64 +3074,76 @@
             const a = accionRec();
             const t = document.getElementById('rcTipo').value;
             if (a === 'Cambiar tipo de ladrillo' || a === 'Modificación total') return t;
+            if (recActual && recActual.sel.size) { const ts = [...new Set([...recActual.sel].map(i => recActual.futuros[i].b.tipo))]; if (ts.length === 1) return ts[0]; }
             return recActual && recActual.bloque ? recActual.bloque.tipo : t;
         }
 
         function actualizarFormRec() {
             const a = accionRec();
-            const etiquetas = { 'Agregar días': '¿A qué tipo de ladrillo se le quitan esos días?', 'Reducir días': '¿A qué tipo de ladrillo se le asignan esos días?', 'Cambiar tipo de ladrillo': 'Tipo de ladrillo a producir en su lugar', 'Modificación total': 'Tipo de ladrillo necesario' };
-            document.getElementById('rcTipoLbl').textContent = etiquetas[a];
+            const conBloques = a === 'Agregar días' || a === 'Reducir días';
+            document.getElementById('rcBloquesWrap').hidden = !conBloques;
+            document.getElementById('rcTipoWrap').hidden = conBloques;
+            document.getElementById('rcBloquesLbl').textContent = a === 'Agregar días' ? 'Bloques planificados (desde hoy) a los que se agregan días' : 'Bloques planificados (desde hoy) a los que se reducen días';
+            document.getElementById('rcTipoLbl').textContent = a === 'Cambiar tipo de ladrillo' ? 'Tipo de ladrillo a producir en su lugar' : 'Tipo de ladrillo necesario';
             document.getElementById('rcDiasLbl').textContent = a === 'Reducir días' ? 'Días a reducir' : a === 'Agregar días' ? 'Días a agregar' : 'Días de producción';
             convertirRec('dias');
+        }
+
+        function validarDiasRec() {
+            const nota = document.getElementById('rcAviso');
+            nota.textContent = '';
+            if (!recActual || accionRec() !== 'Reducir días' || !recActual.sel.size) return;
+            const dias = Number(document.getElementById('rcDias').value) || 0;
+            const disp = [...recActual.sel].reduce((a, i) => a + recActual.futuros[i].turnos / 3, 0);
+            if (dias > disp + 0.01) nota.textContent = `⚠ A los bloques elegidos les quedan ≈${disp.toLocaleString('es-AR', { maximumFractionDigits: 1 })} días; se piden reducir ${dias}.`;
         }
 
         function convertirRec(origen) {
             const t = tipoConversion();
             const ppt = t ? palletsPorTurno(t) : null;
             const nota = document.getElementById('rcConv');
-            if (!ppt) { nota.textContent = t ? `Sin datos de conversión para ${t}.` : 'Elegí el tipo para convertir días ↔ pallets.'; return; }
+            if (!ppt) { nota.textContent = t ? `Sin datos de conversión para ${t}.` : 'Elegí el tipo para convertir días ⇄ pallets.'; validarDiasRec(); return; }
             const porDia = ppt * 3;
             const dias = document.getElementById('rcDias'), pal = document.getElementById('rcPallets');
             if (origen === 'dias' && dias.value !== '') pal.value = Math.round(Number(dias.value) * porDia);
             if (origen === 'pallets' && pal.value !== '') dias.value = (Number(pal.value) / porDia).toFixed(1);
             const b = baseTipo(t);
             nota.textContent = `${t}: ≈${fmtTn0(porDia)} pallets/día (${fmtTn0(ppt)} por turno · ${b.kgPallet.toLocaleString('es-AR')} kg/pallet · ${b.ladrillosPallet} ladrillos/pallet)`;
+            validarDiasRec();
         }
 
         async function guardarRecomendacion() {
             const b = recActual && recActual.bloque;
             const accion = accionRec();
-            const tipoAfectado = document.getElementById('rcTipo').value;
+            const conBloques = accion === 'Agregar días' || accion === 'Reducir días';
+            const elegidos = conBloques ? [...recActual.sel].map(i => recActual.futuros[i]) : [];
+            const tipoAfectado = conBloques ? [...new Set(elegidos.map(f => f.b.tipo))].join(', ') : document.getElementById('rcTipo').value;
             const dias = document.getElementById('rcDias').value;
             const pallets = document.getElementById('rcPallets').value;
             const detalle = document.getElementById('rcDetalle').value.trim();
-            const autor = document.getElementById('rcAutor').value.trim();
             const msg = document.getElementById('rcMsg');
-            if ((accion === 'Cambiar tipo de ladrillo' || accion === 'Modificación total') && !tipoAfectado) { msg.textContent = 'Elegí el tipo de ladrillo.'; msg.className = 'jf-msg err'; return; }
-            if (accion !== 'Cambiar tipo de ladrillo' && !dias && !pallets && !detalle) { msg.textContent = 'Indicá días, pallets o el detalle de la necesidad.'; msg.className = 'jf-msg err'; return; }
+            if (conBloques && !elegidos.length) { msg.textContent = accion === 'Agregar días' ? 'Elegí a qué bloque(s) se agregan los días.' : 'Elegí a qué bloque(s) se reducen los días.'; msg.className = 'jf-msg err'; return; }
+            if (conBloques && !dias && !pallets) { msg.textContent = 'Indicá cuántos días o pallets.'; msg.className = 'jf-msg err'; return; }
+            if (!conBloques && !tipoAfectado) { msg.textContent = 'Elegí el tipo de ladrillo.'; msg.className = 'jf-msg err'; return; }
             const btn = document.getElementById('rcGuardar');
             btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
-            const datos = { accion: 'recomendacion', mes: mesClave(), tipo: b ? b.tipo : tipoAfectado, accionRec: accion, desde: b ? b.etiqueta : '', hasta: b ? `${b.hasta.ds} ${b.hasta.t}` : '', moldes: b ? [...b.moldes].join(', ') : '', dias, pallets, tipoAfectado, detalle, prioridad: document.getElementById('rcPrioridad').value, autor };
+            const datos = { accion: 'recomendacion', mes: mesClave(), tipo: b ? b.tipo : tipoAfectado, accionRec: accion, desde: b ? b.etiqueta : '', hasta: b ? `${b.hasta.ds} ${b.hasta.t}` : '', moldes: b ? [...b.moldes].join(', ') : '', dias, pallets, tipoAfectado, afectados: elegidos.map(f => f.etiqueta).join(' | '), detalle, prioridad: document.getElementById('rcPrioridad').value, autor: 'Comercial' };
             try {
                 const j = await postEditor(datos);
-                try { localStorage.setItem('rcAutor', autor); } catch (e) { }
-                moldesExt.recomendaciones.push({ id: j.id, marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }), mes: datos.mes, tipo: datos.tipo, accion, desde: datos.desde, hasta: datos.hasta, moldes: datos.moldes, dias: Number(dias) || 0, pallets: Number(pallets) || 0, tipoAfectado, detalle, prioridad: datos.prioridad, autor, estado: 'Pendiente', respuesta: '', respondidoPor: '', fechaRespuesta: '' });
-                msg.textContent = '✅ Recomendación enviada a Producción'; msg.className = 'jf-msg ok';
-                setTimeout(() => { cerrarRecomendacion(); renderGantt(); }, 600);
+                moldesExt.recomendaciones.push({ id: j.id, marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }), mes: datos.mes, tipo: datos.tipo, accion, desde: datos.desde, hasta: datos.hasta, moldes: datos.moldes, dias: Number(dias) || 0, pallets: Number(pallets) || 0, tipoAfectado, afectados: datos.afectados, detalle, prioridad: datos.prioridad, autor: 'Comercial', estado: 'Pendiente', respuesta: '', respondidoPor: '', fechaRespuesta: '', notificado: '' });
+                msg.textContent = '✅ Guardada'; msg.className = 'jf-msg ok';
+                setTimeout(() => { cerrarRecomendacion(); renderGantt(); toast('✅ Recomendación guardada · cuando termines, tocá “Finalizar y notificar”', 'ok'); }, 450);
             } catch (err) {
                 msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err'; btn.disabled = false;
             }
         }
 
         function abrirValidacion() {
-            if (modo !== 'compras') return;
+            if (modo !== 'comercial') return;
             const v = moldesExt.validaciones.get(mesClave()) || {};
             document.getElementById('vlMes').textContent = `${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()}`;
             document.querySelectorAll('input[name="vlEstado"]').forEach(r => { r.checked = r.value === (v.estado || 'Validada'); });
             document.getElementById('vlComentario').value = v.comentario || '';
-            let autor = v.autor || '';
-            try { autor = autor || localStorage.getItem('rcAutor') || ''; } catch (e) { }
-            document.getElementById('vlAutor').value = autor;
             document.getElementById('vlMsg').textContent = '';
             document.getElementById('vlGuardar').disabled = false;
             document.getElementById('validModal').classList.add('open');
@@ -2824,16 +3154,17 @@
         async function guardarValidacion() {
             const estado = (document.querySelector('input[name="vlEstado"]:checked') || {}).value || 'Validada';
             const comentario = document.getElementById('vlComentario').value.trim();
-            const autor = document.getElementById('vlAutor').value.trim();
             const msg = document.getElementById('vlMsg');
             if (estado === 'Con observaciones' && !comentario) { msg.textContent = 'Contá cuáles son las observaciones.'; msg.className = 'jf-msg err'; return; }
             const btn = document.getElementById('vlGuardar');
-            btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
+            btn.disabled = true; msg.textContent = 'Guardando y notificando…'; msg.className = 'jf-msg';
             try {
-                await postEditor({ accion: 'validacion', mes: mesClave(), estado, comentario, autor });
-                moldesExt.validaciones.set(mesClave(), { estado, comentario, autor, marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }) });
-                msg.textContent = '✅ Guardado'; msg.className = 'jf-msg ok';
-                setTimeout(() => { cerrarValidacion(); renderGantt(); }, 500);
+                const j = await postEditor({ accion: 'validacion', mes: mesClave(), estado, comentario, autor: 'Comercial' });
+                moldesExt.validaciones.set(mesClave(), { estado, comentario, autor: 'Comercial', marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }) });
+                const m = j.mail;
+                msg.textContent = m && m.enviado ? `✅ Guardado · mail enviado a ${m.destinatarios} destinatario(s)` : `✅ Guardado${m && m.motivo ? ' · sin mail: ' + m.motivo : ''}`;
+                msg.className = 'jf-msg ok';
+                setTimeout(() => { cerrarValidacion(); renderGantt(); }, m && m.enviado ? 900 : 1800);
             } catch (err) {
                 msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err'; btn.disabled = false;
             }
@@ -2842,21 +3173,22 @@
         function renderRecomendaciones() {
             const cont = document.getElementById('recsInfo');
             const recs = moldesExt.recomendaciones.filter(r => r.mes === mesClave());
-            if (currentView !== 'plan' || (!recs.length && modo !== 'compras')) { cont.style.display = 'none'; cont.innerHTML = ''; return; }
+            if (currentView !== 'plan' || (!recs.length && modo !== 'comercial')) { cont.style.display = 'none'; cont.innerHTML = ''; return; }
             cont.style.display = 'block';
-            if (!recs.length) { cont.innerHTML = '<h3>🛒 Recomendaciones de Compras</h3><p class="desv-vacio">Todavía no hay recomendaciones para este mes.</p>'; return; }
+            if (!recs.length) { cont.innerHTML = '<h3>💼 Recomendaciones de Comercial</h3><p class="desv-vacio">Todavía no hay recomendaciones para este mes.</p>'; return; }
             const estCls = { 'Pendiente': 'pend', 'En análisis': 'anal', 'Aceptada': 'ok', 'Rechazada': 'rech' };
-            let html = `<h3>🛒 Recomendaciones de Compras <small>${recs.filter(r => r.estado === 'Pendiente' || r.estado === 'En análisis').length} pendientes de respuesta</small></h3>
-                <table class="desv-tabla rec-tabla"><thead><tr><th>Bloque</th><th>Acción</th><th>Cantidad</th><th>Tipo afectado</th><th>Necesidad</th><th>Estado</th><th>Respuesta de Producción</th><th></th></tr></thead><tbody>`;
+            let html = `<h3>💼 Recomendaciones de Comercial <small>${recs.filter(r => r.estado === 'Pendiente' || r.estado === 'En análisis').length} pendientes de respuesta</small></h3>
+                <table class="desv-tabla rec-tabla"><thead><tr><th>Bloque</th><th>Acción</th><th>Cantidad</th><th>Bloques / tipo afectado</th><th>Necesidad</th><th>Estado</th><th>Respuesta de Producción</th><th></th></tr></thead><tbody>`;
             recs.slice().reverse().forEach(r => {
                 const bloque = r.desde ? `<b>${escAttr(r.tipo)}</b> ${fechaCorta(r.desde.slice(0, 10))} ${r.desde.slice(11)} → ${r.hasta ? fechaCorta(r.hasta.slice(0, 10)) + ' ' + r.hasta.slice(11) : ''}` : `<b>Plan completo</b>`;
                 const cant = [r.dias ? `${r.dias.toLocaleString('es-AR')} días` : '', r.pallets ? `${fmtTn0(r.pallets)} pallets` : ''].filter(Boolean).join(' · ') || '–';
+                const afect = r.afectados ? r.afectados.split(' | ').map(x => `<span class="rec-af">${escAttr(x)}</span>`).join('') : escAttr(r.tipoAfectado || '–');
                 html += `<tr class="${r.prioridad === 'Alta' || r.prioridad === 'Urgente' ? 'prio' : ''}">
                     <td>${bloque}</td>
                     <td>${escAttr(r.accion)}${r.prioridad && r.prioridad !== 'Normal' ? ` <span class="prio-tag">${escAttr(r.prioridad)}</span>` : ''}</td>
                     <td>${cant}</td>
-                    <td>${escAttr(r.tipoAfectado || '–')}</td>
-                    <td class="desv-just">${r.detalle ? `<span>${escAttr(r.detalle)}</span>` : ''}<small>${escAttr(r.autor || '')}${r.marca ? ' · ' + escAttr(r.marca) : ''}</small></td>
+                    <td>${afect}</td>
+                    <td class="desv-just">${r.detalle ? `<span>${escAttr(r.detalle)}</span>` : ''}<small>${r.marca ? escAttr(r.marca) : ''}${r.notificado ? ' · 📨 notificada' : ' · sin notificar'}</small></td>
                     <td><span class="rec-est ${estCls[r.estado] || 'pend'}">${escAttr(r.estado)}</span></td>
                     <td class="desv-just">${r.respuesta ? `<span>${escAttr(r.respuesta)}</span><small>${escAttr(r.respondidoPor || '')}</small>` : '<span class="muted">–</span>'}</td>
                     <td>${modo === 'produccion' ? `<button class="desv-btn" onclick="abrirRespuesta('${r.id}')">Responder</button>` : ''}</td>
@@ -2877,6 +3209,7 @@
             let autor = '';
             try { autor = localStorage.getItem('jfAutor') || ''; } catch (e) { }
             document.getElementById('rpAutor').value = autor;
+            document.getElementById('rpTitulo').textContent = '🏭 Responder a Comercial';
             document.getElementById('rpMsg').textContent = '';
             document.getElementById('rpGuardar').disabled = false;
             document.getElementById('respModal').classList.add('open');
@@ -2933,7 +3266,7 @@
             if (leerTema() === 'light') { document.body.classList.add('light-mode'); themeDark = false; }
             restaurarModo();
             updateClock(); setInterval(updateClock, 15000);
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') { cerrarGantt(); cerrarJustificacion(); cerrarModos(); cerrarRecomendacion(); cerrarValidacion(); cerrarRespuesta(); } });
+            document.addEventListener('keydown', e => { if (e.key === 'ArrowLeft' && ganttFecha && document.getElementById('ganttModal').style.display === 'flex' && !document.querySelector('.jf-overlay.open')) abrirGantt(sumarDias(ganttFecha, -1)); if (e.key === 'ArrowRight' && ganttFecha && document.getElementById('ganttModal').style.display === 'flex' && !document.querySelector('.jf-overlay.open')) abrirGantt(sumarDias(ganttFecha, 1)); if (e.key === 'Escape') { cerrarGantt(); cerrarJustificacion(); cerrarModos(); cerrarRecomendacion(); cerrarValidacion(); cerrarRespuesta(); } });
             setInterval(() => { if (!printState && document.visibilityState === 'visible') loadData(true); }, RECARGA_MIN * 60000);
             window.addEventListener('resize', () => {
                 const currentIsMobile = window.innerWidth <= 768;
