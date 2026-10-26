@@ -159,6 +159,46 @@
             .finde-dia { grid-template-columns: 1fr; }
         }
         @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+        .ob-sub { display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); }
+        button.option-btn.mod-btn { flex-direction: row; justify-content: flex-start; text-align: left; gap: 14px; width: 100%; margin-top: 12px; border-style: dashed; }
+        .mod-btn .mb-ico { font-size: 1.6rem; }
+        .mod-btn small { display: block; font-size: 0.74rem; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
+        .mr-rango { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+        .mr-rango label, .ma-lbl { display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-muted); margin: 12px 0 5px; }
+        .mr-ft { display: grid; grid-template-columns: minmax(0, 1fr) 62px; gap: 4px; }
+        .mr-ft input, .mr-ft select, .ma-input { width: 100%; padding: 11px 10px; border-radius: 10px; background: var(--bg-body); border: 1px solid var(--border); color: var(--text-main); font-family: var(--font); font-weight: 700; font-size: 0.9rem; color-scheme: dark; }
+        textarea.ma-input { font-weight: 500; resize: vertical; }
+        .mr-ft input:focus, .mr-ft select:focus, .ma-input:focus { outline: none; border-color: var(--accent); }
+        .mr-linea { margin-top: 14px; display: flex; flex-direction: column; gap: 4px; max-height: 34vh; overflow-y: auto; padding-right: 2px; }
+        .mr-dia { display: grid; grid-template-columns: 74px repeat(3, minmax(0, 1fr)); gap: 4px; align-items: stretch; animation: chipIn 0.25s ease both; }
+        .mr-dia > b { font-size: 0.72rem; align-self: center; color: var(--text-muted); }
+        .mr-t { position: relative; padding: 6px 4px; border-radius: 8px; font-size: 0.68rem; font-weight: 800; text-align: center; background: var(--bg-cell); color: var(--text-muted); border: 1.5px solid transparent; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .mr-t.prod { color: #fff; }
+        .mr-t.vacio { background: repeating-linear-gradient(135deg, rgba(127,127,127,0.12) 0 5px, transparent 5px 10px); }
+        .mr-t.sel { border-color: var(--accent); box-shadow: 0 0 0 2px rgba(224,123,76,0.35); }
+        .mr-t.fuera { opacity: 0.35; }
+        .mr-t.mod::after { content: '✏️'; position: absolute; top: -2px; right: 1px; font-size: 0.6rem; }
+        .mr-t.pasado { filter: saturate(0.6); }
+        .mr-resumen { margin-top: 12px; padding: 12px 14px; border-radius: 12px; background: var(--bg-cell); font-size: 0.84rem; line-height: 1.5; }
+        .mr-resumen:empty { display: none; }
+        .mr-resumen b { color: var(--accent-light); }
+        .mr-aviso { color: var(--orange); font-weight: 700; font-size: 0.78rem; margin-top: 4px; }
+        .ma-dif { display: inline-block; padding: 1px 8px; border-radius: 6px; font-weight: 800; margin-left: 4px; }
+        .ma-dif.menos { background: rgba(255,69,58,0.15); color: #ff8f86; } .ma-dif.mas { background: rgba(48,209,88,0.15); color: #6ee09a; }
+        button.option-btn.ma-op { flex-direction: row; justify-content: flex-start; text-align: left; gap: 12px; padding: 14px; }
+        button.option-btn.ma-op.on { border-color: var(--accent); background: rgba(224,123,76,0.14); }
+        .ma-op small { display: block; font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
+        #necPanel { margin-top: 18px; }
+        .np-tit { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--accent-light); margin-bottom: 8px; }
+        .np-tit small { color: var(--text-muted); text-transform: none; letter-spacing: 0; font-weight: 600; }
+        .np-mes { font-size: 0.72rem; font-weight: 800; color: var(--text-muted); margin: 10px 0 4px; }
+        .np-card { display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; padding: 9px 12px; border-radius: 10px; background: var(--bg-cell); border-left: 4px solid var(--nc, var(--border)); margin-bottom: 6px; animation: chipIn 0.3s ease both; font-size: 0.82rem; }
+        .np-card b { font-size: 0.9rem; }
+        .np-card .np-pct { font-weight: 900; color: var(--nc); align-self: center; grid-row: span 2; font-size: 1rem; }
+        .np-card small { color: var(--text-muted); font-weight: 600; }
+        .np-bar { grid-column: 1 / 3; height: 5px; border-radius: 3px; background: rgba(127,127,127,0.2); overflow: hidden; margin-top: 4px; }
+        .np-bar span { display: block; height: 100%; background: var(--nc); border-radius: 3px; }
+        .np-vacio { font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 10px; border: 1px dashed var(--border); border-radius: 10px; }
     </style>
 </head>
 <body>
@@ -185,11 +225,45 @@
 
         <div id="step-tarea" class="step">
             <div class="header-status"><span>Selección</span> <span onclick="resetWizard()" style="cursor:pointer; color:var(--text-main);">⟲ Reiniciar</span></div>
-            <h2>Tipo de Asignación</h2>
-            <div class="btn-grid">
-                <button class="option-btn" onclick="selectTarea('Producción')">🏭 Producción</button>
-                <button class="option-btn" onclick="selectTarea('Prueba')">🔬 Prueba</button>
+            <h2>¿Qué querés hacer?</h2>
+            <div class="btn-grid grid-2">
+                <button class="option-btn" onclick="selectTarea('Producción')">🏭 Producción<small class="ob-sub">Nuevo bloque</small></button>
+                <button class="option-btn" onclick="selectTarea('Prueba')">🔬 Prueba<small class="ob-sub">Prueba de molde</small></button>
             </div>
+            <button class="option-btn mod-btn" onclick="iniciarModificacion()"><span class="mb-ico">✏️</span><span><b>Modificar plan</b><small>Quitar, agregar o cambiar producción en turnos ya planificados · con justificación</small></span></button>
+            <div id="necPanel"></div>
+        </div>
+
+        <div id="step-mod-rango" class="step">
+            <div class="header-status"><span>Modificar plan</span> <button class="secondary-btn-small" onclick="retroceder()">Atrás</button></div>
+            <h2>¿Qué turnos?</h2>
+            <p class="sub">Elegí un turno o un intervalo de turnos.</p>
+            <div class="mr-rango">
+                <div><label>Desde</label><div class="mr-ft"><input type="date" id="mrDesdeF"><select id="mrDesdeT"><option>T1</option><option>T2</option><option>T3</option></select></div></div>
+                <div><label>Hasta</label><div class="mr-ft"><input type="date" id="mrHastaF"><select id="mrHastaT"><option>T1</option><option>T2</option><option>T3</option></select></div></div>
+            </div>
+            <div class="mr-linea" id="mrLinea"></div>
+            <div class="mr-resumen" id="mrResumen"></div>
+            <button class="primary-btn" id="mrSiguiente" onclick="saveModRango()">Siguiente ➔</button>
+        </div>
+
+        <div id="step-mod-accion" class="step">
+            <div class="header-status"><span>Modificar plan</span> <button class="secondary-btn-small" onclick="retroceder()">Atrás</button></div>
+            <h2>¿Qué cambio?</h2>
+            <div class="btn-grid" id="maAcciones"></div>
+            <div id="maMoldeWrap" hidden>
+                <label class="ma-lbl" for="maMolde" id="maMoldeLbl">Molde</label>
+                <select id="maMolde" class="ma-input"></select>
+            </div>
+            <div class="mr-resumen" id="maImpacto"></div>
+            <label class="ma-lbl" for="maSolicitud">¿Responde a una solicitud de Comercial?</label>
+            <select id="maSolicitud" class="ma-input"></select>
+            <label class="ma-lbl" for="maJustif">Justificación / observación (obligatoria)</label>
+            <textarea id="maJustif" class="ma-input" maxlength="1500" rows="3" placeholder="Ej.: se quita H18 por rotura de bulones del molde (2)"></textarea>
+            <label class="ma-lbl" for="maAutor">Responsable</label>
+            <input id="maAutor" class="ma-input" maxlength="80" placeholder="Nombre">
+            <button class="primary-btn" id="maGuardar" onclick="guardarModificacionPlan()">Registrar modificación</button>
+            <div id="maMsg" class="feedback error"></div>
         </div>
 
         <div id="step-familia" class="step">
@@ -284,6 +358,7 @@
     <script>
         const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwAjJJAFBEoFsfmUMwr39qB9qI8EHAblwMItixZYul6blpw266f8Ho5Ilh26BSlNj_Jtg/exec';
         const CSV_MOLDES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=164840916&single=true&output=csv';
+        const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';
         const IMG_PATH = 'img/moldes/';
         const FALLBACK_IMG = 'img/moldes/default.png';
         const TURNOS = ['T1', 'T2', 'T3'];
@@ -291,6 +366,7 @@
         const ICONO_T = { T1: '🌙', T2: '☀️', T3: '🌇' };
         const DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
         const ORDEN_PASOS = ['step-tarea', 'step-familia', 'step-lad', 'step-num', 'step-f-inicio', 'step-t-inicio', 'step-f-fin', 'step-finde', 'step-t-fin', 'step-resumen'];
+        const ORDEN_MOD = ['step-tarea', 'step-mod-rango', 'step-mod-accion'];
 
         let db = {};
         let historyStack = [];
@@ -310,6 +386,7 @@
 
         window.onload = async () => {
             const pStats = cargarEstadisticas();
+            const pPlan = cargarPlan();
             try {
                 const res = await fetch(CSV_MOLDES);
                 const csv = await res.text();
@@ -318,6 +395,8 @@
                 document.getElementById('step-loading').innerHTML = '<h3 style="color:#ff453a;">Error crítico de conexión a la base de datos de moldes.</h3>';
             }
             await pStats;
+            await pPlan;
+            renderNecesidadesAdmin();
         };
 
         async function cargarEstadisticas() {
@@ -332,6 +411,7 @@
             if (activeStep === 'step-f-fin') renderEstimFin();
             if (activeStep === 'step-t-fin') renderTFin();
             if (activeStep === 'step-resumen') renderResumen();
+            renderNecesidadesAdmin();
         }
 
         function procesarDB(data) {
@@ -458,6 +538,7 @@
         }
 
         function setProgreso() {
+            if (state.tarea === 'Modificar') { const m = ORDEN_MOD.indexOf(activeStep); document.getElementById('progreso').style.width = (m < 0 ? 0 : (m + 1) / ORDEN_MOD.length * 100) + '%'; return; }
             const i = ORDEN_PASOS.indexOf(activeStep);
             const total = state.tarea === 'Prueba' ? 7 : ORDEN_PASOS.length;
             const pos = i < 0 ? 0 : state.tarea === 'Prueba' && activeStep === 'step-resumen' ? total : i + 1;
@@ -466,6 +547,14 @@
 
         function renderTrail() {
             const chips = [];
+            if (state.tarea === 'Modificar') {
+                chips.push('✏️ Modificar plan');
+                if (mod.keys.length) chips.push(`${fechaCorta(mod.fi)} ${mod.ti} → ${fechaCorta(mod.ff)} ${mod.tf} <small>${mod.keys.length} turnos</small>`);
+                const t0 = document.getElementById('trail');
+                t0.innerHTML = chips.map(c => `<span>${c}</span>`).join('');
+                t0.classList.toggle('on', activeStep !== 'step-tarea');
+                return;
+            }
             if (state.tarea) chips.push(`${state.tarea === 'Prueba' ? '🔬' : '🏭'} ${state.tarea}`);
             if (state.moldeCompleto) chips.push(`🧱 ${state.moldeCompleto}`);
             if (state.fInicio && state.tInicio) chips.push(`▶ ${fechaCorta(state.fInicio)} <small>${state.tInicio}</small>`);
@@ -502,6 +591,7 @@
             if (historyStack.length === 0) return;
             const prev = historyStack.pop();
             if (state.tarea === 'Producción') state.tFin = '';
+            if (prev === 'step-tarea') renderNecesidadesAdmin();
             if (prev === 'step-f-fin') renderEstimFin();
             if (prev === 'step-t-fin') renderTFin();
             mostrarPaso(prev, true);
@@ -763,17 +853,256 @@
             document.getElementById('modalMessage').innerHTML = mensajeHtml;
             const btnGroup = document.getElementById('modalBtnGroup');
             btnGroup.innerHTML = status === 'success' || status === 'warning'
-                ? `<button class="primary-btn" onclick="cerrarModal(true)">Registrar otra planificación</button><button class="modal-btn-secondary" onclick="finalizarCarga()">Finalizar</button>`
+                ? `<button class="primary-btn" onclick="cerrarModal(true)">${state.tarea === 'Modificar' ? 'Hacer otra modificación' : 'Registrar otra planificación'}</button><button class="modal-btn-secondary" onclick="finalizarCarga()">Volver al calendario</button>`
                 : `<button class="primary-btn" style="background:var(--red);" onclick="cerrarModal(false)">Reintentar</button>`;
             document.getElementById('resultModal').style.display = 'flex';
         }
 
         function cerrarModal(mantenerAuth) {
             document.getElementById('resultModal').style.display = 'none';
-            if (mantenerAuth) resetWizard();
+            if (mantenerAuth) { resetWizard(); renderNecesidadesAdmin(); }
         }
 
         function finalizarCarga() { window.location.href = 'index.html'; }
+        let planFilas = [];
+        let mod = { fi: '', ti: 'T1', ff: '', tf: 'T3', keys: [], op: '', molde: '' };
+        const COLOR_TIPO = { H8: '#d85d8c', H12: '#c0661d', H18: '#2f8f3a', P12: '#3b7fc4', P18: '#2a99b0', DM20: '#9a922a', DM27: '#33a08a', L12: '#7a5cc9', L16: '#a05cc9', KB: '#8a7660' };
+
+        async function cargarPlan() {
+            try {
+                const r = await fetch(CSV_PLAN);
+                const t = await r.text();
+                planFilas = Papa.parse(t, { header: true, skipEmptyLines: true, transformHeader: h => h.trim().toUpperCase().replace(/:/g, '') }).data;
+            } catch (e) { planFilas = []; }
+        }
+
+        function normMolde(s) { return String(s || '').trim().replace(/\s+/g, ' ').toUpperCase(); }
+        let infoMoldesCache = null;
+        function infoMoldes() {
+            if (infoMoldesCache && infoMoldesCache.size) return infoMoldesCache;
+            const m = new Map();
+            Object.keys(db).forEach(fam => Object.keys(db[fam]).forEach(lad => Object.keys(db[fam][lad]).forEach(num => m.set(normMolde(db[fam][lad][num]), { molde: db[fam][lad][num], fam, lad, num }))));
+            infoMoldesCache = m;
+            return m;
+        }
+        function resolverMoldeAdmin(raw) { const i = infoMoldes().get(normMolde(raw)); return i ? i.molde : String(raw || '').trim(); }
+        function ladDe(molde) { const i = infoMoldes().get(normMolde(molde)); if (i) return i.lad; const m = String(molde).match(/^(.*?)\s*\(\d+\)/); return m ? m[1].trim() : String(molde).trim(); }
+        function colorTipo(molde) { return COLOR_TIPO[tipoBase(ladDe(molde)).replace(/[^A-Z0-9]/g, '')] || COLOR_TIPO[tipoBase(ladDe(molde))] || '#6e6e73'; }
+
+        function fechaISO(v) {
+            const s = String(v || '').trim();
+            let m = s.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (m) return `${m[1]}-${m[2]}-${m[3]}`;
+            m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+            return m ? `${m[3]}-${m[2].padStart(2, '0')}-${m[1].padStart(2, '0')}` : '';
+        }
+        function keyT(ds, t) { return ds + '_' + t; }
+        function keysEntre(fi, ti, ff, tf) {
+            const out = [];
+            if (!fi || !ff || ff + tf < fi + ti) return out;
+            for (let ds = fi; ds <= ff && out.length < 400; ds = sumarDias(ds, 1)) TURNOS.forEach((t, i) => {
+                if (ds === fi && i < TURNOS.indexOf(ti)) return;
+                if (ds === ff && i > TURNOS.indexOf(tf)) return;
+                out.push(keyT(ds, t));
+            });
+            return out;
+        }
+
+        function modificacionesActuales() {
+            return ((stats && stats.modificaciones) || []).map(r => ({ id: r['ID'], tipo: r['Tipo'], nuevo: r['Molde nuevo'] || '', fi: fechaISO(r['Fecha desde']), ti: r['Turno desde'], ff: fechaISO(r['Fecha hasta']), tf: r['Turno hasta'], justificacion: r['Justificación'] || '', marca: r['Marca temporal'] || '' })).filter(m => m.fi && m.ff && /^T[123]$/.test(m.ti) && /^T[123]$/.test(m.tf));
+        }
+
+        function planVigente() {
+            const mods = modificacionesActuales();
+            const firmas = new Set(mods.filter(m => m.tipo !== 'Quitar producción' && m.nuevo).map(m => [normMolde(resolverMoldeAdmin(m.nuevo)), m.fi, m.ti, m.ff, m.tf].join('|')));
+            const plan = new Map(), marcas = new Map();
+            planFilas.forEach(r => {
+                if (String(r['TAREA'] || '').trim().replace(/Ã³/g, 'ó') !== 'Producción') return;
+                const molde = resolverMoldeAdmin(r['LADRILLO']);
+                const fi = fechaISO(r['FECHA INICIO']), ff = fechaISO(r['FECHA FIN']);
+                const ti = String(r['TURNO INICIO'] || '').trim(), tf = String(r['TURNO FIN'] || '').trim();
+                if (!molde || !fi || !ff || !/^T[123]$/.test(ti) || !/^T[123]$/.test(tf)) return;
+                if (firmas.has([normMolde(molde), fi, ti, ff, tf].join('|'))) return;
+                keysEntre(fi, ti, ff, tf).forEach(k => { if (!plan.has(k)) plan.set(k, []); if (!plan.get(k).includes(molde)) plan.get(k).push(molde); });
+            });
+            mods.forEach(m => keysEntre(m.fi, m.ti, m.ff, m.tf).forEach(k => {
+                plan.set(k, m.tipo === 'Quitar producción' ? [] : [resolverMoldeAdmin(m.nuevo)]);
+                marcas.set(k, m);
+            }));
+            return { plan, marcas };
+        }
+
+        function objetivoMolde(molde) {
+            if (!stats || !stats.objetivos) return 0;
+            const lad = ladDe(molde);
+            const o = buscar(stats.objetivos, [lad, tipoBase(lad)]);
+            return o ? o.v / 3 : 0;
+        }
+        function objetivoKeys(keys, plan, reemplazo) {
+            return keys.reduce((a, k) => {
+                const ms = reemplazo !== undefined ? reemplazo : (plan.get(k) || []);
+                return a + (ms.length ? ms.reduce((s, m) => s + objetivoMolde(m), 0) / ms.length : 0);
+            }, 0);
+        }
+
+        function iniciarModificacion() {
+            state = estadoVacio();
+            state.tarea = 'Modificar';
+            const hoy = hoyLocal();
+            mod = { fi: hoy, ti: 'T1', ff: hoy, tf: 'T3', keys: [], op: '', molde: '' };
+            document.getElementById('mrDesdeF').value = hoy;
+            document.getElementById('mrDesdeT').value = 'T1';
+            document.getElementById('mrHastaF').value = hoy;
+            document.getElementById('mrHastaT').value = 'T3';
+            ['mrDesdeF', 'mrDesdeT', 'mrHastaF', 'mrHastaT'].forEach(id => { const el = document.getElementById(id); el.oninput = renderModRango; el.onchange = renderModRango; });
+            renderModRango();
+            avanzar('step-mod-rango');
+        }
+
+        function renderModRango() {
+            mod.fi = document.getElementById('mrDesdeF').value; mod.ti = document.getElementById('mrDesdeT').value;
+            mod.ff = document.getElementById('mrHastaF').value; mod.tf = document.getElementById('mrHastaT').value;
+            if (mod.fi && (!mod.ff || mod.ff < mod.fi)) { mod.ff = mod.fi; document.getElementById('mrHastaF').value = mod.fi; }
+            mod.keys = keysEntre(mod.fi, mod.ti, mod.ff, mod.tf);
+            const { plan, marcas } = planVigente();
+            const res = document.getElementById('mrResumen');
+            const btn = document.getElementById('mrSiguiente');
+            if (!mod.keys.length) { document.getElementById('mrLinea').innerHTML = ''; res.innerHTML = '<span class="mr-aviso">El fin no puede ser anterior al inicio.</span>'; btn.disabled = true; renderTrail(); return; }
+            if (mod.keys.length > 93) { document.getElementById('mrLinea').innerHTML = ''; res.innerHTML = '<span class="mr-aviso">Elegí un intervalo de hasta 31 días.</span>'; btn.disabled = true; renderTrail(); return; }
+            const sel = new Set(mod.keys);
+            const hoy = hoyLocal();
+            let html = '';
+            for (let ds = mod.fi; ds <= mod.ff; ds = sumarDias(ds, 1)) {
+                html += `<div class="mr-dia"><b>${fechaCorta(ds)}</b>${TURNOS.map(t => {
+                    const k = keyT(ds, t);
+                    const ms = plan.get(k) || [];
+                    const c = ms.length ? colorTipo(ms[ms.length - 1]) : '';
+                    const tit = `${t} ${HORARIO[t]} · ${ms.length ? ms.join(' → ') : 'sin producción'}${marcas.has(k) ? ` · modificado: ${marcas.get(k).tipo} (${marcas.get(k).justificacion})` : ''}`;
+                    return `<span class="mr-t ${ms.length ? 'prod' : 'vacio'}${sel.has(k) ? ' sel' : ' fuera'}${marcas.has(k) ? ' mod' : ''}${ds < hoy ? ' pasado' : ''}" style="${c ? `background:${c}` : ''}" title="${tit.replace(/"/g, '&quot;')}">${t} · ${ms.length ? ms[ms.length - 1].replace(/\s*\((\d+)\)/, '·$1') : '—'}</span>`;
+                }).join('')}</div>`;
+            }
+            document.getElementById('mrLinea').innerHTML = html;
+            const conProd = mod.keys.filter(k => (plan.get(k) || []).length);
+            const cuenta = new Map();
+            conProd.forEach(k => plan.get(k).forEach(m => cuenta.set(m, (cuenta.get(m) || 0) + 1)));
+            const pasados = mod.keys.filter(k => k.slice(0, 10) < hoy).length;
+            const modif = mod.keys.filter(k => marcas.has(k)).length;
+            res.innerHTML = `<b>${mod.keys.length}</b> turno${mod.keys.length > 1 ? 's' : ''} (≈${fmt1(mod.keys.length / 3)} días) · con producción: <b>${conProd.length}</b> · vacíos: <b>${mod.keys.length - conProd.length}</b>${cuenta.size ? `<br>Plan vigente: ${[...cuenta].map(([m, n]) => `${m} ×${n}`).join(' · ')}` : ''}${modif ? `<br>✏️ ${modif} turno${modif > 1 ? 's' : ''} ya fueron modificados antes.` : ''}${pasados ? `<div class="mr-aviso">⚠ ${pasados} turno${pasados > 1 ? 's' : ''} ya pasaron: la modificación cambia su objetivo.</div>` : ''}`;
+            btn.disabled = false;
+            renderTrail();
+        }
+
+        function saveModRango() {
+            if (!mod.keys.length || mod.keys.length > 93) return;
+            mod.op = ''; mod.molde = '';
+            renderModAccion();
+            const recs = (stats && stats.recomendaciones) || [];
+            document.getElementById('maSolicitud').innerHTML = '<option value="">No · decisión de Producción</option>' + recs.map(r => `<option value="${String(r['ID']).replace(/"/g, '')}">💼 ${r['Acción']} · ${r['Tipo de ladrillo']}${r['Bloque desde'] ? ' ' + fechaCorta(String(r['Bloque desde']).slice(0, 10)) : ''}</option>`).join('');
+            const sel = document.getElementById('maMolde');
+            sel.innerHTML = '<option value="">Seleccionar molde…</option>' + Object.keys(db).map(fam => `<optgroup label="${fam}">${Object.keys(db[fam]).map(lad => Object.keys(db[fam][lad]).map(num => `<option>${db[fam][lad][num]}</option>`).join('')).join('')}</optgroup>`).join('');
+            sel.onchange = () => { mod.molde = sel.value; renderImpacto(); };
+            document.getElementById('maJustif').value = '';
+            let autor = '';
+            try { autor = localStorage.getItem('jfAutor') || ''; } catch (e) { }
+            document.getElementById('maAutor').value = autor;
+            document.getElementById('maMsg').textContent = '';
+            avanzar('step-mod-accion');
+        }
+
+        function renderModAccion() {
+            const { plan } = planVigente();
+            const conProd = mod.keys.filter(k => (plan.get(k) || []).length).length;
+            const vacios = mod.keys.length - conProd;
+            const ops = [
+                { v: 'Quitar producción', ico: '➖', t: 'Quitar producción', d: conProd ? `Se quita lo planificado en ${conProd} turno${conProd > 1 ? 's' : ''}; el objetivo del mes baja.` : 'No hay producción planificada en esos turnos.', ok: conProd > 0 },
+                { v: 'Agregar producción', ico: '➕', t: 'Agregar producción', d: conProd ? `Solo en turnos sin planificación: ${conProd} turno${conProd > 1 ? 's' : ''} del rango ya tienen producción. Achicá el rango o usá Cambiar molde.` : `Se agrega un molde en ${vacios} turno${vacios > 1 ? 's' : ''} vacíos; el objetivo del mes sube.`, ok: conProd === 0 },
+                { v: 'Cambio de molde', ico: '🔁', t: 'Cambiar molde', d: !conProd ? 'No hay producción para cambiar.' : vacios ? `Hay ${vacios} turno${vacios > 1 ? 's' : ''} sin producción en el rango: ajustá el rango para cambiar solo turnos planificados.` : 'Reemplaza lo planificado por otro molde en todos los turnos del rango.', ok: conProd > 0 && vacios === 0 }
+            ];
+            document.getElementById('maAcciones').innerHTML = ops.map(o => `<button class="option-btn ma-op${mod.op === o.v ? ' on' : ''}" ${o.ok ? '' : 'disabled'} onclick="elegirOpMod('${o.v}')"><span style="font-size:1.4rem">${o.ico}</span><span><b>${o.t}</b><small>${o.d}</small></span></button>`).join('');
+            document.getElementById('maMoldeWrap').hidden = !mod.op || mod.op === 'Quitar producción';
+            document.getElementById('maMoldeLbl').textContent = mod.op === 'Agregar producción' ? 'Molde a agregar' : 'Molde nuevo';
+            renderImpacto();
+        }
+
+        function elegirOpMod(op) { mod.op = op; renderModAccion(); }
+
+        function renderImpacto() {
+            const el = document.getElementById('maImpacto');
+            if (!mod.op) { el.innerHTML = ''; return; }
+            const { plan } = planVigente();
+            const antes = objetivoKeys(mod.keys, plan);
+            const quitar = mod.op === 'Quitar producción';
+            const despues = quitar ? 0 : mod.molde ? objetivoKeys(mod.keys, plan, [mod.molde]) : null;
+            if (despues === null) { el.innerHTML = 'Elegí el molde para ver el impacto en el objetivo.'; return; }
+            const dif = despues - antes;
+            el.innerHTML = stats && stats.objetivos ? `Objetivo de Dirección de esos turnos: <b>${fmt0(antes)} → ${fmt0(despues)} Tn</b> <span class="ma-dif ${dif < 0 ? 'menos' : dif > 0 ? 'mas' : ''}">${dif >= 0 ? '+' : '−'}${fmt0(Math.abs(dif))} Tn al objetivo del mes</span><br><small>El objetivo original del mes no se pisa: el calendario muestra original vs ajustado.</small>` : 'Sin objetivos cargados para calcular el impacto.';
+        }
+
+        async function guardarModificacionPlan() {
+            const msg = document.getElementById('maMsg');
+            const justificacion = document.getElementById('maJustif').value.trim();
+            const autor = document.getElementById('maAutor').value.trim();
+            const solicitudId = document.getElementById('maSolicitud').value;
+            if (!mod.op) { msg.textContent = 'Elegí qué cambio hacer.'; return; }
+            if (mod.op !== 'Quitar producción' && !mod.molde) { msg.textContent = 'Elegí el molde.'; return; }
+            if (justificacion.length < 5) { msg.textContent = 'La justificación es obligatoria.'; return; }
+            const { plan } = planVigente();
+            const anterior = [...new Set(mod.keys.flatMap(k => plan.get(k) || []))].join(', ');
+            const btn = document.getElementById('maGuardar');
+            btn.disabled = true; btn.textContent = '⏳ Registrando…'; msg.textContent = '';
+            try {
+                const params = new URLSearchParams({ password: document.getElementById('pwdInput').value, accion: 'modificacion', tipo: mod.op, molde: mod.op === 'Quitar producción' ? '' : mod.molde, anterior, fechaDesde: mod.fi, turnoDesde: mod.ti, fechaHasta: mod.ff, turnoHasta: mod.tf, turnos: String(mod.keys.length), justificacion, autor, solicitudId });
+                const r = await fetch(URL_SCRIPT, { method: 'POST', body: params });
+                const j = await r.json();
+                if (j.result !== 'success') throw new Error(j.message || 'No se pudo registrar');
+                try { localStorage.setItem('jfAutor', autor); } catch (e) { }
+                if (stats) {
+                    stats.modificaciones = stats.modificaciones || [];
+                    stats.modificaciones.push({ 'ID': j.id, 'Marca temporal': new Date().toLocaleString('es-AR'), 'Tipo': mod.op, 'Molde anterior': anterior, 'Molde nuevo': j.molde || mod.molde, 'Fecha desde': mod.fi, 'Turno desde': mod.ti, 'Fecha hasta': mod.ff, 'Turno hasta': mod.tf, 'Turnos': mod.keys.length, 'Justificación': justificacion, 'Autor': autor });
+                    if (solicitudId) stats.recomendaciones = (stats.recomendaciones || []).filter(x => x['ID'] !== solicitudId);
+                }
+                mostrarModal(j.aviso ? 'warning' : 'success', 'Modificación registrada', `<p>${mod.op} · ${fechaCorta(mod.fi)} ${mod.ti} → ${fechaCorta(mod.ff)} ${mod.tf} (${mod.keys.length} turnos)${mod.op !== 'Quitar producción' ? ` · ${j.molde || mod.molde}` : ''}.</p><p>${j.aviso ? j.aviso : 'Quedó guardada con su justificación en la hoja ModificacionesPlan y se marca con ✏️ en el calendario.'}</p>`);
+            } catch (err) {
+                msg.textContent = '❌ ' + err.message;
+            } finally {
+                btn.disabled = false; btn.textContent = 'Registrar modificación';
+            }
+        }
+
+        function renderNecesidadesAdmin() {
+            const cont = document.getElementById('necPanel');
+            if (!cont) return;
+            if (!stats) { cont.innerHTML = ''; return; }
+            const mesAct = hoyLocal().slice(0, 7);
+            const lista = (stats.necesidades || []).map(r => {
+                const num = v => Number(String(v == null ? '' : v).replace(/\./g, '').replace(',', '.')) || 0;
+                const pallets = num(r['Pallets']);
+                return { mes: r['Mes'], tipo: r['Tipo de ladrillo'], pallets, cantidad: num(r['Cantidad']) || pallets, unidad: r['Unidad'] === 'Tn' ? 'Tn' : 'Pallets', limite: fechaISO(r['Fecha límite']), detalle: r['Detalle'] || '' };
+            }).filter(n => n.tipo && n.mes >= mesAct).sort((a, b) => a.mes.localeCompare(b.mes) || (a.limite || '9').localeCompare(b.limite || '9'));
+            if (!lista.length) { cont.innerHTML = '<div class="np-tit">📋 Necesidades de Comercial</div><div class="np-vacio">Comercial no cargó necesidades para este mes ni los próximos.</div>'; return; }
+            const { plan } = planVigente();
+            const meses = [...new Set(lista.map(n => n.mes))];
+            cont.innerHTML = `<div class="np-tit">📋 Necesidades de Comercial <small>cobertura con el plan vigente</small></div>` + meses.map(mes => {
+                const [y, m] = mes.split('-').map(Number);
+                const nombre = new Date(y, m - 1, 1).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
+                const nombreMes = nombre.charAt(0).toUpperCase() + nombre.slice(1);
+                return `<div class="np-mes">${nombreMes}</div>` + lista.filter(n => n.mes === mes).map((n, i) => {
+                    const fin = `${mes}-${String(new Date(y, m, 0).getDate()).padStart(2, '0')}`;
+                    const hasta = n.limite && n.limite < fin ? n.limite : fin;
+                    let tn = 0;
+                    const pr = stats.promedios ? buscar(stats.promedios, [n.tipo, tipoBase(n.tipo)]) : null;
+                    keysEntre(`${mes}-01`, 'T1', hasta, 'T3').forEach(k => { const ms = plan.get(k) || []; ms.forEach(x => { if (normMolde(ladDe(x)) === normMolde(n.tipo) || (normMolde(tipoBase(ladDe(x))) === normMolde(n.tipo) && !/9T|X\d/i.test(ladDe(x)))) tn += (pr ? pr.v.tn : 0) / ms.length; }); });
+                    const b = buscar(stats.base, [n.tipo, tipoBase(n.tipo)]);
+                    const pal = b && b.v.kgPallet ? tn * 1000 / b.v.kgPallet : 0;
+                    const cubre = n.unidad === 'Tn' ? tn : pal;
+                    const pct = n.cantidad > 0 ? cubre / n.cantidad * 100 : 0;
+                    const color = pct >= 100 ? 'var(--green)' : pct >= 70 ? 'var(--orange)' : 'var(--red)';
+                    const u = n.unidad === 'Tn' ? 'Tn' : 'pallets';
+                    return `<div class="np-card" style="--nc:${color}; animation-delay:${i * 50}ms"><span><b>${n.tipo}</b> · ${fmt0(n.cantidad)} ${u}${n.limite ? ` · hasta ${fechaCorta(n.limite)}` : ''}</span><span class="np-pct">${Math.round(pct)}%</span><small>${pct >= 100 ? 'Cubierta por el plan' : `Plan ≈${fmt0(cubre)} ${u} · faltan ${fmt0(n.cantidad - cubre)} ${u}`}${n.detalle ? ' · ' + n.detalle : ''}</small><div class="np-bar"><span style="width:${Math.min(100, pct).toFixed(1)}%"></span></div></div>`;
+                }).join('');
+            }).join('');
+        }
+
     </script>
 </body>
 </html>
