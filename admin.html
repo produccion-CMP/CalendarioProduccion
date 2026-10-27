@@ -289,7 +289,7 @@
                 <label class="ma-lbl" for="maHoras">Horas por turno</label>
                 <select id="maHoras" class="ma-input"></select>
             </div>
-            <label class="ma-check" id="maExcluirWrap" hidden><input type="checkbox" id="maExcluir" onchange="renderImpacto()"><span><b>No cuenta para el objetivo</b><small>Las Tn de estos turnos se descuentan del objetivo y no se evalúan como incumplidas. Sin tildar, el turno quitado cuenta como desvío.</small></span></label>
+            <label class="ma-check" id="maExcluirWrap" hidden><input type="checkbox" id="maExcluir" onchange="renderImpacto()"><span><b>No cuenta para el objetivo</b><small id="maExcluirTxt">Las Tn de estos turnos se descuentan del objetivo y no se evalúan como incumplidas. Sin tildar, el turno quitado cuenta como desvío.</small></span></label>
             <div class="mr-resumen" id="maImpacto"></div>
             <label class="ma-lbl" for="maSolicitud">¿Responde a una solicitud de Comercial?</label>
             <select id="maSolicitud" class="ma-input"></select>
@@ -1155,7 +1155,11 @@
             document.getElementById('maAcciones').innerHTML = ops.map(o => `<button class="option-btn ma-op${mod.op === o.v ? ' on' : ''}" ${o.ok ? '' : 'disabled'} onclick="elegirOpMod('${o.v}')"><span style="font-size:1.4rem">${o.ico}</span><span><b>${o.t}</b><small>${o.d}</small></span></button>`).join('');
             document.getElementById('maMoldeWrap').hidden = !mod.op || mod.op === 'Quitar producción' || mod.op === 'Cambiar horas';
             document.getElementById('maHorasWrap').hidden = !mod.op || mod.op === 'Quitar producción';
-            document.getElementById('maExcluirWrap').hidden = mod.op !== 'Quitar producción';
+            const congeladoM = mod.keys.some(k => finalizacion(k.slice(0, 7)));
+            document.getElementById('maExcluirWrap').hidden = !(mod.op === 'Quitar producción' || (mod.op === 'Cambiar horas' && congeladoM));
+            document.getElementById('maExcluirTxt').textContent = mod.op === 'Cambiar horas'
+                ? 'Se toma solo el objetivo proporcional a las horas elegidas; las horas restantes no cuentan. Sin tildar, el objetivo sigue siendo el del plan inicial y la diferencia es desvío.'
+                : 'Las Tn de estos turnos se descuentan del objetivo y no se evalúan como incumplidas. Sin tildar, el turno quitado cuenta como desvío.';
             document.getElementById('maMoldeLbl').textContent = mod.op === 'Agregar producción' ? 'Molde a agregar' : 'Molde nuevo';
             renderImpacto();
         }
@@ -1171,11 +1175,11 @@
             const despues = quitar ? 0 : mod.op === 'Cambiar horas' ? objetivoKeys(mod.keys, plan, undefined, mod.horas) : mod.molde ? objetivoKeys(mod.keys, plan, [mod.molde], mod.horas) : null;
             if (despues === null) { el.innerHTML = 'Elegí el molde para ver el impacto en el objetivo.'; return; }
             const congelado = mod.keys.some(k => finalizacion(k.slice(0, 7)));
-            const excluir = quitar && document.getElementById('maExcluir').checked;
-            const fin = congelado ? (excluir ? 0 : antes) : despues;
+            const excluir = (quitar || (mod.op === 'Cambiar horas' && congelado)) && document.getElementById('maExcluir').checked;
+            const fin = congelado ? (excluir ? (quitar ? 0 : despues) : antes) : despues;
             const dif = fin - antes;
             const nota = congelado
-                ? (excluir ? 'Mes finalizado: estos turnos se quitan del objetivo y no se evalúan.' : 'Mes finalizado: el objetivo no cambia. Lo nuevo se informa a los supervisores y el cumplimiento se mide contra el plan inicial.')
+                ? (excluir ? (quitar ? 'Mes finalizado: estos turnos se quitan del objetivo y no se evalúan.' : 'Mes finalizado: el objetivo de estos turnos pasa a ser proporcional a las horas elegidas.') : 'Mes finalizado: el objetivo no cambia. Lo nuevo se informa a los supervisores y el cumplimiento se mide contra el plan inicial.')
                 : 'El objetivo original del mes no se pisa: el calendario muestra original vs ajustado.';
             el.innerHTML = stats && stats.objetivos ? `Objetivo de Dirección de esos turnos: <b>${fmt0(antes)} → ${fmt0(fin)} Tn</b> <span class="ma-dif ${dif < 0 ? 'menos' : dif > 0 ? 'mas' : ''}">${dif >= 0 ? '+' : '−'}${fmt0(Math.abs(dif))} Tn al objetivo del mes</span><br><small>${nota}</small>` : `<small>${nota}</small>`;
         }
@@ -1195,13 +1199,13 @@
             const btn = document.getElementById('maGuardar');
             btn.disabled = true; btn.textContent = '⏳ Registrando…'; msg.textContent = '';
             try {
-                const params = new URLSearchParams({ password: document.getElementById('pwdInput').value, accion: 'modificacion', tipo: mod.op, molde: mod.op === 'Quitar producción' || mod.op === 'Cambiar horas' ? '' : mod.molde, anterior, sector, motivo, horas: mod.op === 'Quitar producción' ? '' : String(mod.horas || 8), fechaDesde: mod.fi, turnoDesde: mod.ti, fechaHasta: mod.ff, turnoHasta: mod.tf, turnos: String(mod.keys.length), justificacion, solicitudId, excluirObjetivo: mod.op === 'Quitar producción' && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
+                const params = new URLSearchParams({ password: document.getElementById('pwdInput').value, accion: 'modificacion', tipo: mod.op, molde: mod.op === 'Quitar producción' || mod.op === 'Cambiar horas' ? '' : mod.molde, anterior, sector, motivo, horas: mod.op === 'Quitar producción' ? '' : String(mod.horas || 8), fechaDesde: mod.fi, turnoDesde: mod.ti, fechaHasta: mod.ff, turnoHasta: mod.tf, turnos: String(mod.keys.length), justificacion, solicitudId, excluirObjetivo: (mod.op === 'Quitar producción' || mod.op === 'Cambiar horas') && !document.getElementById('maExcluirWrap').hidden && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
                 const r = await fetch(URL_SCRIPT, { method: 'POST', body: params });
                 const j = await r.json();
                 if (j.result !== 'success') throw new Error(j.message || 'No se pudo registrar');
                 if (stats) {
                     stats.modificaciones = stats.modificaciones || [];
-                    stats.modificaciones.push({ 'ID': j.id, 'Marca temporal': new Date().toLocaleString('es-AR'), 'Tipo': mod.op, 'Molde anterior': anterior, 'Molde nuevo': j.molde || mod.molde, 'Fecha desde': mod.fi, 'Turno desde': mod.ti, 'Fecha hasta': mod.ff, 'Turno hasta': mod.tf, 'Turnos': mod.keys.length, 'Justificación': justificacion, 'Autor': '', 'Sector': sector, 'Motivo': motivo, 'Horas': mod.op === 'Quitar producción' ? '' : String(mod.horas || 8), 'Excluir objetivo': mod.op === 'Quitar producción' && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
+                    stats.modificaciones.push({ 'ID': j.id, 'Marca temporal': new Date().toLocaleString('es-AR'), 'Tipo': mod.op, 'Molde anterior': anterior, 'Molde nuevo': j.molde || mod.molde, 'Fecha desde': mod.fi, 'Turno desde': mod.ti, 'Fecha hasta': mod.ff, 'Turno hasta': mod.tf, 'Turnos': mod.keys.length, 'Justificación': justificacion, 'Autor': '', 'Sector': sector, 'Motivo': motivo, 'Horas': mod.op === 'Quitar producción' ? '' : String(mod.horas || 8), 'Excluir objetivo': !document.getElementById('maExcluirWrap').hidden && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
                     if (solicitudId) stats.recomendaciones = (stats.recomendaciones || []).filter(x => x['ID'] !== solicitudId);
                 }
                 mostrarModal(j.aviso ? 'warning' : 'success', 'Modificación registrada', `<p>${mod.op} · ${fechaCorta(mod.fi)} ${mod.ti} → ${fechaCorta(mod.ff)} ${mod.tf} (${mod.keys.length} turnos)${mod.op === 'Cambiar horas' ? ` · ${fmt1(mod.horas)} h por turno` : mod.op !== 'Quitar producción' ? ` · ${j.molde || mod.molde}${mod.horas < 8 ? ` (${fmt1(mod.horas)} h)` : ''}` : ''} · ${sector}: ${motivo}.</p><p>${j.aviso ? j.aviso : 'Quedó guardada con su justificación en la hoja ModificacionesPlan y se marca con ✏️ en el calendario.'}</p>${textoMail(j.mail)}`);

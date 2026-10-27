@@ -1556,7 +1556,7 @@
             </div>
             <div id="mpMoldeWrap"><label for="mpMolde" id="mpMoldeLbl">Molde nuevo</label><select id="mpMolde" onchange="actualizarFormMod()"></select></div>
             <div id="mpHorasWrap"><label for="mpHoras">Horas por turno</label><select id="mpHoras" onchange="actualizarFormMod()"></select></div>
-            <label class="mp-excluir" id="mpExcluirWrap" hidden><input type="checkbox" id="mpExcluir" onchange="actualizarFormMod()"> <span><b>No cuenta para el objetivo</b><small>Las Tn de estos turnos se descuentan del objetivo y no se evalúan como incumplidas. Sin tildar, el turno quitado cuenta como desvío.</small></span></label>
+            <label class="mp-excluir" id="mpExcluirWrap" hidden><input type="checkbox" id="mpExcluir" onchange="actualizarFormMod()"> <span><b>No cuenta para el objetivo</b><small id="mpExcluirTxt">Las Tn de estos turnos se descuentan del objetivo y no se evalúan como incumplidas. Sin tildar, el turno quitado cuenta como desvío.</small></span></label>
             <div class="mp-resumen" id="mpResumen"></div>
             <label for="mpSolicitud">¿Responde a una solicitud de Comercial?</label>
             <select id="mpSolicitud"></select>
@@ -1991,18 +1991,27 @@
 
         function rangoMes(year, month) { return { desde: sumarDias(formatYYYYMMDD(new Date(year, month, 1)), -1), hasta: sumarDias(formatYYYYMMDD(new Date(year, month + 1, 0)), 1) }; }
 
-        async function fetchExt(year, month) {
+        async function fetchExt(year, month, intento) {
             const { desde, hasta } = rangoMes(year, month);
             const ctrl = new AbortController();
-            const timer = setTimeout(() => ctrl.abort(), 25000);
+            const timer = setTimeout(() => ctrl.abort(), 60000);
             try {
                 const r = await fetch(`${URL_SCRIPT}?accion=datos&desde=${desde}&hasta=${hasta}`, { signal: ctrl.signal });
                 const j = await r.json();
                 if (j.result !== 'success') throw new Error(j.message || 'Respuesta inválida');
+                if (j.errorInforme) console.warn('Informe:', j.errorInforme);
                 return { j, rango: desde + '|' + hasta };
+            } catch (err) {
+                if (!intento && (err.name === 'AbortError' || err instanceof TypeError)) return fetchExt(year, month, 1);
+                throw err;
             } finally {
                 clearTimeout(timer);
             }
+        }
+
+        function avisoExt(err) {
+            const txt = err && err.name === 'AbortError' ? 'el servidor tardó demasiado' : (err && err.message) || 'error de conexión';
+            toast(`⚠️ No se pudo cargar la producción real y los datos del informe (${txt}). Se muestra solo el plan; reintentá en unos segundos.`, 'err');
         }
 
         function extVacio(rango) {
@@ -2138,7 +2147,7 @@
             else if (!silencioso) barra.classList.add('on');
             try {
                 const extP = (silencioso || moldesExt.rango !== rango || !moldesExt.cargado)
-                    ? seguir(fetchExt(year, month), 'pasoExt').catch(err => { console.warn('Datos externos no disponibles:', err); return null; })
+                    ? seguir(fetchExt(year, month), 'pasoExt').catch(err => { console.warn('Datos externos no disponibles:', err); avisoExt(err); return null; })
                     : (marcarPaso('pasoExt', 'ok'), Promise.resolve('cache'));
                 const [planRows, realRows, moldRows] = await Promise.all([
                     seguir(fetchCSV(CSV_PLAN), 'pasoPlan'),
@@ -2150,11 +2159,24 @@
                 planBase = processData(planRows); realData = processData(realRows);
                 planData = planBase;
                 construirMatchPruebas();
-                const ext = await extP;
-                if (ext && ext !== 'cache') moldesExt = procesarExt(ext.j, ext.rango);
-                else if (!ext && moldesExt.rango !== rango) moldesExt = extVacio(rango);
-                reaplicarPlan();
-                if (!printState) renderGantt();
+                const aplicarExt = ext => {
+                    if (ext && ext !== 'cache') moldesExt = procesarExt(ext.j, ext.rango);
+                    else if (!ext && moldesExt.rango !== rango) moldesExt = extVacio(rango);
+                    reaplicarPlan();
+                    if (!printState) renderGantt();
+                };
+                const ext = await Promise.race([extP, new Promise(r => setTimeout(() => r('pendiente'), 15000))]);
+                if (ext === 'pendiente') {
+                    if (moldesExt.rango !== rango) moldesExt = extVacio(rango);
+                    reaplicarPlan();
+                    if (!printState) renderGantt();
+                    barra.classList.add('on');
+                    toast('⏳ El servidor está tardando: se muestra el plan y la producción real se completa al llegar los datos.', '');
+                    extP.then(e2 => {
+                        const vigente = rangoMes(currentDate.getFullYear(), currentDate.getMonth());
+                        if (vigente.desde + '|' + vigente.hasta === rango && e2) aplicarExt(e2);
+                    }).finally(() => barra.classList.remove('on'));
+                } else aplicarExt(ext);
             } catch (error) {
                 console.error(error);
                 if (!silencioso) document.getElementById('ganttWrapper').innerHTML = '<p style="color:var(--red); text-align:center; font-weight:bold; margin-top: 20px;">Error al cargar datos.</p>';
@@ -2874,10 +2896,10 @@
                 const modsK = currentView === 'plan' ? modTurnos.get(k) : null;
                 const solK = currentView === 'plan' ? (movPlan.get(k) || []).filter(ev => ev.tipo === 'sol') : [];
                 const clsSol = solK.length ? ` rec-anc rec-${infoEstadoRec(solK[solK.length - 1].r.estado).cls}` : '';
-                if (pc && currentView !== 'plan') { const b = badgePostCierre(k, pc); if (b) markers += `<div class="mv-wrap">${b}</div>`; }
-                const clsMod = (modsK ? (modsK[modsK.length - 1].tipo === 'Quitar producción' ? ' td-mod td-quitado' : ' td-mod') : '') + (pc ? ' td-postcierre' : '');
+                if (pc && currentView === 'cumpl') { const b = badgePostCierre(k, pc); if (b) markers += `<div class="mv-wrap">${b}</div>`; }
+                const clsMod = (modsK ? (modsK[modsK.length - 1].tipo === 'Quitar producción' ? ' td-mod td-quitado' : ' td-mod') : '') + (pc && currentView !== 'prod' ? ' td-postcierre' : '');
                 const cls = `${extraCls} ${parts.cls}${clsMod}${clsSol}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}${seleccionCompras && extraAttr ? ' bq-sel' : ''}`;
-                const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (modsK ? `\n\n✏️ Modificado: ${modsK[modsK.length - 1].tipo}\n📝 ${modsK[modsK.length - 1].justificacion}` : '') + (pc ? '\n\n' + textoPostCierre(k, pc) : '') + (seleccionCompras && extraAttr ? '\n\n💼 Clic para recomendar cambios en este bloque' : '');
+                const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (modsK ? `\n\n✏️ Modificado: ${modsK[modsK.length - 1].tipo}\n📝 ${modsK[modsK.length - 1].justificacion}` : '') + (pc && currentView !== 'prod' ? '\n\n' + textoPostCierre(k, pc) : '') + (seleccionCompras && extraAttr ? '\n\n💼 Clic para recomendar cambios en este bloque' : '');
                 return `<td class="${cls}"${extraAttr} style="--d:${idx};${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="${onclick}">${tnHtml}${markers}${parts.content}</td>`;
             };
 
@@ -4788,7 +4810,7 @@
                 const pre = planFilas.filter(r => !despues(fechaHoraDeMarca(r['MARCA TEMPORAL'])));
                 const post = planFilas.filter(r => despues(fechaHoraDeMarca(r['MARCA TEMPORAL'])));
                 const modsC = mods.filter(m => !despues(m.fechaMarca));
-                const modsX = mods.filter(m => despues(m.fechaMarca) && m.excluir && m.tipo === 'Quitar producción');
+                const modsX = mods.filter(m => despues(m.fechaMarca) && m.excluir && (m.tipo === 'Quitar producción' || m.tipo === 'Cambiar horas'));
                 const ini0 = aplicarModificaciones(processData(filasSinModificaciones(pre, modsC)), modsC);
                 const iniX = aplicarModificaciones(ini0, modsX);
                 const vig = superponerPlan(processData(filasSinModificaciones(pre, mods)), processData(filasSinModificaciones(post, mods)));
@@ -4878,9 +4900,12 @@
             const soloHoras = d.tipo === 'Cambiar horas';
             document.getElementById('mpMoldeWrap').hidden = quitar || soloHoras;
             document.getElementById('mpHorasWrap').hidden = quitar;
-            document.getElementById('mpExcluirWrap').hidden = !quitar;
-            const excluir = quitar && document.getElementById('mpExcluir').checked;
             const congelado = d.keys.length && d.keys.some(k => mesFinalizado(k));
+            document.getElementById('mpExcluirWrap').hidden = !(quitar || (soloHoras && congelado));
+            document.getElementById('mpExcluirTxt').textContent = soloHoras
+                ? `Se toma solo el objetivo proporcional a ${fmtDias(d.horas)} h; las horas restantes no cuentan. Sin tildar, el objetivo sigue siendo el del plan inicial y la diferencia es desvío.`
+                : 'Las Tn de estos turnos se descuentan del objetivo y no se evalúan como incumplidas. Sin tildar, el turno quitado cuenta como desvío.';
+            const excluir = (quitar || (soloHoras && congelado)) && document.getElementById('mpExcluir').checked;
             document.getElementById('mpMoldeLbl').textContent = d.tipo === 'Agregar producción' ? 'Molde a agregar' : 'Molde nuevo';
             const res = document.getElementById('mpResumen');
             if (!d.keys.length) { res.innerHTML = '<span class="mp-err">Revisá el rango: el fin no puede ser anterior al inicio.</span>'; return; }
@@ -4890,19 +4915,20 @@
             const antes = objetivoTurnos(d.keys, congelado && planObjetivo ? planObjetivo : planData);
             let despues = 0;
             if (soloHoras || (!quitar && d.nuevo)) despues = objetivoTurnos(d.keys, aplicarModificacionesSimulada(d));
-            const dif = congelado ? (excluir ? -antes : 0) : (quitar ? 0 : (d.nuevo || soloHoras ? despues : antes)) - antes;
+            const objExcl = congelado && excluir && soloHoras ? objetivoTurnos(d.keys, aplicarModificacionesSimulada(d, planObjetivo || planData)) : 0;
+            const dif = congelado ? (excluir ? (soloHoras ? objExcl - antes : -antes) : 0) : (quitar ? 0 : (d.nuevo || soloHoras ? despues : antes)) - antes;
             const pasados = d.keys.filter(k => estadoTurno(k.slice(0, 10), k.slice(-2)) === 'pasado').length;
             res.innerHTML = `<div class="mp-fila"><span>Turnos afectados</span><b>${d.keys.length}</b> <small>(≈${fmtDias(d.keys.length / 3)} días)</small></div>
                 <div class="mp-fila"><span>Plan actual</span><b>${actuales.size ? [...actuales].map(([m, n]) => `${escAttr(m)} <small>×${n}</small>`).join(' · ') : '—'}</b>${vacios ? ` <small>· ${vacios} sin producción</small>` : ''}</div>
                 <div class="mp-fila"><span>Objetivo de esos turnos</span><b>${fmtTn0(antes)} → ${congelado ? fmtTn0(antes + dif) : quitar ? 0 : d.nuevo || soloHoras ? fmtTn0(despues) : '?'} Tn</b>${quitar || d.nuevo || soloHoras ? ` <span class="mp-dif ${dif < 0 ? 'menos' : dif > 0 ? 'mas' : ''}">${dif >= 0 ? '+' : '−'}${fmtTn0(Math.abs(dif))} Tn al objetivo del mes</span>` : ''}</div>
                 ${soloHoras && vacios ? `<div class="mp-aviso">⚠ ${vacios} turno${vacios > 1 ? 's' : ''} del rango no tienen producción: ajustá el rango.</div>` : ''}
-                ${congelado ? `<div class="mp-aviso fin">🏁 Mes con planificación finalizada: ${excluir ? 'estos turnos se quitan del objetivo y no se evalúan.' : 'el cambio se informa, pero el cumplimiento se mide contra el plan inicial (cuenta como desvío).'}</div>` : pasados ? `<div class="mp-aviso">⚠ ${pasados} turno${pasados > 1 ? 's' : ''} ya pasaron: la modificación también cambia su objetivo.</div>` : ''}`;
+                ${congelado ? `<div class="mp-aviso fin">🏁 Mes con planificación finalizada: ${excluir ? (soloHoras ? `el objetivo de estos turnos pasa a ser proporcional a ${fmtDias(d.horas)} h.` : 'estos turnos se quitan del objetivo y no se evalúan.') : 'el cambio se informa, pero el cumplimiento se mide contra el plan inicial (cuenta como desvío).'}</div>` : pasados ? `<div class="mp-aviso">⚠ ${pasados} turno${pasados > 1 ? 's' : ''} ya pasaron: la modificación también cambia su objetivo.</div>` : ''}`;
             modActual = { d, antes, despues, actuales };
         }
 
-        function aplicarModificacionesSimulada(d) {
+        function aplicarModificacionesSimulada(d, base) {
             const guardado = modTurnos;
-            const datos = aplicarModificaciones(planData, [{ id: 'sim', tipo: d.tipo, fi: d.fi, ti: d.ti, ff: d.ff, tf: d.tf, nuevo: d.nuevo, horas: d.horas }]);
+            const datos = aplicarModificaciones(base || planData, [{ id: 'sim', tipo: d.tipo, fi: d.fi, ti: d.ti, ff: d.ff, tf: d.tf, nuevo: d.nuevo, horas: d.horas }]);
             modTurnos = guardado;
             return datos;
         }
@@ -4913,7 +4939,7 @@
             const justificacion = document.getElementById('mpJustif').value.trim();
             const sector = document.getElementById('mpSector').value, motivo = document.getElementById('mpMotivo').value;
             const solicitudId = document.getElementById('mpSolicitud').value;
-            const excluirObjetivo = d.tipo === 'Quitar producción' && document.getElementById('mpExcluir').checked;
+            const excluirObjetivo = (d.tipo === 'Quitar producción' || (d.tipo === 'Cambiar horas' && d.keys.some(k => mesFinalizado(k)))) && document.getElementById('mpExcluir').checked;
             const error = t => { msg.textContent = t; msg.className = 'jf-msg err'; };
             if (!d.keys.length) return error('El rango de fechas no es válido.');
             if (d.tipo !== 'Quitar producción' && d.tipo !== 'Cambiar horas' && !d.nuevo) return error('Elegí el molde.');
