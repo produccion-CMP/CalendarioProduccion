@@ -796,6 +796,29 @@
         .sello { font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; }
         .sello.ok { background: rgba(48,209,88,0.15); color: var(--green); box-shadow: inset 0 0 0 1px rgba(48,209,88,0.5); }
         .sello.obs { background: rgba(255,159,10,0.15); color: var(--orange); box-shadow: inset 0 0 0 1px rgba(255,159,10,0.5); }
+        .cat-box, .causas-box { max-width: 560px; }
+        .causas-box { max-width: 720px; }
+        .ct-lista { display: flex; flex-direction: column; gap: 6px; max-height: 42vh; overflow-y: auto; margin: 10px 0; }
+        .ct-fila { display: grid; grid-template-columns: 1fr auto auto; gap: 6px; align-items: center; padding: 6px 8px; border-radius: 10px; background: rgba(127,127,127,0.07); }
+        .ct-fila.off { opacity: 0.55; }
+        .ct-fila input { width: 100%; padding: 7px 9px; border-radius: 8px; border: 1px solid transparent; background: transparent; color: var(--text-main); font-family: var(--font); font-size: 0.84rem; font-weight: 600; }
+        .ct-fila input:focus { border-color: var(--accent); background: var(--bg-cell); outline: none; }
+        .ct-fila button, .ct-nuevo button { padding: 6px 10px; border-radius: 8px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-family: var(--font); font-weight: 700; font-size: 0.74rem; cursor: pointer; }
+        .ct-fila button:hover { border-color: var(--accent); color: var(--text-main); }
+        .ct-nuevo { display: flex; gap: 8px; } .ct-nuevo input { flex: 1; padding: 9px 10px; border-radius: 9px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); font-family: var(--font); }
+        .ct-nuevo button.prim { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .ca-sec { margin-top: 12px; } .ca-sec h4 { margin: 0 0 6px; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.4px; color: var(--accent-light); }
+        .ca-fila { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(0, 2fr) 56px 54px; gap: 8px; align-items: center; font-size: 0.8rem; padding: 4px 0; border-bottom: 1px solid var(--border); }
+        .ca-fila.cab { font-size: 0.64rem; font-weight: 800; text-transform: uppercase; color: var(--text-muted); border-bottom-width: 2px; }
+        .ca-fila .num { text-align: right; font-variant-numeric: tabular-nums; }
+        .ca-bar { height: 8px; border-radius: 4px; background: rgba(127,127,127,0.2); overflow: hidden; } .ca-bar span { display: block; height: 100%; background: var(--orange); border-radius: 4px; }
+        .ca-bar.sec span { background: #5e5ce6; } .ca-bar.sin span { background: #8e8e93; }
+        .kpi-card.kpi-causas { grid-column: 1 / -1; cursor: pointer; }
+        .kc-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 8px 24px; margin-top: 6px; }
+        .kc-fila { display: grid; grid-template-columns: minmax(0, 1fr) 90px 40px; gap: 8px; align-items: center; font-size: 0.76rem; font-weight: 600; padding: 2px 0; }
+        .kc-fila span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .kc-fila b { text-align: right; }
+        .kc-sub { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-muted); margin-bottom: 2px; }
+        @media (max-width: 700px) { .kc-grid { grid-template-columns: 1fr; } .ca-fila { grid-template-columns: 1.4fr 1fr 48px 46px; } }
         .jf-alcance { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
         .jf-box .jf-alcance label { flex: 1 1 160px; display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-cell); cursor: pointer; margin: 0; text-transform: none; letter-spacing: 0; font-size: 0.82rem; }
         .jf-alcance input { margin-top: 2px; accent-color: var(--accent); }
@@ -1444,6 +1467,10 @@
                     <label><input type="radio" name="jfAlcance" value="Turno"><span>Sólo este turno <small id="jfAlcanceTurno"></small></span></label>
                 </div>
             </div>
+            <div id="jfSectorWrap">
+                <label for="jfSector">Sector responsable</label>
+                <select id="jfSector"></select>
+            </div>
             <div id="jfMotivoWrap">
                 <label for="jfMotivo">Motivo</label>
                 <select id="jfMotivo"></select>
@@ -1457,6 +1484,27 @@
                 <button class="prim" id="jfGuardar" onclick="guardarJustificacion()">Guardar</button>
             </div>
             <div class="jf-msg" id="jfMsg"></div>
+        </div>
+    </div>
+
+    <div class="jf-overlay" id="catModal" onclick="if (event.target === this) cerrarCatalogo()">
+        <div class="jf-box cat-box" role="dialog" aria-modal="true" aria-labelledby="ctTitulo">
+            <div class="ly-head"><h3 id="ctTitulo">🧭 Causas y sectores de desvío</h3><button class="ly-cerrar" onclick="cerrarCatalogo()" aria-label="Cerrar">✕</button></div>
+            <p class="modos-sub">Listas validadas: las justificaciones sólo pueden usar estos motivos y sectores. Quitar un elemento lo desactiva (las justificaciones ya cargadas se conservan); renombrarlo actualiza también las ya cargadas.</p>
+            <div class="sol-tabs" role="tablist">
+                <button role="tab" id="ctTabSector" onclick="tabCatalogo('Sector')">🏢 Sectores</button>
+                <button role="tab" id="ctTabMotivo" onclick="tabCatalogo('Motivo')">⚠️ Motivos</button>
+            </div>
+            <div class="ct-lista" id="ctLista"></div>
+            <div class="ct-nuevo"><input id="ctNuevo" maxlength="60" placeholder="Agregar nuevo…" onkeydown="if (event.key === 'Enter') agregarCatalogo()"><button class="prim" onclick="agregarCatalogo()">＋ Agregar</button></div>
+            <div class="jf-msg" id="ctMsg"></div>
+        </div>
+    </div>
+
+    <div class="jf-overlay" id="causasModal" onclick="if (event.target === this) cerrarCausas()">
+        <div class="jf-box causas-box" role="dialog" aria-modal="true" aria-labelledby="csTitulo">
+            <div class="ly-head"><h3 id="csTitulo">🔎 Causas de desvío</h3><button class="ly-cerrar" onclick="cerrarCausas()" aria-label="Cerrar">✕</button></div>
+            <div id="csCuerpo"></div>
         </div>
     </div>
 
@@ -1727,7 +1775,7 @@
         let isMobileState = window.innerWidth <= 768;
         let catalogo = { exacto: new Map(), porTipoNum: new Map(), cargado: false };
         let matchPruebas = { plan: new Map(), real: new Map(), porMolde: new Map() };
-        let moldesExt = { estados: new Map(), prod: new Map(), turnosInf: new Map(), horas: new Map(), promedios: new Map(), justif: new Map(), justTurno: new Map(), coment: new Map(), objetivos: new Map(), base: new Map(), recomendaciones: [], necesidades: [], modificaciones: [], finalizados: new Map(), historial: new Map(), validaciones: new Map(), informe: false, cargado: false, rango: '', diasPromedio: 365 };
+        let moldesExt = { estados: new Map(), prod: new Map(), turnosInf: new Map(), horas: new Map(), promedios: new Map(), justif: new Map(), justTurno: new Map(), catalogo: null, coment: new Map(), objetivos: new Map(), base: new Map(), recomendaciones: [], necesidades: [], modificaciones: [], finalizados: new Map(), historial: new Map(), validaciones: new Map(), informe: false, cargado: false, rango: '', diasPromedio: 365 };
         let printState = null;
         let desviosMes = { lista: [], porInicio: new Map() };
         const colorCache = {};
@@ -1942,7 +1990,7 @@
         }
 
         function extVacio(rango) {
-            return { estados: new Map(), prod: new Map(), turnosInf: new Map(), horas: new Map(), promedios: new Map(), justif: new Map(), justTurno: new Map(), coment: new Map(), objetivos: new Map(), base: new Map(), recomendaciones: [], necesidades: [], modificaciones: [], finalizados: new Map(), historial: new Map(), validaciones: new Map(), informe: false, cargado: false, rango: rango || '', diasPromedio: 365 };
+            return { estados: new Map(), prod: new Map(), turnosInf: new Map(), horas: new Map(), promedios: new Map(), justif: new Map(), justTurno: new Map(), catalogo: null, coment: new Map(), objetivos: new Map(), base: new Map(), recomendaciones: [], necesidades: [], modificaciones: [], finalizados: new Map(), historial: new Map(), validaciones: new Map(), informe: false, cargado: false, rango: rango || '', diasPromedio: 365 };
         }
 
         function normalizarEstadoRec(e) {
@@ -2017,6 +2065,7 @@
                 ext.historial.get(res.molde).push({ fecha: fechaDeMarca(r['Fecha registro']), fact: fechaDeMarca(r['Fecha actualización']), estado: String(r['Estado'] || '').trim() });
             });
             ext.modificaciones = (j.modificaciones || []).map(leerModificacion).filter(m => m.fi && m.ff && /^T[123]$/.test(m.ti) && /^T[123]$/.test(m.tf));
+            ext.catalogo = j.catalogo && Array.isArray(j.catalogo.motivos) ? j.catalogo : null;
             (j.planesFinalizados || []).forEach(r => { const c = fechaHoraDeMarca(r['Corte ISO']) || fechaHoraDeMarca(r['Marca temporal']); if (/^\d{4}-\d{2}$/.test(r['Mes'] || '') && c) ext.finalizados.set(r['Mes'], { corte: c, marca: r['Marca temporal'] || '', autor: r['Autor'] || '', comentario: r['Comentario'] || '' }); });
             (j.validaciones || []).forEach(v => ext.validaciones.set(v['Mes'], { estado: v['Estado'], comentario: v['Comentario'], autor: v['Autor'], marca: v['Marca temporal'] }));
             ext.informe = !!j.turnos;
@@ -2197,6 +2246,110 @@
             return { lista, porInicio, porTurno };
         }
 
+        function analisisCausas(year, month) {
+            const motivos = new Map(), sectores = new Map(), cruce = new Map();
+            let total = 0, turnos = 0;
+            const dias = new Date(year, month + 1, 0).getDate();
+            const dv = year === currentDate.getFullYear() && month === currentDate.getMonth() ? desviosMes : calcularDesvios(year, month);
+            const acum = (m, c, perd, tn) => { const o = m.get(c) || { perd: 0, turnos: 0 }; o.perd += perd; o.turnos += tn; m.set(c, o); };
+            for (let d = 1; d <= dias; d++) {
+                const ds = formatYYYYMMDD(new Date(year, month, d));
+                TURNOS.forEach(t => {
+                    if (estadoTurno(ds, t) !== 'pasado') return;
+                    const ev = evaluarProduccion(ds, t);
+                    if (ev.score === null || ev.score >= 1) return;
+                    const k = key(ds, t), perd = 1 - ev.score;
+                    const j = justDe(k, dv.porTurno.get(k));
+                    const mot = j ? j.motivo : 'Sin justificar', sec = j ? (j.sector || 'Sin sector') : 'Sin justificar';
+                    acum(motivos, mot, perd, 1); acum(sectores, sec, perd, 1); acum(cruce, sec + '|' + mot, perd, 1);
+                    total += perd; turnos++;
+                });
+            }
+            const orden = m => [...m.entries()].map(([nombre, v]) => ({ nombre, perd: v.perd, turnos: v.turnos, pct: total ? v.perd / total : 0 })).sort((a, b) => (a.nombre === 'Sin justificar') - (b.nombre === 'Sin justificar') || b.perd - a.perd);
+            return { total, turnos, motivos: orden(motivos), sectores: orden(sectores), cruce };
+        }
+
+        function filaCausa(c, nEval, cls) {
+            const sin = c.nombre === 'Sin justificar' || c.nombre === 'Sin sector';
+            return `<div class="kc-fila" title="${escAttr(`${c.nombre}: ${c.turnos} turno${c.turnos === 1 ? '' : 's'} · −${(c.perd / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts`)}"><span>${escAttr(c.nombre)}</span><div class="ca-bar ${sin ? 'sin' : cls}"><span style="width:${Math.round(c.pct * 100)}%"></span></div><b>${Math.round(c.pct * 100)}%</b></div>`;
+        }
+
+        function htmlCausas(an, nEval) {
+            if (!nEval) return '';
+            if (an.total < 0.005) return `<div class="kpi-card kpi-causas" style="--kc:var(--green)"><div class="kpi-label">🔎 Causas de desvío</div><div class="kpi-sub">Sin desvíos en los turnos evaluados del mes</div></div>`;
+            const sinJ = an.motivos.find(m => m.nombre === 'Sin justificar');
+            return `<div class="kpi-card kpi-causas" style="--kc:#5e5ce6" onclick="abrirCausas()" role="button" title="Clic para ver el detalle"><div class="kpi-label">🔎 Causas de desvío <small style="font-weight:600;text-transform:none">· −${(an.total / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts en ${an.turnos} turnos${sinJ ? ` · ${Math.round(sinJ.pct * 100)}% sin justificar` : ''}</small></div>
+                <div class="kc-grid"><div><div class="kc-sub">Principales motivos</div>${an.motivos.slice(0, 4).map(c => filaCausa(c, nEval, '')).join('')}</div><div><div class="kc-sub">Sector responsable</div>${an.sectores.slice(0, 5).map(c => filaCausa(c, nEval, 'sec')).join('')}</div></div></div>`;
+        }
+
+        function abrirCausas() {
+            const year = currentDate.getFullYear(), month = currentDate.getMonth();
+            const an = analisisCausas(year, month);
+            let nEval = 0;
+            for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) TURNOS.forEach(t => { const ds = formatYYYYMMDD(new Date(year, month, d)); if (estadoTurno(ds, t) === 'pasado' && evaluarProduccion(ds, t).score !== null) nEval++; });
+            const tabla = (titulo, lista, cls) => {
+                let ac = 0;
+                return `<div class="ca-sec"><h4>${titulo}</h4><div class="ca-fila cab"><span>Causa</span><span>Participación (acumulado)</span><span class="num">Turnos</span><span class="num">Pts</span></div>${lista.map(c => { ac += c.pct; return `<div class="ca-fila"><span>${escAttr(c.nombre)}</span><div class="ca-bar ${c.nombre.startsWith('Sin ') ? 'sin' : cls}" title="Acumulado ${Math.round(ac * 100)}%"><span style="width:${Math.round(c.pct * 100)}%"></span></div><span class="num">${c.turnos}</span><span class="num">−${(c.perd / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })}</span></div>`; }).join('')}</div>`;
+            };
+            let cruce = '';
+            if (an.sectores.length && an.total >= 0.005) {
+                cruce = `<div class="ca-sec"><h4>Motivo principal por sector</h4>${an.sectores.map(s => {
+                    const mot = [...an.cruce.entries()].filter(([k]) => k.startsWith(s.nombre + '|')).map(([k, v]) => ({ m: k.slice(s.nombre.length + 1), perd: v.perd })).sort((a, b) => b.perd - a.perd)[0];
+                    return `<div class="ca-fila"><span><b>${escAttr(s.nombre)}</b></span><span>${mot ? escAttr(mot.m) : '–'}</span><span class="num">${s.turnos}</span><span class="num">${Math.round(s.pct * 100)}%</span></div>`;
+                }).join('')}</div>`;
+            }
+            document.getElementById('csCuerpo').innerHTML = an.total < 0.005 ? '<p class="modos-sub">Sin desvíos en los turnos evaluados del mes.</p>' : `<p class="modos-sub">Puntos de cumplimiento perdidos (100% − promedio) y a qué causa y sector se atribuyen, según las justificaciones del mes. Total: <b>−${(an.total / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts</b> en ${an.turnos} turnos.</p>${tabla('Por motivo', an.motivos, '')}${tabla('Por sector responsable', an.sectores, 'sec')}${cruce}`;
+            document.getElementById('causasModal').classList.add('open');
+        }
+        function cerrarCausas() { document.getElementById('causasModal').classList.remove('open'); }
+
+        let catTipo = 'Sector';
+        function abrirCatalogo() {
+            if (modo !== 'produccion') return;
+            document.getElementById('ctMsg').textContent = ''; document.getElementById('ctMsg').className = 'jf-msg';
+            document.getElementById('catModal').classList.add('open');
+            tabCatalogo(catTipo);
+        }
+        function cerrarCatalogo() { document.getElementById('catModal').classList.remove('open'); }
+        function tabCatalogo(t) {
+            catTipo = t;
+            document.getElementById('ctTabSector').classList.toggle('on', t === 'Sector');
+            document.getElementById('ctTabMotivo').classList.toggle('on', t === 'Motivo');
+            document.getElementById('ctNuevo').placeholder = t === 'Sector' ? 'Nuevo sector…' : 'Nuevo motivo…';
+            renderCatalogo();
+        }
+        function renderCatalogo() {
+            const lista = catalogoVigente()[catTipo === 'Sector' ? 'sectores' : 'motivos'];
+            document.getElementById('ctLista').innerHTML = lista.map((x, i) => `<div class="ct-fila${x.activo ? '' : ' off'}"><input value="${escAttr(x.nombre)}" maxlength="60" data-orig="${escAttr(x.nombre)}" onchange="renombrarCatalogo(${i}, this)" aria-label="Nombre"><button onclick="estadoCatalogo(${i})">${x.activo ? 'Quitar' : 'Reactivar'}</button><span title="${x.activo ? 'Activo' : 'Inactivo'}">${x.activo ? '✅' : '⏸'}</span></div>`).join('');
+        }
+        async function opCatalogo(params) {
+            const msg = document.getElementById('ctMsg');
+            msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
+            try {
+                const j = await postEditor(Object.assign({ accion: 'catalogo', tipo: catTipo }, params));
+                if (j.catalogo && Array.isArray(j.catalogo.motivos)) moldesExt.catalogo = j.catalogo;
+                msg.textContent = '✅ Guardado'; msg.className = 'jf-msg ok';
+                renderCatalogo();
+                if (params.op === 'renombrar') { loadData(true); }
+            } catch (err) { msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err'; renderCatalogo(); }
+        }
+        function agregarCatalogo() {
+            const inp = document.getElementById('ctNuevo');
+            const nombre = inp.value.trim();
+            if (nombre.length < 2) { const m = document.getElementById('ctMsg'); m.textContent = 'Escribí un nombre de al menos 2 caracteres.'; m.className = 'jf-msg err'; return; }
+            inp.value = '';
+            opCatalogo({ op: 'agregar', nombre });
+        }
+        function renombrarCatalogo(i, el) {
+            const nuevo = el.value.trim(), anterior = el.dataset.orig;
+            if (!nuevo || nuevo === anterior) { el.value = anterior; return; }
+            opCatalogo({ op: 'renombrar', anterior, nombre: nuevo });
+        }
+        function estadoCatalogo(i) {
+            const x = catalogoVigente()[catTipo === 'Sector' ? 'sectores' : 'motivos'][i];
+            opCatalogo({ op: 'estado', nombre: x.nombre, activo: x.activo ? 'No' : 'Sí' });
+        }
+
         function htmlInfluencia(com, prod, n) {
             const total = com + prod;
             if (!n) return '';
@@ -2220,7 +2373,7 @@
             const pc = postCierre.get(k);
             if (pc && pc.mods.some(m => m.solicitud)) return 'comercial';
             const j = justDe(k, ep);
-            if (j && j.motivo === 'Cambio de prioridad comercial') return 'comercial';
+            if (j && (j.sector === 'Comercial' || (!j.sector && j.motivo === 'Cambio de prioridad comercial'))) return 'comercial';
             return 'produccion';
         }
 
@@ -3039,6 +3192,7 @@
                 h += `<div class="kpi-card" style="${pctPr === null ? '' : `--kc:${colorPct(pctPr)}`}"><div class="kpi-label">🔬 Cumplimiento de pruebas</div><div class="kpi-value">${pctPr === null ? '–' : pctPr + '%'}</div><div class="kpi-sub">${pruebasHechas} de ${pruebasEval} evaluadas · ${pruebasMes} plan. · ±${TOLERANCIA_PRUEBA_DIAS} días</div></div>`;
                 if (modo === 'produccion') h += `<div class="kpi-card" style="--kc:${desviosMes.lista.length && nJust < desviosMes.lista.length ? 'var(--orange)' : 'var(--green)'}"><div class="kpi-label">📝 Bloques de desvío sin justificar</div><div class="kpi-value">${desviosMes.lista.length - nJust}</div><div class="kpi-sub">de ${desviosMes.lista.length} bloques en el mes</div></div>`;
                 else h += `<div class="kpi-card" style="--kc:var(--accent)"><div class="kpi-label">📝 Desvíos justificados</div><div class="kpi-value">${nJust}</div><div class="kpi-sub">bloque${nJust === 1 ? '' : 's'} con explicación de Producción</div></div>`;
+                h += htmlCausas(analisisCausas(year, month), nEval);
 
             }
             cont.innerHTML = h;
@@ -3262,13 +3416,24 @@
                     <td><span class="desv-estado st-${e.status}">${etiquetas[e.status]}</span></td>
                     <td>${escAttr(e.plan)}</td>
                     <td>${escAttr(e.real)}</td>
-                    <td class="desv-just">${j ? `<b>${escAttr(j.motivo)}</b>${j.detalle ? `<span>${escAttr(j.detalle)}</span>` : ''}` : '<span class="desv-pend">Sin justificar</span>'}${coms ? `<small>🗨 ${coms} comentario${coms > 1 ? 's' : ''} en turnos</small>` : ''}</td>
+                    <td class="desv-just">${j ? `<b>${escAttr(j.motivo)}</b>${j.sector ? `<small> · ${escAttr(j.sector)}</small>` : ''}${j.detalle ? `<span>${escAttr(j.detalle)}</span>` : ''}` : '<span class="desv-pend">Sin justificar</span>'}${coms ? `<small>🗨 ${coms} comentario${coms > 1 ? 's' : ''} en turnos</small>` : ''}</td>
                     <td>${modo === 'produccion' ? `<button class="desv-btn" onclick="event.stopPropagation(); abrirJustificacion('${e.k}')">${j ? 'Editar' : 'Justificar'}</button>` : ''}</td>
                 </tr>`;
             });
             cont.innerHTML = html + '</tbody></table>';
         }
 
+        const SECTORES_BASE = ['Producción', 'Comercial', 'Matricería', 'Mantenimiento', 'Dirección'];
+        function catalogoVigente() {
+            const c = moldesExt.catalogo;
+            return c ? c : { motivos: MOTIVOS_DESVIO.map(nombre => ({ nombre, activo: true })), sectores: SECTORES_BASE.map(nombre => ({ nombre, activo: true })) };
+        }
+        function opcionesCat(tipo, actual) {
+            const c = catalogoVigente()[tipo];
+            const lista = c.filter(x => x.activo).map(x => x.nombre);
+            if (actual && !lista.includes(actual)) lista.push(actual);
+            return lista;
+        }
         const MOTIVOS_DESVIO = ['Falla de equipo / mantenimiento correctivo', 'Molde no disponible o en reparación', 'Calibración o ajuste de molde', 'Falta de materia prima / arcilla', 'Problema de calidad', 'Cambio de prioridad comercial', 'Corte de energía o gas', 'Falta de personal', 'Error de planificación o de carga', 'Otro'];
         let justifActual = null;
 
@@ -3284,8 +3449,10 @@
 
         function llenarMotivos(j) {
             const sel = document.getElementById('jfMotivo');
-            sel.innerHTML = '<option value="">Seleccionar motivo…</option>' + MOTIVOS_DESVIO.map(m => `<option${m === j.motivo ? ' selected' : ''}>${m}</option>`).join('');
-            if (j.motivo && !MOTIVOS_DESVIO.includes(j.motivo)) sel.innerHTML += `<option selected>${escAttr(j.motivo)}</option>`;
+            sel.innerHTML = '<option value="">Seleccionar motivo…</option>' + opcionesCat('motivos', j.motivo).map(m => `<option${m === j.motivo ? ' selected' : ''}>${escAttr(m)}</option>`).join('');
+            const ss = document.getElementById('jfSector');
+            ss.innerHTML = '<option value="">Seleccionar sector…</option>' + opcionesCat('sectores', j.sector).map(m => `<option${m === j.sector ? ' selected' : ''}>${escAttr(m)}</option>`).join('');
+            document.getElementById('jfSectorWrap').hidden = false;
             return sel;
         }
 
@@ -3331,6 +3498,7 @@
             document.getElementById('jfTitulo').textContent = '🗨 Comentario del turno (opcional)';
             document.getElementById('jfResumen').innerHTML = `<b>${fechaCorta(ds)} · ${t}</b><br><span>Plan:</span> ${escAttr(seqTexto(getProdSeq(planData[k])))}<br><span>Real:</span> ${escAttr(seqTexto(getProdSeq(realData[k])))}`;
             document.getElementById('jfMotivoWrap').hidden = true;
+            document.getElementById('jfSectorWrap').hidden = true;
             document.getElementById('jfDetalleLbl').textContent = 'Comentario';
             document.getElementById('jfDetalle').placeholder = 'Ej.: se cortó la energía 20 minutos; se ajustaron los dados';
             prepararFormJust(c.detalle, c.autor);
@@ -3359,6 +3527,8 @@
             const detalle = document.getElementById('jfDetalle').value.trim();
             const autor = document.getElementById('jfAutor').value.trim();
             const msg = document.getElementById('jfMsg');
+            const sector = esBloque ? document.getElementById('jfSector').value : '';
+            if (esBloque && !sector) { msg.textContent = 'Elegí el sector responsable.'; msg.className = 'jf-msg err'; return; }
             if (esBloque && !motivo) { msg.textContent = 'Elegí un motivo.'; msg.className = 'jf-msg err'; return; }
             const btn = document.getElementById('jfGuardar');
             btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
@@ -3368,9 +3538,9 @@
             const real = esBloque && !porTurno ? ja.ep.real : seqTexto(getProdSeq(realData[porTurno ? kT : ja.k]));
             const tipoEnv = porTurno ? 'Turno' : ja.tipo;
             try {
-                await postEditor({ accion: 'justificacion', tipo: tipoEnv, fecha, turno, planificado: plan, real, motivo, detalle, autor, turnos: esBloque && !porTurno ? String(ja.ep.turnos) : '1' });
+                await postEditor({ accion: 'justificacion', tipo: tipoEnv, fecha, turno, planificado: plan, real, motivo, sector, detalle, autor, turnos: esBloque && !porTurno ? String(ja.ep.turnos) : '1' });
                 try { localStorage.setItem('jfAutor', autor); } catch (e) { }
-                const reg = { fecha, turno, planificado: plan, real, motivo, detalle, autor, tipo: tipoEnv, marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }) };
+                const reg = { fecha, turno, planificado: plan, real, motivo, sector, detalle, autor, tipo: tipoEnv, marca: new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' }) };
                 if (porTurno) moldesExt.justTurno.set(kT, reg);
                 else if (esBloque) moldesExt.justif.set(ja.k, reg);
                 else if (detalle) moldesExt.coment.set(ja.k, reg); else moldesExt.coment.delete(ja.k);
@@ -3515,6 +3685,7 @@
             const motivos = {};
             desviosMes.lista.forEach(e => { if (e.just) motivos[e.just.motivo] = (motivos[e.just.motivo] || 0) + e.turnos; });
             const motivoTop = Object.entries(motivos).sort((a, b) => b[1] - a[1])[0];
+            const anCausas = analisisCausas(year, month);
             let turnosCortos = 0, horasPerdidas = 0;
             for (let d = 1; d <= dias; d++) TURNOS.forEach(t => { const h = horasTurno(key(formatYYYYMMDD(new Date(year, month, d)), t)); if (h !== null && h < HORAS_TURNO) { turnosCortos++; horasPerdidas += HORAS_TURNO - h; } });
             const nivel = (v, a, b) => v === null ? 'sin datos' : v >= a ? 'bueno' : v >= b ? 'aceptable' : 'bajo';
@@ -3545,6 +3716,12 @@
             L.push('   Qué mide: si en cada turno cerrado se produjo el TIPO de ladrillo planificado.');
             L.push('   Cálculo: promedio del puntaje de cada turno cerrado = tipos planificados que se produjeron / (tipos planificados + tipos no planificados).');
             L.push(`   Lectura: ${lecturaProd}`);
+            if (nEval && anCausas.total >= 0.005) {
+                const pp = v => (v / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 });
+                L.push('   Causas de desvío (puntos de cumplimiento perdidos según las justificaciones):');
+                anCausas.motivos.forEach(c => L.push(`      Motivo · ${c.nombre}: ${Math.round(c.pct * 100)}% (${c.turnos} turnos, −${pp(c.perd)} pts)`));
+                anCausas.sectores.forEach(c => L.push(`      Sector · ${c.nombre}: ${Math.round(c.pct * 100)}% (${c.turnos} turnos, −${pp(c.perd)} pts)`));
+            }
             if (nEval) {
                 const tot = perdCom + perdProd, pp = v => (v / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 });
                 L.push(`   Influencia en el desvío: ${tot < 0.005 ? 'sin desvío en los turnos evaluados.' : `−${pp(tot)} pts en total · Comercial ${Math.round(perdCom / tot * 100)}% (−${pp(perdCom)} pts) · Producción ${Math.round(perdProd / tot * 100)}% (−${pp(perdProd)} pts).`}`);
@@ -3598,7 +3775,7 @@
                 L.push(`${i + 1}. ${fechaCorta(e.fecha)} ${e.turno}${e.turnos > 1 ? ` → ${fechaCorta(e.hasta.fecha)} ${e.hasta.turno}` : ''} (${e.turnos} turno${e.turnos > 1 ? 's' : ''}) · ${e.status === 'desvio' ? 'Desvío' : e.status === 'parcial' ? 'Parcial' : 'Sin plan'}`);
                 L.push(`   Plan: ${e.plan}`);
                 L.push(`   Real: ${e.real}`);
-                L.push(`   ${e.just ? `Justificación: ${e.just.motivo}${e.just.detalle ? ' – ' + e.just.detalle : ''}${e.just.autor ? ' (' + e.just.autor + ')' : ''}` : 'Sin justificar'}`);
+                L.push(`   ${e.just ? `Justificación: ${e.just.motivo}${e.just.sector ? ' [' + e.just.sector + ']' : ''}${e.just.detalle ? ' – ' + e.just.detalle : ''}${e.just.autor ? ' (' + e.just.autor + ')' : ''}` : 'Sin justificar'}`);
             });
 
             titulo('7. Pruebas planificadas');
@@ -3856,7 +4033,7 @@
             document.getElementById('modoLogin').hidden = true;
             document.querySelectorAll('.modo-card').forEach(c => c.classList.toggle('activo', c.dataset.m === modo));
             const act = document.getElementById('modoActivo');
-            act.innerHTML = modo ? `<div class="modo-actual">${MODOS[modo].ico} Estás en <b>${MODOS[modo].nombre}</b><button onclick="salirModo()">Salir a modo lectura</button></div>${modo === 'produccion' ? '<button class="modo-config" onclick="cerrarModos(); abrirMails()">📧 Configurar casillas de mail<small>A quién se envían las recomendaciones y validaciones de Comercial</small></button>' : ''}${modo === 'comercial' ? '<button class="modo-config" onclick="cerrarModos(); abrirSolicitudes(\'nec\')">💼 Solicitudes<small>Necesidades por tipo (pallets o Tn, mes actual o futuros) y modificaciones del plan</small></button>' : ''}` : '<div class="modo-actual lectura">👁️ Modo lectura (usuarios)</div>';
+            act.innerHTML = modo ? `<div class="modo-actual">${MODOS[modo].ico} Estás en <b>${MODOS[modo].nombre}</b><button onclick="salirModo()">Salir a modo lectura</button></div>${modo === 'produccion' ? '<button class="modo-config" onclick="cerrarModos(); abrirMails()">📧 Configurar casillas de mail<small>A quién se envían las recomendaciones y validaciones de Comercial</small></button><button class="modo-config" onclick="cerrarModos(); abrirCatalogo()">🧭 Causas y sectores de desvío<small>Listas validadas para justificar incumplimientos: agregar, renombrar o quitar</small></button>' : ''}${modo === 'comercial' ? '<button class="modo-config" onclick="cerrarModos(); abrirSolicitudes(\'nec\')">💼 Solicitudes<small>Necesidades por tipo (pallets o Tn, mes actual o futuros) y modificaciones del plan</small></button>' : ''}` : '<div class="modo-actual lectura">👁️ Modo lectura (usuarios)</div>';
             document.getElementById('modosModal').classList.add('open');
         }
 
@@ -3943,7 +4120,7 @@
             else {
                 b.classList.add('on');
                 b.className = `modo-banner on mb-${modo}`;
-                b.innerHTML = `<span>${MODOS[modo].ico} <b>${MODOS[modo].nombre}</b> · los cambios se guardan en la planilla · se cierra al recargar o tras 2 h sin actividad</span><span class="mb-btns">${modo === 'produccion' ? '<button onclick="abrirMails()">📧 Casillas de mail</button>' : ''}<button onclick="salirModo()">Salir</button></span>`;
+                b.innerHTML = `<span>${MODOS[modo].ico} <b>${MODOS[modo].nombre}</b> · los cambios se guardan en la planilla · se cierra al recargar o tras 2 h sin actividad</span><span class="mb-btns">${modo === 'produccion' ? '<button onclick="abrirMails()">📧 Casillas de mail</button><button onclick="abrirCatalogo()">🧭 Causas</button>' : ''}<button onclick="salirModo()">Salir</button></span>`;
             }
             document.getElementById('btnModo').classList.toggle('activo', !!modo);
         }
