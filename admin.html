@@ -189,6 +189,14 @@
         button.option-btn.ma-op.on { border-color: var(--accent); background: rgba(224,123,76,0.14); }
         .ma-op small { display: block; font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
         #necPanel { margin-top: 18px; }
+        .ma-causa { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+        @media (max-width: 520px) { .ma-causa { grid-template-columns: 1fr; } }
+        #causaPlan { margin: 12px 0; }
+        .hr-pincel { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; margin-bottom: 10px; }
+        .hr-pincel button { min-width: 52px; padding: 7px 10px; border-radius: 999px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); font-family: var(--font); font-weight: 800; font-size: 0.78rem; cursor: pointer; transition: 0.18s; }
+        .hr-pincel button.on { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .ft.hr.corto { border-color: var(--orange); background: rgba(255,159,10,0.14); }
+        .ft.hr.corto em { color: var(--orange); font-weight: 800; }
         button.option-btn.fin-btn { border-color: rgba(94,92,230,0.6); }
         button.option-btn.fin-btn.ok { border-style: solid; background: rgba(94,92,230,0.1); }
         .fin-sello { display: inline-block; padding: 2px 10px; border-radius: 12px; font-weight: 800; font-size: 0.78rem; background: rgba(94,92,230,0.18); color: #a5a4ff; }
@@ -252,8 +260,6 @@
             <div class="mr-resumen" id="fnResumen"></div>
             <label class="ma-lbl" for="fnComent">Comentario para el mail (opcional)</label>
             <textarea id="fnComent" class="ma-input" maxlength="1000" rows="3" placeholder="Ej.: se prioriza H12 la primera quincena por pedido de Comercial"></textarea>
-            <label class="ma-lbl" for="fnAutor">Responsable</label>
-            <input id="fnAutor" class="ma-input" maxlength="80" placeholder="Nombre">
             <button class="primary-btn" id="fnGuardar" onclick="finalizarMes()">Finalizar y notificar</button>
             <div id="fnMsg" class="feedback error"></div>
         </div>
@@ -279,14 +285,20 @@
                 <label class="ma-lbl" for="maMolde" id="maMoldeLbl">Molde</label>
                 <select id="maMolde" class="ma-input"></select>
             </div>
+            <div id="maHorasWrap" hidden>
+                <label class="ma-lbl" for="maHoras">Horas por turno</label>
+                <select id="maHoras" class="ma-input"></select>
+            </div>
             <label class="ma-check" id="maExcluirWrap" hidden><input type="checkbox" id="maExcluir" onchange="renderImpacto()"><span><b>No cuenta para el objetivo</b><small>Las Tn de estos turnos se descuentan del objetivo y no se evalúan como incumplidas. Sin tildar, el turno quitado cuenta como desvío.</small></span></label>
             <div class="mr-resumen" id="maImpacto"></div>
             <label class="ma-lbl" for="maSolicitud">¿Responde a una solicitud de Comercial?</label>
             <select id="maSolicitud" class="ma-input"></select>
-            <label class="ma-lbl" for="maJustif">Justificación / observación (obligatoria)</label>
+            <div class="ma-causa">
+                <div><label class="ma-lbl" for="maSector">Sector responsable</label><select id="maSector" class="ma-input"></select></div>
+                <div><label class="ma-lbl" for="maMotivo">Motivo</label><select id="maMotivo" class="ma-input"></select></div>
+            </div>
+            <label class="ma-lbl" for="maJustif">Observación (opcional)</label>
             <textarea id="maJustif" class="ma-input" maxlength="1500" rows="3" placeholder="Ej.: se quita H18 por rotura de bulones del molde (2)"></textarea>
-            <label class="ma-lbl" for="maAutor">Responsable</label>
-            <input id="maAutor" class="ma-input" maxlength="80" placeholder="Nombre">
             <button class="primary-btn" id="maGuardar" onclick="guardarModificacionPlan()">Registrar modificación</button>
             <div id="maMsg" class="feedback error"></div>
         </div>
@@ -361,10 +373,33 @@
             <div class="btn-grid" id="tFinBotones"></div>
         </div>
 
+        <div id="step-horas" class="step">
+            <div class="header-status"><span>Horas por turno</span> <button class="secondary-btn-small" onclick="retroceder()">Atrás</button></div>
+            <h2>¿Algún turno con menos de 8 h?</h2>
+            <p class="sub">Elegí las horas y tocá los turnos para aplicarlas (tocar de nuevo vuelve a 8 h). El objetivo de cada turno se ajusta a las horas planificadas.</p>
+            <div class="hr-pincel" id="hrPincel"></div>
+            <div class="finde-presets">
+                <button onclick="presetHoras('todo8')">✅ Todos de 8 h</button>
+                <button onclick="presetHoras('todos')">Aplicar las horas elegidas a todos</button>
+            </div>
+            <div class="finde-lista" id="horasLista"></div>
+            <div class="finde-res" id="horasRes"></div>
+            <button class="primary-btn" onclick="saveHoras()">Siguiente ➔</button>
+        </div>
+
         <div id="step-resumen" class="step">
             <div class="header-status"><span>Confirmación</span> <button class="secondary-btn-small" onclick="retroceder()">Atrás</button></div>
             <h2>Resumen de Carga</h2>
             <div id="summaryText"></div>
+            <div id="causaPlan" hidden>
+                <div class="mr-info" id="causaPlanTxt"></div>
+                <div class="ma-causa">
+                    <div><label class="ma-lbl" for="rsSector">Sector responsable</label><select id="rsSector" class="ma-input"></select></div>
+                    <div><label class="ma-lbl" for="rsMotivo">Motivo</label><select id="rsMotivo" class="ma-input"></select></div>
+                </div>
+                <label class="ma-lbl" for="rsObs">Observación (opcional)</label>
+                <textarea id="rsObs" class="ma-input" maxlength="1500" rows="2" placeholder="Ej.: se cambia a H18 por rotura del molde H12 (3)"></textarea>
+            </div>
             <div id="estimResumen"></div>
             <button class="primary-btn" id="btnSubmit" onclick="enviarDatos()">Registrar Planificación de Producción</button>
             <div id="submitMsg" class="feedback error"></div>
@@ -390,7 +425,7 @@
         const HORARIO = { T1: '22–06', T2: '06–14', T3: '14–22' };
         const ICONO_T = { T1: '🌙', T2: '☀️', T3: '🌇' };
         const DIAS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
-        const ORDEN_PASOS = ['step-tarea', 'step-familia', 'step-lad', 'step-num', 'step-f-inicio', 'step-t-inicio', 'step-f-fin', 'step-finde', 'step-t-fin', 'step-resumen'];
+        const ORDEN_PASOS = ['step-tarea', 'step-familia', 'step-lad', 'step-num', 'step-f-inicio', 'step-t-inicio', 'step-f-fin', 'step-finde', 'step-t-fin', 'step-horas', 'step-resumen'];
         const ORDEN_MOD = ['step-tarea', 'step-mod-rango', 'step-mod-accion'];
 
         let db = {};
@@ -399,7 +434,19 @@
         let stats = null;
         let state = estadoVacio();
 
-        function estadoVacio() { return { tarea: '', familia: '', lad: '', num: '', moldeCompleto: '', fInicio: '', tInicio: '', fFin: '', tFin: '', excl: new Set() }; }
+        function estadoVacio() { return { tarea: '', familia: '', lad: '', num: '', moldeCompleto: '', fInicio: '', tInicio: '', fFin: '', tFin: '', excl: new Set(), horas: new Map(), pincel: 6 }; }
+        const OPCIONES_HORAS = [8, 7.5, 7, 6.5, 6, 5.5, 5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1];
+        const SECTORES_BASE = ['Producción', 'Comercial', 'Matricería', 'Mantenimiento', 'Dirección'];
+        const MOTIVOS_BASE = ['Falla de equipo / mantenimiento correctivo', 'Molde no disponible o en reparación', 'Calibración o ajuste de molde', 'Falta de materia prima / arcilla', 'Problema de calidad', 'Cambio de prioridad comercial', 'Corte de energía o gas', 'Falta de personal', 'Error de planificación o de carga', 'Otro'];
+        function catalogoAdmin(tipo) {
+            const c = stats && stats.catalogo && Array.isArray(stats.catalogo[tipo]) ? stats.catalogo[tipo].filter(x => x.activo).map(x => x.nombre) : null;
+            return c && c.length ? c : (tipo === 'sectores' ? SECTORES_BASE : MOTIVOS_BASE);
+        }
+        function llenarCausa(idS, idM) {
+            const esc = v => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');
+            document.getElementById(idS).innerHTML = '<option value="">Seleccionar sector…</option>' + catalogoAdmin('sectores').map(x => `<option>${esc(x)}</option>`).join('');
+            document.getElementById(idM).innerHTML = '<option value="">Seleccionar motivo…</option>' + catalogoAdmin('motivos').map(x => `<option>${esc(x)}</option>`).join('');
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             document.getElementById('pwdInput').addEventListener('keydown', e => { if (e.key === 'Enter') { e.preventDefault(); verificarPassword(); } });
@@ -481,7 +528,8 @@
             let actual = null;
             lista.forEach(x => {
                 if (state.excl.has(x.k)) { actual = null; return; }
-                if (!actual) { actual = { desde: x, hasta: x, n: 0 }; segs.push(actual); }
+                const h = (state.horas && state.horas.get(x.k)) || 8;
+                if (!actual || actual.horas !== h) { actual = { desde: x, hasta: x, n: 0, horas: h }; segs.push(actual); }
                 actual.hasta = x;
                 actual.n++;
             });
@@ -708,6 +756,7 @@
                 return;
             }
             state.excl = new Set();
+            state.horas = new Map();
             const inp = document.getElementById('fFinInput');
             inp.min = state.fInicio;
             if (!inp.value || inp.value < state.fInicio) inp.value = state.fInicio;
@@ -806,12 +855,46 @@
 
         function selectTFin(turno) {
             state.tFin = turno;
-            renderResumen();
-            avanzar('step-resumen');
+            [...state.horas.keys()].forEach(k => { if (!turnosRango(state.fInicio, state.tInicio, state.fFin, state.tFin).some(x => x.k === k)) state.horas.delete(k); });
+            renderHoras();
+            avanzar('step-horas');
         }
 
+        function renderHoras() {
+            document.getElementById('hrPincel').innerHTML = OPCIONES_HORAS.filter(h => h < 8).map(h => `<button class="${h === state.pincel ? 'on' : ''}" onclick="elegirPincel(${h})">${fmt1(h)} h</button>`).join('');
+            const lista = turnosRango(state.fInicio, state.tInicio, state.fFin, state.tFin);
+            const dias = [...new Set(lista.map(x => x.ds))];
+            document.getElementById('horasLista').innerHTML = dias.map((ds, i) => {
+                const dw = fechaObj(ds).getDay();
+                return `<div class="finde-dia ${dw === 0 ? 'dom' : dw === 6 ? 'sab' : ''}" style="animation-delay:${Math.min(i, 12) * 30}ms"><div><b>${DIAS[dw]}</b><small>${formatearFecha(ds)}</small></div><div class="finde-turnos">${TURNOS.map(t => {
+                    const k = ds + '|' + t;
+                    const enRango = lista.some(x => x.k === k);
+                    const off = state.excl.has(k);
+                    const h = state.horas.get(k) || 8;
+                    return `<button class="ft hr${h < 8 ? ' corto' : ''}" ${enRango && !off ? '' : 'disabled'} onclick="toggleHora('${k}')" title="${t} ${HORARIO[t]}">${t}<small>${HORARIO[t]}</small><em>${!enRango ? 'Fuera del bloque' : off ? 'No se trabaja' : fmt1(h) + ' h'}</em></button>`;
+                }).join('')}</div></div>`;
+            }).join('');
+            const trab = lista.filter(x => !state.excl.has(x.k));
+            const eq = trab.reduce((a, x) => a + (state.horas.get(x.k) || 8) / 8, 0);
+            const cortos = trab.filter(x => (state.horas.get(x.k) || 8) < 8).length;
+            const e = estimar(eq);
+            document.getElementById('horasRes').innerHTML = `<b>${trab.length}</b> turnos · ${cortos ? `<b>${cortos}</b> con menos de 8 h · ` : 'todos de 8 h · '}equivalen a <b>${fmt1(eq)}</b> turnos completos${e && !e.sinDatos ? `<br>≈ <b>${fmt0(e.tn)}</b> Tn esperadas` : ''}`;
+        }
+
+        function elegirPincel(h) { state.pincel = h; renderHoras(); }
+        function toggleHora(k) {
+            if ((state.horas.get(k) || 8) === state.pincel) state.horas.delete(k); else state.horas.set(k, state.pincel);
+            renderHoras();
+        }
+        function presetHoras(tipo) {
+            state.horas = new Map();
+            if (tipo === 'todos') turnosRango(state.fInicio, state.tInicio, state.fFin, state.tFin).forEach(x => { if (!state.excl.has(x.k)) state.horas.set(x.k, state.pincel); });
+            renderHoras();
+        }
+        function saveHoras() { renderResumen(); avanzar('step-resumen'); }
+
         function segmentosActuales() {
-            if (state.tarea === 'Prueba') return [{ desde: { ds: state.fInicio, t: state.tInicio }, hasta: { ds: state.fFin, t: state.tFin }, n: 1 }];
+            if (state.tarea === 'Prueba') return [{ desde: { ds: state.fInicio, t: state.tInicio }, hasta: { ds: state.fFin, t: state.tFin }, n: 1, horas: 8 }];
             return segmentos(turnosRango(state.fInicio, state.tInicio, state.fFin, state.tFin));
         }
 
@@ -826,20 +909,26 @@
                 const segs = segmentos(lista);
                 if (excl.length) html += `<br><strong>🚫 No se trabaja:</strong><div class="excl-lista">${excl.map(x => `<span>${fechaCorta(x.ds)} ${x.t}</span>`).join('')}</div>`;
                 const finR = [...new Set([state.fInicio.slice(0, 7), state.fFin.slice(0, 7)])].filter(m => finalizacion(m));
-                if (finR.length) html += `<div class="mr-info">🏁 ${finR.map(nombreMesAdmin).join(', ')} ya tiene la planificación finalizada: este plan sólo informa con qué molde se trabajará; si difiere del plan inicial, cuenta como desvío. Se avisará por mail.</div>`;
-                html += `<br><strong>🗂 Registros a crear (${segs.length}):</strong><div class="seg-lista">${segs.map(s => `<div class="seg"><span>${textoSeg(s)}</span><small>${s.n} turno${s.n > 1 ? 's' : ''}</small></div>`).join('')}</div>`;
-                const n = segs.reduce((a, s) => a + s.n, 0);
+                const cp = document.getElementById('causaPlan');
+                if (finR.length) {
+                    if (cp.hidden) { llenarCausa('rsSector', 'rsMotivo'); document.getElementById('rsObs').value = ''; }
+                    cp.hidden = false;
+                    document.getElementById('causaPlanTxt').textContent = `🏁 ${finR.map(nombreMesAdmin).join(', ')} ya tiene la planificación finalizada: este plan sólo informa con qué molde se trabajará; si difiere del plan inicial, cuenta como desvío. Indicá sector responsable y motivo (se avisará por mail).`;
+                } else cp.hidden = true;
+                html += `<br><strong>🗂 Registros a crear (${segs.length}):</strong><div class="seg-lista">${segs.map(s => `<div class="seg"><span>${textoSeg(s)}</span><small>${s.n} turno${s.n > 1 ? 's' : ''}${s.horas < 8 ? ` · ${fmt1(s.horas)} h c/u` : ''}</small></div>`).join('')}</div>`;
+                const n = segs.reduce((a, s) => a + s.n * s.horas / 8, 0);
                 document.getElementById('estimResumen').innerHTML = htmlEstim(estimar(n), 'Producción esperada', `${state.lad} · ${segs.length} tramo${segs.length > 1 ? 's' : ''}`);
                 document.getElementById('btnSubmit').textContent = segs.length > 1 ? `Registrar ${segs.length} tramos de producción` : 'Registrar Planificación de Producción';
             } else {
+                document.getElementById('causaPlan').hidden = true;
                 document.getElementById('estimResumen').innerHTML = '';
                 document.getElementById('btnSubmit').textContent = 'Registrar Prueba';
             }
             document.getElementById('summaryText').innerHTML = html;
         }
 
-        async function enviarUno(pwd, seg) {
-            const params = new URLSearchParams({ password: pwd, molde: state.moldeCompleto, tarea: state.tarea, fechaInicio: seg.desde.ds, turnoInicio: seg.desde.t, fechaFin: seg.hasta.ds, turnoFin: seg.hasta.t });
+        async function enviarUno(pwd, seg, causa) {
+            const params = new URLSearchParams(Object.assign({ password: pwd, molde: state.moldeCompleto, tarea: state.tarea, fechaInicio: seg.desde.ds, turnoInicio: seg.desde.t, fechaFin: seg.hasta.ds, turnoFin: seg.hasta.t, horas: String(seg.horas || 8) }, causa || {}));
             try {
                 const res = await fetch(URL_SCRIPT, { method: 'POST', body: params });
                 return await res.json();
@@ -852,6 +941,12 @@
             const pwd = document.getElementById('pwdInput').value;
             const segs = segmentosActuales();
             if (!segs.length) { document.getElementById('submitMsg').textContent = 'No hay turnos productivos en el rango elegido.'; return; }
+            let causa = null;
+            if (!document.getElementById('causaPlan').hidden && state.tarea === 'Producción') {
+                causa = { sector: document.getElementById('rsSector').value, motivo: document.getElementById('rsMotivo').value, observacion: document.getElementById('rsObs').value.trim() };
+                if (!causa.sector) { document.getElementById('submitMsg').textContent = 'Elegí el sector responsable.'; return; }
+                if (!causa.motivo) { document.getElementById('submitMsg').textContent = 'Elegí el motivo.'; return; }
+            }
             const btn = document.getElementById('btnSubmit');
             const msg = document.getElementById('submitMsg');
             btn.disabled = true;
@@ -859,7 +954,7 @@
             const res = [];
             for (let i = 0; i < segs.length; i++) {
                 btn.textContent = segs.length > 1 ? `⏳ Registrando tramo ${i + 1} de ${segs.length}…` : '⏳ Registrando en Base de Datos...';
-                const j = await enviarUno(pwd, segs[i]);
+                const j = await enviarUno(pwd, segs[i], causa);
                 res.push(j);
                 if (j.result === 'error' && /contraseña|modo/i.test(j.message || '')) break;
             }
@@ -939,13 +1034,13 @@
         }
 
         function modificacionesActuales() {
-            return ((stats && stats.modificaciones) || []).map(r => ({ id: r['ID'], tipo: r['Tipo'], excluir: /^s/i.test(String(r['Excluir objetivo'] || '')), nuevo: r['Molde nuevo'] || '', fi: fechaISO(r['Fecha desde']), ti: r['Turno desde'], ff: fechaISO(r['Fecha hasta']), tf: r['Turno hasta'], justificacion: r['Justificación'] || '', marca: r['Marca temporal'] || '' })).filter(m => m.fi && m.ff && /^T[123]$/.test(m.ti) && /^T[123]$/.test(m.tf));
+            return ((stats && stats.modificaciones) || []).map(r => ({ id: r['ID'], tipo: r['Tipo'], horas: Number(String(r['Horas'] || '').replace(',', '.')) || 8, excluir: /^s/i.test(String(r['Excluir objetivo'] || '')), nuevo: r['Molde nuevo'] || '', fi: fechaISO(r['Fecha desde']), ti: r['Turno desde'], ff: fechaISO(r['Fecha hasta']), tf: r['Turno hasta'], justificacion: r['Justificación'] || '', marca: r['Marca temporal'] || '' })).filter(m => m.fi && m.ff && /^T[123]$/.test(m.ti) && /^T[123]$/.test(m.tf));
         }
 
         function planVigente() {
             const mods = modificacionesActuales();
             const firmas = new Set(mods.filter(m => m.tipo !== 'Quitar producción' && m.nuevo).map(m => [normMolde(resolverMoldeAdmin(m.nuevo)), m.fi, m.ti, m.ff, m.tf].join('|')));
-            const plan = new Map(), marcas = new Map();
+            const plan = new Map(), marcas = new Map(), horas = new Map();
             planFilas.forEach(r => {
                 if (String(r['TAREA'] || '').trim().replace(/Ã³/g, 'ó') !== 'Producción') return;
                 const molde = resolverMoldeAdmin(r['LADRILLO']);
@@ -953,13 +1048,16 @@
                 const ti = String(r['TURNO INICIO'] || '').trim(), tf = String(r['TURNO FIN'] || '').trim();
                 if (!molde || !fi || !ff || !/^T[123]$/.test(ti) || !/^T[123]$/.test(tf)) return;
                 if (firmas.has([normMolde(molde), fi, ti, ff, tf].join('|'))) return;
-                keysEntre(fi, ti, ff, tf).forEach(k => { if (!plan.has(k)) plan.set(k, []); if (!plan.get(k).includes(molde)) plan.get(k).push(molde); });
+                const h = Number(String(r['HORAS TURNO'] || '').replace(',', '.'));
+                keysEntre(fi, ti, ff, tf).forEach(k => { if (!plan.has(k)) plan.set(k, []); if (!plan.get(k).includes(molde)) plan.get(k).push(molde); if (h > 0 && h < 8) horas.set(k, h); });
             });
             mods.forEach(m => keysEntre(m.fi, m.ti, m.ff, m.tf).forEach(k => {
+                if (m.tipo === 'Cambiar horas') { if (m.horas < 8) horas.set(k, m.horas); else horas.delete(k); marcas.set(k, m); return; }
                 plan.set(k, m.tipo === 'Quitar producción' ? [] : [resolverMoldeAdmin(m.nuevo)]);
+                if (m.tipo !== 'Quitar producción' && m.horas < 8) horas.set(k, m.horas); else horas.delete(k);
                 marcas.set(k, m);
             }));
-            return { plan, marcas };
+            return { plan, marcas, horas };
         }
 
         function objetivoMolde(molde) {
@@ -968,10 +1066,11 @@
             const o = buscar(stats.objetivos, [lad, tipoBase(lad)]);
             return o ? o.v / 3 : 0;
         }
-        function objetivoKeys(keys, plan, reemplazo) {
+        function objetivoKeys(keys, plan, reemplazo, hrs) {
             return keys.reduce((a, k) => {
                 const ms = reemplazo !== undefined ? reemplazo : (plan.get(k) || []);
-                return a + (ms.length ? ms.reduce((s, m) => s + objetivoMolde(m), 0) / ms.length : 0);
+                const h = typeof hrs === 'number' ? hrs : hrs instanceof Map && hrs.has(k) ? hrs.get(k) : 8;
+                return a + (ms.length ? ms.reduce((s, m) => s + objetivoMolde(m), 0) / ms.length * h / 8 : 0);
             }, 0);
         }
 
@@ -1034,9 +1133,11 @@
             sel.onchange = () => { mod.molde = sel.value; renderImpacto(); };
             document.getElementById('maJustif').value = '';
             document.getElementById('maExcluir').checked = false;
-            let autor = '';
-            try { autor = localStorage.getItem('jfAutor') || ''; } catch (e) { }
-            document.getElementById('maAutor').value = autor;
+            llenarCausa('maSector', 'maMotivo');
+            const sh = document.getElementById('maHoras');
+            sh.innerHTML = OPCIONES_HORAS.map(h => `<option value="${h}"${h === 8 ? ' selected' : ''}>${fmt1(h)} h${h === 8 ? ' (turno completo)' : ''}</option>`).join('');
+            mod.horas = 8;
+            sh.onchange = () => { mod.horas = Number(sh.value) || 8; renderImpacto(); };
             document.getElementById('maMsg').textContent = '';
             avanzar('step-mod-accion');
         }
@@ -1048,10 +1149,12 @@
             const ops = [
                 { v: 'Quitar producción', ico: '➖', t: 'Quitar producción', d: conProd ? `Se quita lo planificado en ${conProd} turno${conProd > 1 ? 's' : ''}; el objetivo del mes baja.` : 'No hay producción planificada en esos turnos.', ok: conProd > 0 },
                 { v: 'Agregar producción', ico: '➕', t: 'Agregar producción', d: conProd ? `Solo en turnos sin planificación: ${conProd} turno${conProd > 1 ? 's' : ''} del rango ya tienen producción. Achicá el rango o usá Cambiar molde.` : `Se agrega un molde en ${vacios} turno${vacios > 1 ? 's' : ''} vacíos; el objetivo del mes sube.`, ok: conProd === 0 },
-                { v: 'Cambio de molde', ico: '🔁', t: 'Cambiar molde', d: !conProd ? 'No hay producción para cambiar.' : vacios ? `Hay ${vacios} turno${vacios > 1 ? 's' : ''} sin producción en el rango: ajustá el rango para cambiar solo turnos planificados.` : 'Reemplaza lo planificado por otro molde en todos los turnos del rango.', ok: conProd > 0 && vacios === 0 }
+                { v: 'Cambio de molde', ico: '🔁', t: 'Cambiar molde', d: !conProd ? 'No hay producción para cambiar.' : vacios ? `Hay ${vacios} turno${vacios > 1 ? 's' : ''} sin producción en el rango: ajustá el rango para cambiar solo turnos planificados.` : 'Reemplaza lo planificado por otro molde en todos los turnos del rango.', ok: conProd > 0 && vacios === 0 },
+                { v: 'Cambiar horas', ico: '⏳', t: 'Cambiar horas del turno', d: !conProd ? 'No hay producción planificada.' : vacios ? 'Ajustá el rango a turnos con producción.' : 'Mantiene el molde y cambia las horas planificadas de cada turno; el objetivo se ajusta.', ok: conProd > 0 && vacios === 0 }
             ];
             document.getElementById('maAcciones').innerHTML = ops.map(o => `<button class="option-btn ma-op${mod.op === o.v ? ' on' : ''}" ${o.ok ? '' : 'disabled'} onclick="elegirOpMod('${o.v}')"><span style="font-size:1.4rem">${o.ico}</span><span><b>${o.t}</b><small>${o.d}</small></span></button>`).join('');
-            document.getElementById('maMoldeWrap').hidden = !mod.op || mod.op === 'Quitar producción';
+            document.getElementById('maMoldeWrap').hidden = !mod.op || mod.op === 'Quitar producción' || mod.op === 'Cambiar horas';
+            document.getElementById('maHorasWrap').hidden = !mod.op || mod.op === 'Quitar producción';
             document.getElementById('maExcluirWrap').hidden = mod.op !== 'Quitar producción';
             document.getElementById('maMoldeLbl').textContent = mod.op === 'Agregar producción' ? 'Molde a agregar' : 'Molde nuevo';
             renderImpacto();
@@ -1062,10 +1165,10 @@
         function renderImpacto() {
             const el = document.getElementById('maImpacto');
             if (!mod.op) { el.innerHTML = ''; return; }
-            const { plan } = planVigente();
-            const antes = objetivoKeys(mod.keys, plan);
+            const { plan, horas } = planVigente();
+            const antes = objetivoKeys(mod.keys, plan, undefined, horas);
             const quitar = mod.op === 'Quitar producción';
-            const despues = quitar ? 0 : mod.molde ? objetivoKeys(mod.keys, plan, [mod.molde]) : null;
+            const despues = quitar ? 0 : mod.op === 'Cambiar horas' ? objetivoKeys(mod.keys, plan, undefined, mod.horas) : mod.molde ? objetivoKeys(mod.keys, plan, [mod.molde], mod.horas) : null;
             if (despues === null) { el.innerHTML = 'Elegí el molde para ver el impacto en el objetivo.'; return; }
             const congelado = mod.keys.some(k => finalizacion(k.slice(0, 7)));
             const excluir = quitar && document.getElementById('maExcluir').checked;
@@ -1080,27 +1183,28 @@
         async function guardarModificacionPlan() {
             const msg = document.getElementById('maMsg');
             const justificacion = document.getElementById('maJustif').value.trim();
-            const autor = document.getElementById('maAutor').value.trim();
+            const autor = '';
+            const sector = document.getElementById('maSector').value, motivo = document.getElementById('maMotivo').value;
             const solicitudId = document.getElementById('maSolicitud').value;
             if (!mod.op) { msg.textContent = 'Elegí qué cambio hacer.'; return; }
-            if (mod.op !== 'Quitar producción' && !mod.molde) { msg.textContent = 'Elegí el molde.'; return; }
-            if (justificacion.length < 5) { msg.textContent = 'La justificación es obligatoria.'; return; }
+            if (mod.op !== 'Quitar producción' && mod.op !== 'Cambiar horas' && !mod.molde) { msg.textContent = 'Elegí el molde.'; return; }
+            if (!sector) { msg.textContent = 'Elegí el sector responsable.'; return; }
+            if (!motivo) { msg.textContent = 'Elegí el motivo.'; return; }
             const { plan } = planVigente();
             const anterior = [...new Set(mod.keys.flatMap(k => plan.get(k) || []))].join(', ');
             const btn = document.getElementById('maGuardar');
             btn.disabled = true; btn.textContent = '⏳ Registrando…'; msg.textContent = '';
             try {
-                const params = new URLSearchParams({ password: document.getElementById('pwdInput').value, accion: 'modificacion', tipo: mod.op, molde: mod.op === 'Quitar producción' ? '' : mod.molde, anterior, fechaDesde: mod.fi, turnoDesde: mod.ti, fechaHasta: mod.ff, turnoHasta: mod.tf, turnos: String(mod.keys.length), justificacion, autor, solicitudId, excluirObjetivo: mod.op === 'Quitar producción' && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
+                const params = new URLSearchParams({ password: document.getElementById('pwdInput').value, accion: 'modificacion', tipo: mod.op, molde: mod.op === 'Quitar producción' || mod.op === 'Cambiar horas' ? '' : mod.molde, anterior, sector, motivo, horas: mod.op === 'Quitar producción' ? '' : String(mod.horas || 8), fechaDesde: mod.fi, turnoDesde: mod.ti, fechaHasta: mod.ff, turnoHasta: mod.tf, turnos: String(mod.keys.length), justificacion, solicitudId, excluirObjetivo: mod.op === 'Quitar producción' && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
                 const r = await fetch(URL_SCRIPT, { method: 'POST', body: params });
                 const j = await r.json();
                 if (j.result !== 'success') throw new Error(j.message || 'No se pudo registrar');
-                try { localStorage.setItem('jfAutor', autor); } catch (e) { }
                 if (stats) {
                     stats.modificaciones = stats.modificaciones || [];
-                    stats.modificaciones.push({ 'ID': j.id, 'Marca temporal': new Date().toLocaleString('es-AR'), 'Tipo': mod.op, 'Molde anterior': anterior, 'Molde nuevo': j.molde || mod.molde, 'Fecha desde': mod.fi, 'Turno desde': mod.ti, 'Fecha hasta': mod.ff, 'Turno hasta': mod.tf, 'Turnos': mod.keys.length, 'Justificación': justificacion, 'Autor': autor, 'Excluir objetivo': mod.op === 'Quitar producción' && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
+                    stats.modificaciones.push({ 'ID': j.id, 'Marca temporal': new Date().toLocaleString('es-AR'), 'Tipo': mod.op, 'Molde anterior': anterior, 'Molde nuevo': j.molde || mod.molde, 'Fecha desde': mod.fi, 'Turno desde': mod.ti, 'Fecha hasta': mod.ff, 'Turno hasta': mod.tf, 'Turnos': mod.keys.length, 'Justificación': justificacion, 'Autor': '', 'Sector': sector, 'Motivo': motivo, 'Horas': mod.op === 'Quitar producción' ? '' : String(mod.horas || 8), 'Excluir objetivo': mod.op === 'Quitar producción' && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
                     if (solicitudId) stats.recomendaciones = (stats.recomendaciones || []).filter(x => x['ID'] !== solicitudId);
                 }
-                mostrarModal(j.aviso ? 'warning' : 'success', 'Modificación registrada', `<p>${mod.op} · ${fechaCorta(mod.fi)} ${mod.ti} → ${fechaCorta(mod.ff)} ${mod.tf} (${mod.keys.length} turnos)${mod.op !== 'Quitar producción' ? ` · ${j.molde || mod.molde}` : ''}.</p><p>${j.aviso ? j.aviso : 'Quedó guardada con su justificación en la hoja ModificacionesPlan y se marca con ✏️ en el calendario.'}</p>${textoMail(j.mail)}`);
+                mostrarModal(j.aviso ? 'warning' : 'success', 'Modificación registrada', `<p>${mod.op} · ${fechaCorta(mod.fi)} ${mod.ti} → ${fechaCorta(mod.ff)} ${mod.tf} (${mod.keys.length} turnos)${mod.op === 'Cambiar horas' ? ` · ${fmt1(mod.horas)} h por turno` : mod.op !== 'Quitar producción' ? ` · ${j.molde || mod.molde}${mod.horas < 8 ? ` (${fmt1(mod.horas)} h)` : ''}` : ''} · ${sector}: ${motivo}.</p><p>${j.aviso ? j.aviso : 'Quedó guardada con su justificación en la hoja ModificacionesPlan y se marca con ✏️ en el calendario.'}</p>${textoMail(j.mail)}`);
             } catch (err) {
                 msg.textContent = '❌ ' + err.message;
             } finally {
@@ -1135,9 +1239,6 @@
             const def = meses.slice(1).find(m => !finalizacion(m)) || meses[1];
             sel.innerHTML = meses.map(m => `<option value="${m}"${m === def ? ' selected' : ''}>${nombreMesAdmin(m)}${finalizacion(m) ? ' · ✔ finalizado' : ''}</option>`).join('');
             document.getElementById('fnComent').value = '';
-            let autor = '';
-            try { autor = localStorage.getItem('jfAutor') || ''; } catch (e) { }
-            document.getElementById('fnAutor').value = autor;
             document.getElementById('fnMsg').textContent = '';
             renderFinalizar();
             avanzar('step-finalizar');
@@ -1151,7 +1252,7 @@
             const conProd = keys.filter(k => (plan.get(k) || []).length);
             const cuenta = new Map();
             conProd.forEach(k => plan.get(k).forEach(x => cuenta.set(x, (cuenta.get(x) || 0) + 1)));
-            const obj = objetivoKeys(keys, plan);
+            const obj = objetivoKeys(keys, plan, undefined, planVigente().horas);
             const f = finalizacion(mes);
             const vacios = keys.length - conProd.length;
             document.getElementById('fnResumen').innerHTML = `${f ? `<span class="fin-sello">✔ Finalizado el ${f['Marca temporal']}${f['Autor'] ? ' · ' + f['Autor'] : ''}</span><div class="mr-aviso">Volver a finalizar mueve el corte a este momento: lo cargado hasta ahora pasa a ser el plan inicial.</div>` : '<span class="fin-sello no">Sin finalizar</span>'}
@@ -1164,9 +1265,8 @@
         async function finalizarMes() {
             const mes = document.getElementById('fnMes').value;
             const msg = document.getElementById('fnMsg');
-            const autor = document.getElementById('fnAutor').value.trim();
+            const autor = '';
             const comentario = document.getElementById('fnComent').value.trim();
-            if (!autor) { msg.textContent = 'Indicá el responsable.'; return; }
             const f = finalizacion(mes);
             if (!confirm(`${f ? 'Volver a finalizar' : 'Finalizar'} la planificación de ${nombreMesAdmin(mes)}?\n\nLo que se planifique después contará como desvío del plan inicial.`)) return;
             const btn = document.getElementById('fnGuardar');
@@ -1176,7 +1276,6 @@
                 const r = await fetch(URL_SCRIPT, { method: 'POST', body: params });
                 const j = await r.json();
                 if (j.result !== 'success') throw new Error(j.message || 'No se pudo finalizar');
-                try { localStorage.setItem('jfAutor', autor); } catch (e) { }
                 if (stats) stats.planesFinalizados = j.planesFinalizados || stats.planesFinalizados || [];
                 actualizarBotonFin();
                 mostrarModal('success', `Planificación de ${nombreMesAdmin(mes)} finalizada`, `<p>${j.bloques} bloque${j.bloques === 1 ? '' : 's'} quedaron como plan inicial.</p>${textoMail(j.mail)}`);
