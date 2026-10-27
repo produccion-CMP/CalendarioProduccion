@@ -189,6 +189,14 @@
         button.option-btn.ma-op.on { border-color: var(--accent); background: rgba(224,123,76,0.14); }
         .ma-op small { display: block; font-size: 0.72rem; color: var(--text-muted); font-weight: 600; }
         #necPanel { margin-top: 18px; }
+        button.option-btn.fin-btn { border-color: rgba(94,92,230,0.6); }
+        button.option-btn.fin-btn.ok { border-style: solid; background: rgba(94,92,230,0.1); }
+        .fin-sello { display: inline-block; padding: 2px 10px; border-radius: 12px; font-weight: 800; font-size: 0.78rem; background: rgba(94,92,230,0.18); color: #a5a4ff; }
+        .fin-sello.no { background: rgba(127,127,127,0.18); color: var(--text-muted); }
+        .ma-check { display: flex; gap: 10px; align-items: flex-start; margin-top: 12px; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--border); background: var(--bg-cell); cursor: pointer; font-size: 0.86rem; }
+        .ma-check input { margin-top: 3px; width: 18px; height: 18px; accent-color: var(--accent); flex: 0 0 auto; }
+        .ma-check small { display: block; color: var(--text-muted); font-weight: 600; font-size: 0.74rem; margin-top: 2px; }
+        .mr-info { color: #a5a4ff; font-weight: 700; font-size: 0.78rem; margin-top: 4px; }
         .np-tit { display: flex; justify-content: space-between; align-items: baseline; font-size: 0.8rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--accent-light); margin-bottom: 8px; }
         .np-tit small { color: var(--text-muted); text-transform: none; letter-spacing: 0; font-weight: 600; }
         .np-mes { font-size: 0.72rem; font-weight: 800; color: var(--text-muted); margin: 10px 0 4px; }
@@ -231,7 +239,23 @@
                 <button class="option-btn" onclick="selectTarea('Prueba')">🔬 Prueba<small class="ob-sub">Prueba de molde</small></button>
             </div>
             <button class="option-btn mod-btn" onclick="iniciarModificacion()"><span class="mb-ico">✏️</span><span><b>Modificar plan</b><small>Quitar, agregar o cambiar producción en turnos ya planificados · con justificación</small></span></button>
+            <button class="option-btn mod-btn fin-btn" onclick="iniciarFinalizar()"><span class="mb-ico">🏁</span><span><b>Finalizar planificación del mes</b><small id="finEstadoBtn">Congela el plan inicial y avisa por mail</small></span></button>
             <div id="necPanel"></div>
+        </div>
+
+        <div id="step-finalizar" class="step">
+            <div class="header-status"><span>Finalizar planificación</span> <button class="secondary-btn-small" onclick="retroceder()">Atrás</button></div>
+            <h2>🏁 Finalizar el mes</h2>
+            <p class="sub">Al finalizar, el plan cargado hasta ahora queda como <b>plan inicial</b>. Lo que se planifique o modifique después se informa a los supervisores (mail y ⟲ en el calendario), pero el cumplimiento se mide contra el plan inicial.</p>
+            <label class="ma-lbl" for="fnMes">Mes</label>
+            <select id="fnMes" class="ma-input" onchange="renderFinalizar()"></select>
+            <div class="mr-resumen" id="fnResumen"></div>
+            <label class="ma-lbl" for="fnComent">Comentario para el mail (opcional)</label>
+            <textarea id="fnComent" class="ma-input" maxlength="1000" rows="3" placeholder="Ej.: se prioriza H12 la primera quincena por pedido de Comercial"></textarea>
+            <label class="ma-lbl" for="fnAutor">Responsable</label>
+            <input id="fnAutor" class="ma-input" maxlength="80" placeholder="Nombre">
+            <button class="primary-btn" id="fnGuardar" onclick="finalizarMes()">Finalizar y notificar</button>
+            <div id="fnMsg" class="feedback error"></div>
         </div>
 
         <div id="step-mod-rango" class="step">
@@ -255,6 +279,7 @@
                 <label class="ma-lbl" for="maMolde" id="maMoldeLbl">Molde</label>
                 <select id="maMolde" class="ma-input"></select>
             </div>
+            <label class="ma-check" id="maExcluirWrap" hidden><input type="checkbox" id="maExcluir" onchange="renderImpacto()"><span><b>No cuenta para el objetivo</b><small>Las Tn de estos turnos se descuentan del objetivo y no se evalúan como incumplidas. Sin tildar, el turno quitado cuenta como desvío.</small></span></label>
             <div class="mr-resumen" id="maImpacto"></div>
             <label class="ma-lbl" for="maSolicitud">¿Responde a una solicitud de Comercial?</label>
             <select id="maSolicitud" class="ma-input"></select>
@@ -800,6 +825,8 @@
                 const excl = lista.filter(x => state.excl.has(x.k));
                 const segs = segmentos(lista);
                 if (excl.length) html += `<br><strong>🚫 No se trabaja:</strong><div class="excl-lista">${excl.map(x => `<span>${fechaCorta(x.ds)} ${x.t}</span>`).join('')}</div>`;
+                const finR = [...new Set([state.fInicio.slice(0, 7), state.fFin.slice(0, 7)])].filter(m => finalizacion(m));
+                if (finR.length) html += `<div class="mr-info">🏁 ${finR.map(nombreMesAdmin).join(', ')} ya tiene la planificación finalizada: este plan sólo informa con qué molde se trabajará; si difiere del plan inicial, cuenta como desvío. Se avisará por mail.</div>`;
                 html += `<br><strong>🗂 Registros a crear (${segs.length}):</strong><div class="seg-lista">${segs.map(s => `<div class="seg"><span>${textoSeg(s)}</span><small>${s.n} turno${s.n > 1 ? 's' : ''}</small></div>`).join('')}</div>`;
                 const n = segs.reduce((a, s) => a + s.n, 0);
                 document.getElementById('estimResumen').innerHTML = htmlEstim(estimar(n), 'Producción esperada', `${state.lad} · ${segs.length} tramo${segs.length > 1 ? 's' : ''}`);
@@ -842,7 +869,10 @@
             const dup = res.filter(j => j.result === 'duplicate').length;
             const err = segs.length - ok - dup;
             const detalle = segs.length > 1 || err ? `<div class="seg-lista">${segs.map((s, i) => { const j = res[i]; const c = !j ? 'err' : j.result === 'success' ? 'ok' : j.result === 'duplicate' ? 'dup' : 'err'; return `<div class="seg ${c}"><span>${textoSeg(s)}</span><small>${!j ? 'No enviado' : j.result === 'success' ? 'Registrado' : j.result === 'duplicate' ? 'Ya existía' : (j.message || 'Error')}</small></div>`; }).join('')}</div>` : '';
-            if (!err && ok) mostrarModal('success', state.tarea === 'Prueba' ? 'Prueba Registrada' : 'Planificación Registrada', `<p>Se ingresó ${state.moldeCompleto}${segs.length > 1 ? ` en ${ok} tramo${ok > 1 ? 's' : ''}` : ''}${dup ? ` (${dup} ya existía${dup > 1 ? 'n' : ''})` : ''}.</p>${detalle}`);
+            const mailPost = res.find(j => j && j.mail);
+            const finSeg = [...new Set(segs.flatMap(sg => [sg.desde.ds.slice(0, 7), sg.hasta.ds.slice(0, 7)]))].filter(m => finalizacion(m));
+            const notaFin = finSeg.length ? `<p class="mr-info">🏁 ${finSeg.map(nombreMesAdmin).join(', ')} ya estaba finalizado: este plan se informa a los supervisores, pero el cumplimiento se mide contra el plan inicial.</p>${mailPost ? textoMail(mailPost.mail) : ''}` : '';
+            if (!err && ok) mostrarModal('success', state.tarea === 'Prueba' ? 'Prueba Registrada' : 'Planificación Registrada', `<p>Se ingresó ${state.moldeCompleto}${segs.length > 1 ? ` en ${ok} tramo${ok > 1 ? 's' : ''}` : ''}${dup ? ` (${dup} ya existía${dup > 1 ? 'n' : ''})` : ''}.</p>${detalle}${notaFin}`);
             else if (!err && dup) mostrarModal('warning', 'Registro ya existente', `<p>${res.find(j => j.result === 'duplicate').message || 'Esta planificación ya estaba cargada. No se duplicó.'}</p>${detalle}`);
             else mostrarModal('error', ok ? 'Registro incompleto' : 'Error en el Registro', `<p>${(res.find(j => j.result === 'error') || {}).message || 'La contraseña o los parámetros son inválidos.'}</p>${detalle}`);
         }
@@ -853,7 +883,7 @@
             document.getElementById('modalMessage').innerHTML = mensajeHtml;
             const btnGroup = document.getElementById('modalBtnGroup');
             btnGroup.innerHTML = status === 'success' || status === 'warning'
-                ? `<button class="primary-btn" onclick="cerrarModal(true)">${state.tarea === 'Modificar' ? 'Hacer otra modificación' : 'Registrar otra planificación'}</button><button class="modal-btn-secondary" onclick="finalizarCarga()">Volver al calendario</button>`
+                ? `<button class="primary-btn" onclick="cerrarModal(true)">${state.tarea === 'Modificar' ? 'Hacer otra modificación' : state.tarea === 'Finalizar' ? 'Volver al menú' : 'Registrar otra planificación'}</button><button class="modal-btn-secondary" onclick="finalizarCarga()">Volver al calendario</button>`
                 : `<button class="primary-btn" style="background:var(--red);" onclick="cerrarModal(false)">Reintentar</button>`;
             document.getElementById('resultModal').style.display = 'flex';
         }
@@ -909,7 +939,7 @@
         }
 
         function modificacionesActuales() {
-            return ((stats && stats.modificaciones) || []).map(r => ({ id: r['ID'], tipo: r['Tipo'], nuevo: r['Molde nuevo'] || '', fi: fechaISO(r['Fecha desde']), ti: r['Turno desde'], ff: fechaISO(r['Fecha hasta']), tf: r['Turno hasta'], justificacion: r['Justificación'] || '', marca: r['Marca temporal'] || '' })).filter(m => m.fi && m.ff && /^T[123]$/.test(m.ti) && /^T[123]$/.test(m.tf));
+            return ((stats && stats.modificaciones) || []).map(r => ({ id: r['ID'], tipo: r['Tipo'], excluir: /^s/i.test(String(r['Excluir objetivo'] || '')), nuevo: r['Molde nuevo'] || '', fi: fechaISO(r['Fecha desde']), ti: r['Turno desde'], ff: fechaISO(r['Fecha hasta']), tf: r['Turno hasta'], justificacion: r['Justificación'] || '', marca: r['Marca temporal'] || '' })).filter(m => m.fi && m.ff && /^T[123]$/.test(m.ti) && /^T[123]$/.test(m.tf));
         }
 
         function planVigente() {
@@ -987,7 +1017,8 @@
             conProd.forEach(k => plan.get(k).forEach(m => cuenta.set(m, (cuenta.get(m) || 0) + 1)));
             const pasados = mod.keys.filter(k => k.slice(0, 10) < hoy).length;
             const modif = mod.keys.filter(k => marcas.has(k)).length;
-            res.innerHTML = `<b>${mod.keys.length}</b> turno${mod.keys.length > 1 ? 's' : ''} (≈${fmt1(mod.keys.length / 3)} días) · con producción: <b>${conProd.length}</b> · vacíos: <b>${mod.keys.length - conProd.length}</b>${cuenta.size ? `<br>Plan vigente: ${[...cuenta].map(([m, n]) => `${m} ×${n}`).join(' · ')}` : ''}${modif ? `<br>✏️ ${modif} turno${modif > 1 ? 's' : ''} ya fueron modificados antes.` : ''}${pasados ? `<div class="mr-aviso">⚠ ${pasados} turno${pasados > 1 ? 's' : ''} ya pasaron: la modificación cambia su objetivo.</div>` : ''}`;
+            const finRango = [...new Set(mod.keys.map(k => k.slice(0, 7)))].filter(m => finalizacion(m));
+            res.innerHTML = (finRango.length ? `<div class="mr-info">🏁 ${finRango.map(nombreMesAdmin).join(', ')} ya tiene la planificación finalizada: el cambio se informa y cuenta como desvío del plan inicial (salvo quitar turnos marcando “No cuenta para el objetivo”).</div>` : '') + `<b>${mod.keys.length}</b> turno${mod.keys.length > 1 ? 's' : ''} (≈${fmt1(mod.keys.length / 3)} días) · con producción: <b>${conProd.length}</b> · vacíos: <b>${mod.keys.length - conProd.length}</b>${cuenta.size ? `<br>Plan vigente: ${[...cuenta].map(([m, n]) => `${m} ×${n}`).join(' · ')}` : ''}${modif ? `<br>✏️ ${modif} turno${modif > 1 ? 's' : ''} ya fueron modificados antes.` : ''}${pasados && !finRango.length ? `<div class="mr-aviso">⚠ ${pasados} turno${pasados > 1 ? 's' : ''} ya pasaron: la modificación cambia su objetivo.</div>` : ''}`;
             btn.disabled = false;
             renderTrail();
         }
@@ -1002,6 +1033,7 @@
             sel.innerHTML = '<option value="">Seleccionar molde…</option>' + Object.keys(db).map(fam => `<optgroup label="${fam}">${Object.keys(db[fam]).map(lad => Object.keys(db[fam][lad]).map(num => `<option>${db[fam][lad][num]}</option>`).join('')).join('')}</optgroup>`).join('');
             sel.onchange = () => { mod.molde = sel.value; renderImpacto(); };
             document.getElementById('maJustif').value = '';
+            document.getElementById('maExcluir').checked = false;
             let autor = '';
             try { autor = localStorage.getItem('jfAutor') || ''; } catch (e) { }
             document.getElementById('maAutor').value = autor;
@@ -1020,6 +1052,7 @@
             ];
             document.getElementById('maAcciones').innerHTML = ops.map(o => `<button class="option-btn ma-op${mod.op === o.v ? ' on' : ''}" ${o.ok ? '' : 'disabled'} onclick="elegirOpMod('${o.v}')"><span style="font-size:1.4rem">${o.ico}</span><span><b>${o.t}</b><small>${o.d}</small></span></button>`).join('');
             document.getElementById('maMoldeWrap').hidden = !mod.op || mod.op === 'Quitar producción';
+            document.getElementById('maExcluirWrap').hidden = mod.op !== 'Quitar producción';
             document.getElementById('maMoldeLbl').textContent = mod.op === 'Agregar producción' ? 'Molde a agregar' : 'Molde nuevo';
             renderImpacto();
         }
@@ -1034,8 +1067,14 @@
             const quitar = mod.op === 'Quitar producción';
             const despues = quitar ? 0 : mod.molde ? objetivoKeys(mod.keys, plan, [mod.molde]) : null;
             if (despues === null) { el.innerHTML = 'Elegí el molde para ver el impacto en el objetivo.'; return; }
-            const dif = despues - antes;
-            el.innerHTML = stats && stats.objetivos ? `Objetivo de Dirección de esos turnos: <b>${fmt0(antes)} → ${fmt0(despues)} Tn</b> <span class="ma-dif ${dif < 0 ? 'menos' : dif > 0 ? 'mas' : ''}">${dif >= 0 ? '+' : '−'}${fmt0(Math.abs(dif))} Tn al objetivo del mes</span><br><small>El objetivo original del mes no se pisa: el calendario muestra original vs ajustado.</small>` : 'Sin objetivos cargados para calcular el impacto.';
+            const congelado = mod.keys.some(k => finalizacion(k.slice(0, 7)));
+            const excluir = quitar && document.getElementById('maExcluir').checked;
+            const fin = congelado ? (excluir ? 0 : antes) : despues;
+            const dif = fin - antes;
+            const nota = congelado
+                ? (excluir ? 'Mes finalizado: estos turnos se quitan del objetivo y no se evalúan.' : 'Mes finalizado: el objetivo no cambia. Lo nuevo se informa a los supervisores y el cumplimiento se mide contra el plan inicial.')
+                : 'El objetivo original del mes no se pisa: el calendario muestra original vs ajustado.';
+            el.innerHTML = stats && stats.objetivos ? `Objetivo de Dirección de esos turnos: <b>${fmt0(antes)} → ${fmt0(fin)} Tn</b> <span class="ma-dif ${dif < 0 ? 'menos' : dif > 0 ? 'mas' : ''}">${dif >= 0 ? '+' : '−'}${fmt0(Math.abs(dif))} Tn al objetivo del mes</span><br><small>${nota}</small>` : `<small>${nota}</small>`;
         }
 
         async function guardarModificacionPlan() {
@@ -1051,17 +1090,17 @@
             const btn = document.getElementById('maGuardar');
             btn.disabled = true; btn.textContent = '⏳ Registrando…'; msg.textContent = '';
             try {
-                const params = new URLSearchParams({ password: document.getElementById('pwdInput').value, accion: 'modificacion', tipo: mod.op, molde: mod.op === 'Quitar producción' ? '' : mod.molde, anterior, fechaDesde: mod.fi, turnoDesde: mod.ti, fechaHasta: mod.ff, turnoHasta: mod.tf, turnos: String(mod.keys.length), justificacion, autor, solicitudId });
+                const params = new URLSearchParams({ password: document.getElementById('pwdInput').value, accion: 'modificacion', tipo: mod.op, molde: mod.op === 'Quitar producción' ? '' : mod.molde, anterior, fechaDesde: mod.fi, turnoDesde: mod.ti, fechaHasta: mod.ff, turnoHasta: mod.tf, turnos: String(mod.keys.length), justificacion, autor, solicitudId, excluirObjetivo: mod.op === 'Quitar producción' && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
                 const r = await fetch(URL_SCRIPT, { method: 'POST', body: params });
                 const j = await r.json();
                 if (j.result !== 'success') throw new Error(j.message || 'No se pudo registrar');
                 try { localStorage.setItem('jfAutor', autor); } catch (e) { }
                 if (stats) {
                     stats.modificaciones = stats.modificaciones || [];
-                    stats.modificaciones.push({ 'ID': j.id, 'Marca temporal': new Date().toLocaleString('es-AR'), 'Tipo': mod.op, 'Molde anterior': anterior, 'Molde nuevo': j.molde || mod.molde, 'Fecha desde': mod.fi, 'Turno desde': mod.ti, 'Fecha hasta': mod.ff, 'Turno hasta': mod.tf, 'Turnos': mod.keys.length, 'Justificación': justificacion, 'Autor': autor });
+                    stats.modificaciones.push({ 'ID': j.id, 'Marca temporal': new Date().toLocaleString('es-AR'), 'Tipo': mod.op, 'Molde anterior': anterior, 'Molde nuevo': j.molde || mod.molde, 'Fecha desde': mod.fi, 'Turno desde': mod.ti, 'Fecha hasta': mod.ff, 'Turno hasta': mod.tf, 'Turnos': mod.keys.length, 'Justificación': justificacion, 'Autor': autor, 'Excluir objetivo': mod.op === 'Quitar producción' && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
                     if (solicitudId) stats.recomendaciones = (stats.recomendaciones || []).filter(x => x['ID'] !== solicitudId);
                 }
-                mostrarModal(j.aviso ? 'warning' : 'success', 'Modificación registrada', `<p>${mod.op} · ${fechaCorta(mod.fi)} ${mod.ti} → ${fechaCorta(mod.ff)} ${mod.tf} (${mod.keys.length} turnos)${mod.op !== 'Quitar producción' ? ` · ${j.molde || mod.molde}` : ''}.</p><p>${j.aviso ? j.aviso : 'Quedó guardada con su justificación en la hoja ModificacionesPlan y se marca con ✏️ en el calendario.'}</p>`);
+                mostrarModal(j.aviso ? 'warning' : 'success', 'Modificación registrada', `<p>${mod.op} · ${fechaCorta(mod.fi)} ${mod.ti} → ${fechaCorta(mod.ff)} ${mod.tf} (${mod.keys.length} turnos)${mod.op !== 'Quitar producción' ? ` · ${j.molde || mod.molde}` : ''}.</p><p>${j.aviso ? j.aviso : 'Quedó guardada con su justificación en la hoja ModificacionesPlan y se marca con ✏️ en el calendario.'}</p>${textoMail(j.mail)}`);
             } catch (err) {
                 msg.textContent = '❌ ' + err.message;
             } finally {
@@ -1069,9 +1108,89 @@
             }
         }
 
+        function finalizacion(mes) { return ((stats && stats.planesFinalizados) || []).find(r => r['Mes'] === mes) || null; }
+        function nombreMesAdmin(mes) { const [y, m] = mes.split('-').map(Number); const n = new Date(y, m - 1, 1).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }); return n.charAt(0).toUpperCase() + n.slice(1); }
+        function textoMail(m) {
+            if (!m) return '';
+            if (m.enviado) return `<p><small>📧 Aviso enviado a ${m.destinatarios || 0} casilla${m.destinatarios === 1 ? '' : 's'}.</small></p>`;
+            return `<p><small>📧 ${m.motivo ? 'No se envió el mail: ' + m.motivo : 'Sin casillas con este aviso activado.'}</small></p>`;
+        }
+        function mesesFinalizables() {
+            const h = new Date();
+            return [-1, 0, 1, 2].map(i => { const d = new Date(h.getFullYear(), h.getMonth() + i, 1); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; });
+        }
+        function actualizarBotonFin() {
+            const el = document.getElementById('finEstadoBtn');
+            if (!el) return;
+            const prox = mesesFinalizables().slice(1, 3);
+            const txt = prox.map(m => `${nombreMesAdmin(m).split(' ')[0]}: ${finalizacion(m) ? '✔ finalizado' : 'sin finalizar'}`).join(' · ');
+            el.textContent = stats ? txt : 'Congela el plan inicial y avisa por mail';
+            el.closest('button').classList.toggle('ok', prox.every(m => finalizacion(m)));
+        }
+        function iniciarFinalizar() {
+            state = estadoVacio();
+            state.tarea = 'Finalizar';
+            const sel = document.getElementById('fnMes');
+            const meses = mesesFinalizables();
+            const def = meses.slice(1).find(m => !finalizacion(m)) || meses[1];
+            sel.innerHTML = meses.map(m => `<option value="${m}"${m === def ? ' selected' : ''}>${nombreMesAdmin(m)}${finalizacion(m) ? ' · ✔ finalizado' : ''}</option>`).join('');
+            document.getElementById('fnComent').value = '';
+            let autor = '';
+            try { autor = localStorage.getItem('jfAutor') || ''; } catch (e) { }
+            document.getElementById('fnAutor').value = autor;
+            document.getElementById('fnMsg').textContent = '';
+            renderFinalizar();
+            avanzar('step-finalizar');
+        }
+        function renderFinalizar() {
+            const mes = document.getElementById('fnMes').value;
+            const [y, m] = mes.split('-').map(Number);
+            const ult = `${mes}-${String(new Date(y, m, 0).getDate()).padStart(2, '0')}`;
+            const keys = keysEntre(`${mes}-01`, 'T1', ult, 'T3');
+            const { plan } = planVigente();
+            const conProd = keys.filter(k => (plan.get(k) || []).length);
+            const cuenta = new Map();
+            conProd.forEach(k => plan.get(k).forEach(x => cuenta.set(x, (cuenta.get(x) || 0) + 1)));
+            const obj = objetivoKeys(keys, plan);
+            const f = finalizacion(mes);
+            const vacios = keys.length - conProd.length;
+            document.getElementById('fnResumen').innerHTML = `${f ? `<span class="fin-sello">✔ Finalizado el ${f['Marca temporal']}${f['Autor'] ? ' · ' + f['Autor'] : ''}</span><div class="mr-aviso">Volver a finalizar mueve el corte a este momento: lo cargado hasta ahora pasa a ser el plan inicial.</div>` : '<span class="fin-sello no">Sin finalizar</span>'}
+                <br>Turnos con producción: <b>${conProd.length}</b> de ${keys.length}${vacios ? ` · sin planificar: <b>${vacios}</b>` : ''}
+                ${cuenta.size ? `<br>Moldes: ${[...cuenta].sort((a, b) => b[1] - a[1]).map(([x, n]) => `${x} ×${n}`).join(' · ')}` : '<div class="mr-aviso">⚠ No hay producción planificada en el mes.</div>'}
+                ${stats && stats.objetivos && obj ? `<br>Objetivo de Dirección del plan: <b>${fmt0(obj)} Tn</b>` : ''}
+                ${vacios > 6 ? `<div class="mr-aviso">⚠ Quedan ${vacios} turnos sin planificar. Lo que se cargue después de finalizar cuenta como desvío.</div>` : ''}`;
+            document.getElementById('fnGuardar').textContent = f ? 'Volver a finalizar y notificar' : 'Finalizar y notificar';
+        }
+        async function finalizarMes() {
+            const mes = document.getElementById('fnMes').value;
+            const msg = document.getElementById('fnMsg');
+            const autor = document.getElementById('fnAutor').value.trim();
+            const comentario = document.getElementById('fnComent').value.trim();
+            if (!autor) { msg.textContent = 'Indicá el responsable.'; return; }
+            const f = finalizacion(mes);
+            if (!confirm(`${f ? 'Volver a finalizar' : 'Finalizar'} la planificación de ${nombreMesAdmin(mes)}?\n\nLo que se planifique después contará como desvío del plan inicial.`)) return;
+            const btn = document.getElementById('fnGuardar');
+            btn.disabled = true; btn.textContent = '⏳ Finalizando…'; msg.textContent = '';
+            try {
+                const params = new URLSearchParams({ password: document.getElementById('pwdInput').value, accion: 'finalizarPlan', mes, autor, comentario });
+                const r = await fetch(URL_SCRIPT, { method: 'POST', body: params });
+                const j = await r.json();
+                if (j.result !== 'success') throw new Error(j.message || 'No se pudo finalizar');
+                try { localStorage.setItem('jfAutor', autor); } catch (e) { }
+                if (stats) stats.planesFinalizados = j.planesFinalizados || stats.planesFinalizados || [];
+                actualizarBotonFin();
+                mostrarModal('success', `Planificación de ${nombreMesAdmin(mes)} finalizada`, `<p>${j.bloques} bloque${j.bloques === 1 ? '' : 's'} quedaron como plan inicial.</p>${textoMail(j.mail)}`);
+            } catch (err) {
+                msg.textContent = '❌ ' + err.message;
+            } finally {
+                btn.disabled = false; renderFinalizar();
+            }
+        }
+
         function renderNecesidadesAdmin() {
             const cont = document.getElementById('necPanel');
             if (!cont) return;
+            actualizarBotonFin();
             if (!stats) { cont.innerHTML = ''; return; }
             const mesAct = hoyLocal().slice(0, 7);
             const lista = (stats.necesidades || []).map(r => {
