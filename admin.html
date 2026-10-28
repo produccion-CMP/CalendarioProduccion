@@ -165,7 +165,8 @@
         .mod-btn small { display: block; font-size: 0.74rem; font-weight: 600; color: var(--text-muted); margin-top: 2px; }
         .mr-rango { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
         .mr-rango label, .ma-lbl { display: block; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-muted); margin: 12px 0 5px; }
-        .mr-ft { display: grid; grid-template-columns: minmax(0, 1fr) 62px; gap: 4px; }
+        .mr-ft { display: grid; grid-template-columns: minmax(0, 1fr) 62px 104px; gap: 4px; }
+        .mr-nota { font-size: 0.74rem; color: var(--text-muted); margin-top: 6px; }
         .mr-ft input, .mr-ft select, .ma-input { width: 100%; padding: 11px 10px; border-radius: 10px; background: var(--bg-body); border: 1px solid var(--border); color: var(--text-main); font-family: var(--font); font-weight: 700; font-size: 0.9rem; color-scheme: dark; }
         textarea.ma-input { font-weight: 500; resize: vertical; }
         .mr-ft input:focus, .mr-ft select:focus, .ma-input:focus { outline: none; border-color: var(--accent); }
@@ -269,8 +270,8 @@
             <h2>¿Qué turnos?</h2>
             <p class="sub">Elegí un turno o un intervalo de turnos.</p>
             <div class="mr-rango">
-                <div><label>Desde</label><div class="mr-ft"><input type="date" id="mrDesdeF"><select id="mrDesdeT"><option>T1</option><option>T2</option><option>T3</option></select></div></div>
-                <div><label>Hasta</label><div class="mr-ft"><input type="date" id="mrHastaF"><select id="mrHastaT"><option>T1</option><option>T2</option><option>T3</option></select></div></div>
+                <div><label>Desde</label><div class="mr-ft"><input type="date" id="mrDesdeF"><select id="mrDesdeT"><option>T1</option><option>T2</option><option>T3</option></select><select id="mrDesdeH" title="Hora de inicio dentro del turno"></select></div></div>
+                <div><label>Hasta</label><div class="mr-ft"><input type="date" id="mrHastaF"><select id="mrHastaT"><option>T1</option><option>T2</option><option>T3</option></select><select id="mrHastaH" title="Hora de fin dentro del turno"></select></div></div>
             </div>
             <div class="mr-linea" id="mrLinea"></div>
             <div class="mr-resumen" id="mrResumen"></div>
@@ -1083,7 +1084,8 @@
             document.getElementById('mrDesdeT').value = 'T1';
             document.getElementById('mrHastaF').value = hoy;
             document.getElementById('mrHastaT').value = 'T3';
-            ['mrDesdeF', 'mrDesdeT', 'mrHastaF', 'mrHastaT'].forEach(id => { const el = document.getElementById(id); el.oninput = renderModRango; el.onchange = renderModRango; });
+            document.getElementById('mrDesdeH').dataset.turno = ''; document.getElementById('mrHastaH').dataset.turno = '';
+            ['mrDesdeF', 'mrDesdeT', 'mrHastaF', 'mrHastaT', 'mrDesdeH', 'mrHastaH'].forEach(id => { const el = document.getElementById(id); el.oninput = renderModRango; el.onchange = renderModRango; });
             renderModRango();
             avanzar('step-mod-rango');
         }
@@ -1093,6 +1095,9 @@
             mod.ff = document.getElementById('mrHastaF').value; mod.tf = document.getElementById('mrHastaT').value;
             if (mod.fi && (!mod.ff || mod.ff < mod.fi)) { mod.ff = mod.fi; document.getElementById('mrHastaF').value = mod.fi; }
             mod.keys = keysEntre(mod.fi, mod.ti, mod.ff, mod.tf);
+            opcionesHoraAdmin('mrDesdeH', mod.ti, false); opcionesHoraAdmin('mrHastaH', mod.tf, true);
+            mod.hi = document.getElementById('mrDesdeH').value; mod.hf = document.getElementById('mrHastaH').value;
+            if (mod.keys.length === 1 && mod.hi && mod.hf && offsetHoraAdmin(mod.tf, mod.hf, true) <= offsetHoraAdmin(mod.ti, mod.hi, false)) { document.getElementById('mrLinea').innerHTML = ''; document.getElementById('mrResumen').innerHTML = '<span class="mr-aviso">La hora de fin tiene que ser posterior a la de inicio.</span>'; document.getElementById('mrSiguiente').disabled = true; renderTrail(); return; }
             const { plan, marcas } = planVigente();
             const res = document.getElementById('mrResumen');
             const btn = document.getElementById('mrSiguiente');
@@ -1118,8 +1123,33 @@
             const modif = mod.keys.filter(k => marcas.has(k)).length;
             const finRango = [...new Set(mod.keys.map(k => k.slice(0, 7)))].filter(m => finalizacion(m));
             res.innerHTML = (finRango.length ? `<div class="mr-info">🏁 ${finRango.map(nombreMesAdmin).join(', ')} ya tiene la planificación finalizada: el cambio se informa y cuenta como desvío del plan inicial (salvo quitar turnos marcando “No cuenta para el objetivo”).</div>` : '') + `<b>${mod.keys.length}</b> turno${mod.keys.length > 1 ? 's' : ''} (≈${fmt1(mod.keys.length / 3)} días) · con producción: <b>${conProd.length}</b> · vacíos: <b>${mod.keys.length - conProd.length}</b>${cuenta.size ? `<br>Plan vigente: ${[...cuenta].map(([m, n]) => `${m} ×${n}`).join(' · ')}` : ''}${modif ? `<br>✏️ ${modif} turno${modif > 1 ? 's' : ''} ya fueron modificados antes.` : ''}${pasados && !finRango.length ? `<div class="mr-aviso">⚠ ${pasados} turno${pasados > 1 ? 's' : ''} ya pasaron: la modificación cambia su objetivo.</div>` : ''}`;
+            if (mod.hi || mod.hf) res.innerHTML += `<div class="mr-nota">⏱ Cambio ${mod.hi ? 'desde las ' + mod.hi : 'desde el inicio del turno'} ${mod.hf ? 'hasta las ' + mod.hf : 'hasta el fin del turno'}: en el resto del primer y del último turno se mantiene el molde que ya estaba planificado (no aplica a "Cambiar horas").</div>`;
             btn.disabled = false;
             renderTrail();
+        }
+
+        const INI_TURNO = { T1: 22, T2: 6, T3: 14 };
+        function hhmm(h) { const x = ((h % 24) + 24) % 24; const hh = Math.floor(x), mm = Math.round((x - hh) * 60); return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`; }
+        function offsetHoraAdmin(turno, v, esFin) {
+            const m = String(v || '').match(/^(\d{2}):(\d{2})$/);
+            if (!m) return esFin ? 8 : 0;
+            let off = ((Number(m[1]) + Number(m[2]) / 60 - INI_TURNO[turno]) % 24 + 24) % 24;
+            if (esFin && off === 0) off = 8;
+            return off;
+        }
+        function opcionesHoraAdmin(id, turno, esFin) {
+            const sel = document.getElementById(id);
+            const prev = sel.dataset.turno === turno ? sel.value : '';
+            const ops = [];
+            for (let o = 0.5; o < 8; o += 0.5) ops.push(hhmm(INI_TURNO[turno] + o));
+            sel.innerHTML = `<option value="">${esFin ? 'fin' : 'inicio'} ${hhmm(INI_TURNO[turno] + (esFin ? 8 : 0))}</option>` + ops.map(h => `<option value="${h}"${h === prev ? ' selected' : ''}>${h}</option>`).join('');
+            sel.dataset.turno = turno;
+        }
+        function fracModKey(k) {
+            const i = mod.keys.indexOf(k);
+            if (i < 0) return 1;
+            const a = i === 0 ? offsetHoraAdmin(mod.ti, mod.hi, false) : 0, b = i === mod.keys.length - 1 ? offsetHoraAdmin(mod.tf, mod.hf, true) : 8;
+            return Math.max(0, b - a) / 8;
         }
 
         function saveModRango() {
@@ -1172,7 +1202,10 @@
             const { plan, horas } = planVigente();
             const antes = objetivoKeys(mod.keys, plan, undefined, horas);
             const quitar = mod.op === 'Quitar producción';
-            const despues = quitar ? 0 : mod.op === 'Cambiar horas' ? objetivoKeys(mod.keys, plan, undefined, mod.horas) : mod.molde ? objetivoKeys(mod.keys, plan, [mod.molde], mod.horas) : null;
+            const parcial = mod.op !== 'Cambiar horas' && (mod.hi || mod.hf);
+            const resto = parcial ? mod.keys.reduce((a, k) => a + objetivoKeys([k], plan, undefined, horas) * (1 - fracModKey(k)), 0) : 0;
+            const nuevoParc = (molde, h) => mod.keys.reduce((a, k) => a + objetivoKeys([k], plan, [molde], h) * fracModKey(k), 0);
+            const despues = quitar ? resto : mod.op === 'Cambiar horas' ? objetivoKeys(mod.keys, plan, undefined, mod.horas) : mod.molde ? (parcial ? resto + nuevoParc(mod.molde, mod.horas) : objetivoKeys(mod.keys, plan, [mod.molde], mod.horas)) : null;
             if (despues === null) { el.innerHTML = 'Elegí el molde para ver el impacto en el objetivo.'; return; }
             const congelado = mod.keys.some(k => finalizacion(k.slice(0, 7)));
             const excluir = (quitar || (mod.op === 'Cambiar horas' && congelado)) && document.getElementById('maExcluir').checked;
@@ -1199,13 +1232,13 @@
             const btn = document.getElementById('maGuardar');
             btn.disabled = true; btn.textContent = '⏳ Registrando…'; msg.textContent = '';
             try {
-                const params = new URLSearchParams({ password: document.getElementById('pwdInput').value, accion: 'modificacion', tipo: mod.op, molde: mod.op === 'Quitar producción' || mod.op === 'Cambiar horas' ? '' : mod.molde, anterior, sector, motivo, horas: mod.op === 'Quitar producción' ? '' : String(mod.horas || 8), fechaDesde: mod.fi, turnoDesde: mod.ti, fechaHasta: mod.ff, turnoHasta: mod.tf, turnos: String(mod.keys.length), justificacion, solicitudId, excluirObjetivo: (mod.op === 'Quitar producción' || mod.op === 'Cambiar horas') && !document.getElementById('maExcluirWrap').hidden && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
+                const params = new URLSearchParams({ password: document.getElementById('pwdInput').value, accion: 'modificacion', tipo: mod.op, molde: mod.op === 'Quitar producción' || mod.op === 'Cambiar horas' ? '' : mod.molde, anterior, sector, motivo, horas: mod.op === 'Quitar producción' ? '' : String(mod.horas || 8), fechaDesde: mod.fi, turnoDesde: mod.ti, fechaHasta: mod.ff, turnoHasta: mod.tf, horaDesde: mod.op === 'Cambiar horas' ? '' : (mod.hi || ''), horaHasta: mod.op === 'Cambiar horas' ? '' : (mod.hf || ''), turnos: String(mod.keys.length), justificacion, solicitudId, excluirObjetivo: (mod.op === 'Quitar producción' || mod.op === 'Cambiar horas') && !document.getElementById('maExcluirWrap').hidden && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
                 const r = await fetch(URL_SCRIPT, { method: 'POST', body: params });
                 const j = await r.json();
                 if (j.result !== 'success') throw new Error(j.message || 'No se pudo registrar');
                 if (stats) {
                     stats.modificaciones = stats.modificaciones || [];
-                    stats.modificaciones.push({ 'ID': j.id, 'Marca temporal': new Date().toLocaleString('es-AR'), 'Tipo': mod.op, 'Molde anterior': anterior, 'Molde nuevo': j.molde || mod.molde, 'Fecha desde': mod.fi, 'Turno desde': mod.ti, 'Fecha hasta': mod.ff, 'Turno hasta': mod.tf, 'Turnos': mod.keys.length, 'Justificación': justificacion, 'Autor': '', 'Sector': sector, 'Motivo': motivo, 'Horas': mod.op === 'Quitar producción' ? '' : String(mod.horas || 8), 'Excluir objetivo': !document.getElementById('maExcluirWrap').hidden && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
+                    stats.modificaciones.push({ 'ID': j.id, 'Marca temporal': new Date().toLocaleString('es-AR'), 'Tipo': mod.op, 'Molde anterior': anterior, 'Molde nuevo': j.molde || mod.molde, 'Fecha desde': mod.fi, 'Turno desde': mod.ti, 'Fecha hasta': mod.ff, 'Turno hasta': mod.tf, 'Hora desde': mod.hi || '', 'Hora hasta': mod.hf || '', 'Turnos': mod.keys.length, 'Justificación': justificacion, 'Autor': '', 'Sector': sector, 'Motivo': motivo, 'Horas': mod.op === 'Quitar producción' ? '' : String(mod.horas || 8), 'Excluir objetivo': !document.getElementById('maExcluirWrap').hidden && document.getElementById('maExcluir').checked ? 'Sí' : 'No' });
                     if (solicitudId) stats.recomendaciones = (stats.recomendaciones || []).filter(x => x['ID'] !== solicitudId);
                 }
                 mostrarModal(j.aviso ? 'warning' : 'success', 'Modificación registrada', `<p>${mod.op} · ${fechaCorta(mod.fi)} ${mod.ti} → ${fechaCorta(mod.ff)} ${mod.tf} (${mod.keys.length} turnos)${mod.op === 'Cambiar horas' ? ` · ${fmt1(mod.horas)} h por turno` : mod.op !== 'Quitar producción' ? ` · ${j.molde || mod.molde}${mod.horas < 8 ? ` (${fmt1(mod.horas)} h)` : ''}` : ''} · ${sector}: ${motivo}.</p><p>${j.aviso ? j.aviso : 'Quedó guardada con su justificación en la hoja ModificacionesPlan y se marca con ✏️ en el calendario.'}</p>${textoMail(j.mail)}`);

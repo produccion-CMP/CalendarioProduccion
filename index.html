@@ -1151,6 +1151,7 @@
         .jf-box label.mp-excluir { display: flex; gap: 10px; align-items: flex-start; margin: 10px 0 0; padding: 10px 12px; border-radius: 10px; border: 1px solid var(--border); background: rgba(127,127,127,0.06); text-transform: none; letter-spacing: 0; cursor: pointer; }
         .mp-excluir input { margin-top: 3px; accent-color: var(--accent); }
         .mp-excluir span { display: flex; flex-direction: column; gap: 2px; font-size: 0.82rem; color: var(--text-main); }
+        .mp-ft select[id$="H"] { max-width: 108px; }
         .mp-causa { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
         @media (max-width: 520px) { .mp-causa { grid-template-columns: 1fr; } }
         .mp-excluir small { color: var(--text-muted); font-weight: 500; font-size: 0.72rem; }
@@ -1570,8 +1571,8 @@
                 <label><input type="radio" name="mpTipo" value="Cambiar horas" onchange="actualizarFormMod()"><span>⏳ Cambiar horas</span></label>
             </div>
             <div class="mp-rango">
-                <div><label for="mpDesdeF">Desde</label><div class="mp-ft"><input id="mpDesdeF" type="date" onchange="actualizarFormMod()"><select id="mpDesdeT" onchange="actualizarFormMod()"><option>T1</option><option>T2</option><option>T3</option></select></div></div>
-                <div><label for="mpHastaF">Hasta</label><div class="mp-ft"><input id="mpHastaF" type="date" onchange="actualizarFormMod()"><select id="mpHastaT" onchange="actualizarFormMod()"><option>T1</option><option>T2</option><option>T3</option></select></div></div>
+                <div><label for="mpDesdeF">Desde</label><div class="mp-ft"><input id="mpDesdeF" type="date" onchange="actualizarFormMod()"><select id="mpDesdeT" onchange="actualizarFormMod()"><option>T1</option><option>T2</option><option>T3</option></select><select id="mpDesdeH" onchange="actualizarFormMod()" title="Hora de inicio dentro del turno"></select></div></div>
+                <div><label for="mpHastaF">Hasta</label><div class="mp-ft"><input id="mpHastaF" type="date" onchange="actualizarFormMod()"><select id="mpHastaT" onchange="actualizarFormMod()"><option>T1</option><option>T2</option><option>T3</option></select><select id="mpHastaH" onchange="actualizarFormMod()" title="Hora de fin dentro del turno"></select></div></div>
             </div>
             <div id="mpMoldeWrap"><label for="mpMolde" id="mpMoldeLbl">Molde nuevo</label><select id="mpMolde" onchange="actualizarFormMod()"></select></div>
             <div id="mpHorasWrap"><label for="mpHoras">Horas por turno</label><select id="mpHoras" onchange="actualizarFormMod()"></select></div>
@@ -2239,9 +2240,9 @@
         const HORAS_TURNO = 8;
         function horasTurno(k) { return moldesExt.horas.has(k) ? moldesExt.horas.get(k) : null; }
         function horasPlanTurno(k, datos) {
-            const seq = getProdSeq((datos || planData)[k]);
-            if (!seq.length) return null;
-            return Math.min(...seq.map(x => x.horas || HORAS_TURNO));
+            const v = ventanasProd((datos || planData)[k]);
+            if (!v.length) return null;
+            return Math.min(HORAS_TURNO, v.reduce((a, w) => a + w.dur, 0));
         }
         function fracPlan(k) { const h = horasPlanTurno(k, planData); return h === null ? null : Math.min(1, h / HORAS_TURNO); }
         function fracReal(k) {
@@ -2270,9 +2271,10 @@
                 const sr = getProdSeq(realData[k]);
                 if (sr.length) { segunReal = sr.map(categoriaCumpl).join(',') !== seq.map(categoriaCumpl).join(','); seq = sr; }
             }
-            const partes = seq.map(t => ({ t, p: refProducto(t, fuente) }));
             const f = factorHoras(k, datosF);
-            const tn = partes.reduce((a, x) => a + (x.p ? x.p.tn / seq.length : 0), 0) * f;
+            const hs = segunReal ? seq.map(() => f * HORAS_TURNO / seq.length) : durSeq(datosF[k]);
+            const partes = seq.map((t, i) => ({ t, p: refProducto(t, fuente), h: hs[i] }));
+            const tn = partes.reduce((a, x) => a + (x.p ? x.p.tn * x.h / HORAS_TURNO : 0), 0);
             return { tn, completo: partes.every(x => x.p), partes, horas: horasPlanTurno(k, datosF), horasReal: horasTurno(k), factor: f, segunReal };
         }
 
@@ -2527,11 +2529,39 @@
             return lista.filter(e => e.molde === t.moldeCompleto && (e.variante || '') === (t.variante || '')).reduce((acc, e) => ({ tn: acc.tn + e.tn, min: acc.min + e.min }), { tn: 0, min: 0 });
         }
 
+        function ventanasProd(tasks) {
+            const prods = (tasks || []).filter(t => t.tarea === 'Producción');
+            if (!prods.length) return [];
+            const durT = t => Math.max(0, t.horas > 0 ? t.horas : HORAS_TURNO);
+            if (prods.every(t => typeof t.ini === 'number')) return prods.map(t => ({ t, ini: t.ini, dur: durT(t) })).sort((a, b) => (a.ini - b.ini) || (a.t.ordIni - b.t.ordIni));
+            const ord = prods.slice().sort((a, b) => (a.ordIni - b.ordIni) || (a.ordFin - b.ordFin));
+            const tot = ord.reduce((a, t) => a + durT(t), 0);
+            const f = tot > HORAS_TURNO ? HORAS_TURNO / tot : 1;
+            let c = 0;
+            return ord.map(t => { const w = { t, ini: c, dur: durT(t) * f }; c += w.dur; return w; });
+        }
+
         function getProdSeq(tasks) {
-            const prods = (tasks || []).filter(t => t.tarea === 'Producción').slice().sort((a, b) => (a.ordIni - b.ordIni) || (a.ordFin - b.ordFin));
             const seq = [];
-            prods.forEach(p => { if (!seq.length || idSeq(seq[seq.length - 1]) !== idSeq(p)) seq.push(p); });
+            ventanasProd(tasks).forEach(w => { if (!seq.length || idSeq(seq[seq.length - 1]) !== idSeq(w.t)) seq.push(w.t); });
             return seq;
+        }
+
+        function durSeq(tasks) {
+            const out = [];
+            let prev = null;
+            ventanasProd(tasks).forEach(w => { if (prev && idSeq(prev) === idSeq(w.t)) out[out.length - 1] += w.dur; else out.push(w.dur); prev = w.t; });
+            return out;
+        }
+
+        function horaTxt(h) { const x = ((h % 24) + 24) % 24; const hh = Math.floor(x), mm = Math.round((x - hh) * 60); return `${String(hh).padStart(2, '0')}:${String(mm).padStart(2, '0')}`; }
+        function offsetHora(turno, hhmm, esFin) {
+            const m = String(hhmm || '').match(/^(\d{1,2}):(\d{2})$/);
+            if (!m) return esFin ? HORAS_TURNO : 0;
+            const ini = TURNO_HORARIO[turno].ini;
+            let off = ((Number(m[1]) + Number(m[2]) / 60 - ini) % 24 + 24) % 24;
+            if (esFin && off === 0) off = HORAS_TURNO;
+            return Math.max(0, Math.min(HORAS_TURNO, off));
         }
 
         function getTestList(tasks) {
@@ -2636,7 +2666,9 @@
             const moldes = [...new Set(seq.map(s => s.moldeCompleto))];
             const isChange = moldes.length > 1 || (!!prevUltimo && seq[0].moldeCompleto !== prevUltimo.moldeCompleto);
             const showDetail = seq.length > 1 || isChange || !prevInmediato || idSeq(seq[0]) !== idSeq(prevInmediato);
-            const pre = Object.assign(base, { mold: last.moldeCompleto, multi: seq.length > 1, showDetail, proporcion: usarExt ? proporcionCambio(k, seq) : null });
+            let propPlan = null;
+            if (!usarExt && seq.length > 1) { const ds = durSeq(tasks); const tot = ds.reduce((a, b) => a + b, 0); if (tot > 0 && ds.some(x => Math.abs(x - ds[0]) > 0.01)) propPlan = ds.map(x => x / tot); }
+            const pre = Object.assign(base, { mold: last.moldeCompleto, multi: seq.length > 1, showDetail, proporcion: usarExt ? proporcionCambio(k, seq) : propPlan });
             return { pre, last, isChange };
         }
 
@@ -2723,7 +2755,8 @@
             const hp = horasPlanTurno(k), hs = horasTurno(k);
             if (hp !== null && hp < HORAS_TURNO) tip += `⏳ Turno planificado de ${fmtDias(hp)} h · objetivo ajustado a ${Math.round(hp / HORAS_TURNO * 100)}%\n`;
             if (hs !== null && hs !== (hp === null ? HORAS_TURNO : hp) && estadoTurno(dateStr, turno) !== 'futuro') tip += `⏱ Horas trabajadas: ${fmtDias(hs)} h (Bal-Paradas)\n`;
-            if (pre.multi) tip += `🔄 Cambio de molde dentro del turno${pre.proporcion ? ` (según extrusora: ${pre.proporcion.map(p => Math.round(p * 100) + '%').join(' / ')})` : ''}\n`;
+            if (pre.multi) tip += `🔄 Cambio de molde dentro del turno${pre.proporcion ? ` (${currentView === 'plan' ? 'planificado' : 'según extrusora'}: ${pre.proporcion.map(p => Math.round(p * 100) + '%').join(' / ')})` : ''}\n`;
+            if (currentView === 'plan' && pre.multi) { const v = ventanasProd(planData[k]); if (v.some(w => typeof w.t.ini === 'number')) tip += v.map(w => `   ${nombreProducto(w.t)}·${w.t.number}: ${horaTxt(TURNO_HORARIO[turno].ini + w.ini)}–${horaTxt(TURNO_HORARIO[turno].ini + w.ini + w.dur)}`).join('\n') + '\n'; }
             const pruebas = pre.tests.length ? pre.tests.map(t => t.moldeCompleto).join(', ') : 'No';
             const lp = lineasTnPlan(k), lr = lineasTnReal(k);
             if (currentView === 'plan') {
@@ -3261,14 +3294,15 @@
                     const pasado = estadoTurno(ds, t) === 'pasado';
                     const tpo = currentView === 'cumpl' && fuenteActual() === 'obj' ? tnPlanTurno(k, 'obj') : null;
                     const seq = tpo ? tpo.partes.map(x => x.t) : getProdSeq(planData[k]);
-                    const f = tpo ? tpo.factor : factorHoras(k, planData);
+                    const hs = tpo ? tpo.partes.map(x => x.h) : durSeq(planData[k]);
+                    const hTot = hs.reduce((a, b) => a + b, 0) || 1;
                     if (seq.length) turnosPlan++;
-                    seq.forEach(m => {
+                    seq.forEach((m, i) => {
                         const nomTipo = currentView === 'plan' ? tipoProducto(m) : tipoVelocidad(m);
                         const it = item(claveTipo(nomTipo), nomTipo, m.baseName);
                         const p = refProducto(m);
-                        it.turnosPlan += 1 / seq.length;
-                        if (p) { const v = p.tn / seq.length * f; it.plan += v; it.prom = p; if (pasado) it.planComp += v; }
+                        it.turnosPlan += hs[i] / hTot;
+                        if (p) { const v = p.tn * hs[i] / HORAS_TURNO; it.plan += v; it.prom = p; if (pasado) it.planComp += v; }
                         else it.sinProm = true;
                     });
                     const tr = tnRealTurno(k);
@@ -3626,7 +3660,7 @@
                     const n = m.turnos || keysEntre(m.fi, m.ti, m.ff, m.tf).length;
                     html += `<tr class="${f.just ? 'ok' : 'pend'} reg-mod" onclick="abrirGantt('${m.fi}')" style="cursor:pointer">
                         <td><span class="reg-tipo mod">✏️ Modificación</span>${m.solicitud ? '<small>💼 Solicitud de Comercial</small>' : ''}</td>
-                        <td><b>${fechaCorta(m.fi)}</b> ${m.ti} → <b>${fechaCorta(m.ff)}</b> ${m.tf}<small>${n} turno${n > 1 ? 's' : ''} · ${escAttr(m.marca || '')}</small></td>
+                        <td><b>${fechaCorta(m.fi)}</b> ${m.ti}${m.hi ? ` ${m.hi}` : ''} → <b>${fechaCorta(m.ff)}</b> ${m.tf}${m.hf ? ` ${m.hf}` : ''}<small>${n} turno${n > 1 ? 's' : ''} · ${escAttr(m.marca || '')}</small></td>
                         <td><span class="mod-tipo">${ico[m.tipo] || '✏️'} ${escAttr(m.tipo)}</span>${m.excluir ? '<small>no cuenta para el objetivo</small>' : ''}</td>
                         <td>${escAttr(m.anterior || '–')}</td>
                         <td>${nuevo}</td>
@@ -4903,19 +4937,42 @@
                 const hMod = m.horas > 0 && m.horas < HORAS_TURNO ? m.horas : HORAS_TURNO;
                 if (m.tipo === 'Cambiar horas') {
                     keys.forEach(k => {
-                        data[k] = (data[k] || []).map(x => x.tarea === 'Producción' ? Object.assign({}, x, { horas: hMod, modif: m.id }) : x);
+                        const v = ventanasProd(data[k]);
+                        const tot = v.reduce((a, w) => a + w.dur, 0) || 1;
+                        let c = 0;
+                        const nuevas = v.map(w => { const d = w.dur * hMod / tot; const t = Object.assign({}, w.t, { horas: d, ini: c, modif: m.id }); c += d; return t; });
+                        data[k] = (data[k] || []).filter(x => x.tarea !== 'Producción').concat(nuevas);
                         if (!modTurnos.has(k)) modTurnos.set(k, []);
                         modTurnos.get(k).push(m);
                     });
                     return;
                 }
+                const oIni = offsetHora(m.ti, m.hi, false), oFin = offsetHora(m.tf, m.hf, true);
                 keys.forEach((k, idx) => {
+                    const a = idx === 0 ? oIni : 0, b = idx === keys.length - 1 ? oFin : HORAS_TURNO;
+                    if (a > 0.001 || b < HORAS_TURNO - 0.001) {
+                        const otros = (data[k] || []).filter(x => x.tarea !== 'Producción');
+                        const rec = [];
+                        ventanasProd(data[k]).forEach(w => {
+                            const w0 = w.ini, w1 = w.ini + w.dur;
+                            if (Math.min(w1, a) - w0 > 0.01) rec.push(Object.assign({}, w.t, { ini: w0, horas: Math.min(w1, a) - w0 }));
+                            if (w1 - Math.max(w0, b) > 0.01) rec.push(Object.assign({}, w.t, { ini: Math.max(w0, b), horas: w1 - Math.max(w0, b) }));
+                        });
+                        if (!quitar) {
+                            const res = resolverMolde(m.nuevo);
+                            rec.push({ moldeCompleto: res.molde || m.nuevo, variante: res.variante || '', fueraCatalogo: !res.ok, baseName: getBaseName(res.molde || m.nuevo), number: getMoldNumber(res.molde || m.nuevo), tarea: 'Producción', esInicio: idx === 0, esFin: idx === keys.length - 1, ordIni, ordFin, modif: m.id, ini: a, horas: (b - a) * hMod / HORAS_TURNO, parcial: true });
+                        }
+                        data[k] = otros.concat(rec);
+                        if (!modTurnos.has(k)) modTurnos.set(k, []);
+                        modTurnos.get(k).push(m);
+                        return;
+                    }
                     const lista = (data[k] || []).filter(x => x.tarea !== 'Producción' || (!quitar && x.moldeCompleto === m.nuevo));
                     if (!quitar && !lista.some(x => x.tarea === 'Producción' && x.moldeCompleto === m.nuevo)) {
                         const res = resolverMolde(m.nuevo);
                         lista.push({ moldeCompleto: res.molde || m.nuevo, variante: res.variante || '', fueraCatalogo: !res.ok, baseName: getBaseName(res.molde || m.nuevo), number: getMoldNumber(res.molde || m.nuevo), tarea: 'Producción', esInicio: idx === 0, esFin: idx === keys.length - 1, ordIni, ordFin, modif: m.id, horas: hMod });
                     }
-                    data[k] = lista.map(x => x.tarea === 'Producción' && x.moldeCompleto === m.nuevo && !quitar ? Object.assign({}, x, { horas: hMod }) : x);
+                    data[k] = lista.map(x => x.tarea === 'Producción' && x.moldeCompleto === m.nuevo && !quitar ? Object.assign({}, x, { horas: hMod, ini: undefined }) : x);
                     if (!modTurnos.has(k)) modTurnos.set(k, []);
                     modTurnos.get(k).push(m);
                 });
@@ -5041,10 +5098,24 @@
 
         function tipoMod() { const r = document.querySelector('input[name="mpTipo"]:checked'); return r ? r.value : 'Cambio de molde'; }
 
+        function opcionesHora(id, turno, esFin) {
+            const sel = document.getElementById(id);
+            const prev = sel.dataset.turno === turno ? sel.value : '';
+            const ini = TURNO_HORARIO[turno].ini;
+            const ops = [];
+            for (let o = 0.5; o < HORAS_TURNO; o += 0.5) ops.push(horaTxt(ini + o));
+            sel.innerHTML = `<option value="">${esFin ? 'fin' : 'inicio'} (${horaTxt(ini + (esFin ? HORAS_TURNO : 0))})</option>` + ops.map(h => `<option value="${h}"${h === prev ? ' selected' : ''}>${h}</option>`).join('');
+            sel.dataset.turno = turno;
+        }
+
         function datosMod() {
             const fi = document.getElementById('mpDesdeF').value, ti = document.getElementById('mpDesdeT').value;
             const ff = document.getElementById('mpHastaF').value, tf = document.getElementById('mpHastaT').value;
-            return { tipo: tipoMod(), fi, ti, ff, tf, nuevo: document.getElementById('mpMolde').value, horas: Number(document.getElementById('mpHoras').value) || HORAS_TURNO, keys: (fi && ff && ff + tf >= fi + ti) ? keysEntre(fi, ti, ff, tf) : [] };
+            opcionesHora('mpDesdeH', ti, false); opcionesHora('mpHastaH', tf, true);
+            const conHora = tipoMod() !== 'Cambiar horas';
+            document.getElementById('mpDesdeH').hidden = !conHora; document.getElementById('mpHastaH').hidden = !conHora;
+            const hi = conHora ? document.getElementById('mpDesdeH').value : '', hf = conHora ? document.getElementById('mpHastaH').value : '';
+            return { tipo: tipoMod(), fi, ti, ff, tf, hi, hf, nuevo: document.getElementById('mpMolde').value, horas: Number(document.getElementById('mpHoras').value) || HORAS_TURNO, keys: (fi && ff && ff + tf >= fi + ti) ? keysEntre(fi, ti, ff, tf) : [] };
         }
 
         function objetivoTurnos(keys, datos) {
@@ -5075,7 +5146,10 @@
             const objExcl = congelado && excluir && soloHoras ? objetivoTurnos(d.keys, aplicarModificacionesSimulada(d, planObjetivo || planData)) : 0;
             const dif = congelado ? (excluir ? (soloHoras ? objExcl - antes : -antes) : 0) : (quitar ? 0 : (d.nuevo || soloHoras ? despues : antes)) - antes;
             const pasados = d.keys.filter(k => estadoTurno(k.slice(0, 10), k.slice(-2)) === 'pasado').length;
-            res.innerHTML = `<div class="mp-fila"><span>Turnos afectados</span><b>${d.keys.length}</b> <small>(≈${fmtDias(d.keys.length / 3)} días)</small></div>
+            const parcialTxt = (d.hi ? `desde ${d.hi}` : '') + (d.hi && d.hf ? ' · ' : '') + (d.hf ? `hasta ${d.hf}` : '');
+            const hMod = d.keys.length ? Math.max(0, d.keys.length * HORAS_TURNO - offsetHora(d.ti, d.hi, false) - (HORAS_TURNO - offsetHora(d.tf, d.hf, true))) : 0;
+            if (d.keys.length === 1 && d.hi && d.hf && offsetHora(d.tf, d.hf, true) <= offsetHora(d.ti, d.hi, false)) { res.innerHTML = '<span class="mp-err">La hora de fin tiene que ser posterior a la de inicio.</span>'; modActual = null; return; }
+            res.innerHTML = `<div class="mp-fila"><span>Turnos afectados</span><b>${d.keys.length}</b> <small>(≈${fmtDias(d.keys.length / 3)} días${parcialTxt ? ` · ${parcialTxt} · ${fmtDias(hMod)} h del cambio; en el resto del turno se mantiene lo planificado` : ''})</small></div>
                 <div class="mp-fila"><span>Plan actual</span><b>${actuales.size ? [...actuales].map(([m, n]) => `${escAttr(m)} <small>×${n}</small>`).join(' · ') : '—'}</b>${vacios ? ` <small>· ${vacios} sin producción</small>` : ''}</div>
                 <div class="mp-fila"><span>Objetivo de esos turnos</span><b>${fmtTn0(antes)} → ${congelado ? fmtTn0(antes + dif) : quitar ? 0 : d.nuevo || soloHoras ? fmtTn0(despues) : '?'} Tn</b>${quitar || d.nuevo || soloHoras ? ` <span class="mp-dif ${dif < 0 ? 'menos' : dif > 0 ? 'mas' : ''}">${dif >= 0 ? '+' : '−'}${fmtTn0(Math.abs(dif))} Tn al objetivo del mes</span>` : ''}</div>
                 ${soloHoras && vacios ? `<div class="mp-aviso">⚠ ${vacios} turno${vacios > 1 ? 's' : ''} del rango no tienen producción: ajustá el rango.</div>` : ''}
@@ -5085,7 +5159,7 @@
 
         function aplicarModificacionesSimulada(d, base) {
             const guardado = modTurnos;
-            const datos = aplicarModificaciones(base || planData, [{ id: 'sim', tipo: d.tipo, fi: d.fi, ti: d.ti, ff: d.ff, tf: d.tf, nuevo: d.nuevo, horas: d.horas }]);
+            const datos = aplicarModificaciones(base || planData, [{ id: 'sim', tipo: d.tipo, fi: d.fi, ti: d.ti, ff: d.ff, tf: d.tf, hi: d.hi, hf: d.hf, nuevo: d.nuevo, horas: d.horas }]);
             modTurnos = guardado;
             return datos;
         }
@@ -5107,10 +5181,10 @@
             btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
             const anterior = modActual && modActual.actuales ? [...modActual.actuales.keys()].join(', ') : '';
             try {
-                const j = await postEditor({ accion: 'modificacion', tipo: d.tipo, molde: d.nuevo, anterior, fechaDesde: d.fi, turnoDesde: d.ti, fechaHasta: d.ff, turnoHasta: d.tf, turnos: String(d.keys.length), justificacion, sector, motivo, horas: d.tipo === 'Quitar producción' ? '' : String(d.horas), solicitudId, excluirObjetivo: excluirObjetivo ? 'Sí' : 'No' });
+                const j = await postEditor({ accion: 'modificacion', tipo: d.tipo, molde: d.nuevo, anterior, fechaDesde: d.fi, turnoDesde: d.ti, fechaHasta: d.ff, turnoHasta: d.tf, turnos: String(d.keys.length), horaDesde: d.hi, horaHasta: d.hf, justificacion, sector, motivo, horas: d.tipo === 'Quitar producción' ? '' : String(d.horas), solicitudId, excluirObjetivo: excluirObjetivo ? 'Sí' : 'No' });
                 const autor = '';
                 const ahora = new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
-                moldesExt.modificaciones.push({ id: j.id, marca: ahora, tipo: d.tipo, anterior, nuevo: j.molde || d.nuevo, fi: d.fi, ti: d.ti, ff: d.ff, tf: d.tf, turnos: d.keys.length, justificacion, autor, origen: solicitudId ? 'Solicitud de Comercial' : 'Producción', solicitud: solicitudId, excluir: excluirObjetivo, fechaMarca: new Date(), sector, motivo, horas: d.tipo === 'Quitar producción' ? HORAS_TURNO : d.horas });
+                moldesExt.modificaciones.push({ id: j.id, marca: ahora, tipo: d.tipo, anterior, nuevo: j.molde || d.nuevo, fi: d.fi, ti: d.ti, ff: d.ff, tf: d.tf, hi: d.hi, hf: d.hf, turnos: d.keys.length, justificacion, autor, origen: solicitudId ? 'Solicitud de Comercial' : 'Producción', solicitud: solicitudId, excluir: excluirObjetivo, fechaMarca: new Date(), sector, motivo, horas: d.tipo === 'Quitar producción' ? HORAS_TURNO : d.horas });
                 if (solicitudId) { const r = moldesExt.recomendaciones.find(x => x.id === solicitudId); if (r) Object.assign(r, { estado: 'Aplicada', aplicadoEn: `${d.fi} ${d.ti}`, respuesta: r.respuesta || justificacion, respondidoPor: autor, fechaRespuesta: ahora }); }
                 reaplicarPlan();
                 msg.textContent = j.aviso ? '⚠ ' + j.aviso : '✅ Modificación registrada'; msg.className = 'jf-msg ' + (j.aviso ? 'err' : 'ok');
@@ -5165,7 +5239,8 @@
                     const k = key(ds, t);
                     const tp = tnPlanTurno(k, 'prom');
                     if (!tp) return;
-                    tp.partes.forEach(x => { if (claveTipo(tipoProducto(x.t)) === claveTipo(tipo) && x.p) { tn += x.p.tn / tp.partes.length * tp.factor; turnos += 1 / tp.partes.length; } });
+                    const hT = tp.partes.reduce((a, x) => a + x.h, 0) || 1;
+                    tp.partes.forEach(x => { if (claveTipo(tipoProducto(x.t)) === claveTipo(tipo) && x.p) { tn += x.p.tn * x.h / HORAS_TURNO; turnos += x.h / hT; } });
                 });
             }
             const b = baseTipo(tipo);
@@ -5512,7 +5587,7 @@
         }
 
         function leerModificacion(r) {
-            return { id: r['ID'], marca: r['Marca temporal'], tipo: r['Tipo'], anterior: r['Molde anterior'] || '', nuevo: r['Molde nuevo'] || '', fi: fechaDeMarca(r['Fecha desde']), ti: r['Turno desde'], ff: fechaDeMarca(r['Fecha hasta']), tf: r['Turno hasta'], turnos: Number(r['Turnos']) || 0, justificacion: r['Justificación'] || '', autor: r['Autor'] || '', origen: r['Origen'] || '', solicitud: r['Solicitud ID'] || '', excluir: /^(s|x|true|1)/i.test(String(r['Excluir objetivo'] || '').trim()), fechaMarca: fechaHoraDeMarca(r['Marca temporal']), sector: r['Sector'] || '', motivo: r['Motivo'] || '', horas: Number(String(r['Horas'] || '').replace(',', '.')) || HORAS_TURNO };
+            return { id: r['ID'], marca: r['Marca temporal'], tipo: r['Tipo'], anterior: r['Molde anterior'] || '', nuevo: r['Molde nuevo'] || '', fi: fechaDeMarca(r['Fecha desde']), ti: r['Turno desde'], ff: fechaDeMarca(r['Fecha hasta']), tf: r['Turno hasta'], turnos: Number(r['Turnos']) || 0, justificacion: r['Justificación'] || '', autor: r['Autor'] || '', origen: r['Origen'] || '', solicitud: r['Solicitud ID'] || '', excluir: /^(s|x|true|1)/i.test(String(r['Excluir objetivo'] || '').trim()), fechaMarca: fechaHoraDeMarca(r['Marca temporal']), hi: r['Hora desde'] || '', hf: r['Hora hasta'] || '', sector: r['Sector'] || '', motivo: r['Motivo'] || '', horas: Number(String(r['Horas'] || '').replace(',', '.')) || HORAS_TURNO };
         }
 
         function planAhora() {
