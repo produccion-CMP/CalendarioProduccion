@@ -440,7 +440,7 @@
         const MOTIVOS_BASE = ['Falla de equipo / mantenimiento correctivo', 'Molde no disponible o en reparación', 'Calibración o ajuste de molde', 'Falta de materia prima / arcilla', 'Problema de calidad', 'Cambio de prioridad comercial', 'Corte de energía o gas', 'Falta de personal', 'Error de planificación o de carga', 'Otro'];
         function catalogoAdmin(tipo) {
             const c = stats && stats.catalogo && Array.isArray(stats.catalogo[tipo]) ? stats.catalogo[tipo].filter(x => x.activo).map(x => x.nombre) : null;
-            return c && c.length ? c : (tipo === 'sectores' ? SECTORES_BASE : MOTIVOS_BASE);
+            return (c && c.length ? c : (tipo === 'sectores' ? SECTORES_BASE : MOTIVOS_BASE)).slice().sort((a, b) => (/^otro/i.test(a) - /^otro/i.test(b)) || a.localeCompare(b, 'es', { sensitivity: 'base' }));
         }
         function llenarCausa(idS, idM) {
             const esc = v => String(v).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/"/g, '&quot;');

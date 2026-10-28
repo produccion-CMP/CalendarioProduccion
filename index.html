@@ -805,6 +805,10 @@
         .sello { font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; }
         .sello.ok { background: rgba(48,209,88,0.15); color: var(--green); box-shadow: inset 0 0 0 1px rgba(48,209,88,0.5); }
         .sello.obs { background: rgba(255,159,10,0.15); color: var(--orange); box-shadow: inset 0 0 0 1px rgba(255,159,10,0.5); }
+        .reg-tipo { display: inline-block; padding: 2px 8px; border-radius: 8px; font-size: 0.72rem; font-weight: 800; white-space: nowrap; }
+        .reg-tipo.desv { background: rgba(255,69,58,0.15); color: #ff8f86; }
+        .reg-tipo.mod { background: rgba(94,92,230,0.18); color: #a5a4ff; }
+        .desv-tabla td small { display: block; color: var(--text-muted); font-size: 0.68rem; font-weight: 600; }
         .mod-just-btn { display: inline-block; margin-top: 4px; padding: 4px 10px; border-radius: 8px; border: 1px solid var(--accent); background: transparent; color: var(--accent-light); font-family: var(--font); font-weight: 800; font-size: 0.72rem; cursor: pointer; }
         .mod-just-btn:hover { background: rgba(224,123,76,0.12); }
         .cat-box, .causas-box { max-width: 560px; }
@@ -1161,6 +1165,13 @@
         .mv-mod { background: #fff; color: #000; font-size: 9px; }
         .mv-mod.quitar { background: #ffd8c2; }
         .mv-post { background: #5e5ce6; font-size: 11px; }
+        .hr-off { position: absolute; top: 0; right: 0; bottom: 0; width: calc(100% - var(--f)); z-index: 2; pointer-events: none; background: repeating-linear-gradient(135deg, rgba(20,20,22,0.78) 0 4px, rgba(20,20,22,0.55) 4px 8px); box-shadow: inset 2px 0 0 rgba(255,255,255,0.7); display: flex; align-items: flex-end; justify-content: center; }
+        .hr-off span { font-size: 9px; font-weight: 900; color: #fff; text-shadow: 0 1px 2px #000; padding-bottom: 2px; white-space: nowrap; }
+        .gantt-table.lanes td.lane .hr-off span { display: none; }
+        .lm-band { position: relative; }
+        .gantt-table tr.tn-row.turnos-row td { color: var(--text-main); }
+        .tr-pl { color: var(--text-muted); font-weight: 700; }
+        body.printing .hr-off { background: repeating-linear-gradient(135deg, rgba(0,0,0,0.55) 0 3px, rgba(0,0,0,0.25) 3px 6px) !important; }
         .gantt-table td.td-postcierre { outline: 2px dashed rgba(94,92,230,0.85); outline-offset: -3px; }
         body.printing .gantt-table td.td-postcierre { outline: 1.5px dashed #5e5ce6; }
         .mod-obj { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
@@ -1173,7 +1184,13 @@
         .mod-origen { display: inline-block; padding: 2px 8px; border-radius: 999px; font-size: 0.72rem; font-weight: 800; }
         .mod-origen.prod { background: rgba(224,123,76,0.16); color: var(--accent-light); } .mod-origen.com { background: rgba(10,132,255,0.16); color: #5ea8ff; }
         .g-orig { fill: none; stroke: #8e8cff; stroke-width: 1.5; stroke-dasharray: 2 4; opacity: 0.85; }
-        .g-lbl.orig { fill: #8e8cff; font-size: 10px; }
+        .g-lbl.orig { fill: #8e8cff; font-size: 11px; }
+        .g-lbl.plan { fill: var(--text-main); }
+        .g-lbl.g-nom { font-size: 9.5px; font-weight: 700; opacity: 0.85; } .g-lbl.g-val { font-size: 12px; font-weight: 900; }
+        .g-guia { fill: none; stroke-width: 1; stroke-dasharray: 2 2; opacity: 0.7; stroke: var(--text-muted); }
+        .g-guia.orig { stroke: #8e8cff; } .g-guia.real { stroke: var(--accent); }
+        .g-fin { fill: var(--text-muted); } .g-fin.orig { fill: #8e8cff; } .g-fin.real { fill: var(--accent); }
+        .lg-orig { width: 18px; height: 0; border-top: 2px dotted #8e8cff; display: inline-block; }
         .nec-info .desv-head { align-items: center; }
         .nec-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 10px; margin-top: 10px; }
         .nec-card { padding: 12px 14px; border-radius: 14px; background: var(--bg-cell); border-top: 3px solid var(--nc); display: flex; flex-direction: column; gap: 6px; animation: cardIn 0.4s ease both; }
@@ -1497,24 +1514,6 @@
                 <button class="prim" id="jfGuardar" onclick="guardarJustificacion()">Guardar</button>
             </div>
             <div class="jf-msg" id="jfMsg"></div>
-        </div>
-    </div>
-
-    <div class="jf-overlay" id="causaModModal" onclick="if (event.target === this) cerrarCausaMod()">
-        <div class="jf-box" role="dialog" aria-modal="true" aria-labelledby="mcTitulo">
-            <h3 id="mcTitulo">📝 Justificar modificación del plan</h3>
-            <div class="jf-resumen" id="mcResumen"></div>
-            <div class="mp-causa">
-                <div><label for="mcSector">Sector responsable</label><select id="mcSector"></select></div>
-                <div><label for="mcMotivo">Motivo</label><select id="mcMotivo"></select></div>
-            </div>
-            <label for="mcObs">Observación (opcional)</label>
-            <textarea id="mcObs" maxlength="1500" placeholder="Ej.: se cambió a H18 por rotura del molde H12 (3)"></textarea>
-            <div class="jf-acciones">
-                <button onclick="cerrarCausaMod()">Cancelar</button>
-                <button class="prim" id="mcGuardar" onclick="guardarCausaMod()">Guardar</button>
-            </div>
-            <div class="jf-msg" id="mcMsg"></div>
         </div>
     </div>
 
@@ -2244,6 +2243,22 @@
             if (!seq.length) return null;
             return Math.min(...seq.map(x => x.horas || HORAS_TURNO));
         }
+        function fracPlan(k) { const h = horasPlanTurno(k, planData); return h === null ? null : Math.min(1, h / HORAS_TURNO); }
+        function fracReal(k) {
+            if (!getProdSeq(realData[k]).length && !tnRealTurno(k)) return null;
+            const h = horasTurno(k);
+            return h === null ? 1 : Math.max(0, Math.min(1, h / HORAS_TURNO));
+        }
+        function overlayHoras(f) {
+            if (f === null || f >= 0.999) return '';
+            return `<div class="hr-off" style="--f:${(f * 100).toFixed(1)}%"><span>${fmtDias(f * HORAS_TURNO)} h</span></div>`;
+        }
+        function fmtTurnos(v) { return v.toLocaleString('es-AR', { maximumFractionDigits: 2 }); }
+        function turnosDia(ds, tipo) {
+            let t = 0;
+            TURNOS.forEach(tt => { const f = tipo === 'plan' ? fracPlan(key(ds, tt)) : fracReal(key(ds, tt)); if (f !== null) t += f; });
+            return t;
+        }
         function factorHoras(k, datos) { const h = horasPlanTurno(k, datos); return h === null ? 1 : h / HORAS_TURNO; }
 
         function tnPlanTurno(k, fuente) {
@@ -2327,28 +2342,33 @@
                 TURNOS.forEach(t => {
                     if (estadoTurno(ds, t) !== 'pasado') return;
                     const ev = evaluarProduccion(ds, t);
-                    if (ev.score === null || ev.score >= 1) return;
-                    const k = key(ds, t), perd = 1 - ev.score;
-                    const j = justDe(k, dv.porTurno.get(k));
+                    const k = key(ds, t);
+                    const desv = ev.score !== null && ev.score < 1;
+                    const mc = modCausa(k);
+                    if (!desv && !mc) return;
+                    const perd = desv ? 1 - ev.score : 0;
+                    let j = desv ? justDe(k, dv.porTurno.get(k)) : null;
+                    if (!j && mc && !mc.sinCausa) j = mc;
                     const mot = j ? j.motivo : 'Sin justificar', sec = j ? (j.sector || 'Sin sector') : 'Sin justificar';
                     acum(motivos, mot, perd, 1); acum(sectores, sec, perd, 1); acum(cruce, sec + '|' + mot, perd, 1);
                     total += perd; turnos++;
                 });
             }
-            const orden = m => [...m.entries()].map(([nombre, v]) => ({ nombre, perd: v.perd, turnos: v.turnos, pct: total ? v.perd / total : 0 })).sort((a, b) => (a.nombre === 'Sin justificar') - (b.nombre === 'Sin justificar') || b.perd - a.perd);
+            const orden = m => [...m.entries()].map(([nombre, v]) => ({ nombre, perd: v.perd, turnos: v.turnos, pct: turnos ? v.turnos / turnos : 0 })).sort((a, b) => (a.nombre === 'Sin justificar') - (b.nombre === 'Sin justificar') || b.turnos - a.turnos || b.perd - a.perd);
             return { total, turnos, motivos: orden(motivos), sectores: orden(sectores), cruce };
         }
 
         function filaCausa(c, nEval, cls) {
+            nEval = Math.max(1, nEval);
             const sin = c.nombre === 'Sin justificar' || c.nombre === 'Sin sector';
             return `<div class="kc-fila" title="${escAttr(`${c.nombre}: ${c.turnos} turno${c.turnos === 1 ? '' : 's'} · −${(c.perd / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts`)}"><span>${escAttr(c.nombre)}</span><div class="ca-bar ${sin ? 'sin' : cls}"><span style="width:${Math.round(c.pct * 100)}%"></span></div><b>${Math.round(c.pct * 100)}%</b></div>`;
         }
 
         function htmlCausas(an, nEval) {
             if (!nEval) return '';
-            if (an.total < 0.005) return `<div class="kpi-card kpi-causas" style="--kc:var(--green)"><div class="kpi-label">🔎 Causas de desvío</div><div class="kpi-sub">Sin desvíos en los turnos evaluados del mes</div></div>`;
+            if (!an.turnos) return `<div class="kpi-card kpi-causas" style="--kc:var(--green)"><div class="kpi-label">🔎 Causas de desvío</div><div class="kpi-sub">Sin desvíos ni modificaciones en los turnos cerrados del mes</div></div>`;
             const sinJ = an.motivos.find(m => m.nombre === 'Sin justificar');
-            return `<div class="kpi-card kpi-causas" style="--kc:#5e5ce6" onclick="abrirCausas()" role="button" title="Clic para ver el detalle"><div class="kpi-label">🔎 Causas de desvío <small style="font-weight:600;text-transform:none">· −${(an.total / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts en ${an.turnos} turnos${sinJ ? ` · ${Math.round(sinJ.pct * 100)}% sin justificar` : ''}</small></div>
+            return `<div class="kpi-card kpi-causas" style="--kc:#5e5ce6" onclick="abrirCausas()" role="button" title="Clic para ver el detalle"><div class="kpi-label">🔎 Causas de desvío <small style="font-weight:600;text-transform:none">· ${an.turnos} turnos con desvío o modificación · −${(an.total / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts${sinJ ? ` · ${Math.round(sinJ.pct * 100)}% sin justificar` : ''}</small></div>
                 <div class="kc-grid"><div><div class="kc-sub">Principales motivos</div>${an.motivos.slice(0, 4).map(c => filaCausa(c, nEval, '')).join('')}</div><div><div class="kc-sub">Sector responsable</div>${an.sectores.slice(0, 5).map(c => filaCausa(c, nEval, 'sec')).join('')}</div></div></div>`;
         }
 
@@ -2362,13 +2382,13 @@
                 return `<div class="ca-sec"><h4>${titulo}</h4><div class="ca-fila cab"><span>Causa</span><span>Participación (acumulado)</span><span class="num">Turnos</span><span class="num">Pts</span></div>${lista.map(c => { ac += c.pct; return `<div class="ca-fila"><span>${escAttr(c.nombre)}</span><div class="ca-bar ${c.nombre.startsWith('Sin ') ? 'sin' : cls}" title="Acumulado ${Math.round(ac * 100)}%"><span style="width:${Math.round(c.pct * 100)}%"></span></div><span class="num">${c.turnos}</span><span class="num">−${(c.perd / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })}</span></div>`; }).join('')}</div>`;
             };
             let cruce = '';
-            if (an.sectores.length && an.total >= 0.005) {
+            if (an.sectores.length && an.turnos) {
                 cruce = `<div class="ca-sec"><h4>Motivo principal por sector</h4>${an.sectores.map(s => {
-                    const mot = [...an.cruce.entries()].filter(([k]) => k.startsWith(s.nombre + '|')).map(([k, v]) => ({ m: k.slice(s.nombre.length + 1), perd: v.perd })).sort((a, b) => b.perd - a.perd)[0];
+                    const mot = [...an.cruce.entries()].filter(([k]) => k.startsWith(s.nombre + '|')).map(([k, v]) => ({ m: k.slice(s.nombre.length + 1), perd: v.perd, turnos: v.turnos })).sort((a, b) => b.turnos - a.turnos || b.perd - a.perd)[0];
                     return `<div class="ca-fila"><span><b>${escAttr(s.nombre)}</b></span><span>${mot ? escAttr(mot.m) : '–'}</span><span class="num">${s.turnos}</span><span class="num">${Math.round(s.pct * 100)}%</span></div>`;
                 }).join('')}</div>`;
             }
-            document.getElementById('csCuerpo').innerHTML = an.total < 0.005 ? '<p class="modos-sub">Sin desvíos en los turnos evaluados del mes.</p>' : `<p class="modos-sub">Puntos de cumplimiento perdidos (100% − promedio) y a qué causa y sector se atribuyen, según las justificaciones del mes. Total: <b>−${(an.total / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts</b> en ${an.turnos} turnos.</p>${tabla('Por motivo', an.motivos, '')}${tabla('Por sector responsable', an.sectores, 'sec')}${cruce}`;
+            document.getElementById('csCuerpo').innerHTML = !an.turnos ? '<p class="modos-sub">Sin desvíos ni modificaciones en los turnos cerrados del mes.</p>' : `<p class="modos-sub">Turnos cerrados con desvío o con modificación del plan, según la causa y el sector registrados (las pruebas no se consideran). La participación es por turnos; los puntos son los de cumplimiento perdidos. Total: <b>${an.turnos} turnos</b> · <b>−${(an.total / Math.max(1, nEval) * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts</b>.</p>${tabla('Por motivo', an.motivos, '')}${tabla('Por sector responsable', an.sectores, 'sec')}${cruce}`;
             document.getElementById('causasModal').classList.add('open');
         }
         function cerrarCausas() { document.getElementById('causasModal').classList.remove('open'); }
@@ -2389,8 +2409,10 @@
             renderCatalogo();
         }
         function renderCatalogo() {
-            const lista = catalogoVigente()[catTipo === 'Sector' ? 'sectores' : 'motivos'];
-            document.getElementById('ctLista').innerHTML = lista.map((x, i) => `<div class="ct-fila${x.activo ? '' : ' off'}"><input value="${escAttr(x.nombre)}" maxlength="60" data-orig="${escAttr(x.nombre)}" onchange="renombrarCatalogo(${i}, this)" aria-label="Nombre"><button onclick="estadoCatalogo(${i})">${x.activo ? 'Quitar' : 'Reactivar'}</button><span title="${x.activo ? 'Activo' : 'Inactivo'}">${x.activo ? '✅' : '⏸'}</span></div>`).join('');
+            const base = catalogoVigente()[catTipo === 'Sector' ? 'sectores' : 'motivos'];
+            const orden = ordenarCausas(base.map(x => x.nombre));
+            const lista = orden.map(n => base.find(x => x.nombre === n));
+            document.getElementById('ctLista').innerHTML = lista.map((x) => `<div class="ct-fila${x.activo ? '' : ' off'}"><input value="${escAttr(x.nombre)}" maxlength="60" data-orig="${escAttr(x.nombre)}" onchange="renombrarCatalogo(this)" aria-label="Nombre"><button onclick="estadoCatalogo('${escAttr(x.nombre).replace(/'/g, "\\'")}')">${x.activo ? 'Quitar' : 'Reactivar'}</button><span title="${x.activo ? 'Activo' : 'Inactivo'}">${x.activo ? '✅' : '⏸'}</span></div>`).join('');
         }
         async function opCatalogo(params) {
             const msg = document.getElementById('ctMsg');
@@ -2410,13 +2432,14 @@
             inp.value = '';
             opCatalogo({ op: 'agregar', nombre });
         }
-        function renombrarCatalogo(i, el) {
+        function renombrarCatalogo(el) {
             const nuevo = el.value.trim(), anterior = el.dataset.orig;
             if (!nuevo || nuevo === anterior) { el.value = anterior; return; }
             opCatalogo({ op: 'renombrar', anterior, nombre: nuevo });
         }
-        function estadoCatalogo(i) {
-            const x = catalogoVigente()[catTipo === 'Sector' ? 'sectores' : 'motivos'][i];
+        function estadoCatalogo(nombre) {
+            const x = catalogoVigente()[catTipo === 'Sector' ? 'sectores' : 'motivos'].find(y => y.nombre === nombre);
+            if (!x) return;
             opCatalogo({ op: 'estado', nombre: x.nombre, activo: x.activo ? 'No' : 'Sí' });
         }
 
@@ -2455,6 +2478,13 @@
                 <div class="ki-bar"><span class="ki-com" style="width:${pc}%"></span><span class="ki-prod" style="width:${pp}%"></span></div>
                 <div class="ki-det"><span><i class="ki-dot com"></i>💼 Comercial <b>${pc}%</b> <small>(−${pts(com)} pts)</small></span><span><i class="ki-dot prod"></i>🏭 Producción <b>${pp}%</b> <small>(−${pts(prod)} pts)</small></span></div>
             </div>`;
+        }
+
+        function modCausa(k) {
+            const mods = modTurnos.get(k);
+            if (!mods || !mods.length) return null;
+            const m = mods.filter(x => x.motivo).slice(-1)[0];
+            return m ? { motivo: m.motivo, sector: m.sector, detalle: m.justificacion, modif: true } : { sinCausa: true };
         }
 
         function justMod(k) {
@@ -2949,7 +2979,8 @@
                 const clsMod = (modsK ? (modsK[modsK.length - 1].tipo === 'Quitar producción' ? ' td-mod td-quitado' : ' td-mod') : '') + (pc && currentView !== 'prod' ? ' td-postcierre' : '');
                 const cls = `${extraCls} ${parts.cls}${clsMod}${clsSol}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}${seleccionCompras && extraAttr ? ' bq-sel' : ''}`;
                 const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (modsK ? `\n\n✏️ Modificado: ${modsK[modsK.length - 1].tipo}\n📝 ${modsK[modsK.length - 1].justificacion}` : '') + (pc && currentView !== 'prod' ? '\n\n' + textoPostCierre(k, pc) : '') + (seleccionCompras && extraAttr ? '\n\n💼 Clic para recomendar cambios en este bloque' : '');
-                return `<td class="${cls}"${extraAttr} style="--d:${idx};${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="${onclick}">${tnHtml}${markers}${parts.content}</td>`;
+                const ov = overlayHoras(currentView === 'plan' ? fracPlan(k) : (estadoTurno(dateStr, turno) === 'futuro' ? null : fracReal(k)));
+                return `<td class="${cls}"${extraAttr} style="--d:${idx};${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="${onclick}">${ov}${tnHtml}${markers}${parts.content}</td>`;
             };
 
             const iconosSt = { cumplido: '✓', desvio: '✕', noplan: '+', hoy: '⏱', pendiente: '', vacio: '' };
@@ -2979,7 +3010,7 @@
                 const last = pre.seq[pre.seq.length - 1];
                 const c = getBrickColor(last.baseName, last.number);
                 const lbl = pre.showDetail ? `<span class="lane-lbl" style="color:${pickTextColor(c)}">${etiquetaMolde(last)}</span>` : '';
-                return { cls: `lane ${tipo}${pre.showDetail ? ' inicio' : ''}`, style: fondoSeqH(pre.seq), html: lbl };
+                return { cls: `lane ${tipo}${pre.showDetail ? ' inicio' : ''}`, style: fondoSeqH(pre.seq), html: overlayHoras(tipo === 'plan' ? fracPlan(k) : (et === 'futuro' ? null : fracReal(k))) + lbl };
             };
 
             const indicadores = dateStr => {
@@ -2996,6 +3027,7 @@
                 html += `<table class="gantt-table mobile-gantt${currentView === 'cumpl' ? ' lanes-m' : ''}"><thead><tr><th class="th-esquina" style="width:${turnoWidth}px; z-index:30;"><div class="esq-btns"><button class="btn-leyenda" onclick="abrirLeyenda()" aria-label="Ver referencias"><span>ℹ️</span></button><button class="btn-leyenda btn-moldes" onclick="abrirEstadoMoldes()" aria-label="Estado de los moldes"><span>🧩</span></button></div></th>`;
                 TURNOS.forEach(t => html += `<th>${t}</th>`);
                 html += `</tr></thead><tbody>`;
+                let acTurnosM = 0, acTurnosPM = 0;
                 for (let d = 1; d <= daysInMonth; d++) {
                     const dateObj = new Date(year, month, d);
                     const dateStr = formatYYYYMMDD(dateObj);
@@ -3014,6 +3046,14 @@
                         html += `<td class="lm-cell lm-${st.ev.status}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}" style="--d:${d}" title="${escAttr(st.tip)}" onclick="abrirGantt('${dateStr}')"><div class="lm-band ${lp.cls}" style="${lp.style}">${lp.html}</div><div class="lm-band ${lr.cls}" style="${lr.style}">${lr.html}</div><div class="lm-st">${st.html}</div></td>`;
                     });
                     html += `</tr>`;
+                    {
+                        const vp = turnosDia(dateStr, 'plan'), futuro = dateStr > todayStr;
+                        const vr = currentView === 'plan' || futuro ? null : turnosDia(dateStr, 'real');
+                        acTurnosM += currentView === 'plan' ? vp : (vr || 0); acTurnosPM += vp;
+                        const dia = currentView === 'plan' ? fmtTurnos(vp) : futuro ? '' : currentView === 'prod' ? fmtTurnos(vr || 0) : `${fmtTurnos(vr || 0)}/${fmtTurnos(vp)}`;
+                        const acTxt = currentView === 'plan' ? fmtTurnos(acTurnosM) : futuro ? '' : currentView === 'prod' ? fmtTurnos(acTurnosM) : `${fmtTurnos(acTurnosM)}/${fmtTurnos(acTurnosPM)}`;
+                        if (vp || vr) html += `<tr class="tn-row-m ${trClass}"><td class="tn-label">Turnos</td><td colspan="3"><span class="tn-m-dia">${dia || '–'}</span>${acTxt ? `<span class="tn-m-ac">Acum. ${acTxt}</span>` : ''}</td></tr>`;
+                    }
                     if (hayTn) {
                         const info = tnDias[dateStr];
                         const dia = currentView === 'prod' ? celdaRealObj(info, false) : celdaTn(info, false);
@@ -3072,6 +3112,28 @@
                     html += `<tr class="lane-row real">${filas.real}</tr>`;
                     html += `<tr class="lane-row st${turno === 'T3' ? ' ultimo' : ''}">${filas.st}</tr>`;
                 });
+                const tdTurnos = acum => {
+                    let ac = 0, acP = 0, out = '';
+                    for (let d = 1; d <= daysInMonth; d++) {
+                        const dateObj = new Date(year, month, d);
+                        const dateStr = formatYYYYMMDD(dateObj);
+                        let c = dateObj.getDay() === 0 ? 'sunday-cell' : '';
+                        if (dateStr === todayStr) c += ' today-col';
+                        const futuro = dateStr > todayStr;
+                        const vp = turnosDia(dateStr, 'plan');
+                        const vr = currentView === 'plan' || futuro ? null : turnosDia(dateStr, 'real');
+                        ac += currentView === 'plan' ? vp : (vr || 0); acP += vp;
+                        let txt;
+                        if (currentView === 'plan') txt = acum ? fmtTurnos(ac) : (vp ? fmtTurnos(vp) : '–');
+                        else if (currentView === 'prod') txt = futuro ? '' : acum ? fmtTurnos(ac) : (vr ? fmtTurnos(vr) : '–');
+                        else txt = futuro ? (acum ? '' : (vp ? `<span class="tr-pl">${fmtTurnos(vp)}</span>` : '')) : acum ? `${fmtTurnos(ac)}<span class="tr-pl">/${fmtTurnos(acP)}</span>` : `${vr ? fmtTurnos(vr) : '0'}<span class="tr-pl">/${fmtTurnos(vp)}</span>`;
+                        out += `<td class="${c}">${txt}</td>`;
+                    }
+                    return out;
+                };
+                const tituloTurnos = currentView === 'plan' ? 'Turnos planificados (proporcionales a las horas del turno)' : currentView === 'prod' ? 'Turnos trabajados con producción (proporcionales a las horas de Bal-Paradas)' : 'Turnos trabajados / planificados';
+                html += `<tr class="tn-row turnos-row"><td class="tn-label" title="${tituloTurnos}">Turnos</td>${tdTurnos(false)}</tr>`;
+                html += `<tr class="tn-row tn-acum turnos-row"><td class="tn-label" title="${tituloTurnos} · acumulado">T. acum.</td>${tdTurnos(true)}</tr>`;
                 if (hayTn) {
                     const conObj = currentView === 'prod' && (moldesExt.objetivos.size || moldesExt.promedios.size);
                     const objPlan = currentView === 'plan' && moldesExt.objetivos.size > 0;
@@ -3412,10 +3474,12 @@
 
         function etiquetaMolde(t) { return t ? `${nombreProducto(t)}·${t.number}` : ''; }
 
+        let graficoConOriginal = false;
         function graficoAcumulado(tnDias, year, month) {
+            graficoConOriginal = false;
             const dias = new Date(year, month + 1, 0).getDate();
             const hoy = hoyStr();
-            const W = 640, H = 230, ml = 52, mr = 92, mt = 14, mb = 28;
+            const W = 640, H = 230, ml = 52, mr = 104, mt = 14, mb = 28;
             const pts = [];
             for (let d = 1; d <= dias; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
@@ -3436,6 +3500,7 @@
                 svg += `<line x1="${x(dh)}" x2="${x(dh)}" y1="${mt}" y2="${H - mb}" class="g-hoy"/><text x="${x(dh)}" y="${mt - 3}" class="g-hoytxt">hoy</text>`;
             }
             const linea = arr => arr.map((p, i) => `${i ? 'L' : 'M'}${x(p.d).toFixed(1)},${y(p.v).toFixed(1)}`).join(' ');
+            const etiquetas = [];
             const planPts = pts.map(p => ({ d: p.d, v: p.plan }));
             svg += `<path d="${linea(planPts)}" class="g-plan"/>`;
             if (reales.length) {
@@ -3443,7 +3508,8 @@
                 svg += `<path d="${linea(rp)} L${x(rp[rp.length - 1].d).toFixed(1)},${y(0)} L${x(rp[0].d).toFixed(1)},${y(0)} Z" class="g-area"/>`;
                 svg += `<path d="${linea(rp)}" class="g-real"/>`;
                 const u = rp[rp.length - 1];
-                svg += `<circle cx="${x(u.d)}" cy="${y(u.v)}" r="4.5" class="g-dot"/><text x="${x(u.d) + 8}" y="${y(u.v) + 4}" class="g-lbl real">Real ${fmtTn0(u.v)}</text>`;
+                svg += `<circle cx="${x(u.d)}" cy="${y(u.v)}" r="4.5" class="g-dot"/>`;
+                etiquetas.push({ x0: x(u.d), y0: y(u.v), nom: 'Real', val: fmtTn0(u.v), cls: 'real', cerca: x(u.d) < W - mr - 60 });
             }
             const hayMods = fuenteActual() === 'obj' && moldesExt.modificaciones.some(m => m.fi.slice(0, 7) <= mesClave() && m.ff.slice(0, 7) >= mesClave());
             if (hayMods) {
@@ -3452,17 +3518,21 @@
                 const uo = op[op.length - 1];
                 if (Math.abs(uo.v - planPts[planPts.length - 1].v) >= 1) {
                     svg += `<path d="${linea(op)}" class="g-orig"/>`;
-                    svg += `<text x="${x(uo.d) + 8}" y="${y(uo.v) + (uo.v > planPts[planPts.length - 1].v ? -6 : 14)}" class="g-lbl orig">Original ${fmtTn0(uo.v)}</text>`;
+                    etiquetas.push({ x0: x(uo.d), y0: y(uo.v), nom: 'Obj. original', val: fmtTn0(uo.v), cls: 'orig' });
+                    graficoConOriginal = true;
                 }
             }
             const up = planPts[planPts.length - 1];
-            let yPlan = y(up.v) + 4;
-            if (reales.length) {
-                const ur = reales[reales.length - 1];
-                const yReal = y(ur.real) + 4;
-                if (x(up.d) - x(ur.d) < 90 && Math.abs(yPlan - yReal) < 14) yPlan = yReal + (ur.real >= up.v ? 14 : -14);
-            }
-            svg += `<text x="${x(up.d) + 8}" y="${yPlan}" class="g-lbl">${fuenteActual() === 'obj' ? 'Objetivo' : 'Plan'} ${fmtTn0(up.v)}</text>`;
+            etiquetas.push({ x0: x(up.d), y0: y(up.v), nom: fuenteActual() === 'obj' ? (graficoConOriginal ? 'Obj. ajustado' : 'Objetivo') : 'Plan', val: fmtTn0(up.v), cls: 'plan' });
+            const margen = etiquetas.filter(e => !e.cerca).sort((a, b) => a.y0 - b.y0);
+            const gap = 26, yMin = mt + 4, yMax = H - mb - 14;
+            margen.forEach((e, i) => { e.y = Math.max(e.y0, i ? margen[i - 1].y + gap : yMin); });
+            for (let i = margen.length - 1; i >= 0; i--) { if (margen[i].y > yMax - (margen.length - 1 - i) * gap) margen[i].y = yMax - (margen.length - 1 - i) * gap; if (i < margen.length - 1 && margen[i].y > margen[i + 1].y - gap) margen[i].y = margen[i + 1].y - gap; }
+            const xl = W - mr + 12;
+            margen.forEach(e => {
+                svg += `<path d="M${e.x0.toFixed(1)},${e.y0.toFixed(1)} L${(xl - 4).toFixed(1)},${(e.y + 5).toFixed(1)}" class="g-guia ${e.cls}"/><circle cx="${e.x0.toFixed(1)}" cy="${e.y0.toFixed(1)}" r="2.5" class="g-fin ${e.cls}"/><text x="${xl}" y="${(e.y + 1).toFixed(1)}" class="g-lbl g-nom ${e.cls}">${e.nom}</text><text x="${xl}" y="${(e.y + 13).toFixed(1)}" class="g-lbl g-val ${e.cls}">${e.val} Tn</text>`;
+            });
+            etiquetas.filter(e => e.cerca).forEach(e => { svg += `<text x="${(e.x0 + 8).toFixed(1)}" y="${(e.y0 + 4).toFixed(1)}" class="g-lbl ${e.cls}">${e.nom} ${e.val}</text>`; });
             const ancho = (W - ml - mr) / Math.max(1, dias - 1);
             pts.forEach(p => {
                 const t = `${p.d}/${month + 1}\n${fuenteActual() === 'obj' ? 'Objetivo' : 'Plan'} acum.: ${fmtTn0(p.plan)} Tn${p.real !== null ? `\nReal acum.: ${fmtTn0(p.real)} Tn` : ''}${p.dia.real !== null ? `\nDel día: ${fmtTn0(p.dia.real)} Tn (${fuenteActual() === 'obj' ? 'objetivo' : 'plan'} ${fmtTn0(p.dia.planComp || p.dia.plan || 0)})` : ''}`;
@@ -3489,10 +3559,11 @@
                     <div class="at-pct ${claseRatio(r)}">${r === null ? (f.plan > 0 ? '–' : 'sin plan') : Math.round(r * 100) + '%'}</div>
                 </div>`;
             }).join('');
+            const graficoHtml = hayTn ? graficoAcumulado(tnDias, year, month) : '<p class="an-vacio">Sin datos de toneladas.</p>';
             cont.innerHTML = `
                 <div class="an-card">
-                    <div class="an-head"><h3>Toneladas acumuladas</h3><div class="an-leyenda"><span><i class="lg-real"></i>Real</span><span><i class="lg-plan"></i>${fuenteActual() === 'obj' ? 'Objetivo de Dirección' : 'Plan'}</span></div></div>
-                    ${hayTn ? graficoAcumulado(tnDias, year, month) : '<p class="an-vacio">Sin datos de toneladas.</p>'}
+                    <div class="an-head"><h3>Toneladas acumuladas</h3><div class="an-leyenda"><span><i class="lg-real"></i>Real</span><span><i class="lg-plan"></i>${fuenteActual() === 'obj' ? (graficoConOriginal ? 'Objetivo ajustado' : 'Objetivo de Dirección') : 'Plan'}</span>${graficoConOriginal ? '<span><i class="lg-orig"></i>Objetivo original</span>' : ''}</div></div>
+                    ${graficoHtml}
                 </div>
                 <div class="an-card">
                     <div class="an-head"><h3>Por tipo de ladrillo</h3><div class="an-nota">real a la fecha / ${fuenteActual() === 'obj' ? 'objetivo' : 'plan'} del mes · % vs ${fuenteActual() === 'obj' ? 'objetivo' : 'plan'} a la fecha <i class="nota-marca"></i></div></div>
@@ -3503,38 +3574,73 @@
         let filtroDesvios = 'pend';
         function setFiltroDesvios(f) { filtroDesvios = f; renderDesvios(); }
 
+        function filasRegistro() {
+            const filas = desviosMes.lista.map(e => ({ tipo: 'desvio', e, orden: e.fecha + e.turno, just: e.just }));
+            moldesExt.modificaciones.filter(m => m.fi.slice(0, 7) === mesClave() || m.ff.slice(0, 7) === mesClave()).forEach(m => {
+                filas.push({ tipo: 'mod', m, orden: m.fi + m.ti, just: m.motivo ? { motivo: m.motivo, sector: m.sector, detalle: m.justificacion } : null });
+            });
+            return filas.sort((a, b) => a.orden.localeCompare(b.orden));
+        }
+
         function renderDesvios() {
             const cont = document.getElementById('desviosInfo');
-            if (currentView !== 'cumpl') { cont.style.display = 'none'; cont.innerHTML = ''; return; }
-            cont.style.display = 'block';
+            if (currentView !== 'cumpl' && currentView !== 'plan') { cont.style.display = 'none'; cont.innerHTML = ''; return; }
             const editor = modo === 'produccion';
-            const todos = editor ? desviosMes.lista : desviosMes.lista.filter(e => e.just);
-            if (!todos.length) { cont.innerHTML = `<h3>📝 ${editor ? 'Registro de desvíos' : 'Desvíos justificados'}</h3><p class="desv-vacio">${editor ? 'Sin desvíos de producción en turnos cerrados este mes.' : 'Sin desvíos justificados por Producción este mes.'}</p>`; return; }
-            const pend = todos.filter(e => !e.just);
+            const todos = editor ? filasRegistro() : filasRegistro().filter(f => f.just);
+            if (currentView === 'plan' && !todos.some(f => f.tipo === 'mod')) { cont.style.display = 'none'; cont.innerHTML = ''; return; }
+            cont.style.display = 'block';
+            const titulo = editor ? 'Registro de desvíos y modificaciones' : 'Desvíos y modificaciones justificados';
+            if (!todos.length) { cont.innerHTML = `<h3>📝 ${titulo}</h3><p class="desv-vacio">${editor ? 'Sin desvíos ni modificaciones del plan este mes.' : 'Sin desvíos justificados por Producción este mes.'}</p>`; return; }
+            const pend = todos.filter(f => !f.just);
             if (filtroDesvios === 'pend' && !pend.length) filtroDesvios = 'todos';
             const lista = editor && filtroDesvios === 'pend' ? pend : todos;
             const etiquetas = { desvio: 'Desvío', parcial: 'Parcial', noplan: 'Sin plan' };
-            let html = editor ? `<div class="desv-head"><h3>📝 Registro de desvíos <small>una justificación por bloque de desvío</small></h3>
-                <div class="desv-filtro"><button class="${filtroDesvios === 'pend' ? 'on' : ''}" onclick="setFiltroDesvios('pend')">Sin justificar <b>${pend.length}</b></button><button class="${filtroDesvios === 'todos' ? 'on' : ''}" onclick="setFiltroDesvios('todos')">Todos <b>${todos.length}</b></button></div></div>` : `<div class="desv-head"><h3>📝 Desvíos justificados <small>${todos.length} bloque${todos.length > 1 ? 's' : ''} explicado${todos.length > 1 ? 's' : ''} por Producción</small></h3></div>`;
-            html += `<table class="desv-tabla"><thead><tr><th>Bloque</th><th>Duración</th><th>Estado</th><th>Planificado</th><th>Real</th><th>Justificación</th><th></th></tr></thead><tbody>`;
-            lista.forEach(e => {
-                const j = e.just;
-                const coms = e.keys.filter(x => moldesExt.coment.has(x)).length;
-                html += `<tr class="${j ? 'ok' : 'pend'}" onclick="abrirGantt('${e.fecha}')" style="cursor:pointer">
-                    <td><b>${fechaCorta(e.fecha)}</b> ${e.turno}${e.turnos > 1 ? ` → <b>${fechaCorta(e.hasta.fecha)}</b> ${e.hasta.turno}` : ''}</td>
-                    <td>${e.turnos} turno${e.turnos > 1 ? 's' : ''}</td>
-                    <td><span class="desv-estado st-${e.status}">${etiquetas[e.status]}</span></td>
-                    <td>${escAttr(e.plan)}</td>
-                    <td>${escAttr(e.real)}</td>
-                    <td class="desv-just">${j ? `<b>${j.modif ? '✏️ ' : ''}${escAttr(j.motivo)}</b>${j.sector ? `<small> · ${escAttr(j.sector)}</small>` : ''}${j.detalle ? `<span>${escAttr(j.detalle)}</span>` : ''}` : '<span class="desv-pend">Sin justificar</span>'}${coms ? `<small>🗨 ${coms} comentario${coms > 1 ? 's' : ''} en turnos</small>` : ''}</td>
-                    <td>${modo === 'produccion' ? `<button class="desv-btn" onclick="event.stopPropagation(); abrirJustificacion('${e.k}')">${j ? 'Editar' : 'Justificar'}</button>` : ''}</td>
-                </tr>`;
+            const ico = { 'Cambio de molde': '🔁', 'Agregar producción': '➕', 'Quitar producción': '➖', 'Cambiar horas': '⏳' };
+            let objTxt = '';
+            if (moldesExt.modificaciones.some(m => m.fi.slice(0, 7) === mesClave() || m.ff.slice(0, 7) === mesClave())) {
+                const base = conPlan(planBase, () => calcularTnDias(currentDate.getFullYear(), currentDate.getMonth()));
+                const act = calcularTnDias(currentDate.getFullYear(), currentDate.getMonth());
+                const ult = formatYYYYMMDD(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0));
+                const oBase = base[ult] ? base[ult].acObj : 0, oAct = act[ult] ? act[ult].acObj : 0;
+                if (Math.abs(oAct - oBase) >= 1) objTxt = `<div class="mod-obj">Objetivo del mes <b>${fmtTn0(oBase)}</b> → <b>${fmtTn0(oAct)} Tn</b> <span class="mp-dif ${oAct < oBase ? 'menos' : 'mas'}">${oAct >= oBase ? '+' : '−'}${fmtTn0(Math.abs(oAct - oBase))}</span></div>`;
+            }
+            let html = `<div class="desv-head"><h3>📝 ${titulo} <small>mismas causas y sectores para el análisis de desvíos</small></h3>${objTxt}${editor ? `<div class="desv-filtro"><button class="${filtroDesvios === 'pend' ? 'on' : ''}" onclick="setFiltroDesvios('pend')">Sin justificar <b>${pend.length}</b></button><button class="${filtroDesvios === 'todos' ? 'on' : ''}" onclick="setFiltroDesvios('todos')">Todos <b>${todos.length}</b></button></div>` : ''}</div>`;
+            html += `<table class="desv-tabla"><thead><tr><th>Tipo</th><th>Período</th><th>Estado</th><th>Planificado</th><th>Real / nuevo plan</th><th>Causa</th><th></th></tr></thead><tbody>`;
+            const celdaCausa = j => j ? `<b>${j.modif ? '✏️ ' : ''}${escAttr(j.motivo)}</b>${j.sector ? `<small> · ${escAttr(j.sector)}</small>` : ''}${j.detalle ? `<span>${escAttr(j.detalle)}</span>` : ''}` : '<span class="desv-pend">Sin justificar</span>';
+            lista.forEach(f => {
+                if (f.tipo === 'desvio') {
+                    const e = f.e, j = e.just;
+                    const coms = e.keys.filter(x => moldesExt.coment.has(x)).length;
+                    html += `<tr class="${j ? 'ok' : 'pend'}" onclick="abrirGantt('${e.fecha}')" style="cursor:pointer">
+                        <td><span class="reg-tipo desv">🏭 Desvío</span></td>
+                        <td><b>${fechaCorta(e.fecha)}</b> ${e.turno}${e.turnos > 1 ? ` → <b>${fechaCorta(e.hasta.fecha)}</b> ${e.hasta.turno}` : ''}<small>${e.turnos} turno${e.turnos > 1 ? 's' : ''}</small></td>
+                        <td><span class="desv-estado st-${e.status}">${etiquetas[e.status]}</span></td>
+                        <td>${escAttr(e.plan)}</td>
+                        <td>${escAttr(e.real)}</td>
+                        <td class="desv-just">${celdaCausa(j)}${coms ? `<small>🗨 ${coms} comentario${coms > 1 ? 's' : ''} en turnos</small>` : ''}</td>
+                        <td>${editor ? `<button class="desv-btn" onclick="event.stopPropagation(); abrirJustificacion('${e.k}')">${j ? 'Editar' : 'Justificar'}</button>` : ''}</td>
+                    </tr>`;
+                } else {
+                    const m = f.m;
+                    const nuevo = m.tipo === 'Cambiar horas' ? `${escAttr(m.anterior || 'mismo molde')} · ${fmtDias(m.horas)} h` : m.nuevo ? `${escAttr(m.nuevo)}${m.horas < HORAS_TURNO ? ` (${fmtDias(m.horas)} h)` : ''}` : 'sin producción';
+                    const n = m.turnos || keysEntre(m.fi, m.ti, m.ff, m.tf).length;
+                    html += `<tr class="${f.just ? 'ok' : 'pend'} reg-mod" onclick="abrirGantt('${m.fi}')" style="cursor:pointer">
+                        <td><span class="reg-tipo mod">✏️ Modificación</span>${m.solicitud ? '<small>💼 Solicitud de Comercial</small>' : ''}</td>
+                        <td><b>${fechaCorta(m.fi)}</b> ${m.ti} → <b>${fechaCorta(m.ff)}</b> ${m.tf}<small>${n} turno${n > 1 ? 's' : ''} · ${escAttr(m.marca || '')}</small></td>
+                        <td><span class="mod-tipo">${ico[m.tipo] || '✏️'} ${escAttr(m.tipo)}</span>${m.excluir ? '<small>no cuenta para el objetivo</small>' : ''}</td>
+                        <td>${escAttr(m.anterior || '–')}</td>
+                        <td>${nuevo}</td>
+                        <td class="desv-just">${celdaCausa(f.just)}</td>
+                        <td>${editor ? `<button class="desv-btn" onclick="event.stopPropagation(); abrirCausaMod('${escAttr(m.id)}')">${f.just ? 'Editar' : 'Justificar'}</button>` : ''}</td>
+                    </tr>`;
+                }
             });
             cont.innerHTML = html + '</tbody></table>';
         }
 
         const OPCIONES_HORAS = [8, 7.5, 7, 6.5, 6, 5.5, 5, 4.5, 4, 3.5, 3, 2.5, 2, 1.5, 1];
         const SECTORES_BASE = ['Producción', 'Comercial', 'Matricería', 'Mantenimiento', 'Dirección'];
+        function ordenarCausas(lista) { return lista.slice().sort((a, b) => (/^otro/i.test(a) - /^otro/i.test(b)) || a.localeCompare(b, 'es', { sensitivity: 'base' })); }
         function catalogoVigente() {
             const c = moldesExt.catalogo;
             return c ? c : { motivos: MOTIVOS_DESVIO.map(nombre => ({ nombre, activo: true })), sectores: SECTORES_BASE.map(nombre => ({ nombre, activo: true })) };
@@ -3543,7 +3649,7 @@
             const c = catalogoVigente()[tipo];
             const lista = c.filter(x => x.activo).map(x => x.nombre);
             if (actual && !lista.includes(actual)) lista.push(actual);
-            return lista;
+            return ordenarCausas(lista);
         }
         const MOTIVOS_DESVIO = ['Falla de equipo / mantenimiento correctivo', 'Molde no disponible o en reparación', 'Calibración o ajuste de molde', 'Falta de materia prima / arcilla', 'Problema de calidad', 'Cambio de prioridad comercial', 'Corte de energía o gas', 'Falta de personal', 'Error de planificación o de carga', 'Otro'];
         let justifActual = null;
@@ -3629,6 +3735,7 @@
         async function guardarJustificacion() {
             const ja = justifActual;
             if (!ja) return;
+            if (ja.tipo === 'Modificacion') return guardarCausaMod(ja.m);
             const porTurno = ja.tipo === 'Bloque' && !document.getElementById('jfAlcanceWrap').hidden && elegirAlcance() === 'Turno';
             const esBloque = ja.tipo === 'Bloque';
             const motivo = esBloque ? document.getElementById('jfMotivo').value : 'Comentario';
@@ -3823,9 +3930,9 @@
             L.push('   Qué mide: si en cada turno cerrado se produjo el TIPO de ladrillo planificado.');
             L.push('   Cálculo: promedio del puntaje de cada turno cerrado = tipos planificados que se produjeron / (tipos planificados + tipos no planificados).');
             L.push(`   Lectura: ${lecturaProd}`);
-            if (nEval && anCausas.total >= 0.005) {
-                const pp = v => (v / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 });
-                L.push('   Causas de desvío (puntos de cumplimiento perdidos según las justificaciones):');
+            if (anCausas.turnos) {
+                const pp = v => (v / Math.max(1, nEval) * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 });
+                L.push('   Causas de desvío (turnos cerrados con desvío o modificación del plan, según sector y motivo registrados):');
                 anCausas.motivos.forEach(c => L.push(`      Motivo · ${c.nombre}: ${Math.round(c.pct * 100)}% (${c.turnos} turnos, −${pp(c.perd)} pts)`));
                 anCausas.sectores.forEach(c => L.push(`      Sector · ${c.nombre}: ${Math.round(c.pct * 100)}% (${c.turnos} turnos, −${pp(c.perd)} pts)`));
             }
@@ -5014,29 +5121,27 @@
             }
         }
 
-        let causaModActual = null;
         function abrirCausaMod(id) {
             if (modo !== 'produccion') return;
             const m = moldesExt.modificaciones.find(x => x.id === id);
             if (!m) return;
-            causaModActual = m;
-            document.getElementById('mcResumen').innerHTML = `<b>${escAttr(m.tipo)}</b> · ${fechaCorta(m.fi)} ${m.ti} → ${fechaCorta(m.ff)} ${m.tf}<br><span>Plan:</span> ${escAttr(m.anterior || '—')} → ${m.tipo === 'Cambiar horas' ? fmtDias(m.horas) + ' h por turno' : escAttr(m.nuevo || 'sin producción')}`;
-            document.getElementById('mcSector').innerHTML = '<option value="">Seleccionar sector…</option>' + opcionesCat('sectores', m.sector).map(x => `<option${x === m.sector ? ' selected' : ''}>${escAttr(x)}</option>`).join('');
-            document.getElementById('mcMotivo').innerHTML = '<option value="">Seleccionar motivo…</option>' + opcionesCat('motivos', m.motivo).map(x => `<option${x === m.motivo ? ' selected' : ''}>${escAttr(x)}</option>`).join('');
-            document.getElementById('mcObs').value = m.justificacion || '';
-            document.getElementById('mcMsg').textContent = ''; document.getElementById('mcMsg').className = 'jf-msg';
-            document.getElementById('mcGuardar').disabled = false;
-            document.getElementById('causaModModal').classList.add('open');
+            justifActual = { tipo: 'Modificacion', m };
+            document.getElementById('jfTitulo').textContent = '📝 Justificar modificación del plan';
+            document.getElementById('jfResumen').innerHTML = `<b>${escAttr(m.tipo)}</b> · ${fechaCorta(m.fi)} ${m.ti} → ${fechaCorta(m.ff)} ${m.tf}<br><span>Plan:</span> ${escAttr(m.anterior || '—')}<br><span>Nuevo:</span> ${m.tipo === 'Cambiar horas' ? fmtDias(m.horas) + ' h por turno' : escAttr(m.nuevo || 'sin producción')}`;
+            document.getElementById('jfAlcanceWrap').hidden = true;
+            llenarMotivos({ motivo: m.motivo, sector: m.sector });
+            document.getElementById('jfMotivoWrap').hidden = false;
+            document.getElementById('jfDetalleLbl').textContent = 'Observación (opcional)';
+            document.getElementById('jfDetalle').placeholder = 'Ej.: se cambió a H18 por rotura del molde H12 (3)';
+            prepararFormJust(m.justificacion, '');
         }
-        function cerrarCausaMod() { document.getElementById('causaModModal').classList.remove('open'); causaModActual = null; }
-        async function guardarCausaMod() {
-            const m = causaModActual;
-            if (!m) return;
-            const sector = document.getElementById('mcSector').value, motivo = document.getElementById('mcMotivo').value, obs = document.getElementById('mcObs').value.trim();
-            const msg = document.getElementById('mcMsg');
+
+        async function guardarCausaMod(m) {
+            const sector = document.getElementById('jfSector').value, motivo = document.getElementById('jfMotivo').value, obs = document.getElementById('jfDetalle').value.trim();
+            const msg = document.getElementById('jfMsg');
             if (!sector) { msg.textContent = 'Elegí el sector responsable.'; msg.className = 'jf-msg err'; return; }
-            if (!motivo) { msg.textContent = 'Elegí el motivo.'; msg.className = 'jf-msg err'; return; }
-            const btn = document.getElementById('mcGuardar');
+            if (!motivo) { msg.textContent = 'Elegí un motivo.'; msg.className = 'jf-msg err'; return; }
+            const btn = document.getElementById('jfGuardar');
             btn.disabled = true; msg.textContent = 'Guardando…'; msg.className = 'jf-msg';
             try {
                 await postEditor({ accion: 'causaModificacion', id: m.id, sector, motivo, justificacion: obs });
@@ -5044,34 +5149,13 @@
                 reaplicarPlan();
                 desviosMes = calcularDesvios(currentDate.getFullYear(), currentDate.getMonth());
                 msg.textContent = '✅ Justificación guardada'; msg.className = 'jf-msg ok';
-                setTimeout(() => { cerrarCausaMod(); renderGantt(); }, 500);
+                setTimeout(() => { cerrarJustificacion(); renderGantt(); }, 500);
             } catch (err) { msg.textContent = '❌ ' + err.message; msg.className = 'jf-msg err'; btn.disabled = false; }
         }
 
         function renderModificaciones() {
             const cont = document.getElementById('modsInfo');
-            const mods = moldesExt.modificaciones.filter(m => m.fi.slice(0, 7) === mesClave() || m.ff.slice(0, 7) === mesClave());
-            if ((currentView !== 'plan' && currentView !== 'cumpl') || !mods.length) { cont.style.display = 'none'; cont.innerHTML = ''; return; }
-            cont.style.display = 'block';
-            const base = conPlan(planBase, () => calcularTnDias(currentDate.getFullYear(), currentDate.getMonth()));
-            const act = calcularTnDias(currentDate.getFullYear(), currentDate.getMonth());
-            const ult = formatYYYYMMDD(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0));
-            const oBase = base[ult] ? base[ult].acObj : 0, oAct = act[ult] ? act[ult].acObj : 0;
-            const ico = { 'Cambio de molde': '🔁', 'Agregar producción': '➕', 'Quitar producción': '➖', 'Cambiar horas': '⏳' };
-            const sinCausa = mods.filter(m => !m.motivo).length;
-            let html = `<div class="desv-head"><h3>✏️ Modificaciones del plan <small>registradas por Producción${sinCausa ? ` · <span class="desv-pend">${sinCausa} sin justificar</span>` : ''}</small></h3><div class="mod-obj">Objetivo del mes <b>${fmtTn0(oBase)}</b> → <b>${fmtTn0(oAct)} Tn</b> <span class="mp-dif ${oAct < oBase ? 'menos' : oAct > oBase ? 'mas' : ''}">${oAct >= oBase ? '+' : '−'}${fmtTn0(Math.abs(oAct - oBase))}</span></div></div>
-                <table class="desv-tabla mod-tabla"><thead><tr><th>Registro</th><th>Modificación</th><th>Turnos</th><th>Justificación</th><th>Origen</th></tr></thead><tbody>`;
-            mods.slice().reverse().forEach(m => {
-                const rec = m.solicitud ? moldesExt.recomendaciones.find(r => r.id === m.solicitud) : null;
-                html += `<tr class="mod-fila ${m.tipo === 'Quitar producción' ? 'quitar' : 'cambio'}">
-                    <td><b>${escAttr(m.marca || '')}</b>${m.autor ? `<small>${escAttr(m.autor)}</small>` : ''}</td>
-                    <td><span class="mod-tipo">${ico[m.tipo] || '✏️'} ${escAttr(m.tipo)}</span><div class="mod-det">${m.anterior ? `<s>${escAttr(m.anterior)}</s> ` : ''}${m.tipo === 'Cambiar horas' ? `→ <b>${fmtDias(m.horas)} h por turno</b>` : m.nuevo ? `→ <b>${escAttr(m.nuevo)}</b>${m.horas < HORAS_TURNO ? ` <small>(${fmtDias(m.horas)} h)</small>` : ''}` : '→ <b>sin producción</b>'}${m.excluir ? ' <small>· no cuenta para el objetivo</small>' : ''}</div></td>
-                    <td>${fechaCorta(m.fi)} ${m.ti} → ${fechaCorta(m.ff)} ${m.tf}<small>${m.turnos || keysEntre(m.fi, m.ti, m.ff, m.tf).length} turnos</small></td>
-                    <td class="desv-just">${m.motivo ? `<b>${escAttr(m.motivo)}</b><small> · ${escAttr(m.sector)}</small>${m.justificacion ? `<span>${escAttr(m.justificacion)}</span>` : ''}${modo === 'produccion' ? `<button class="mod-just-btn" onclick="abrirCausaMod('${escAttr(m.id)}')">Editar</button>` : ''}` : `${m.justificacion ? `<span>${escAttr(m.justificacion)}</span>` : ''}<span class="desv-pend">Sin sector ni motivo</span>${modo === 'produccion' ? `<button class="mod-just-btn" onclick="abrirCausaMod('${escAttr(m.id)}')">Justificar</button>` : ''}`}</td>
-                    <td>${m.solicitud ? `<span class="mod-origen com">💼 Solicitud de Comercial</span>${rec ? `<small>${escAttr(rec.accion)} · ${escAttr(rec.tipo)}</small>` : ''}` : '<span class="mod-origen prod">🏭 Producción</span>'}</td>
-                </tr>`;
-            });
-            cont.innerHTML = html + '</tbody></table>';
+            cont.style.display = 'none'; cont.innerHTML = '';
         }
 
         function palletsPlanTipo(tipo, desde, hasta) {
