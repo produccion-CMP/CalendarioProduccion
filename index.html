@@ -2827,13 +2827,16 @@
         function prismaHtml(k, dateStr, turno) {
             const orig = planBase ? planBase[k] : null, act = (planUltimo || planData)[k];
             const et = estadoTurno(dateStr, turno);
-            let segunda;
+            const ultMod = (modTurnos.get(k) || []).slice(-1)[0];
+            const tipoMod = ultMod ? ({ 'Quitar producción': 'Quitado', 'Cambio de molde': 'Cambio', 'Agregar producción': 'Agregado', 'Cambiar horas': 'Horas' }[ultMod.tipo] || 'Modif.') : 'Modif.';
+            let extra = '';
             if (et === 'pasado') {
                 const ev = evaluarProduccion(dateStr, turno);
                 const est = ev.status === 'cumplido' ? '<span class="pr-st ok">✓ Cumplió</span>' : ev.status === 'parcial' ? '<span class="pr-st par">◐ Parcial</span>' : ev.status === 'desvio' ? '<span class="pr-st mal">✕ Desvío</span>' : ev.status === 'noplan' ? '<span class="pr-st mal">➕ Sin plan</span>' : '';
-                const modTxt = firmaHoras(act) !== firmaHoras(realData[k]) ? `<span class="pr-h">mod.: ${getProdSeq(act).map(m => m.baseName + '·' + m.number).join(' → ') || 'sin prod.'}</span>` : '';
-                segunda = getProdSeq(realData[k]).length ? caraPrisma(realData[k], 'Real', 'c1 pr-real', est + modTxt) : `<div class="pr-cara c1 pr-real pr-vacia"><span class="pr-et">Real</span>${ev.status === 'desvio' ? '<span class="pr-st mal">✕ No se produjo</span>' : est}${modTxt}</div>`;
-            } else segunda = caraPrisma(act, 'Modif.', 'c1');
+                const sr = getProdSeq(realData[k]);
+                extra = `${est}<span class="pr-h">real: ${sr.length ? sr.map(m => m.baseName + '·' + m.number).join(' → ') : 'sin prod.'}</span>`;
+            }
+            const segunda = caraPrisma(act, tipoMod, 'c1' + (et === 'pasado' ? ' pr-pasado' : ''), extra);
             return `<div class="prisma">${caraPrisma(orig, 'Orig.', 'c0')}${segunda}</div>`;
         }
 
