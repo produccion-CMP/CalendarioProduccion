@@ -166,7 +166,7 @@
         .txt-dark .mold-image { background: rgba(0,0,0,0.08); }
         .split-sweep { position: absolute; inset: 0; z-index: 1; pointer-events: none; background: linear-gradient(170deg, transparent 0%, transparent 30%, rgba(255,255,255,0.4) 42%, transparent 54%, transparent 100%); background-size: 100% 260%; animation: splitSweep 2.6s ease-in-out infinite; mix-blend-mode: soft-light; }
         @keyframes splitSweep { 0% { background-position: 0 100%; } 65%, 100% { background-position: 0 0; } }
-        @media (prefers-reduced-motion: reduce) { .split-sweep { animation: none; } }
+        @media (prefers-reduced-motion: reduce) { body:not(.anim-on) .split-sweep { animation: none; } }
 
         .ci-noplan { background: #5e5ce6; }
         .ci-pendiente, .ci-hoy { background: transparent; box-shadow: none; border: 1px dashed var(--border); }
@@ -269,7 +269,7 @@
         @keyframes marcaIn { from { opacity: 0; transform: scale(0.2); transform-origin: top right; } to { opacity: 1; transform: none; } }
         .gantt-table td .mold-warn { animation: popIn 0.4s both, avisoLatido 2.2s 0.4s ease-in-out infinite; }
         @keyframes avisoLatido { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
-        @media (prefers-reduced-motion: reduce) { .mold-image, .tn-tag, .test-marker, .indicator-pr::after, .gantt-table td .mold-warn, .mv { animation: none !important; } }
+        @media (prefers-reduced-motion: reduce) { body:not(.anim-on) .mold-image, body:not(.anim-on) .tn-tag, body:not(.anim-on) .test-marker, body:not(.anim-on) .indicator-pr::after, body:not(.anim-on) .gantt-table td .mold-warn, body:not(.anim-on) .mv { animation: none !important; } }
         body.printing .mold-image, body.printing .tn-tag, body.printing .test-marker, body.printing .mold-warn { animation: none !important; }
         body.printing .indicator-pr::after { display: none; }
         .pr-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; }
@@ -365,7 +365,7 @@
         .bnp-text { display: flex; flex-direction: column; line-height: 1.15; text-align: left; }
         .bnp-text strong { font-size: 0.95rem; font-weight: 800; letter-spacing: 0.2px; }
         .bnp-text small { font-size: 0.7rem; font-weight: 600; opacity: 0.9; }
-        @media (prefers-reduced-motion: reduce) { .btn-new-plan::after { animation: none; display: none; } }
+        @media (prefers-reduced-motion: reduce) { body:not(.anim-on) .btn-new-plan::after { animation: none; display: none; } }
 
         .comp-indicator { position: relative; }
         .ci-test { position: absolute; top: -5px; right: -5px; width: 17px; height: 17px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; line-height: 1; border: 2px solid var(--bg-panel); box-shadow: 0 1px 3px rgba(0,0,0,0.5); z-index: 3; }
@@ -380,7 +380,7 @@
 
         td.turno-actual::before { content: ''; position: absolute; inset: 2px; border-radius: 6px; border: 2px solid #fff; box-shadow: 0 0 0 2px rgba(0,0,0,0.55), 0 0 12px rgba(255,255,255,0.6); z-index: 4; pointer-events: none; animation: turnoPulse 1.8s ease-in-out infinite; }
         @keyframes turnoPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
-        @media (prefers-reduced-motion: reduce) { td.turno-actual::before { animation: none; } }
+        @media (prefers-reduced-motion: reduce) { body:not(.anim-on) td.turno-actual::before { animation: none; } }
         .legend-now { width: 22px; height: 22px; border-radius: 6px; border: 2px solid #fff; box-shadow: 0 0 0 2px rgba(0,0,0,0.55), 0 0 10px rgba(255,255,255,0.5); background: var(--bg-cell); }
         .mold-var { font-size: 0.8em; font-weight: 800; opacity: 0.85; margin-left: 1px; }
 
@@ -577,7 +577,7 @@
         th.today-col { background: linear-gradient(180deg, var(--accent), #b9572c) !important; border-color: var(--accent) !important; }
         th.today-col .day-number, th.today-col .day-name { color: #fff !important; }
         td.today-col { border-left: 2px solid var(--accent) !important; border-right: 2px solid var(--accent) !important; }
-        @media (prefers-reduced-motion: reduce) { .gantt-table tbody td, .kpi-card, .indicator-change, .indicator-pr, .gantt-wrapper.swap, .desv-item, .ci-just.pend { animation: none !important; } .seg-ind, .kpi-ring span, .tipo-bar .fill { transition: none; } }
+        @media (prefers-reduced-motion: reduce) { body:not(.anim-on) .gantt-table tbody td, body:not(.anim-on) .kpi-card, body:not(.anim-on) .indicator-change, body:not(.anim-on) .indicator-pr, body:not(.anim-on) .gantt-wrapper.swap, body:not(.anim-on) .desv-item, body:not(.anim-on) .ci-just.pend { animation: none !important; } body:not(.anim-on) .seg-ind, body:not(.anim-on) .kpi-ring span, body:not(.anim-on) .tipo-bar .fill { transition: none; } }
 
         @media screen and (max-width: 768px) {
             .seg { min-width: 0; width: 100%; }
@@ -834,6 +834,11 @@
         .kc-fila span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; } .kc-fila b { text-align: right; }
         .kc-sub { font-size: 0.66rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--text-muted); margin-bottom: 2px; }
         @media (max-width: 700px) { .kc-grid { grid-template-columns: 1fr; } .ca-fila { grid-template-columns: 1.4fr 1fr 48px 46px; } }
+        .anim-cfg { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
+        .anim-tit { font-size: 0.8rem; font-weight: 800; margin-bottom: 6px; } .anim-tit small { color: var(--text-muted); font-weight: 600; }
+        .anim-seg { display: flex; gap: 4px; padding: 3px; border-radius: 10px; background: rgba(127,127,127,0.12); }
+        .anim-seg button { flex: 1; padding: 7px 6px; border: 0; border-radius: 8px; background: transparent; color: var(--text-muted); font-family: var(--font); font-weight: 800; font-size: 0.74rem; cursor: pointer; }
+        .anim-seg button.on { background: var(--accent); color: #fff; }
         .jf-alcance { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
         .jf-box .jf-alcance label { flex: 1 1 160px; display: flex; gap: 8px; align-items: flex-start; padding: 8px 10px; border-radius: 10px; border: 1px solid var(--border); background: var(--bg-cell); cursor: pointer; margin: 0; text-transform: none; letter-spacing: 0; font-size: 0.82rem; }
         .jf-alcance input { margin-top: 2px; accent-color: var(--accent); }
@@ -1113,7 +1118,7 @@
             .gd-cards { grid-template-columns: 1fr; }
             .gd-cards > div:first-child { display: none; }
         }
-        @media (prefers-reduced-motion: reduce) { .gb, .gp, .gt-card, .gd-ahora { animation: none !important; } }
+        @media (prefers-reduced-motion: reduce) { body:not(.anim-on) .gb, body:not(.anim-on) .gp, body:not(.anim-on) .gt-card, body:not(.anim-on) .gd-ahora { animation: none !important; } }
 
 
         /* ===== v12 ===== */
@@ -1168,7 +1173,7 @@
         .mv-post { background: #5e5ce6; font-size: 11px; }
         .gantt-table td.td-prisma { perspective: 520px; background: var(--bg-body); padding: 0; }
         .prisma { --pz: calc(var(--cell-h) * 0.2887); position: absolute; inset: 0; transform-style: preserve-3d; animation: prismaGira 10.5s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
-        .pr-cara { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 16px 2px 15px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); }
+        .pr-cara { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 17px 2px 15px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); }
         .pr-cara.c0 { transform: rotateX(0deg) translateZ(var(--pz)); }
         .pr-cara.c1 { transform: rotateX(120deg) translateZ(var(--pz)); }
         .pr-cara.c2 { transform: rotateX(240deg) translateZ(var(--pz)); }
@@ -1182,6 +1187,9 @@
         .pr-et { position: absolute; bottom: 2px; left: 2px; right: 2px; padding: 1px 2px; border-radius: 5px; font-size: 8px; text-align: center; font-weight: 900; letter-spacing: 0; text-transform: uppercase; background: rgba(0,0,0,0.62); color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .pr-cara.c1 .pr-et { background: #5e5ce6; }
         .pr-cara.c2 .pr-et { background: rgba(255,255,255,0.9); color: #111; }
+        .pr-img { width: 26px; height: 26px; object-fit: contain; border-radius: 6px; background: rgba(255,255,255,0.15); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); flex: 0 0 auto; }
+        .pr-cara.txt-dark .pr-img { background: rgba(0,0,0,0.08); }
+        @media (min-width: 769px) { body.view-plan:not(.printing) { --cell-h: 96px; } }
         .pr-mold { font-size: 11px; font-weight: 900; line-height: 1.1; text-align: center; word-break: break-word; }
         .pr-mold small { font-size: 0.8em; margin-left: 1px; } .pr-mold i { font-style: normal; opacity: 0.7; margin: 0 2px; }
         .pr-h { font-size: 9px; font-weight: 800; opacity: 0.85; text-align: center; line-height: 1.1; }
@@ -1191,7 +1199,7 @@
         .pr-st.ok { background: var(--green); color: #04210d; } .pr-st.par { background: var(--orange); color: #2a1700; } .pr-st.mal { background: var(--red); color: #fff; }
         .legend-prisma { position: relative; width: 22px; height: 22px; perspective: 120px; --cell-h: 22px; border-radius: 5px; overflow: hidden; }
         .legend-prisma .pr-cara { padding: 0; } .legend-prisma .c0 { background: #ff9f0a; } .legend-prisma .c1 { background: #5e5ce6; } .legend-prisma .c2 { background: #30d158; }
-        @media (prefers-reduced-motion: reduce) { .prisma { animation: none; transform: translateZ(calc(var(--pz) * -1)) rotateX(-120deg); } }
+        @media (prefers-reduced-motion: reduce) { body:not(.anim-on) .prisma { animation: none; transform: translateZ(calc(var(--pz) * -1)) rotateX(-120deg); } }
         body.printing .prisma { animation: none !important; transform: none !important; }
         body.printing .pr-cara.c0, body.printing .pr-cara.c2 { display: none; }
         body.printing .pr-cara.c1 { transform: none; }
@@ -1405,6 +1413,9 @@
             .app-header, .views-container, .month-nav, .month-selector, .gantt-modal, .overlay, #loader { display: none !important; }
             * { animation: none !important; transition: none !important; }
         }
+    
+        body.anim-off *, body.anim-off *::before, body.anim-off *::after { animation: none !important; transition: none !important; }
+        body.anim-off .prisma { transform: translateZ(calc(var(--pz) * -1)) rotateX(-120deg) !important; }
     </style>
 </head>
 <body class="view-prod">
@@ -1585,6 +1596,14 @@
                     <button class="prim" id="modoBtn" onclick="ingresarModo()">Ingresar</button>
                 </div>
                 <div class="jf-msg" id="modoMsg"></div>
+            </div>
+            <div class="anim-cfg">
+                <div class="anim-tit">🎞 Animaciones <small id="animNota"></small></div>
+                <div class="anim-seg" role="radiogroup" aria-label="Animaciones">
+                    <button data-a="auto" onclick="setAnimPref('auto')">Automático</button>
+                    <button data-a="on" onclick="setAnimPref('on')">Siempre activas</button>
+                    <button data-a="off" onclick="setAnimPref('off')">Desactivadas</button>
+                </div>
             </div>
         </div>
     </div>
@@ -1810,6 +1829,30 @@
     </div>
 
     <script>
+        function sistemaSinAnim() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
+        function leerAnimPref() { try { return localStorage.getItem('animPref') || 'auto'; } catch (e) { return 'auto'; } }
+        function aplicarAnimPref() {
+            const p = leerAnimPref();
+            document.body.classList.toggle('anim-on', p === 'on');
+            document.body.classList.toggle('anim-off', p === 'off');
+            document.querySelectorAll('.anim-seg button').forEach(b => b.classList.toggle('on', b.dataset.a === p));
+            const nota = document.getElementById('animNota');
+            if (nota) nota.textContent = sistemaSinAnim() ? '· tu equipo tiene las animaciones desactivadas en el sistema' : '· tu equipo permite animaciones';
+        }
+        function setAnimPref(p) {
+            try { localStorage.setItem('animPref', p); } catch (e) { }
+            aplicarAnimPref();
+            if (typeof renderGantt === 'function' && typeof planData !== 'undefined') renderGantt();
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            aplicarAnimPref();
+            let avisado = false;
+            try { avisado = localStorage.getItem('animAviso') === '1'; } catch (e) { }
+            if (sistemaSinAnim() && leerAnimPref() === 'auto' && !avisado) {
+                setTimeout(() => { if (typeof toast === 'function') toast('🎞 Tu equipo tiene las animaciones desactivadas, por eso no se ven los giros ni transiciones. Podés activarlas en ⚙️ Modo › Animaciones › Siempre activas.', ''); }, 4000);
+                try { localStorage.setItem('animAviso', '1'); } catch (e) { }
+            }
+        });
         const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';
         const CSV_REAL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=307264581&single=true&output=csv';
         const CSV_MOLDES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=164840916&single=true&output=csv';
@@ -2740,7 +2783,8 @@
             const ult = seq[seq.length - 1];
             const txt = pickTextColor(getBrickColor(ult.baseName, ult.number));
             const h = Math.min(HORAS_TURNO, tot);
-            return `<div class="pr-cara ${cls}" style="${fondoSeq(seq, prop)} color:${txt};"><span class="pr-et">${etiqueta}</span><b class="pr-mold">${seq.map(m => `${escAttr(m.baseName)}${m.variante ? `<small>${escAttr(m.variante)}</small>` : ''}·${m.number}`).join('<i>→</i>')}</b>${h < HORAS_TURNO - 0.01 ? `<span class="pr-h">${fmtDias(h)} h</span>` : ''}${extra || ''}</div>`;
+            const img = `<img src="${getImageSrc(ult.baseName)}" class="pr-img" onerror="this.src='${FALLBACK_IMG}'" alt="${escAttr(ult.baseName)}">`;
+            return `<div class="pr-cara ${cls}${txt === '#000' ? ' txt-dark' : ''}" style="${fondoSeq(seq, prop)} color:${txt};"><span class="pr-et">${etiqueta}</span>${img}<b class="pr-mold">${seq.map(m => `${escAttr(m.baseName)}${m.variante ? `<small>${escAttr(m.variante)}</small>` : ''}·${m.number}`).join('<i>→</i>')}</b>${h < HORAS_TURNO - 0.01 ? `<span class="pr-h">${fmtDias(h)} h</span>` : ''}${extra || ''}</div>`;
         }
         function prismaHtml(k, dateStr, turno) {
             const orig = planBase ? planBase[k] : null, act = (planUltimo || planData)[k];
@@ -3055,11 +3099,13 @@
                 if (aviso) markers += `<div class="mold-warn mw-${aviso.nivel}">!</div>`;
                 let extraAttr = '', onclick = `abrirGantt('${dateStr}')`;
                 const pc = postCierre.get(k);
+                const esPrisma = currentView === 'plan' && cambioPlan(k);
                 if (currentView === 'plan') {
                     const ids = bloquesMes.porTurno.get(k) || [];
                     const mov = movPlan.get(k);
-                    const mods = modTurnos.get(k);
-                    if (mov || mods || pc) markers += badgesMovimiento(mov || [], mods || [], k, pc);
+                    const mods = esPrisma ? null : modTurnos.get(k);
+                    const pcB = esPrisma ? null : pc;
+                    if (mov || mods || pcB) markers += badgesMovimiento(mov || [], mods || [], k, pcB);
                     if (ids.length) {
                         if (seleccionCompras) { extraAttr = ` data-bq="${ids.join(' ')}"`; onclick = `abrirBloque('${ids[ids.length - 1]}')`; }
                     }
@@ -3071,7 +3117,7 @@
                 const clsMod = (modsK ? (modsK[modsK.length - 1].tipo === 'Quitar producción' ? ' td-mod td-quitado' : ' td-mod') : '') + (pc && currentView !== 'prod' ? ' td-postcierre' : '');
                 const cls = `${extraCls} ${parts.cls}${clsMod}${clsSol}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}${seleccionCompras && extraAttr ? ' bq-sel' : ''}`;
                 const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (modsK ? `\n\n✏️ Modificado: ${modsK[modsK.length - 1].tipo}\n📝 ${modsK[modsK.length - 1].justificacion}` : '') + (pc && currentView !== 'prod' ? '\n\n' + textoPostCierre(k, pc) : '') + (seleccionCompras && extraAttr ? '\n\n💼 Clic para recomendar cambios en este bloque' : '');
-                if (currentView === 'plan' && cambioPlan(k)) {
+                if (esPrisma) {
                     hayPrisma = true;
                     return `<td class="${cls} td-prisma"${extraAttr} style="--d:${idx};${extraStyle}" title="${escAttr(tooltip + '\n\n⟲ La celda gira: plan original → plan actual (modificado) → real / desvío. Pasá el mouse para pausar.')}" onclick="${onclick}">${tnHtml}${markers}${prismaHtml(k, dateStr, turno)}</td>`;
                 }
@@ -4346,6 +4392,7 @@
             document.querySelectorAll('.modo-card').forEach(c => c.classList.toggle('activo', c.dataset.m === modo));
             const act = document.getElementById('modoActivo');
             act.innerHTML = modo ? `<div class="modo-actual">${MODOS[modo].ico} Estás en <b>${MODOS[modo].nombre}</b><button onclick="salirModo()">Salir a modo lectura</button></div>${modo === 'produccion' ? '<button class="modo-config" onclick="cerrarModos(); abrirMails()">📧 Configurar casillas de mail<small>A quién se envían las recomendaciones y validaciones de Comercial</small></button><button class="modo-config" onclick="cerrarModos(); abrirCatalogo()">🧭 Causas y sectores de desvío<small>Listas validadas para justificar incumplimientos: agregar, renombrar o quitar</small></button>' : ''}${modo === 'comercial' ? '<button class="modo-config" onclick="cerrarModos(); abrirSolicitudes(\'nec\')">💼 Solicitudes<small>Necesidades por tipo (pallets o Tn, mes actual o futuros) y modificaciones del plan</small></button>' : ''}` : '<div class="modo-actual lectura">👁️ Modo lectura (usuarios)</div>';
+            aplicarAnimPref();
             document.getElementById('modosModal').classList.add('open');
         }
 

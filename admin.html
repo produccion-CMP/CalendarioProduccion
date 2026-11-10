@@ -158,7 +158,7 @@
             .estim-grid .estim-kpi:last-child { grid-column: span 2; }
             .finde-dia { grid-template-columns: 1fr; }
         }
-        @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation: none !important; transition: none !important; } }
+        @media (prefers-reduced-motion: reduce) { body:not(.anim-on) *, body:not(.anim-on) *::before, body:not(.anim-on) *::after { animation: none !important; transition: none !important; } }
         .ob-sub { display: block; font-size: 0.7rem; font-weight: 600; color: var(--text-muted); }
         button.option-btn.mod-btn { flex-direction: row; justify-content: flex-start; text-align: left; gap: 14px; width: 100%; margin-top: 12px; border-style: dashed; }
         .mod-btn .mb-ico { font-size: 1.6rem; }
@@ -216,6 +216,9 @@
         .np-bar { grid-column: 1 / 3; height: 5px; border-radius: 3px; background: rgba(127,127,127,0.2); overflow: hidden; margin-top: 4px; }
         .np-bar span { display: block; height: 100%; background: var(--nc); border-radius: 3px; }
         .np-vacio { font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 10px; border: 1px dashed var(--border); border-radius: 10px; }
+    
+        body.anim-off *, body.anim-off *::before, body.anim-off *::after { animation: none !important; transition: none !important; }
+        body.anim-off .prisma { transform: translateZ(calc(var(--pz) * -1)) rotateX(-120deg) !important; }
     </style>
 </head>
 <body>
@@ -417,6 +420,7 @@
     </div>
 
     <script>
+        document.addEventListener('DOMContentLoaded', () => { let p = 'auto'; try { p = localStorage.getItem('animPref') || 'auto'; } catch (e) { } document.body.classList.toggle('anim-on', p === 'on'); document.body.classList.toggle('anim-off', p === 'off'); });
         const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbwAjJJAFBEoFsfmUMwr39qB9qI8EHAblwMItixZYul6blpw266f8Ho5Ilh26BSlNj_Jtg/exec';
         const CSV_MOLDES = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=164840916&single=true&output=csv';
         const CSV_PLAN = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vSOrhCEi7WZWpvdA95aWRwbS0pPAqYfNBvNRi0ZHTjS1SR2dDS3B2EyXyuYda_w9xhHqObojm4t81B8/pub?gid=323741265&single=true&output=csv';
@@ -1035,13 +1039,29 @@
         }
 
         function modificacionesActuales() {
-            return ((stats && stats.modificaciones) || []).map(r => ({ id: r['ID'], tipo: r['Tipo'], horas: Number(String(r['Horas'] || '').replace(',', '.')) || 8, excluir: /^s/i.test(String(r['Excluir objetivo'] || '')), nuevo: r['Molde nuevo'] || '', fi: fechaISO(r['Fecha desde']), ti: r['Turno desde'], ff: fechaISO(r['Fecha hasta']), tf: r['Turno hasta'], justificacion: r['Justificación'] || '', marca: r['Marca temporal'] || '' })).filter(m => m.fi && m.ff && /^T[123]$/.test(m.ti) && /^T[123]$/.test(m.tf));
+            return ((stats && stats.modificaciones) || []).map(r => ({ id: r['ID'], tipo: r['Tipo'], horas: Number(String(r['Horas'] || '').replace(',', '.')) || 8, excluir: /^s/i.test(String(r['Excluir objetivo'] || '')), nuevo: r['Molde nuevo'] || '', fi: fechaISO(r['Fecha desde']), ti: r['Turno desde'], ff: fechaISO(r['Fecha hasta']), tf: r['Turno hasta'], justificacion: r['Justificación'] || '', marca: r['Marca temporal'] || '', hi: r['Hora desde'] || '', hf: r['Hora hasta'] || '' })).filter(m => m.fi && m.ff && /^T[123]$/.test(m.ti) && /^T[123]$/.test(m.tf));
+        }
+
+        function fechaHoraAdmin(txt) {
+            const t = String(txt || '').trim();
+            if (!t) return null;
+            if (/^\d{4}-\d{2}-\d{2}T/.test(t)) { const d = new Date(t); return isNaN(d) ? null : d; }
+            const m = t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:[ ,]+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+            if (m) return new Date(m[3].length === 2 ? 2000 + Number(m[3]) : Number(m[3]), Number(m[2]) - 1, Number(m[1]), Number(m[4] || 0), Number(m[5] || 0), Number(m[6] || 0));
+            return null;
+        }
+
+        function cortesFinalizados() {
+            const out = new Map();
+            ((stats && stats.planesFinalizados) || []).forEach(r => { const c = fechaHoraAdmin(r['Corte ISO']) || fechaHoraAdmin(r['Marca temporal']); if (r['Mes'] && c) out.set(r['Mes'], c.getTime()); });
+            return out;
         }
 
         function planVigente() {
             const mods = modificacionesActuales();
             const firmas = new Set(mods.filter(m => m.tipo !== 'Quitar producción' && m.nuevo).map(m => [normMolde(resolverMoldeAdmin(m.nuevo)), m.fi, m.ti, m.ff, m.tf].join('|')));
-            const plan = new Map(), marcas = new Map(), horas = new Map();
+            const cortes = cortesFinalizados();
+            const entradas = new Map();
             planFilas.forEach(r => {
                 if (String(r['TAREA'] || '').trim().replace(/Ã³/g, 'ó') !== 'Producción') return;
                 const molde = resolverMoldeAdmin(r['LADRILLO']);
@@ -1049,16 +1069,71 @@
                 const ti = String(r['TURNO INICIO'] || '').trim(), tf = String(r['TURNO FIN'] || '').trim();
                 if (!molde || !fi || !ff || !/^T[123]$/.test(ti) || !/^T[123]$/.test(tf)) return;
                 if (firmas.has([normMolde(molde), fi, ti, ff, tf].join('|'))) return;
-                const h = Number(String(r['HORAS TURNO'] || '').replace(',', '.'));
-                keysEntre(fi, ti, ff, tf).forEach(k => { if (!plan.has(k)) plan.set(k, []); if (!plan.get(k).includes(molde)) plan.get(k).push(molde); if (h > 0 && h < 8) horas.set(k, h); });
+                const hN = Number(String(r['HORAS TURNO'] || '').replace(',', '.'));
+                const h = hN > 0 && hN < 8 ? hN : 8;
+                const marca = fechaHoraAdmin(r['MARCA TEMPORAL']);
+                keysEntre(fi, ti, ff, tf).forEach(k => {
+                    const corte = cortes.get(k.slice(0, 7));
+                    const post = corte !== undefined && marca && marca.getTime() > corte;
+                    if (!entradas.has(k)) entradas.set(k, []);
+                    if (!entradas.get(k).some(e => e.m === molde && e.post === post)) entradas.get(k).push({ m: molde, h, post });
+                });
             });
-            mods.forEach(m => keysEntre(m.fi, m.ti, m.ff, m.tf).forEach(k => {
-                if (m.tipo === 'Cambiar horas') { if (m.horas < 8) horas.set(k, m.horas); else horas.delete(k); marcas.set(k, m); return; }
-                plan.set(k, m.tipo === 'Quitar producción' ? [] : [resolverMoldeAdmin(m.nuevo)]);
-                if (m.tipo !== 'Quitar producción' && m.horas < 8) horas.set(k, m.horas); else horas.delete(k);
-                marcas.set(k, m);
-            }));
-            return { plan, marcas, horas };
+            const ventanas = new Map();
+            entradas.forEach((lista, k) => {
+                const usar = lista.some(e => e.post) ? lista.filter(e => e.post) : lista;
+                const tot = usar.reduce((a, e) => a + e.h, 0);
+                const f = tot > 8 ? 8 / tot : 1;
+                let c = 0;
+                ventanas.set(k, usar.map(e => { const w = { m: e.m, ini: c, dur: e.h * f }; c += w.dur; return w; }));
+            });
+            const marcas = new Map();
+            mods.forEach(m => {
+                const keys = keysEntre(m.fi, m.ti, m.ff, m.tf);
+                const hMod = m.horas > 0 && m.horas < 8 ? m.horas : 8;
+                const oIni = offsetHoraAdmin(m.ti, m.hi, false), oFin = offsetHoraAdmin(m.tf, m.hf, true);
+                keys.forEach((k, idx) => {
+                    marcas.set(k, m);
+                    const actual = ventanas.get(k) || [];
+                    if (m.tipo === 'Cambiar horas') {
+                        const tot = actual.reduce((a, w) => a + w.dur, 0) || 1;
+                        let c = 0;
+                        ventanas.set(k, actual.map(w => { const d = w.dur * hMod / tot; const n = { m: w.m, ini: c, dur: d }; c += d; return n; }));
+                        return;
+                    }
+                    const a = idx === 0 ? oIni : 0, b = idx === keys.length - 1 ? oFin : 8;
+                    const nuevo = m.tipo === 'Quitar producción' ? null : resolverMoldeAdmin(m.nuevo);
+                    if (a > 0.001 || b < 7.999) {
+                        const rec = [];
+                        actual.forEach(w => {
+                            const w0 = w.ini, w1 = w.ini + w.dur;
+                            if (Math.min(w1, a) - w0 > 0.01) rec.push({ m: w.m, ini: w0, dur: Math.min(w1, a) - w0 });
+                            if (w1 - Math.max(w0, b) > 0.01) rec.push({ m: w.m, ini: Math.max(w0, b), dur: w1 - Math.max(w0, b) });
+                        });
+                        if (nuevo) rec.push({ m: nuevo, ini: a, dur: (b - a) * hMod / 8 });
+                        ventanas.set(k, rec.sort((x, y) => x.ini - y.ini));
+                    } else ventanas.set(k, nuevo ? [{ m: nuevo, ini: 0, dur: hMod }] : []);
+                });
+            });
+            const plan = new Map(), horas = new Map();
+            ventanas.forEach((ws, k) => {
+                plan.set(k, [...new Set(ws.map(w => w.m))]);
+                const tot = ws.reduce((a, w) => a + w.dur, 0);
+                if (ws.length && tot < 7.999) horas.set(k, tot);
+            });
+            plan.ventanas = ventanas;
+            return { plan, marcas, horas, ventanas };
+        }
+
+        function tnTipoVentanas(ventanas, k, tipo, tnTurno) {
+            const ws = ventanas.get(k) || [];
+            const tot = ws.reduce((a, w) => a + w.dur, 0);
+            const f = tot > 8 ? 8 / tot : 1;
+            return ws.reduce((a, w) => {
+                const lad = ladDe(w.m);
+                const coincide = normMolde(lad) === normMolde(tipo) || (normMolde(tipoBase(lad)) === normMolde(tipo) && !/9T|X\d/i.test(lad));
+                return a + (coincide ? tnTurno * w.dur * f / 8 : 0);
+            }, 0);
         }
 
         function objetivoMolde(molde) {
@@ -1068,6 +1143,14 @@
             return o ? o.v / 3 : 0;
         }
         function objetivoKeys(keys, plan, reemplazo, hrs) {
+            if (reemplazo === undefined && typeof hrs !== 'number' && plan && plan.ventanas) {
+                return keys.reduce((a, k) => {
+                    const ws = plan.ventanas.get(k) || [];
+                    const tot = ws.reduce((x, w) => x + w.dur, 0);
+                    const f = tot > 8 ? 8 / tot : 1;
+                    return a + ws.reduce((x, w) => x + objetivoMolde(w.m) * w.dur * f / 8, 0);
+                }, 0);
+            }
             return keys.reduce((a, k) => {
                 const ms = reemplazo !== undefined ? reemplazo : (plan.get(k) || []);
                 const h = typeof hrs === 'number' ? hrs : hrs instanceof Map && hrs.has(k) ? hrs.get(k) : 8;
@@ -1335,9 +1418,9 @@
                 return { mes: r['Mes'], tipo: r['Tipo de ladrillo'], pallets, cantidad: num(r['Cantidad']) || pallets, unidad: r['Unidad'] === 'Tn' ? 'Tn' : 'Pallets', limite: fechaISO(r['Fecha límite']), detalle: r['Detalle'] || '' };
             }).filter(n => n.tipo && n.mes >= mesAct).sort((a, b) => a.mes.localeCompare(b.mes) || (a.limite || '9').localeCompare(b.limite || '9'));
             if (!lista.length) { cont.innerHTML = '<div class="np-tit">📋 Necesidades de Comercial</div><div class="np-vacio">Comercial no cargó necesidades para este mes ni los próximos.</div>'; return; }
-            const { plan } = planVigente();
+            const { ventanas } = planVigente();
             const meses = [...new Set(lista.map(n => n.mes))];
-            cont.innerHTML = `<div class="np-tit">📋 Necesidades de Comercial <small>cobertura con el plan vigente</small></div>` + meses.map(mes => {
+            cont.innerHTML = `<div class="np-tit">📋 Necesidades de Comercial <small>cobertura con la última planificación (incluye modificaciones)</small></div>` + meses.map(mes => {
                 const [y, m] = mes.split('-').map(Number);
                 const nombre = new Date(y, m - 1, 1).toLocaleDateString('es-AR', { month: 'long', year: 'numeric' });
                 const nombreMes = nombre.charAt(0).toUpperCase() + nombre.slice(1);
@@ -1346,7 +1429,7 @@
                     const hasta = n.limite && n.limite < fin ? n.limite : fin;
                     let tn = 0;
                     const pr = stats.promedios ? buscar(stats.promedios, [n.tipo, tipoBase(n.tipo)]) : null;
-                    keysEntre(`${mes}-01`, 'T1', hasta, 'T3').forEach(k => { const ms = plan.get(k) || []; ms.forEach(x => { if (normMolde(ladDe(x)) === normMolde(n.tipo) || (normMolde(tipoBase(ladDe(x))) === normMolde(n.tipo) && !/9T|X\d/i.test(ladDe(x)))) tn += (pr ? pr.v.tn : 0) / ms.length; }); });
+                    keysEntre(`${mes}-01`, 'T1', hasta, 'T3').forEach(k => { tn += tnTipoVentanas(ventanas, k, n.tipo, pr ? pr.v.tn : 0); });
                     const b = buscar(stats.base, [n.tipo, tipoBase(n.tipo)]);
                     const pal = b && b.v.kgPallet ? tn * 1000 / b.v.kgPallet : 0;
                     const cubre = n.unidad === 'Tn' ? tn : pal;
