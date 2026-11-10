@@ -1172,37 +1172,42 @@
         .mv-mod.quitar { background: #ffd8c2; }
         .mv-post { background: #5e5ce6; font-size: 11px; }
         .gantt-table td.td-prisma { perspective: 520px; background: var(--bg-body); padding: 0; }
-        .prisma { --pz: calc(var(--cell-h) * 0.2887); position: absolute; inset: 0; transform-style: preserve-3d; animation: prismaGira 10.5s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
-        .pr-cara { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 17px 2px 15px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); }
-        .pr-cara.c0 { transform: rotateX(0deg) translateZ(var(--pz)); }
-        .pr-cara.c1 { transform: rotateX(120deg) translateZ(var(--pz)); }
-        .pr-cara.c2 { transform: rotateX(240deg) translateZ(var(--pz)); }
-        @keyframes prismaGira {
-            0%, 27% { transform: translateZ(calc(var(--pz) * -1)) rotateX(0deg); }
-            33%, 60% { transform: translateZ(calc(var(--pz) * -1)) rotateX(-120deg); }
-            66%, 94% { transform: translateZ(calc(var(--pz) * -1)) rotateX(-240deg); }
-            100% { transform: translateZ(calc(var(--pz) * -1)) rotateX(-360deg); }
-        }
-        .td-prisma:hover .prisma { animation-play-state: paused; }
+        .prisma { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(0deg); transition: transform 1.6s cubic-bezier(0.45, 0, 0.2, 1); }
+        .pr-cara { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 17px 2px 15px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); transition: opacity 1.2s ease; }
+        .pr-cara.c0 { transform: rotateX(0deg); }
+        .pr-cara.c1 { transform: rotateX(180deg); }
+        body.prisma-b .prisma { transform: rotateX(-180deg); }
+        body.prisma-2d .prisma { transform: none !important; transition: none; }
+        body.prisma-2d .pr-cara { transform: none !important; backface-visibility: visible; }
+        body.prisma-2d .pr-cara.c1 { opacity: 0; }
+        body.prisma-2d.prisma-b .pr-cara.c1 { opacity: 1; }
+        body.prisma-2d.prisma-b .pr-cara.c0 { opacity: 0; }
+        .prisma-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 8px; font-size: 0.76rem; font-weight: 700; color: var(--text-muted); }
+        .prisma-bar[hidden] { display: none; }
+        .prisma-bar .anim-seg { flex: 0 1 auto; }
+        .prisma-bar .anim-seg button { padding: 6px 12px; }
+        .pb-ind { display: inline-flex; gap: 4px; align-items: center; }
+        .pb-ind i { width: 8px; height: 8px; border-radius: 50%; background: rgba(127,127,127,0.35); transition: background 0.4s; }
+        body:not(.prisma-b) .pb-ind i.a, body.prisma-b .pb-ind i.b { background: var(--accent); }
         .pr-et { position: absolute; bottom: 2px; left: 2px; right: 2px; padding: 1px 2px; border-radius: 5px; font-size: 8px; text-align: center; font-weight: 900; letter-spacing: 0; text-transform: uppercase; background: rgba(0,0,0,0.62); color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .pr-cara.c1 .pr-et { background: #5e5ce6; }
-        .pr-cara.c2 .pr-et { background: rgba(255,255,255,0.9); color: #111; }
+        .pr-cara.pr-real .pr-et { background: rgba(255,255,255,0.92); color: #111; }
         .pr-img { width: 26px; height: 26px; object-fit: contain; border-radius: 6px; background: rgba(255,255,255,0.15); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); flex: 0 0 auto; }
         .pr-cara.txt-dark .pr-img { background: rgba(0,0,0,0.08); }
         @media (min-width: 769px) { body.view-plan:not(.printing) { --cell-h: 96px; } }
         .pr-mold { font-size: 11px; font-weight: 900; line-height: 1.1; text-align: center; word-break: break-word; }
         .pr-mold small { font-size: 0.8em; margin-left: 1px; } .pr-mold i { font-style: normal; opacity: 0.7; margin: 0 2px; }
-        .pr-h { font-size: 9px; font-weight: 800; opacity: 0.85; text-align: center; line-height: 1.1; }
+        .pr-h { font-size: 9px; font-weight: 800; opacity: 0.85; text-align: center; line-height: 1.15; max-width: 100%; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+        .pr-cara .pr-st { margin-top: 2px; }
         .pr-vacia { background: repeating-linear-gradient(135deg, #2a2a2e 0 6px, #1d1d20 6px 12px); color: #e5e5ea; }
         .pr-info { background: linear-gradient(160deg, #2c2b55, #1c1c2e); color: #e6e6ff; }
         .pr-st { font-size: 9.5px; font-weight: 900; padding: 1px 6px; border-radius: 6px; background: rgba(0,0,0,0.6); color: #fff; }
         .pr-st.ok { background: var(--green); color: #04210d; } .pr-st.par { background: var(--orange); color: #2a1700; } .pr-st.mal { background: var(--red); color: #fff; }
-        .legend-prisma { position: relative; width: 22px; height: 22px; perspective: 120px; --cell-h: 22px; border-radius: 5px; overflow: hidden; }
-        .legend-prisma .pr-cara { padding: 0; } .legend-prisma .c0 { background: #ff9f0a; } .legend-prisma .c1 { background: #5e5ce6; } .legend-prisma .c2 { background: #30d158; }
-        @media (prefers-reduced-motion: reduce) { body:not(.anim-on) .prisma { animation: none; transform: translateZ(calc(var(--pz) * -1)) rotateX(-120deg); } }
-        body.printing .prisma { animation: none !important; transform: none !important; }
-        body.printing .pr-cara.c0, body.printing .pr-cara.c2 { display: none; }
-        body.printing .pr-cara.c1 { transform: none; }
+        .legend-prisma { position: relative; width: 22px; height: 22px; perspective: 120px; border-radius: 5px; overflow: hidden; }
+        .legend-prisma .pr-cara { padding: 0; } .legend-prisma .c0 { background: #ff9f0a; } .legend-prisma .c1 { background: #5e5ce6; }
+        body.printing .prisma { transform: none !important; transition: none !important; }
+        body.printing .pr-cara.c0 { display: none; }
+        body.printing .pr-cara.c1 { transform: none !important; opacity: 1 !important; }
         .hr-off { position: absolute; top: 0; right: 0; bottom: 0; width: calc(100% - var(--f)); z-index: 2; pointer-events: none; background: repeating-linear-gradient(135deg, rgba(20,20,22,0.78) 0 4px, rgba(20,20,22,0.55) 4px 8px); box-shadow: inset 2px 0 0 rgba(255,255,255,0.7); display: flex; align-items: flex-end; justify-content: center; }
         .hr-off span { font-size: 9px; font-weight: 900; color: #fff; text-shadow: 0 1px 2px #000; padding-bottom: 2px; white-space: nowrap; }
         .gantt-table.lanes td.lane .hr-off span { display: none; }
@@ -1415,7 +1420,7 @@
         }
     
         body.anim-off *, body.anim-off *::before, body.anim-off *::after { animation: none !important; transition: none !important; }
-        body.anim-off .prisma { transform: translateZ(calc(var(--pz) * -1)) rotateX(-120deg) !important; }
+
     </style>
 </head>
 <body class="view-prod">
@@ -1513,6 +1518,15 @@
     </div>
 
     <div class="kpi-container" id="kpiContainer"></div>
+    <div class="prisma-bar" id="prismaBar" hidden>
+        <span>Turnos modificados:</span>
+        <div class="anim-seg" role="radiogroup" aria-label="Vista de turnos modificados">
+            <button data-v="alt" onclick="setVistaPrisma('alt')">🔄 Alternar</button>
+            <button data-v="orig" onclick="setVistaPrisma('orig')">📋 Original</button>
+            <button data-v="mod" onclick="setVistaPrisma('mod')">✏️ Modificado / real</button>
+        </div>
+        <span class="pb-ind" title="Cara visible"><i class="a"></i><i class="b"></i></span>
+    </div>
     <div class="gantt-wrapper" id="ganttWrapper"></div>
     <div id="legendContainer"></div>
     <div class="jf-overlay" id="leyendaModal" onclick="if (event.target === this) cerrarLeyenda()">
@@ -1829,6 +1843,30 @@
     </div>
 
     <script>
+        let timerPrisma = null;
+        function leerVistaPrisma() { try { return localStorage.getItem('vistaPrisma') || 'alt'; } catch (e) { return 'alt'; } }
+        function setVistaPrisma(v) {
+            try { localStorage.setItem('vistaPrisma', v); } catch (e) { }
+            actualizarPrisma(true);
+        }
+        function actualizarPrisma(reiniciar) {
+            const v = leerVistaPrisma();
+            const p = leerAnimPref();
+            const bar = document.getElementById('prismaBar');
+            const visible = typeof currentView !== 'undefined' && currentView === 'plan' && typeof hayPrisma !== 'undefined' && hayPrisma;
+            if (bar) {
+                bar.hidden = !visible;
+                bar.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
+            }
+            document.body.classList.toggle('prisma-2d', p !== 'on' && sistemaSinAnim());
+            if (v === 'orig') document.body.classList.remove('prisma-b');
+            if (v === 'mod') document.body.classList.add('prisma-b');
+            const alternar = visible && v === 'alt' && p !== 'off';
+            if (!alternar) { clearInterval(timerPrisma); timerPrisma = null; if (v === 'alt' && p === 'off') document.body.classList.add('prisma-b'); return; }
+            if (timerPrisma && !reiniciar) return;
+            clearInterval(timerPrisma);
+            timerPrisma = setInterval(() => { if (!document.hidden) document.body.classList.toggle('prisma-b'); }, 7000);
+        }
         function sistemaSinAnim() { try { return !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) { return false; } }
         function leerAnimPref() { try { return localStorage.getItem('animPref') || 'auto'; } catch (e) { return 'auto'; } }
         function aplicarAnimPref() {
@@ -1842,7 +1880,7 @@
         function setAnimPref(p) {
             try { localStorage.setItem('animPref', p); } catch (e) { }
             aplicarAnimPref();
-            if (typeof renderGantt === 'function' && typeof planData !== 'undefined') renderGantt();
+            actualizarPrisma(true);
         }
         document.addEventListener('DOMContentLoaded', () => {
             aplicarAnimPref();
@@ -2789,16 +2827,14 @@
         function prismaHtml(k, dateStr, turno) {
             const orig = planBase ? planBase[k] : null, act = (planUltimo || planData)[k];
             const et = estadoTurno(dateStr, turno);
-            let tercera;
+            let segunda;
             if (et === 'pasado') {
                 const ev = evaluarProduccion(dateStr, turno);
-                const est = ev.status === 'cumplido' ? '<span class="pr-st ok">✓ Cumplió el plan</span>' : ev.status === 'parcial' ? '<span class="pr-st par">◐ Parcial</span>' : ev.status === 'desvio' ? '<span class="pr-st mal">✕ Desvío</span>' : ev.status === 'noplan' ? '<span class="pr-st mal">➕ Sin plan</span>' : '<span class="pr-st">–</span>';
-                tercera = caraPrisma(realData[k], 'Real', 'c2 pr-real', est);
-            } else {
-                const fin = mesFinalizado(dateStr);
-                tercera = `<div class="pr-cara c2 pr-info"><span class="pr-et">${et === 'actual' ? 'Ahora' : 'Futuro'}</span><b class="pr-mold">${fin ? 'Se mide contra el original' : 'Plan modificado'}</b><span class="pr-h">${fin ? 'si no se cumple, es desvío' : 'objetivo según plan actual'}</span></div>`;
-            }
-            return `<div class="prisma">${caraPrisma(orig, 'Orig.', 'c0')}${caraPrisma(act, 'Actual', 'c1')}${tercera}</div>`;
+                const est = ev.status === 'cumplido' ? '<span class="pr-st ok">✓ Cumplió</span>' : ev.status === 'parcial' ? '<span class="pr-st par">◐ Parcial</span>' : ev.status === 'desvio' ? '<span class="pr-st mal">✕ Desvío</span>' : ev.status === 'noplan' ? '<span class="pr-st mal">➕ Sin plan</span>' : '';
+                const modTxt = firmaHoras(act) !== firmaHoras(realData[k]) ? `<span class="pr-h">mod.: ${getProdSeq(act).map(m => m.baseName + '·' + m.number).join(' → ') || 'sin prod.'}</span>` : '';
+                segunda = getProdSeq(realData[k]).length ? caraPrisma(realData[k], 'Real', 'c1 pr-real', est + modTxt) : `<div class="pr-cara c1 pr-real pr-vacia"><span class="pr-et">Real</span>${ev.status === 'desvio' ? '<span class="pr-st mal">✕ No se produjo</span>' : est}${modTxt}</div>`;
+            } else segunda = caraPrisma(act, 'Modif.', 'c1');
+            return `<div class="prisma">${caraPrisma(orig, 'Orig.', 'c0')}${segunda}</div>`;
         }
 
         function buildCellParts(pre, compacto) {
@@ -3119,7 +3155,7 @@
                 const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (modsK ? `\n\n✏️ Modificado: ${modsK[modsK.length - 1].tipo}\n📝 ${modsK[modsK.length - 1].justificacion}` : '') + (pc && currentView !== 'prod' ? '\n\n' + textoPostCierre(k, pc) : '') + (seleccionCompras && extraAttr ? '\n\n💼 Clic para recomendar cambios en este bloque' : '');
                 if (esPrisma) {
                     hayPrisma = true;
-                    return `<td class="${cls} td-prisma"${extraAttr} style="--d:${idx};${extraStyle}" title="${escAttr(tooltip + '\n\n⟲ La celda gira: plan original → plan actual (modificado) → real / desvío. Pasá el mouse para pausar.')}" onclick="${onclick}">${tnHtml}${markers}${prismaHtml(k, dateStr, turno)}</td>`;
+                    return `<td class="${cls} td-prisma"${extraAttr} style="--d:${idx};${extraStyle}" title="${escAttr(tooltip + '\n\n⟲ La celda alterna entre el plan original y el modificado (o lo real y el desvío si el turno ya pasó). Elegí la vista con los botones arriba del calendario.')}" onclick="${onclick}">${tnHtml}${markers}${prismaHtml(k, dateStr, turno)}</td>`;
                 }
                 const ov = overlayHoras(currentView === 'plan' ? fracPlan(k) : (estadoTurno(dateStr, turno) === 'futuro' ? null : fracReal(k)));
                 return `<td class="${cls}"${extraAttr} style="--d:${idx};${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="${onclick}">${ov}${tnHtml}${markers}${parts.content}</td>`;
@@ -3332,6 +3368,7 @@
             actualizarPlanAhora();
             renderDesvios();
             renderPruebasInfo();
+            actualizarPrisma(false);
         }
 
         function renderLeyenda(visibles, hayMulti, hayAviso, fueraVisibles) {
@@ -3360,7 +3397,7 @@
             else h += `<div class="legend-item"><span class="tn-tag static">250</span><span>Tn producidas en el turno</span></div>`;
             }
             h += `<div class="legend-item lg-live"><div class="legend-now"></div><span>Turno en curso</span></div>`;
-            if (currentView === 'plan' && hayPrisma) h += `<div class="legend-item"><div class="legend-prisma"><div class="prisma"><div class="pr-cara c0"></div><div class="pr-cara c1"></div><div class="pr-cara c2"></div></div></div><span>Turno modificado: gira original → actual → real/desvío</span></div>`;
+            if (currentView === 'plan' && hayPrisma) h += `<div class="legend-item"><div class="legend-prisma"><div class="prisma"><div class="pr-cara c0"></div><div class="pr-cara c1"></div></div></div><span>Turno modificado: alterna original ↔ modificado / real y desvío</span></div>`;
             if (currentView === 'plan' && moldesExt.recomendaciones.some(r => r.mes === mesClave())) {
                 h += `<div class="legend-item lg-live"><span class="mv mv-sol pend static">💼<b>?</b></span><span class="mv mv-sol anal static">💼<b>…</b></span><span>Solicitud de Comercial pendiente / en análisis (celda con borde azul / naranja)</span></div>`;
                 h += `<div class="legend-item lg-live"><span class="mv mv-sol ok static">💼<b>✓</b></span><span>Solicitud aceptada (borde verde)</span></div>`;
