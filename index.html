@@ -1166,6 +1166,35 @@
         .mv-mod { background: #fff; color: #000; font-size: 9px; }
         .mv-mod.quitar { background: #ffd8c2; }
         .mv-post { background: #5e5ce6; font-size: 11px; }
+        .gantt-table td.td-prisma { perspective: 520px; background: var(--bg-body); padding: 0; }
+        .prisma { --pz: calc(var(--cell-h) * 0.2887); position: absolute; inset: 0; transform-style: preserve-3d; animation: prismaGira 10.5s cubic-bezier(0.65, 0, 0.35, 1) infinite; }
+        .pr-cara { position: absolute; inset: 0; backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px; padding: 16px 2px 15px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); }
+        .pr-cara.c0 { transform: rotateX(0deg) translateZ(var(--pz)); }
+        .pr-cara.c1 { transform: rotateX(120deg) translateZ(var(--pz)); }
+        .pr-cara.c2 { transform: rotateX(240deg) translateZ(var(--pz)); }
+        @keyframes prismaGira {
+            0%, 27% { transform: translateZ(calc(var(--pz) * -1)) rotateX(0deg); }
+            33%, 60% { transform: translateZ(calc(var(--pz) * -1)) rotateX(-120deg); }
+            66%, 94% { transform: translateZ(calc(var(--pz) * -1)) rotateX(-240deg); }
+            100% { transform: translateZ(calc(var(--pz) * -1)) rotateX(-360deg); }
+        }
+        .td-prisma:hover .prisma { animation-play-state: paused; }
+        .pr-et { position: absolute; bottom: 2px; left: 2px; right: 2px; padding: 1px 2px; border-radius: 5px; font-size: 8px; text-align: center; font-weight: 900; letter-spacing: 0; text-transform: uppercase; background: rgba(0,0,0,0.62); color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .pr-cara.c1 .pr-et { background: #5e5ce6; }
+        .pr-cara.c2 .pr-et { background: rgba(255,255,255,0.9); color: #111; }
+        .pr-mold { font-size: 11px; font-weight: 900; line-height: 1.1; text-align: center; word-break: break-word; }
+        .pr-mold small { font-size: 0.8em; margin-left: 1px; } .pr-mold i { font-style: normal; opacity: 0.7; margin: 0 2px; }
+        .pr-h { font-size: 9px; font-weight: 800; opacity: 0.85; text-align: center; line-height: 1.1; }
+        .pr-vacia { background: repeating-linear-gradient(135deg, #2a2a2e 0 6px, #1d1d20 6px 12px); color: #e5e5ea; }
+        .pr-info { background: linear-gradient(160deg, #2c2b55, #1c1c2e); color: #e6e6ff; }
+        .pr-st { font-size: 9.5px; font-weight: 900; padding: 1px 6px; border-radius: 6px; background: rgba(0,0,0,0.6); color: #fff; }
+        .pr-st.ok { background: var(--green); color: #04210d; } .pr-st.par { background: var(--orange); color: #2a1700; } .pr-st.mal { background: var(--red); color: #fff; }
+        .legend-prisma { position: relative; width: 22px; height: 22px; perspective: 120px; --cell-h: 22px; border-radius: 5px; overflow: hidden; }
+        .legend-prisma .pr-cara { padding: 0; } .legend-prisma .c0 { background: #ff9f0a; } .legend-prisma .c1 { background: #5e5ce6; } .legend-prisma .c2 { background: #30d158; }
+        @media (prefers-reduced-motion: reduce) { .prisma { animation: none; transform: translateZ(calc(var(--pz) * -1)) rotateX(-120deg); } }
+        body.printing .prisma { animation: none !important; transform: none !important; }
+        body.printing .pr-cara.c0, body.printing .pr-cara.c2 { display: none; }
+        body.printing .pr-cara.c1 { transform: none; }
         .hr-off { position: absolute; top: 0; right: 0; bottom: 0; width: calc(100% - var(--f)); z-index: 2; pointer-events: none; background: repeating-linear-gradient(135deg, rgba(20,20,22,0.78) 0 4px, rgba(20,20,22,0.55) 4px 8px); box-shadow: inset 2px 0 0 rgba(255,255,255,0.7); display: flex; align-items: flex-end; justify-content: center; }
         .hr-off span { font-size: 9px; font-weight: 900; color: #fff; text-shadow: 0 1px 2px #000; padding-bottom: 2px; white-space: nowrap; }
         .gantt-table.lanes td.lane .hr-off span { display: none; }
@@ -2698,6 +2727,36 @@
             return `background:linear-gradient(172deg, ${stops});`;
         }
 
+        function firmaHoras(tasks) { return ventanasProd(tasks).map(w => idSeq(w.t) + '@' + w.ini.toFixed(2) + '+' + w.dur.toFixed(2)).join(','); }
+        function cambioPlan(k) {
+            const o = planBase ? planBase[k] : null, a = (planUltimo || planData)[k];
+            return firmaHoras(o) !== firmaHoras(a);
+        }
+        function caraPrisma(tasks, etiqueta, cls, extra) {
+            const seq = getProdSeq(tasks);
+            if (!seq.length) return `<div class="pr-cara ${cls} pr-vacia"><span class="pr-et">${etiqueta}</span><b class="pr-mold">Sin prod.</b>${extra || ''}</div>`;
+            const ds = durSeq(tasks), tot = ds.reduce((a, b) => a + b, 0) || 1;
+            const prop = seq.length > 1 ? ds.map(x => x / tot) : null;
+            const ult = seq[seq.length - 1];
+            const txt = pickTextColor(getBrickColor(ult.baseName, ult.number));
+            const h = Math.min(HORAS_TURNO, tot);
+            return `<div class="pr-cara ${cls}" style="${fondoSeq(seq, prop)} color:${txt};"><span class="pr-et">${etiqueta}</span><b class="pr-mold">${seq.map(m => `${escAttr(m.baseName)}${m.variante ? `<small>${escAttr(m.variante)}</small>` : ''}·${m.number}`).join('<i>→</i>')}</b>${h < HORAS_TURNO - 0.01 ? `<span class="pr-h">${fmtDias(h)} h</span>` : ''}${extra || ''}</div>`;
+        }
+        function prismaHtml(k, dateStr, turno) {
+            const orig = planBase ? planBase[k] : null, act = (planUltimo || planData)[k];
+            const et = estadoTurno(dateStr, turno);
+            let tercera;
+            if (et === 'pasado') {
+                const ev = evaluarProduccion(dateStr, turno);
+                const est = ev.status === 'cumplido' ? '<span class="pr-st ok">✓ Cumplió el plan</span>' : ev.status === 'parcial' ? '<span class="pr-st par">◐ Parcial</span>' : ev.status === 'desvio' ? '<span class="pr-st mal">✕ Desvío</span>' : ev.status === 'noplan' ? '<span class="pr-st mal">➕ Sin plan</span>' : '<span class="pr-st">–</span>';
+                tercera = caraPrisma(realData[k], 'Real', 'c2 pr-real', est);
+            } else {
+                const fin = mesFinalizado(dateStr);
+                tercera = `<div class="pr-cara c2 pr-info"><span class="pr-et">${et === 'actual' ? 'Ahora' : 'Futuro'}</span><b class="pr-mold">${fin ? 'Se mide contra el original' : 'Plan modificado'}</b><span class="pr-h">${fin ? 'si no se cumple, es desvío' : 'objetivo según plan actual'}</span></div>`;
+            }
+            return `<div class="prisma">${caraPrisma(orig, 'Orig.', 'c0')}${caraPrisma(act, 'Actual', 'c1')}${tercera}</div>`;
+        }
+
         function buildCellParts(pre, compacto) {
             if (!pre.mold) return { content: '', style: '', cls: '' };
             const ultimo = pre.seq[pre.seq.length - 1];
@@ -2943,7 +3002,7 @@
             const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
             const precalc = {}; const changeDays = new Set(); const testDays = new Set();
             const visibles = new Map(); const fueraVisibles = new Set();
-            let hayMulti = false, hayAviso = false;
+            let hayMulti = false, hayAviso = false; hayPrisma = false;
 
             const ultimoAntes = (data, ds0) => {
                 for (let i = 1; i <= 15; i++) {
@@ -3012,6 +3071,10 @@
                 const clsMod = (modsK ? (modsK[modsK.length - 1].tipo === 'Quitar producción' ? ' td-mod td-quitado' : ' td-mod') : '') + (pc && currentView !== 'prod' ? ' td-postcierre' : '');
                 const cls = `${extraCls} ${parts.cls}${clsMod}${clsSol}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}${seleccionCompras && extraAttr ? ' bq-sel' : ''}`;
                 const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (modsK ? `\n\n✏️ Modificado: ${modsK[modsK.length - 1].tipo}\n📝 ${modsK[modsK.length - 1].justificacion}` : '') + (pc && currentView !== 'prod' ? '\n\n' + textoPostCierre(k, pc) : '') + (seleccionCompras && extraAttr ? '\n\n💼 Clic para recomendar cambios en este bloque' : '');
+                if (currentView === 'plan' && cambioPlan(k)) {
+                    hayPrisma = true;
+                    return `<td class="${cls} td-prisma"${extraAttr} style="--d:${idx};${extraStyle}" title="${escAttr(tooltip + '\n\n⟲ La celda gira: plan original → plan actual (modificado) → real / desvío. Pasá el mouse para pausar.')}" onclick="${onclick}">${tnHtml}${markers}${prismaHtml(k, dateStr, turno)}</td>`;
+                }
                 const ov = overlayHoras(currentView === 'plan' ? fracPlan(k) : (estadoTurno(dateStr, turno) === 'futuro' ? null : fracReal(k)));
                 return `<td class="${cls}"${extraAttr} style="--d:${idx};${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="${onclick}">${ov}${tnHtml}${markers}${parts.content}</td>`;
             };
@@ -3251,6 +3314,7 @@
             else h += `<div class="legend-item"><span class="tn-tag static">250</span><span>Tn producidas en el turno</span></div>`;
             }
             h += `<div class="legend-item lg-live"><div class="legend-now"></div><span>Turno en curso</span></div>`;
+            if (currentView === 'plan' && hayPrisma) h += `<div class="legend-item"><div class="legend-prisma"><div class="prisma"><div class="pr-cara c0"></div><div class="pr-cara c1"></div><div class="pr-cara c2"></div></div></div><span>Turno modificado: gira original → actual → real/desvío</span></div>`;
             if (currentView === 'plan' && moldesExt.recomendaciones.some(r => r.mes === mesClave())) {
                 h += `<div class="legend-item lg-live"><span class="mv mv-sol pend static">💼<b>?</b></span><span class="mv mv-sol anal static">💼<b>…</b></span><span>Solicitud de Comercial pendiente / en análisis (celda con borde azul / naranja)</span></div>`;
                 h += `<div class="legend-item lg-live"><span class="mv mv-sol ok static">💼<b>✓</b></span><span>Solicitud aceptada (borde verde)</span></div>`;
@@ -4908,6 +4972,8 @@
 
         let planBase = {};
         let planObjetivo = null;
+        let planUltimo = null;
+        let hayPrisma = false;
         let modTurnos = new Map();
         let postCierre = new Map();
 
@@ -5008,12 +5074,13 @@
             const mods = moldesExt.modificaciones;
             const fin = moldesExt.finalizados || new Map();
             postCierre = new Map();
-            if (!planFilas.length) { planData = aplicarModificaciones(planBase, mods); planObjetivo = planData; construirMatchPruebas(); return; }
+            if (!planFilas.length) { planData = aplicarModificaciones(planBase, mods); planObjetivo = planData; planUltimo = planData; construirMatchPruebas(); return; }
             const base = processData(filasSinModificaciones(planFilas, mods));
             if (!fin.size) {
                 planBase = base;
                 planData = aplicarModificaciones(planBase, mods);
                 planObjetivo = planData;
+                planUltimo = planData;
                 construirMatchPruebas();
                 return;
             }
@@ -5050,6 +5117,7 @@
             planBase = original;
             planData = datos;
             planObjetivo = obj;
+            planUltimo = vigMods;
             construirMatchPruebas();
         }
 
@@ -5233,6 +5301,10 @@
         }
 
         function palletsPlanTipo(tipo, desde, hasta) {
+            return conPlan(planUltimo || planData, () => palletsPlanTipoBase(tipo, desde, hasta));
+        }
+
+        function palletsPlanTipoBase(tipo, desde, hasta) {
             let tn = 0, turnos = 0;
             for (let ds = desde; ds <= hasta; ds = sumarDias(ds, 1)) {
                 TURNOS.forEach(t => {
@@ -5255,7 +5327,7 @@
             const ini = mesClave() + '-01';
             const fin = formatYYYYMMDD(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0));
             if (!lista.length) { cont.innerHTML = `<div class="desv-head"><h3>📋 Necesidades de Comercial</h3>${modo === 'comercial' ? '<button class="desv-btn" onclick="abrirNecesidades()">Cargar necesidades</button>' : ''}</div><p class="desv-vacio">Sin necesidades cargadas para este mes.</p>`; return; }
-            let html = `<div class="desv-head"><h3>📋 Necesidades de Comercial <small>cobertura con lo planificado · pallets máximos</small></h3>${modo === 'comercial' ? '<button class="desv-btn" onclick="abrirNecesidades()">Editar</button>' : ''}</div><div class="nec-grid">`;
+            let html = `<div class="desv-head"><h3>📋 Necesidades de Comercial <small>cobertura con la última planificación (incluye modificaciones) · pallets máximos</small></h3>${modo === 'comercial' ? '<button class="desv-btn" onclick="abrirNecesidades()">Editar</button>' : ''}</div><div class="nec-grid">`;
             lista.forEach((n, i) => {
                 const hasta = n.limite && n.limite < fin ? n.limite : fin;
                 const p = palletsPlanTipo(n.tipo, ini, hasta);
