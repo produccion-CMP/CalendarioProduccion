@@ -1170,6 +1170,9 @@
         .rp-vacio { color: var(--text-muted); font-weight: 600; font-style: italic; }
         .rp-lbl { font-size: 0.6rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.4px; color: var(--accent-light); padding: 1px 6px; border-radius: 6px; border: 1px solid rgba(224,123,76,0.45); white-space: nowrap; }
         .reloj-plan { flex-wrap: wrap; }
+        .reloj-izq { display: flex; flex-direction: column; align-items: center; gap: 5px; }
+        .reloj-plan-lbl:empty { display: none; }
+        .reloj-plan-lbl .rp-lbl { display: block; font-size: 0.56rem; padding: 1px 6px; letter-spacing: 0.3px; line-height: 1.3; }
         .esq-btns { display: flex; flex-direction: column; gap: 4px; }
         .mobile-gantt .esq-btns { flex-direction: row; justify-content: center; }
         .em-familia { margin: 14px 0 6px; display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--accent-light); }
@@ -1316,13 +1319,13 @@
         body.printing .prisma { transform: none !important; transition: none !important; }
         body.printing .pr-cara.c0 { display: none; }
         body.printing .pr-cara.c1 { transform: none !important; opacity: 1 !important; }
-        .hr-off { position: absolute; top: var(--f); left: 0; right: 0; bottom: 0; z-index: 2; pointer-events: none; background: linear-gradient(to bottom, rgba(20,20,22,0.15), rgba(20,20,22,0) 6px), repeating-linear-gradient(135deg, rgba(20,20,22,0.72) 0 4px, rgba(20,20,22,0.5) 4px 8px); box-shadow: inset 0 2px 0 rgba(255,255,255,0.75); display: flex; align-items: center; justify-content: center; overflow: hidden; }
-        .hr-off span { font-size: 9px; font-weight: 900; color: #fff; text-shadow: 0 1px 2px #000; white-space: nowrap; }
+        .hr-off { position: absolute; top: var(--f); left: 0; right: 0; bottom: 0; z-index: 2; pointer-events: none; background: var(--bg-panel); border-top: 1px dashed color-mix(in srgb, var(--text-muted) 55%, transparent); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .hr-off span { font-size: 9px; font-weight: 800; color: var(--text-muted); white-space: nowrap; }
         .gantt-table.lanes td.lane .hr-off span { display: none; }
         .lm-band { position: relative; }
         .gantt-table tr.tn-row.turnos-row td { color: var(--text-main); }
         .tr-pl { color: var(--text-muted); font-weight: 700; }
-        body.printing .hr-off { background: repeating-linear-gradient(135deg, rgba(0,0,0,0.55) 0 3px, rgba(0,0,0,0.25) 3px 6px) !important; }
+        body.printing .hr-off { background: #fff !important; border-top: 1px dashed #777; }
         .gantt-table td.td-postcierre { outline: 2px dashed rgba(94,92,230,0.85); outline-offset: -3px; }
         body.printing .gantt-table td.td-postcierre { outline: 1.5px dashed #5e5ce6; }
         .mod-obj { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); display: flex; align-items: center; gap: 6px; }
@@ -1590,7 +1593,7 @@
         </div>
         <div class="hdr-right">
             <div class="reloj">
-                <div class="reloj-hora" id="relojHora">--:--</div>
+                <div class="reloj-izq"><div class="reloj-hora" id="relojHora">--:--</div><div class="reloj-plan-lbl" id="relojPlanLbl"></div></div>
                 <div class="reloj-info">
                     <div class="reloj-fecha" id="relojFecha"></div>
                     <div class="reloj-turno">
@@ -4637,12 +4640,18 @@
                 const k = key(dateStr, t);
                 const seq = getProdSeq(data[k]);
                 if (!seq.length) return;
-                const props = usarExt ? proporcionCambio(k, seq) : null;
+                if (!usarExt) {
+                    ventanasProd(data[k]).forEach(w => { if (w.dur > 0) segs.push({ m: w.t, a: i * 8 + w.ini, b: i * 8 + w.ini + w.dur, turnos: [t] }); });
+                    return;
+                }
+                const props = proporcionCambio(k, seq) || seq.map(() => 1 / seq.length);
+                let hT = horasTurno(k);
+                hT = hT === null ? HORAS_TURNO : Math.max(0, Math.min(HORAS_TURNO, hT));
                 let acc = 0;
                 seq.forEach((m, j) => {
-                    const f = props ? props[j] : 1 / seq.length;
-                    segs.push({ m, a: i * 8 + acc * 8, b: i * 8 + (acc + f) * 8, turnos: [t] });
-                    acc += f;
+                    const d = hT * props[j];
+                    if (d > 0) segs.push({ m, a: i * 8 + acc, b: i * 8 + acc + d, turnos: [t] });
+                    acc += d;
                 });
             });
             const out = [];
@@ -6145,8 +6154,10 @@
             const el = document.getElementById('relojPlan');
             if (!el) return;
             const p = planAhora();
-            if (!Object.keys(planData).length) { el.innerHTML = ''; return; }
-            const lbl = `<span class="rp-lbl" title="Según la planificación del turno en curso">📋 Planificación ${p.t}</span>`;
+            if (!Object.keys(planData).length) { el.innerHTML = ''; const lb = document.getElementById('relojPlanLbl'); if (lb) lb.innerHTML = ''; return; }
+            const lblEl = document.getElementById('relojPlanLbl');
+            if (lblEl) { lblEl.innerHTML = `<span class="rp-lbl" title="Según la planificación del turno en curso">📋 Plan ${p.t}</span>`; }
+            const lbl = '';
             if (!p.seq.length) { el.innerHTML = `${lbl}<span class="rp-vacio">Sin producción planificada</span>`; el.title = ''; return; }
             const m = p.seq[p.seq.length - 1];
             const c = getBrickColor(m.baseName, m.number);
