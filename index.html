@@ -555,6 +555,24 @@
         .jf-box textarea { min-height: 80px; resize: vertical; }
         .jf-box select:focus, .jf-box textarea:focus, .jf-box input:focus { outline: none; border-color: var(--accent); }
         .jf-acciones { display: flex; gap: 10px; margin-top: 16px; }
+        .print-box { max-width: 480px; }
+        .pi-sub { font-size: 0.8rem; color: var(--text-muted); margin: 4px 0 12px; }
+        .pi-lista { display: flex; flex-direction: column; gap: 6px; }
+        .jf-box label.pi-op, .jf-box .pi-sub-op label { text-transform: none; letter-spacing: 0; margin: 0; font-size: inherit; color: var(--text-main); font-weight: 600; }
+        .jf-box .pi-op input, .jf-box .pi-sub-op input { width: auto; padding: 0; }
+        .jf-box .pi-sub-op label { display: inline-flex; color: var(--text-muted); }
+        .pi-op { display: flex; align-items: flex-start; gap: 10px; padding: 9px 12px; border-radius: 10px; background: var(--bg-cell); border: 1px solid var(--border); cursor: pointer; transition: border-color 0.2s, background 0.2s; }
+        .pi-op:hover { border-color: var(--accent); }
+        .pi-op:has(input:checked) { border-color: color-mix(in srgb, var(--accent) 60%, var(--border)); background: color-mix(in srgb, var(--accent) 9%, var(--bg-cell)); }
+        .pi-op input { margin-top: 3px; accent-color: var(--accent); width: 16px; height: 16px; flex: none; }
+        .pi-op span { display: flex; flex-direction: column; gap: 2px; }
+        .pi-op b { font-size: 0.86rem; }
+        .pi-op small { font-size: 0.72rem; color: var(--text-muted); }
+        .pi-op.pi-inf { margin-top: 6px; border-style: dashed; }
+        .pi-sub-op { display: flex; gap: 16px; padding: 0 12px 4px 38px; font-size: 0.78rem; color: var(--text-muted); }
+        .pi-sub-op label { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; }
+        .pi-sub-op input { accent-color: var(--accent); }
+        .pi-sub-op.off { opacity: 0.4; pointer-events: none; }
         .jf-acciones button { flex: 1; padding: 12px; border-radius: 10px; font-weight: 800; font-family: var(--font); cursor: pointer; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); }
         .jf-acciones button.prim { background: linear-gradient(135deg, var(--accent-light), var(--accent)); color: #fff; border: none; }
         .jf-acciones button:disabled { opacity: 0.5; cursor: wait; }
@@ -801,8 +819,21 @@
         .month-nav .mn-title:hover .mn-mes { color: var(--accent-light); }
         .month-nav .mn-hoy { border: 1px solid var(--border) !important; background: var(--bg-panel) !important; color: var(--text-main) !important; padding: 7px 16px !important; border-radius: 20px !important; font-weight: 700 !important; font-size: 0.8rem; cursor: pointer; }
         .month-nav .mn-hoy.activo { border-color: var(--accent) !important; color: var(--accent-light) !important; }
-        .month-nav .mn-valid { flex-basis: 100%; display: flex; justify-content: center; min-height: 0; }
+        .month-nav .mn-valid { display: flex; justify-content: center; align-items: center; min-height: 0; margin-left: 6px; }
+        .sello-val { --sc: #e0352b; display: inline-flex; flex-direction: column; align-items: center; line-height: 1.05; padding: 4px 12px 5px; border: 3px double var(--sc); border-radius: 7px; color: var(--sc); background: color-mix(in srgb, var(--sc) 7%, transparent); transform: rotate(-8deg); font-family: 'Courier New', ui-monospace, monospace; text-transform: uppercase; cursor: help; user-select: none; box-shadow: 0 0 0 1px color-mix(in srgb, var(--sc) 25%, transparent); -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.2 2.1'/%3E%3C/filter%3E%3Crect width='120' height='60' filter='url(%23n)'/%3E%3C/svg%3E"); mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -2.2 2.1'/%3E%3C/filter%3E%3Crect width='120' height='60' filter='url(%23n)'/%3E%3C/svg%3E"); }
+        .sello-val b { font-size: 0.95rem; font-weight: 900; letter-spacing: 2px; }
+        .sello-val small { font-size: 0.62rem; font-weight: 800; letter-spacing: 1px; margin-top: 2px; }
+        .sello-val.obs { --sc: #f08a00; }
+        .sello-val.entra { animation: selloIn 0.55s cubic-bezier(0.3, 1.6, 0.5, 1) both; }
+        @keyframes selloIn { 0% { opacity: 0; transform: rotate(-20deg) scale(2.2); } 60% { opacity: 1; } 100% { opacity: 1; transform: rotate(-8deg) scale(1); } }
+        #printSello { display: none; }
+        body.printing #printHeader { position: relative; padding-right: 205px; }
+        body.printing #printSello { display: block; position: absolute; right: 6px; top: -4px; }
+        body.printing #printSello .sello-val { --sc: #c8102e; font-size: 0.8em; background: none; -webkit-mask-image: none; mask-image: none; }
+        body.printing #printSello .sello-val.obs { --sc: #c46a00; }
+        body.printing #printSello .sello.pend { display: none; }
         .month-nav .mn-valid:empty { display: none; }
+        @media (max-width: 768px) { .month-nav .mn-valid { flex-basis: 100%; margin: 6px 0 12px; } }
         .sello { font-size: 0.75rem; font-weight: 800; padding: 4px 12px; border-radius: 20px; }
         .sello.ok { background: rgba(48,209,88,0.15); color: var(--green); box-shadow: inset 0 0 0 1px rgba(48,209,88,0.5); }
         .sello.obs { background: rgba(255,159,10,0.15); color: var(--orange); box-shadow: inset 0 0 0 1px rgba(255,159,10,0.5); }
@@ -1274,8 +1305,10 @@
         .pr-st { font-size: 9.5px; font-weight: 900; padding: 1px 6px; border-radius: 6px; background: rgba(0,0,0,0.6); color: #fff; }
         .pr-st.ok { background: var(--green); color: #04210d; } .pr-st.par { background: var(--orange); color: #2a1700; } .pr-st.mal { background: var(--red); color: #fff; }
         .gantt-table th.today-col { position: relative; box-shadow: 0 0 0 2px var(--accent), 0 8px 22px rgba(224,123,76,0.6); z-index: 3; }
-        .gantt-table th.today-col::before { content: 'HOY'; position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: 8px; font-weight: 900; letter-spacing: 0.5px; padding: 1px 5px; border-radius: 5px; background: #fff; color: var(--accent); z-index: 2; }
+        .gantt-table th.today-col::before { content: 'HOY'; position: absolute; top: 2px; left: 50%; transform: translateX(-50%); font-size: 8px; font-weight: 900; letter-spacing: 0.5px; padding: 1px 5px; border-radius: 5px; background: #fff; color: var(--accent); z-index: 2; }
         .gantt-table td.today-col::after { content: ''; position: absolute; inset: 0; border-left: 3px solid var(--accent); border-right: 3px solid var(--accent); background: rgba(224,123,76,0.07); pointer-events: none; z-index: 6; }
+        .gantt-table th.today-col .day-header { padding-top: 9px; }
+        body.printing .gantt-table th.today-col .day-header { padding-top: 0; }
         body.printing .gantt-table th.today-col::before, body.printing .gantt-table td.today-col::after { display: none; }
         .legend-mod { position: relative; width: 22px; height: 22px; border-radius: 5px; background: var(--bg-cell); overflow: hidden; }
         .legend-prisma { position: relative; width: 22px; height: 22px; perspective: 120px; border-radius: 5px; overflow: hidden; }
@@ -1283,8 +1316,8 @@
         body.printing .prisma { transform: none !important; transition: none !important; }
         body.printing .pr-cara.c0 { display: none; }
         body.printing .pr-cara.c1 { transform: none !important; opacity: 1 !important; }
-        .hr-off { position: absolute; top: 0; right: 0; bottom: 0; width: calc(100% - var(--f)); z-index: 2; pointer-events: none; background: repeating-linear-gradient(135deg, rgba(20,20,22,0.78) 0 4px, rgba(20,20,22,0.55) 4px 8px); box-shadow: inset 2px 0 0 rgba(255,255,255,0.7); display: flex; align-items: flex-end; justify-content: center; }
-        .hr-off span { font-size: 9px; font-weight: 900; color: #fff; text-shadow: 0 1px 2px #000; padding-bottom: 2px; white-space: nowrap; }
+        .hr-off { position: absolute; top: var(--f); left: 0; right: 0; bottom: 0; z-index: 2; pointer-events: none; background: linear-gradient(to bottom, rgba(20,20,22,0.15), rgba(20,20,22,0) 6px), repeating-linear-gradient(135deg, rgba(20,20,22,0.72) 0 4px, rgba(20,20,22,0.5) 4px 8px); box-shadow: inset 0 2px 0 rgba(255,255,255,0.75); display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .hr-off span { font-size: 9px; font-weight: 900; color: #fff; text-shadow: 0 1px 2px #000; white-space: nowrap; }
         .gantt-table.lanes td.lane .hr-off span { display: none; }
         .lm-band { position: relative; }
         .gantt-table tr.tn-row.turnos-row td { color: var(--text-main); }
@@ -1366,7 +1399,8 @@
         body.printing *, body.printing *::before, body.printing *::after { transition: none !important; animation: none !important; }
         body.printing .app-header, body.printing .views-container, body.printing .month-nav, body.printing .month-selector, body.printing .gantt-modal, body.printing .overlay, body.printing #loader { display: none !important; }
         body.printing #printHeader { display: flex !important; justify-content: space-between; align-items: flex-end; border-bottom: 2px solid #000; padding-bottom: 4px; margin-bottom: 6px; }
-        body.printing #printTitleMain { font-size: 1.15rem; font-weight: 800; color: #000; text-transform: uppercase; }
+        body.printing #printTitleMain { font-size: 1.15rem; font-weight: 800; color: #000; text-transform: uppercase; white-space: nowrap; }
+        body.printing #printTitleSub { text-align: right; margin-left: 16px; }
         body.printing #printTitleSub { font-size: 0.72rem; font-weight: 600; color: #444; }
         body.printing .kpi-container { gap: 6px; margin-bottom: 6px; }
         body.printing .kpi-card { padding: 4px 8px; border: 1px solid #bbb; border-top-width: 3px; border-radius: 8px; min-width: 0; }
@@ -1435,10 +1469,10 @@
         body.printing .cmp-lbl { font-size: 0.45rem; }
         body.printing .cmp-real .mold-image { width: 12px; height: 12px; }
         body.printing .ci-just { width: 12px; height: 12px; font-size: 7px; top: -3px; left: -3px; border-width: 1px; animation: none; }
-        body.printing.view-cumpl { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); column-gap: 10px; align-items: start; }
-        body.printing.view-cumpl > * { grid-column: 1 / -1; }
-        body.printing.view-cumpl > #desviosInfo { grid-column: 1; }
-        body.printing.view-cumpl > #pruebasInfo { grid-column: 2; }
+        .pr-pag1 { display: contents; }
+        body.printing .pr-pag1 { display: block; }
+        body.printing .pr-oculto { display: none !important; }
+        body.printing .pr-salto { break-before: page; page-break-before: always; margin-top: 0 !important; }
         body.printing .desvios-info { margin-top: 6px; padding: 0; box-shadow: none; }
         body.printing .desv-lista { display: grid; grid-template-columns: 1fr; }
         body.printing .desv-just p, body.printing .desv-just small, body.printing .desv-cuando span { display: none; }
@@ -1464,12 +1498,20 @@
         body.printing .cs-sub { font-size: 0.42rem; }
         body.printing .cs-ico { font-size: 0.7rem; }
         body.printing .cs-just { animation: none; }
-        body.printing .analisis-info { gap: 8px; margin-top: 6px; }
-        body.printing .an-card { padding: 6px 10px; border: 1px solid #bbb; border-radius: 8px; animation: none; }
-        body.printing .an-head h3 { font-size: 0.75rem; }
-        body.printing .graf-acum { max-height: 150px; }
-        body.printing .at-lista { gap: 4px; }
-        body.printing .at-fila { font-size: 0.6rem; grid-template-columns: 60px minmax(0,1fr) auto 36px; gap: 6px; }
+        body.printing .analisis-info { grid-template-columns: minmax(0, 1.55fr) minmax(0, 1fr); gap: 12px; margin-top: 8px; align-items: start; break-inside: avoid; }
+        body.printing .an-card { padding: 10px 14px; border: 1px solid #bbb; border-radius: 8px; animation: none; break-inside: avoid; }
+        body.printing .an-head { margin-bottom: 4px; }
+        body.printing .an-head h3 { font-size: 0.85rem; text-transform: uppercase; }
+        body.printing .an-leyenda, body.printing .an-nota { font-size: 0.6rem; }
+        body.printing .graf-acum { width: 100%; height: auto; max-height: 520px; }
+        body.printing .g-real { stroke: #0a5bd8; } body.printing .g-area { fill: #0a5bd8; opacity: 0.1; } body.printing .g-dot { fill: #0a5bd8; stroke: #fff; } body.printing .lg-real { background: #0a5bd8; }
+        body.printing .g-plan { stroke: #555; } body.printing .g-grid { stroke: #bbb; opacity: 1; }
+        body.printing .g-hoy { stroke: #000; } body.printing .g-hoytxt { fill: #000; }
+        body.printing .at-lista { gap: 7px; }
+        body.printing .at-fila { font-size: 0.68rem; grid-template-columns: 70px minmax(0,1fr) auto 40px; gap: 8px; }
+        body.printing .at-bar { height: 8px; border: 1px solid #999; }
+        body.printing .at-bar span { transition: none; }
+        body.printing .desvios-info, body.printing .pruebas-info { margin-top: 10px; }
         body.printing .desv-filtro, body.printing .desv-tabla td:last-child, body.printing .desv-tabla th:last-child { display: none; }
         body.printing .desv-tabla { font-size: 0.52rem; margin-top: 3px; }
         body.printing .desv-tabla th { font-size: 0.48rem; padding: 2px 4px; }
@@ -1490,6 +1532,7 @@
             * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
             @page { size: A4 landscape; margin: 8mm; }
             html, body { background: #fff !important; }
+            .an-card, .desv-tabla tr, .pruebas-table tr { break-inside: avoid; }
             .app-header, .views-container, .month-nav, .month-selector, .gantt-modal, .overlay, #loader { display: none !important; }
             * { animation: none !important; transition: none !important; }
         }
@@ -1502,6 +1545,7 @@
     <div id="printHeader">
         <h1 id="printTitleMain">Cronograma de Producción</h1>
         <h2 id="printTitleSub">Vista</h2>
+        <div id="printSello"></div>
     </div>
 
     <div id="loader" class="loader-container">
@@ -1577,7 +1621,7 @@
             <button class="seg-btn" data-view="plan" role="tab" aria-selected="false" onclick="setView('plan')">📋 Planificación</button>
             <button class="seg-btn" data-view="cumpl" role="tab" aria-selected="false" onclick="setView('cumpl')">📊 Cumplimiento</button>
         </div>
-        <button class="action-btn" onclick="imprimirPlan()">🖨️ Imprimir vista</button>
+        <button class="action-btn" onclick="abrirOpcImpresion()">🖨️ Imprimir vista</button>
     </div>
     <div class="compras-bar" id="comprasBar"></div>
 
@@ -1592,6 +1636,7 @@
         <div class="mn-valid" id="mnValid"></div>
     </div>
 
+    <div class="pr-pag1" id="printPag1">
     <div class="kpi-container" id="kpiContainer"></div>
     <div class="prisma-bar" id="prismaBar" hidden>
         <span>Planificación a mostrar:</span>
@@ -1604,10 +1649,19 @@
     </div>
     <div class="gantt-wrapper" id="ganttWrapper"></div>
     <div id="legendContainer"></div>
+    </div>
     <div class="jf-overlay" id="leyendaModal" onclick="if (event.target === this) cerrarLeyenda()">
         <div class="jf-box leyenda-box" role="dialog" aria-modal="true" aria-labelledby="lyTitulo">
             <div class="ly-head"><h3 id="lyTitulo">ℹ️ Referencias del calendario</h3><button class="ly-cerrar" onclick="cerrarLeyenda()" aria-label="Cerrar">✕</button></div>
             <div id="lyCuerpo"></div>
+        </div>
+    </div>
+    <div class="jf-overlay" id="printModal" onclick="if (event.target === this) cerrarOpcImpresion()">
+        <div class="jf-box print-box" role="dialog" aria-modal="true" aria-labelledby="piTitulo">
+            <div class="ly-head"><h3 id="piTitulo">🖨️ Imprimir vista</h3><button class="ly-cerrar" onclick="cerrarOpcImpresion()" aria-label="Cerrar">✕</button></div>
+            <p class="pi-sub" id="piSub"></p>
+            <div class="pi-lista" id="piLista"></div>
+            <div class="jf-acciones"><button onclick="cerrarOpcImpresion()">Cancelar</button><button class="prim" id="piOk" onclick="confirmarImpresion()">🖨️ Imprimir</button></div>
         </div>
     </div>
     <div class="tt" id="tooltip" role="tooltip"></div>
@@ -2566,7 +2620,7 @@
         function fmtTurnos(v) { return v.toLocaleString('es-AR', { maximumFractionDigits: 2 }); }
         function turnosDia(ds, tipo) {
             let t = 0;
-            TURNOS.forEach(tt => { if (tipo !== 'plan' && estadoTurno(ds, tt) !== 'pasado') return; const f = tipo === 'plan' ? fracPlan(key(ds, tt)) : fracReal(key(ds, tt)); if (f !== null) t += f; });
+            TURNOS.forEach(tt => { if ((tipo !== 'plan' || currentView === 'cumpl') && estadoTurno(ds, tt) !== 'pasado') return; const f = tipo === 'plan' ? fracPlan(key(ds, tt)) : fracReal(key(ds, tt)); if (f !== null) t += f; });
             return t;
         }
         function factorHoras(k, datos) { const h = horasPlanTurno(k, datos); return h === null ? 1 : h / HORAS_TURNO; }
@@ -3194,7 +3248,7 @@
                     const tp = tnPlanTurno(k), tr = tnRealTurno(k), to = tnPlanTurno(k, 'obj');
                     const cerrado = estadoTurno(ds, t) === 'pasado';
                     if (tp) { p += tp.tn; conPlan = true; }
-                    if (tr) { r += tr.tn; conReal = true; }
+                    if (tr && (cerrado || currentView !== 'cumpl')) { r += tr.tn; conReal = true; }
                     if (to) o += to.tn;
                     if (cerrado) { turnosCerrados++; if (tp) pc += tp.tn; if (to) oc += to.tn; }
                 });
@@ -3305,13 +3359,27 @@
             document.getElementById('mnHoy').classList.toggle('activo', esActual);
             const v = moldesExt.validaciones.get(mesClave());
             const cont = document.getElementById('mnValid');
-            const selloFin = '';
             if (v && v.estado && v.estado !== 'Sin validar') {
                 const ok = v.estado === 'Validada';
-                cont.innerHTML = selloFin + `<span class="sello ${ok ? 'ok' : 'obs'}" title="${escAttr((v.comentario || '') + (v.autor ? ' · ' + v.autor : '') + (v.marca ? ' · ' + v.marca : ''))}">${ok ? '✔ Plan validado por Comercial' : '⚠ Plan con observaciones de Comercial'}</span>`;
-            } else cont.innerHTML = selloFin + (modo === 'comercial' ? '<span class="sello pend">Plan sin validar</span>' : '');
+                const f = fechaValidacion(v.marca);
+                const tip = `${ok ? 'Plan validado por Comercial' : 'Plan con observaciones de Comercial'}${f ? ' el ' + f : ''}${v.autor ? ' · ' + v.autor : ''}${v.comentario ? '\n' + v.comentario : ''}`;
+                const clave = `${mesClave()}|${v.estado}|${v.marca || ''}`;
+                const nuevo = cont.dataset.sello !== clave;
+                cont.dataset.sello = clave;
+                cont.innerHTML = `<span class="sello-val ${ok ? 'ok' : 'obs'}${nuevo ? ' entra' : ''}" title="${escAttr(tip)}"><b>${ok ? '✔ Validado' : '⚠ Con observaciones'}</b><small>Comercial${f ? ' · ' + f : ''}</small></span>`;
+            } else { cont.dataset.sello = ''; cont.innerHTML = modo === 'comercial' ? '<span class="sello pend">Plan sin validar</span>' : ''; }
         }
 
+        function fechaValidacion(m) {
+            if (!m) return '';
+            const t = String(m).trim();
+            let x = t.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+            if (x) return `${x[3].padStart(2, '0')}/${x[2].padStart(2, '0')}/${x[1]}`;
+            x = t.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})/);
+            if (x) return `${x[1].padStart(2, '0')}/${x[2].padStart(2, '0')}/${x[3].length === 2 ? '20' + x[3] : x[3]}`;
+            const d = new Date(t);
+            return isNaN(d) ? '' : d.toLocaleDateString('es-AR', { day: '2-digit', month: '2-digit', year: 'numeric' });
+        }
         function mesClave() { return `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`; }
 
         function planVista() { return leerVistaPrisma() === 'orig' ? (planBase || planData) : (planUltimo || planData); }
@@ -3706,7 +3774,7 @@
                         else it.sinProm = true;
                     });
                     const tr = tnRealTurno(k);
-                    if (tr) {
+                    if (tr && (pasado || currentView !== 'cumpl')) {
                         if (pasado) { turnosProd += fracReal(k) || 0; tnCerrados += tr.filas.reduce((a, f) => a + f.tn, 0); }
                         tr.filas.forEach(f => {
                             const res = resolverMolde(f.tipo.includes('(') ? f.tipo : f.tipo + ' (1)');
@@ -3770,12 +3838,13 @@
                 h += `<div class="kpi-card"><div class="kpi-label">Tipos producidos</div><div class="kpi-value">${realTipos.length}</div><div class="mini-chips">${realTipos.map(t => `<span class="mini-chip" style="background:${t.color}; color:${pickTextColor(t.color)}">${escAttr(t.nombre)}</span>`).join('')}</div></div>`;
                 h += tarjetaTipos('Tn producidas por tipo de ladrillo', realTipos, 'prod');
             } else {
-                let tTrab = 0, sumScore = 0, nEval = 0, nCump = 0, nParc = 0, nDesv = 0, nNoPlan = 0, pruebasEval = 0, pruebasHechas = 0, pruebasMes = 0, perdCom = 0, perdProd = 0;
+                let tTrab = 0, sumScore = 0, nEval = 0, nCump = 0, nParc = 0, nDesv = 0, nNoPlan = 0, pruebasEval = 0, pruebasHechas = 0, pruebasMes = 0, perdCom = 0, perdProd = 0, ultCerr = '';
                 for (let d = 1; d <= daysInMonth; d++) {
                     const ds = formatYYYYMMDD(new Date(year, month, d));
                     TURNOS.forEach(t => {
                         pruebasMes += getTestList(planData[key(ds, t)]).length;
                         if (estadoTurno(ds, t) !== 'pasado') return;
+                        ultCerr = `${t} ${fechaCorta(ds)}`;
                         tTrab += fracReal(key(ds, t)) || 0;
                         const pr = evaluarPruebas(ds, t);
                         if (pr) { pruebasHechas += pr.ok; pruebasEval += pr.ok + pr.om; }
@@ -3791,7 +3860,7 @@
                 const pct = nEval > 0 ? Math.round(sumScore / nEval * 100) : 0;
                 const pctPr = pruebasEval > 0 ? Math.round(pruebasHechas / pruebasEval * 100) : null;
                 const pctTn = res.planComp > 0 ? Math.round(res.realTotal / res.planComp * 100) : null;
-                h += `<div class="kpi-card kpi-main" style="--kc:${colorPct(pct)}"><div class="kpi-label">🏭 Cumplimiento de producción</div><div class="kpi-value">${pct}%</div><div class="kpi-ring"><span style="width:${pct}%"></span></div><div class="kpi-sub" title="Turnos planificados ya cerrados, evaluados contra el plan (los turnos cortos cuentan según sus horas). Trabajados: turnos con producción real, según las horas de Bal-Paradas (igual que la fila T. acum. del calendario).">Promedio de ${fmtTurnos(nEval)} turnos planificados · ${fmtTurnos(tTrab)} trabajados<br>✅ ${fmtTurnos(nCump)} · ⚠️ ${fmtTurnos(nParc)} · ❌ ${fmtTurnos(nDesv)}${nNoPlan ? ` · ➕ ${nNoPlan} sin plan` : ''}</div>${htmlInfluencia(perdCom, perdProd, nEval)}</div>`;
+                h += `<div class="kpi-card kpi-main" style="--kc:${colorPct(pct)}"><div class="kpi-label">🏭 Cumplimiento de producción</div><div class="kpi-value">${pct}%</div><div class="kpi-ring"><span style="width:${pct}%"></span></div><div class="kpi-sub" title="Turnos planificados ya cerrados, evaluados contra el plan (los turnos cortos cuentan según sus horas). Trabajados: turnos con producción real, según las horas de Bal-Paradas (igual que la fila T. acum. del calendario).">Promedio de ${fmtTurnos(nEval)} turnos planificados cerrados${ultCerr ? ` (hasta ${ultCerr})` : ''} · ${fmtTurnos(tTrab)} trabajados<br>✅ ${fmtTurnos(nCump)} · ⚠️ ${fmtTurnos(nParc)} · ❌ ${fmtTurnos(nDesv)}${nNoPlan ? ` · ➕ ${nNoPlan} sin plan` : ''}</div>${htmlInfluencia(perdCom, perdProd, nEval)}</div>`;
                 h += `<div class="kpi-card" style="${pctTn === null ? '' : `--kc:${colorPct(pctTn)}`}"><div class="kpi-label">🎯 Tn real vs ${fuenteActual() === 'obj' ? 'objetivo' : 'plan'}</div><div class="kpi-value">${pctTn === null ? '–' : pctTn + '%'}</div><div class="kpi-sub">${fmtTn0(res.realTotal)} de ${fmtTn0(res.planComp)} Tn a la fecha</div></div>`;
                 h += `<div class="kpi-card" style="${pctPr === null ? '' : `--kc:${colorPct(pctPr)}`}"><div class="kpi-label">🔬 Cumplimiento de pruebas</div><div class="kpi-value">${pctPr === null ? '–' : pctPr + '%'}</div><div class="kpi-sub">${pruebasHechas} de ${pruebasEval} evaluadas · ${pruebasMes} plan. · ±${TOLERANCIA_PRUEBA_DIAS} días</div></div>`;
                 h += htmlDisponibilidad(daysInMonth, year, month, colorPct);
@@ -4030,7 +4099,8 @@
             if (!todos.length) { cont.innerHTML = `<h3>📝 ${titulo}</h3><p class="desv-vacio">${editor ? 'Sin desvíos ni modificaciones del plan este mes.' : 'Sin desvíos justificados por Producción este mes.'}</p>`; return; }
             const pend = todos.filter(f => !f.just);
             if (filtroDesvios === 'pend' && !pend.length) filtroDesvios = 'todos';
-            const lista = editor && filtroDesvios === 'pend' ? pend : todos;
+            const filtroAct = printState && printState.filtroReg ? printState.filtroReg : filtroDesvios;
+            const lista = editor && filtroAct === 'pend' ? pend : todos;
             const etiquetas = { desvio: 'Desvío', parcial: 'Parcial', noplan: 'Sin plan' };
             const ico = { 'Cambio de molde': '🔁', 'Agregar producción': '➕', 'Quitar producción': '➖', 'Cambiar horas': '⏳' };
             let objTxt = '';
@@ -4215,36 +4285,94 @@
             renderGantt();
         }
 
-        function prepararImpresion() {
+        const PRINT_SECC = [
+            { c: 'kpi', id: 'kpiContainer', n: 'Indicadores (KPIs)', d: 'Tarjetas de resumen del mes' },
+            { c: 'cal', id: 'ganttWrapper', n: 'Calendario', d: 'Diagrama del mes en una hoja' },
+            { c: 'ley', id: 'legendContainer', n: 'Referencias', d: 'Colores, moldes y símbolos' },
+            { c: 'an', id: 'analisisInfo', n: 'Análisis y gráficos', d: 'Tn acumuladas y avance por tipo · hoja aparte' },
+            { c: 'reg', id: 'desviosInfo', n: 'Registro de desvíos y modificaciones', d: 'Hoja aparte' },
+            { c: 'pr', id: 'pruebasInfo', n: 'Pruebas', d: 'Pruebas planificadas y realizadas' }
+        ];
+        function seccionesImprimibles() {
+            return PRINT_SECC.filter(x => { const el = document.getElementById(x.id); return el && el.innerHTML.trim() && getComputedStyle(el).display !== 'none'; });
+        }
+        function leerOpcImpresion() {
+            let o = null;
+            try { o = JSON.parse(localStorage.getItem('impresion_' + currentView) || 'null'); } catch (e) { }
+            return o && typeof o === 'object' ? o : { ocultar: [], filtroReg: 'todos', informe: true };
+        }
+        function abrirOpcImpresion() {
+            const o = leerOpcImpresion();
+            const secc = seccionesImprimibles();
+            const vista = currentView === 'plan' ? 'Planificación' : currentView === 'prod' ? 'Producción real' : 'Cumplimiento';
+            document.getElementById('piSub').textContent = `${vista} · ${document.getElementById('mnMes').textContent} ${currentDate.getFullYear()} · A4 horizontal. Elegí qué incluir:`;
+            let h = secc.map(x => `<label class="pi-op"><input type="checkbox" data-c="${x.c}" ${o.ocultar.includes(x.c) ? '' : 'checked'} onchange="validarOpcImpresion()"><span><b>${x.n}</b><small>${x.d}</small></span></label>${x.c === 'reg' && modo === 'produccion' ? `<div class="pi-sub-op" data-dep="reg"><label><input type="radio" name="piReg" value="todos" ${o.filtroReg !== 'pend' ? 'checked' : ''}> Todos</label><label><input type="radio" name="piReg" value="pend" ${o.filtroReg === 'pend' ? 'checked' : ''}> Solo sin justificar</label></div>` : ''}`).join('');
+            if (currentView === 'cumpl' && modo === 'produccion') h += `<label class="pi-op pi-inf"><input type="checkbox" id="piInforme" ${o.informe !== false ? 'checked' : ''}><span><b>Descargar informe de cumplimiento (.txt)</b><small>Detalle de indicadores, desvíos y causas</small></span></label>`;
+            document.getElementById('piLista').innerHTML = h;
+            validarOpcImpresion();
+            document.getElementById('printModal').classList.add('open');
+        }
+        function validarOpcImpresion() {
+            const lista = document.getElementById('piLista');
+            const marcadas = [...lista.querySelectorAll('input[data-c]')].filter(i => i.checked);
+            document.getElementById('piOk').disabled = !marcadas.length;
+            const reg = lista.querySelector('input[data-c="reg"]');
+            const sub = lista.querySelector('.pi-sub-op');
+            if (sub) sub.classList.toggle('off', !(reg && reg.checked));
+        }
+        function cerrarOpcImpresion() { document.getElementById('printModal').classList.remove('open'); }
+        function confirmarImpresion() {
+            const lista = document.getElementById('piLista');
+            const ocultar = [...lista.querySelectorAll('input[data-c]')].filter(i => !i.checked).map(i => i.dataset.c);
+            const rg = lista.querySelector('input[name="piReg"]:checked');
+            const inf = document.getElementById('piInforme');
+            const o = { ocultar, filtroReg: rg ? rg.value : 'todos', informe: inf ? inf.checked : true };
+            try { localStorage.setItem('impresion_' + currentView, JSON.stringify(o)); } catch (e) { }
+            cerrarOpcImpresion();
+            if (inf && inf.checked) descargarInformeCumplimiento();
+            else { informeDescargado = true; setTimeout(() => { informeDescargado = false; }, 4000); }
+            setTimeout(() => { prepararImpresion(o); setTimeout(() => window.print(), 80); }, 30);
+        }
+
+        function prepararImpresion(opc) {
             if (printState) return;
-            printState = { mobile: isMobileState };
+            printState = { mobile: isMobileState, ocultar: new Set(opc && opc.ocultar || []), filtroReg: opc && opc.filtroReg || 'todos' };
             const mesStr = currentDate.toLocaleDateString('es-AR', { month: 'long', year: 'numeric' }).toUpperCase();
             const sub = currentView === 'plan' ? 'Planificación mensual' : currentView === 'prod' ? 'Producción Real' : 'Análisis de Cumplimiento';
             document.getElementById('printTitleMain').textContent = `Cronograma de Producción · ${mesStr}`;
             document.getElementById('printTitleSub').textContent = `${sub} · Cerámica Marcos Paz – Planta CEVIL · Impreso ${new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' })}`;
-            if (isMobileState) { isMobileState = false; renderGantt(); }
+            document.getElementById('printSello').innerHTML = document.getElementById('mnValid').innerHTML;
+            isMobileState = false;
+            renderGantt();
             const body = document.body;
             body.classList.add('printing');
             body.style.zoom = '';
-            const medir = s => {
-                body.style.width = (A4_PX.w / s) + 'px';
-                const visibles = [...body.children].filter(el => el.tagName !== 'SCRIPT' && getComputedStyle(el).display !== 'none' && getComputedStyle(el).position !== 'fixed');
-                return Math.max(1, ...visibles.map(el => el.getBoundingClientRect().bottom + window.scrollY)) * s;
-            };
-            const limite = A4_PX.h * 0.97;
+            body.style.width = A4_PX.w + 'px';
+            PRINT_SECC.forEach(x => { const el = document.getElementById(x.id); if (el) { el.classList.toggle('pr-oculto', printState.ocultar.has(x.c)); el.classList.remove('pr-salto'); } });
+            const pag = document.getElementById('printPag1');
+            const enPag1 = ['kpiContainer', 'ganttWrapper', 'legendContainer'].some(id => { const el = document.getElementById(id); return el && !el.classList.contains('pr-oculto') && getComputedStyle(el).display !== 'none'; });
+            const extra = ['analisisInfo', 'desviosInfo', 'pruebasInfo'].map(id => document.getElementById(id)).find(el => el && !el.classList.contains('pr-oculto') && getComputedStyle(el).display !== 'none' && el.innerHTML.trim());
+            const calVisible = !printState.ocultar.has('cal');
+            const aparte = extra && extra.id !== 'pruebasInfo';
+            if (extra && enPag1 && aparte) extra.classList.add('pr-salto');
+            const cab = document.getElementById('printHeader').getBoundingClientRect().height + 8;
+            const bajoPag1 = !aparte && extra ? (() => { const els = ['pruebasInfo'].map(id => document.getElementById(id)).filter(el => el && !el.classList.contains('pr-oculto') && getComputedStyle(el).display !== 'none'); return els.reduce((a, el) => a + el.getBoundingClientRect().height + 8, 0); })() : 0;
+            const limite = A4_PX.h * 0.97 - cab - bajoPag1;
+            const alto = sc => { pag.style.zoom = ''; pag.style.width = (A4_PX.w / sc) + 'px'; return pag.getBoundingClientRect().height * sc; };
+            pag.style.removeProperty('--cell-h');
+            if (!calVisible || !enPag1) { pag.style.width = ''; return; }
             let escala = 1;
-            body.style.removeProperty('--cell-h');
-            if (medir(1) <= limite) {
+            if (alto(1) <= limite) {
                 let lo = 52, hi = 130;
-                for (let i = 0; i < 8; i++) { const mid = (lo + hi) / 2; body.style.setProperty('--cell-h', mid + 'px'); if (medir(1) <= limite * 0.94) lo = mid; else hi = mid; }
-                body.style.setProperty('--cell-h', lo + 'px');
+                for (let i = 0; i < 8; i++) { const mid = (lo + hi) / 2; pag.style.setProperty('--cell-h', mid + 'px'); if (alto(1) <= limite * 0.94) lo = mid; else hi = mid; }
+                pag.style.setProperty('--cell-h', lo + 'px');
             } else {
                 let lo = 0.25, hi = 1;
-                for (let i = 0; i < 12; i++) { const mid = (lo + hi) / 2; if (medir(mid) <= limite) lo = mid; else hi = mid; }
+                for (let i = 0; i < 12; i++) { const mid = (lo + hi) / 2; if (alto(mid) <= limite) lo = mid; else hi = mid; }
                 escala = lo;
             }
-            body.style.width = (A4_PX.w / escala) + 'px';
-            body.style.zoom = String(escala);
+            pag.style.width = (A4_PX.w / escala) + 'px';
+            pag.style.zoom = String(escala);
         }
 
         function restaurarImpresion() {
@@ -4253,10 +4381,12 @@
             body.classList.remove('printing');
             body.style.width = '';
             body.style.zoom = '';
-            body.style.removeProperty('--cell-h');
-            const eraMobile = printState.mobile;
+            const pag = document.getElementById('printPag1');
+            pag.style.width = ''; pag.style.zoom = ''; pag.style.removeProperty('--cell-h');
+            PRINT_SECC.forEach(x => { const el = document.getElementById(x.id); if (el) el.classList.remove('pr-oculto', 'pr-salto'); });
+            isMobileState = printState.mobile;
             printState = null;
-            if (eraMobile) { isMobileState = true; renderGantt(); }
+            renderGantt();
         }
 
         function generarInformeCumplimiento() {
@@ -4494,7 +4624,7 @@
             } catch (e) { console.error('No se pudo generar el informe', e); }
         }
 
-        function imprimirPlan() { descargarInformeCumplimiento(); prepararImpresion(); setTimeout(() => window.print(), 60); }
+        function imprimirPlan() { abrirOpcImpresion(); }
         window.addEventListener('beforeprint', () => { if (!informeDescargado) descargarInformeCumplimiento(); prepararImpresion(); });
         window.addEventListener('afterprint', restaurarImpresion);
 
