@@ -1172,6 +1172,64 @@
         .mv-mod.quitar { background: #ffd8c2; }
         .mv-post { background: #5e5ce6; font-size: 11px; }
         .gantt-table td.td-prisma { perspective: 520px; background: var(--bg-body); padding: 0; }
+        .gh { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 12px; }
+        .gh-ctrl { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-bottom: 10px; font-size: 0.78rem; font-weight: 700; color: var(--text-muted); }
+        .gh-ctrl label { display: flex; align-items: center; gap: 6px; }
+        .gh-ctrl input[type=date] { padding: 6px 8px; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-cell); color: var(--text-main); font-family: var(--font); font-weight: 700; }
+        .gh-ctrl .anim-seg button { padding: 6px 10px; white-space: nowrap; }
+        .gh-zoom { align-items: center; } .gh-zoom span { padding: 0 6px; font-size: 0.72rem; white-space: nowrap; }
+        .gh-ley { display: flex; flex-wrap: wrap; gap: 10px; margin-left: auto; font-size: 0.7rem; }
+        .gh-ley span { display: inline-flex; align-items: center; gap: 4px; } .gh-ley i { width: 14px; height: 10px; border-radius: 3px; display: inline-block; }
+        .gh-ley-plan { background: repeating-linear-gradient(135deg, #8e8e93 0 3px, #5a5a5f 3px 6px); outline: 1.5px dashed #c7c7cc; }
+        .gh-ley-real { background: #c7c7cc; }
+        .gh-ley .ok { background: var(--green); } .gh-ley .par { background: var(--orange); } .gh-ley .mal { background: var(--red); } .gh-ley .np { background: #bf5af2; }
+        .gh-cuerpo { display: flex; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; background: var(--bg-body); }
+        .gh-lado { flex: 0 0 74px; display: flex; flex-direction: column; border-right: 1px solid var(--border); background: var(--bg-card); z-index: 2; }
+        .gh-lado > div { display: flex; align-items: center; justify-content: center; font-size: 0.66rem; font-weight: 900; letter-spacing: 0.5px; text-align: center; }
+        .gh-l-cab { height: 58px; color: var(--text-muted); } .gh-l-plan { height: 64px; color: var(--text-main); border-top: 1px solid var(--border); }
+        .gh-l-est { height: 22px; color: var(--text-muted); font-size: 0.58rem !important; } .gh-l-real { height: 64px; color: var(--accent-light); border-bottom: 0; }
+        .gh-scroll { flex: 1; overflow-x: auto; overflow-y: hidden; scroll-behavior: auto; }
+        .gh-lienzo { position: relative; height: 208px; background-image: linear-gradient(to right, rgba(255,255,255,0.22) 2px, transparent 2px), linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: calc(var(--z) * 24) 100%, calc(var(--z) * 8) 100%, var(--z) 100%; }
+        .gh-dias { position: absolute; left: 0; right: 0; top: 0; height: 36px; }
+        .gh-dia { position: absolute; top: 0; height: 36px; display: flex; flex-direction: column; justify-content: center; padding-left: 6px; font-size: 0.74rem; color: var(--text-main); cursor: pointer; overflow: hidden; white-space: nowrap; border-bottom: 1px solid var(--border); }
+        .gh-dia b { text-transform: capitalize; } .gh-dia small { color: var(--text-muted); font-size: 0.64rem; font-weight: 700; }
+        .gh-dia.dom b { color: var(--red); } .gh-dia.hoy { background: rgba(224,123,76,0.16); } .gh-dia:hover { background: rgba(127,127,127,0.12); }
+        .gh-horas { position: absolute; left: 0; right: 0; top: 36px; height: 22px; border-bottom: 1px solid var(--border); }
+        .gh-t { position: absolute; top: 0; height: 22px; font-size: 0.6rem; font-weight: 900; color: var(--text-muted); padding-left: 3px; line-height: 22px; overflow: hidden; }
+        .gh-t i { position: absolute; bottom: 0; font-style: normal; font-size: 0.55rem; font-weight: 700; opacity: 0.7; line-height: 1; transform: translateX(2px); }
+        .gh-fila { position: absolute; left: 0; right: 0; }
+        .gh-plan { top: 58px; height: 64px; } .gh-est { top: 122px; height: 22px; } .gh-real { top: 144px; height: 64px; }
+        .gh-real { background: repeating-linear-gradient(135deg, rgba(255,255,255,0.025) 0 6px, transparent 6px 12px); }
+        .gh-seg { position: absolute; top: 8px; bottom: 8px; border-radius: 7px; display: flex; align-items: center; gap: 5px; padding: 0 6px; overflow: hidden; white-space: nowrap; font-size: 0.72rem; cursor: pointer; }
+        .gh-seg img { width: 24px; height: 24px; object-fit: contain; flex: 0 0 auto; filter: drop-shadow(0 1px 2px rgba(0,0,0,0.5)); }
+        .gh-lbl { position: sticky; left: 6px; display: inline-flex; align-items: center; gap: 5px; min-width: 0; }
+        .gh-seg b small { font-weight: 700; opacity: 0.85; } .gh-seg span { font-size: 0.64rem; font-weight: 800; opacity: 0.85; margin-left: auto; }
+        .gh-seg.plan { background: repeating-linear-gradient(135deg, var(--c) 0 7px, color-mix(in srgb, var(--c) 72%, #000) 7px 14px); outline: 2px dashed rgba(255,255,255,0.75); outline-offset: -2px; }
+        .gh-seg.real { background: var(--c); box-shadow: 0 2px 8px rgba(0,0,0,0.45), inset 0 0 0 1px rgba(0,0,0,0.25); }
+        .gh-seg:hover { filter: brightness(1.12); z-index: 3; }
+        .gh-st { position: absolute; top: 3px; bottom: 3px; border-radius: 5px; display: flex; align-items: center; justify-content: center; gap: 3px; font-size: 0.68rem; font-weight: 900; color: #fff; cursor: pointer; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.3); }
+        .gh-st em { font-style: normal; font-size: 0.65rem; }
+        .gh-st.st-cumplido { background: var(--green); color: #052e12; } .gh-st.st-parcial { background: var(--orange); color: #2a1700; } .gh-st.st-desvio { background: var(--red); } .gh-st.st-noplan { background: #bf5af2; }
+        .gh-prueba { position: absolute; top: 0; font-size: 11px; z-index: 4; filter: drop-shadow(0 1px 2px #000); }
+        .gh-ahora { position: absolute; top: 36px; bottom: 0; width: 2px; background: var(--accent); z-index: 5; box-shadow: 0 0 8px var(--accent); pointer-events: none; }
+        .gh-ahora span { position: absolute; top: -2px; left: 4px; font-size: 0.6rem; font-weight: 900; background: var(--accent); color: #fff; padding: 1px 4px; border-radius: 4px; }
+        @media (max-width: 768px) { .gh { padding: 8px; } .gh-lado { flex-basis: 52px; } .gh-ley { margin-left: 0; } }
+        .gantt-table td.td-seg { background: var(--bg-body); padding: 0; }
+        .seg-turno { position: absolute; inset: 0; }
+        .sg { position: absolute; top: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 16px 1px 3px; overflow: hidden; box-shadow: inset -1px 0 0 rgba(0,0,0,0.35); }
+        .sg + .sg { border-left: 2px solid rgba(255,255,255,0.85); }
+        .sg-img { width: 22px; height: 22px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55)); flex: 0 0 auto; }
+        .sg-m { font-size: 10px; font-weight: 900; line-height: 1; white-space: nowrap; }
+        .sg-m small { font-size: 0.85em; font-weight: 800; }
+        .sg-h { font-size: 9px; font-weight: 900; line-height: 1; padding: 1px 3px; border-radius: 4px; background: rgba(0,0,0,0.45); color: #fff; white-space: nowrap; }
+        .sg-angosto .sg-img { width: 16px; height: 16px; }
+        .sg-angosto .sg-m { font-size: 8.5px; } .sg-angosto .sg-m small { display: none; }
+        .sg-angosto .sg-h { font-size: 8px; padding: 1px 2px; }
+        .sg-vacio { background: repeating-linear-gradient(135deg, rgba(30,30,34,0.95) 0 5px, rgba(48,48,54,0.95) 5px 10px); color: #d1d1d6; }
+        .sg-vacio .sg-h { background: transparent; color: #aeaeb2; }
+        .pr-seg { padding: 0; background: var(--bg-body); }
+        .pr-seg .pr-et { z-index: 3; }
+        .gantt-table td.td-prisma::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 2px #7d7bff; border-radius: 2px; pointer-events: none; z-index: 4; }
         .prisma { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(0deg); transition: transform 1.6s cubic-bezier(0.45, 0, 0.2, 1); }
         .pr-cara { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 17px 2px 15px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); transition: opacity 1.2s ease; }
         .pr-cara.c0 { transform: rotateX(0deg); }
@@ -1185,12 +1243,13 @@
         .prisma-bar { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin: 0 0 8px; font-size: 0.76rem; font-weight: 700; color: var(--text-muted); }
         .prisma-bar[hidden] { display: none; }
         .prisma-bar .anim-seg { flex: 0 1 auto; }
-        .prisma-bar .anim-seg button { padding: 6px 12px; }
+        .prisma-bar .anim-seg button { padding: 6px 12px; white-space: nowrap; }
         .pb-ind { display: inline-flex; gap: 4px; align-items: center; }
         .pb-ind i { width: 8px; height: 8px; border-radius: 50%; background: rgba(127,127,127,0.35); transition: background 0.4s; }
         body:not(.prisma-b) .pb-ind i.a, body.prisma-b .pb-ind i.b { background: var(--accent); }
         .pr-et { position: absolute; bottom: 2px; left: 2px; right: 2px; padding: 1px 2px; border-radius: 5px; font-size: 8px; text-align: center; font-weight: 900; letter-spacing: 0; text-transform: uppercase; background: rgba(0,0,0,0.62); color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .pr-cara.c1 .pr-et { background: #5e5ce6; }
+        .pr-cara.c0 .pr-et { background: rgba(60,60,67,0.9); }
         .pr-cara.pr-real .pr-et { background: rgba(255,255,255,0.92); color: #111; }
         .pr-img { width: 26px; height: 26px; object-fit: contain; border-radius: 6px; background: rgba(255,255,255,0.15); filter: drop-shadow(0 2px 4px rgba(0,0,0,0.6)); flex: 0 0 auto; }
         .pr-cara.txt-dark .pr-img { background: rgba(0,0,0,0.08); }
@@ -1523,7 +1582,7 @@
         <div class="anim-seg" role="radiogroup" aria-label="Vista de turnos modificados">
             <button data-v="alt" onclick="setVistaPrisma('alt')">🔄 Alternar</button>
             <button data-v="orig" onclick="setVistaPrisma('orig')">📋 Original</button>
-            <button data-v="mod" onclick="setVistaPrisma('mod')">✏️ Modificado / real</button>
+            <button data-v="mod" onclick="setVistaPrisma('mod')">✏️ Modificado</button>
         </div>
         <span class="pb-ind" title="Cara visible"><i class="a"></i><i class="b"></i></span>
     </div>
@@ -2364,6 +2423,129 @@
             if (f === null || f >= 0.999) return '';
             return `<div class="hr-off" style="--f:${(f * 100).toFixed(1)}%"><span>${fmtDias(f * HORAS_TURNO)} h</span></div>`;
         }
+        function pesoEval(k) { const f = fracPlan(k); return f === null ? 1 : f; }
+        const GH_ZOOMS = [3, 4, 6, 9, 13, 18];
+        const gh = { mes: '', desde: '', hasta: '', z: null, scroll: null };
+        function ghZoom() {
+            if (gh.z === null) { let z = NaN; try { z = Number(localStorage.getItem('ghZoom')); } catch (e) { } gh.z = GH_ZOOMS.includes(z) ? z : (isMobileState ? 4 : 6); }
+            return gh.z;
+        }
+        function ghRangoDefecto(year, month) {
+            const ini = formatYYYYMMDD(new Date(year, month, 1)), fin = formatYYYYMMDD(new Date(year, month + 1, 0)), hoy = hoyStr();
+            return { min: ini, max: fin, desde: ini, hasta: hoy < ini ? fin : (hoy > fin ? fin : hoy) };
+        }
+        function ghFusionar(lista) {
+            const out = [];
+            lista.sort((a, b) => a.x0 - b.x0).forEach(s => {
+                const u = out[out.length - 1];
+                if (u && u.id === s.id && Math.abs(u.x1 - s.x0) < 0.01) { u.x1 = s.x1; u.hasta = s.hasta; u.h += s.h; }
+                else out.push(Object.assign({}, s));
+            });
+            return out;
+        }
+        function ghBarra(seg, z, cls) {
+            const m = seg.t, w = (seg.x1 - seg.x0) * z;
+            const col = getBrickColor(m.baseName, m.number), txt = pickTextColor(col);
+            const tip = `${cls === 'plan' ? 'PLAN' : 'REAL'} · ${m.moldeCompleto}\n${fechaCorta(seg.desde.ds)} ${seg.desde.t} ${horaTxt(seg.desde.h)} → ${fechaCorta(seg.hasta.ds)} ${seg.hasta.t} ${horaTxt(seg.hasta.hf)}\n${fmtDias(seg.h)} h${cls === 'real' ? ' trabajadas (Bal-Paradas)' : ' planificadas'}`;
+            const img = w > 70 ? `<img src="${getImageSrc(m.baseName)}" onerror="this.src='${FALLBACK_IMG}'" alt="">` : '';
+            const lbl = w > 34 ? `<b>${escAttr(m.baseName)}${w > 56 ? `<small>·${m.number}</small>` : ''}</b>` : '';
+            return `<div class="gh-seg ${cls}" style="left:${(seg.x0 * z).toFixed(1)}px;width:${Math.max(1, w).toFixed(1)}px;--c:${col};color:${txt}" title="${escAttr(tip)}" onclick="abrirGantt('${seg.desde.ds}')"><span class="gh-lbl">${img}${lbl}</span>${w > 110 ? `<span>${fmtDias(seg.h)} h</span>` : ''}</div>`;
+        }
+        function ganttHorasHtml(year, month, tnDias) {
+            const mes = `${year}-${String(month + 1).padStart(2, '0')}`;
+            const def = ghRangoDefecto(year, month);
+            if (gh.mes !== mes) { gh.mes = mes; gh.desde = def.desde; gh.hasta = def.hasta; gh.scroll = null; }
+            if (gh.desde > gh.hasta) gh.hasta = gh.desde;
+            const z = ghZoom();
+            const dias = [];
+            for (let ds = gh.desde; ds <= gh.hasta; ds = sumarDias(ds, 1)) dias.push(ds);
+            const off = { T1: 0, T2: 8, T3: 16 };
+            const planS = [], realS = [], est = [], pruebas = [];
+            const ahora = new Date(), hoy = hoyStr();
+            dias.forEach((ds, i) => {
+                TURNOS.forEach(t => {
+                    const k = key(ds, t), base = i * 24 + off[t], hi = TURNO_HORARIO[t].ini;
+                    ventanasProd(planData[k]).forEach(w => planS.push({ id: idSeq(w.t), t: w.t, x0: base + w.ini, x1: base + w.ini + w.dur, h: w.dur, desde: { ds, t, h: hi + w.ini }, hasta: { ds, t, hf: hi + w.ini + w.dur } }));
+                    getTestList(planData[k]).forEach(x => pruebas.push({ x: base, k, t: x }));
+                    const et = estadoTurno(ds, t);
+                    if (et === 'futuro') return;
+                    const seq = getProdSeq(realData[k]);
+                    if (seq.length) {
+                        let hT = horasTurno(k);
+                        hT = hT === null ? HORAS_TURNO : Math.max(0, Math.min(HORAS_TURNO, hT));
+                        if (et === 'actual') { const ini = new Date(`${ds}T00:00:00`); ini.setHours(ini.getHours() + hi); hT = Math.min(hT, Math.max(0, (ahora - ini) / 3600000)); }
+                        const prop = proporcionCambio(k, seq) || seq.map(() => 1 / seq.length);
+                        let c = 0;
+                        seq.forEach((m, j) => { const d = hT * prop[j]; realS.push({ id: idSeq(m), t: m, x0: base + c, x1: base + c + d, h: d, desde: { ds, t, h: hi + c }, hasta: { ds, t, hf: hi + c + d } }); c += d; });
+                    }
+                    if (et === 'pasado') {
+                        const ev = evaluarProduccion(ds, t);
+                        if (ev.status && ev.status !== 'vacio') est.push({ x: base, k, ds, t, ev });
+                    }
+                });
+            });
+            const W = dias.length * 24 * z;
+            let html = `<div class="gh" style="--z:${z}px">
+                <div class="gh-ctrl">
+                    <label>Desde <input type="date" id="ghDesde" value="${gh.desde}" min="${def.min}" max="${def.max}" onchange="ghRango(this.value, null)"></label>
+                    <label>Hasta <input type="date" id="ghHasta" value="${gh.hasta}" min="${def.min}" max="${def.max}" onchange="ghRango(null, this.value)"></label>
+                    <div class="anim-seg gh-rapidos"><button onclick="ghRapido(7)">7 días</button><button onclick="ghRapido(14)">14 días</button><button onclick="ghRapido(0)">Mes a la fecha</button></div>
+                    <div class="anim-seg gh-zoom"><button onclick="ghZoomPaso(-1)" title="Alejar">−</button><span>${z} px/h</span><button onclick="ghZoomPaso(1)" title="Acercar">+</button></div>
+                    <div class="gh-ley"><span><i class="gh-ley-plan"></i>Plan</span><span><i class="gh-ley-real"></i>Real</span><span><i class="ok"></i>Cumplió</span><span><i class="par"></i>Parcial</span><span><i class="mal"></i>Desvío</span><span><i class="np"></i>Sin plan</span></div>
+                </div>
+                <div class="gh-cuerpo">
+                    <div class="gh-lado"><div class="gh-l-cab">Día / hora</div><div class="gh-l-plan">PLAN</div><div class="gh-l-est">Resultado</div><div class="gh-l-real">REAL</div></div>
+                    <div class="gh-scroll" id="ghScroll"><div class="gh-lienzo" style="width:${W}px">`;
+            html += '<div class="gh-dias">' + dias.map((ds, i) => {
+                const d = new Date(ds + 'T00:00:00'), info = tnDias ? tnDias[ds] : null;
+                const tn = info && info.real !== null && info.pasado ? `<small>${fmtTn0(info.real || 0)}${info.obj ? ` / ${fmtTn0(info.obj)}` : ''} Tn</small>` : '';
+                return `<div class="gh-dia${ds === hoy ? ' hoy' : ''}${d.getDay() === 0 ? ' dom' : ''}" style="left:${i * 24 * z}px;width:${24 * z}px" onclick="abrirGantt('${ds}')" title="Ver el detalle del día"><b>${d.toLocaleDateString('es-AR', { weekday: 'short' }).replace('.', '')} ${d.getDate()}</b>${tn}</div>`;
+            }).join('') + '</div>';
+            html += '<div class="gh-horas">' + dias.map((ds, i) => TURNOS.map(t => `<span class="gh-t" style="left:${(i * 24 + off[t]) * z}px;width:${8 * z}px">${8 * z >= 40 ? t : ''}${z >= 9 ? [0, 2, 4, 6].map(h => `<i style="left:${h * z}px">${horaTxt(TURNO_HORARIO[t].ini + h).slice(0, 2)}</i>`).join('') : ''}</span>`).join('')).join('') + '</div>';
+            html += '<div class="gh-fila gh-plan">' + ghFusionar(planS).map(sg => ghBarra(sg, z, 'plan')).join('') + pruebas.map(p => `<span class="gh-prueba" style="left:${p.x * z + 2}px" title="${escAttr('Prueba planificada: ' + p.t.moldeCompleto)}">🔬</span>`).join('') + '</div>';
+            const ico = { cumplido: '✓', parcial: '◐', desvio: '✕', noplan: '➕' };
+            html += '<div class="gh-fila gh-est">' + est.map(e => {
+                const j = justDe(e.k, desviosMes.porTurno.get(e.k));
+                return `<div class="gh-st st-${e.ev.status}" style="left:${e.x * z}px;width:${8 * z}px" title="${escAttr(`${fechaCorta(e.ds)} ${e.t} · ${e.ev.msg || e.ev.status}${j ? `\n📝 ${j.motivo}${j.sector ? ' · ' + j.sector : ''}` : ''}`)}" onclick="abrirGantt('${e.ds}')">${8 * z >= 26 ? ico[e.ev.status] || '' : ''}${j && 8 * z >= 44 ? '<em>💬</em>' : ''}</div>`;
+            }).join('') + '</div>';
+            html += '<div class="gh-fila gh-real">' + ghFusionar(realS).map(sg => ghBarra(sg, z, 'real')).join('') + '</div>';
+            const iHoy = dias.indexOf(hoy);
+            if (iHoy >= 0) { const h0 = new Date(`${hoy}T00:00:00`); h0.setHours(h0.getHours() - 2); const xh = (iHoy * 24 + Math.max(0, Math.min(24, (ahora - h0) / 3600000))) * z; html += `<div class="gh-ahora" style="left:${xh.toFixed(1)}px"><span>${horaTxt(ahora.getHours() + ahora.getMinutes() / 60)}</span></div>`; }
+            html += '</div></div></div>';
+            if (!dias.length) html += '<p class="an-vacio">Sin días en el rango elegido.</p>';
+            return html + '</div>';
+        }
+        function iniciarGanttHoras() {
+            const sc = document.getElementById('ghScroll');
+            if (!sc) return;
+            requestAnimationFrame(() => { sc.scrollLeft = gh.scroll === null ? sc.scrollWidth : gh.scroll; });
+            sc.addEventListener('scroll', () => { gh.scroll = sc.scrollLeft; }, { passive: true });
+        }
+        function ghRango(desde, hasta) {
+            if (desde) gh.desde = desde;
+            if (hasta) gh.hasta = hasta;
+            if (gh.desde > gh.hasta) { if (desde) gh.hasta = gh.desde; else gh.desde = gh.hasta; }
+            gh.scroll = null;
+            renderGantt();
+        }
+        function ghRapido(n) {
+            const def = ghRangoDefecto(currentDate.getFullYear(), currentDate.getMonth());
+            gh.hasta = def.hasta;
+            gh.desde = n ? (sumarDias(def.hasta, -(n - 1)) < def.min ? def.min : sumarDias(def.hasta, -(n - 1))) : def.min;
+            gh.scroll = null;
+            renderGantt();
+        }
+        function ghZoomPaso(d) {
+            const sc = document.getElementById('ghScroll');
+            const z0 = ghZoom(), i = GH_ZOOMS.indexOf(z0), z1 = GH_ZOOMS[Math.max(0, Math.min(GH_ZOOMS.length - 1, i + d))];
+            if (z1 === z0) return;
+            const centro = sc ? (sc.scrollLeft + sc.clientWidth / 2) / z0 : 0;
+            gh.z = z1;
+            try { localStorage.setItem('ghZoom', String(z1)); } catch (e) { }
+            renderGantt();
+            const sc2 = document.getElementById('ghScroll');
+            if (sc2) { sc2.scrollLeft = centro * z1 - sc2.clientWidth / 2; gh.scroll = sc2.scrollLeft; }
+        }
         function fmtTurnos(v) { return v.toLocaleString('es-AR', { maximumFractionDigits: 2 }); }
         function turnosDia(ds, tipo) {
             let t = 0;
@@ -2458,12 +2640,13 @@
                     const desv = ev.score !== null && ev.score < 1;
                     const mc = modCausa(k);
                     if (!desv && !mc) return;
-                    const perd = desv ? 1 - ev.score : 0;
+                    const w = pesoEval(k);
+                    const perd = desv ? (1 - ev.score) * w : 0;
                     let j = desv ? justDe(k, dv.porTurno.get(k)) : null;
                     if (!j && mc && !mc.sinCausa) j = mc;
                     const mot = j ? j.motivo : 'Sin justificar', sec = j ? (j.sector || 'Sin sector') : 'Sin justificar';
-                    acum(motivos, mot, perd, 1); acum(sectores, sec, perd, 1); acum(cruce, sec + '|' + mot, perd, 1);
-                    total += perd; turnos++;
+                    acum(motivos, mot, perd, w); acum(sectores, sec, perd, w); acum(cruce, sec + '|' + mot, perd, w);
+                    total += perd; turnos += w;
                 });
             }
             const orden = m => [...m.entries()].map(([nombre, v]) => ({ nombre, perd: v.perd, turnos: v.turnos, pct: turnos ? v.turnos / turnos : 0 })).sort((a, b) => (a.nombre === 'Sin justificar') - (b.nombre === 'Sin justificar') || b.turnos - a.turnos || b.perd - a.perd);
@@ -2473,14 +2656,14 @@
         function filaCausa(c, nEval, cls) {
             nEval = Math.max(1, nEval);
             const sin = c.nombre === 'Sin justificar' || c.nombre === 'Sin sector';
-            return `<div class="kc-fila" title="${escAttr(`${c.nombre}: ${c.turnos} turno${c.turnos === 1 ? '' : 's'} · −${(c.perd / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts`)}"><span>${escAttr(c.nombre)}</span><div class="ca-bar ${sin ? 'sin' : cls}"><span style="width:${Math.round(c.pct * 100)}%"></span></div><b>${Math.round(c.pct * 100)}%</b></div>`;
+            return `<div class="kc-fila" title="${escAttr(`${c.nombre}: ${fmtTurnos(c.turnos)} turno${c.turnos === 1 ? '' : 's'} · −${(c.perd / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts`)}"><span>${escAttr(c.nombre)}</span><div class="ca-bar ${sin ? 'sin' : cls}"><span style="width:${Math.round(c.pct * 100)}%"></span></div><b>${Math.round(c.pct * 100)}%</b></div>`;
         }
 
         function htmlCausas(an, nEval) {
             if (!nEval) return '';
             if (!an.turnos) return `<div class="kpi-card kpi-causas" style="--kc:var(--green)"><div class="kpi-label">🔎 Causas de desvío</div><div class="kpi-sub">Sin desvíos ni modificaciones en los turnos cerrados del mes</div></div>`;
             const sinJ = an.motivos.find(m => m.nombre === 'Sin justificar');
-            return `<div class="kpi-card kpi-causas" style="--kc:#5e5ce6" onclick="abrirCausas()" role="button" title="Clic para ver el detalle"><div class="kpi-label">🔎 Causas de desvío <small style="font-weight:600;text-transform:none">· ${an.turnos} turnos con desvío o modificación · −${(an.total / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts${sinJ ? ` · ${Math.round(sinJ.pct * 100)}% sin justificar` : ''}</small></div>
+            return `<div class="kpi-card kpi-causas" style="--kc:#5e5ce6" onclick="abrirCausas()" role="button" title="Clic para ver el detalle"><div class="kpi-label">🔎 Causas de desvío <small style="font-weight:600;text-transform:none">· ${fmtTurnos(an.turnos)} turnos con desvío o modificación · −${(an.total / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts${sinJ ? ` · ${Math.round(sinJ.pct * 100)}% sin justificar` : ''}</small></div>
                 <div class="kc-grid"><div><div class="kc-sub">Principales motivos</div>${an.motivos.slice(0, 4).map(c => filaCausa(c, nEval, '')).join('')}</div><div><div class="kc-sub">Sector responsable</div>${an.sectores.slice(0, 5).map(c => filaCausa(c, nEval, 'sec')).join('')}</div></div></div>`;
         }
 
@@ -2488,19 +2671,19 @@
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const an = analisisCausas(year, month);
             let nEval = 0;
-            for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) TURNOS.forEach(t => { const ds = formatYYYYMMDD(new Date(year, month, d)); if (estadoTurno(ds, t) === 'pasado' && evaluarProduccion(ds, t).score !== null) nEval++; });
+            for (let d = 1; d <= new Date(year, month + 1, 0).getDate(); d++) TURNOS.forEach(t => { const ds = formatYYYYMMDD(new Date(year, month, d)); if (estadoTurno(ds, t) === 'pasado' && evaluarProduccion(ds, t).score !== null) nEval += pesoEval(key(ds, t)); });
             const tabla = (titulo, lista, cls) => {
                 let ac = 0;
-                return `<div class="ca-sec"><h4>${titulo}</h4><div class="ca-fila cab"><span>Causa</span><span>Participación (acumulado)</span><span class="num">Turnos</span><span class="num">Pts</span></div>${lista.map(c => { ac += c.pct; return `<div class="ca-fila"><span>${escAttr(c.nombre)}</span><div class="ca-bar ${c.nombre.startsWith('Sin ') ? 'sin' : cls}" title="Acumulado ${Math.round(ac * 100)}%"><span style="width:${Math.round(c.pct * 100)}%"></span></div><span class="num">${c.turnos}</span><span class="num">−${(c.perd / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })}</span></div>`; }).join('')}</div>`;
+                return `<div class="ca-sec"><h4>${titulo}</h4><div class="ca-fila cab"><span>Causa</span><span>Participación (acumulado)</span><span class="num">Turnos</span><span class="num">Pts</span></div>${lista.map(c => { ac += c.pct; return `<div class="ca-fila"><span>${escAttr(c.nombre)}</span><div class="ca-bar ${c.nombre.startsWith('Sin ') ? 'sin' : cls}" title="Acumulado ${Math.round(ac * 100)}%"><span style="width:${Math.round(c.pct * 100)}%"></span></div><span class="num">${fmtTurnos(c.turnos)}</span><span class="num">−${(c.perd / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })}</span></div>`; }).join('')}</div>`;
             };
             let cruce = '';
             if (an.sectores.length && an.turnos) {
                 cruce = `<div class="ca-sec"><h4>Motivo principal por sector</h4>${an.sectores.map(s => {
                     const mot = [...an.cruce.entries()].filter(([k]) => k.startsWith(s.nombre + '|')).map(([k, v]) => ({ m: k.slice(s.nombre.length + 1), perd: v.perd, turnos: v.turnos })).sort((a, b) => b.turnos - a.turnos || b.perd - a.perd)[0];
-                    return `<div class="ca-fila"><span><b>${escAttr(s.nombre)}</b></span><span>${mot ? escAttr(mot.m) : '–'}</span><span class="num">${s.turnos}</span><span class="num">${Math.round(s.pct * 100)}%</span></div>`;
+                    return `<div class="ca-fila"><span><b>${escAttr(s.nombre)}</b></span><span>${mot ? escAttr(mot.m) : '–'}</span><span class="num">${fmtTurnos(s.turnos)}</span><span class="num">${Math.round(s.pct * 100)}%</span></div>`;
                 }).join('')}</div>`;
             }
-            document.getElementById('csCuerpo').innerHTML = !an.turnos ? '<p class="modos-sub">Sin desvíos ni modificaciones en los turnos cerrados del mes.</p>' : `<p class="modos-sub">Turnos cerrados con desvío o con modificación del plan, según la causa y el sector registrados (las pruebas no se consideran). La participación es por turnos; los puntos son los de cumplimiento perdidos. Total: <b>${an.turnos} turnos</b> · <b>−${(an.total / Math.max(1, nEval) * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts</b>.</p>${tabla('Por motivo', an.motivos, '')}${tabla('Por sector responsable', an.sectores, 'sec')}${cruce}`;
+            document.getElementById('csCuerpo').innerHTML = !an.turnos ? '<p class="modos-sub">Sin desvíos ni modificaciones en los turnos cerrados del mes.</p>' : `<p class="modos-sub">Turnos cerrados con desvío o con modificación del plan, según la causa y el sector registrados (las pruebas no se consideran). La participación es por turnos; los puntos son los de cumplimiento perdidos. Total: <b>${fmtTurnos(an.turnos)} turnos</b> · <b>−${(an.total / Math.max(1, nEval) * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 })} pts</b>.</p>${tabla('Por motivo', an.motivos, '')}${tabla('Por sector responsable', an.sectores, 'sec')}${cruce}`;
             document.getElementById('causasModal').classList.add('open');
         }
         function cerrarCausas() { document.getElementById('causasModal').classList.remove('open'); }
@@ -2813,31 +2996,43 @@
             const o = planBase ? planBase[k] : null, a = (planUltimo || planData)[k];
             return firmaHoras(o) !== firmaHoras(a);
         }
-        function caraPrisma(tasks, etiqueta, cls, extra) {
+        function turnoDividido(tasks) {
+            const v = ventanasProd(tasks);
+            if (!v.length) return false;
+            const tot = v.reduce((a, w) => a + w.dur, 0);
+            return v.length > 1 || tot < HORAS_TURNO - 0.01;
+        }
+        function segmentosHtml(tasks, turno) {
+            const v = ventanasProd(tasks);
+            const ini = TURNO_HORARIO[turno] ? TURNO_HORARIO[turno].ini : 0;
+            const partes = [];
+            let cursor = 0;
+            const hueco = (a, b) => { if (b - a > 0.01) partes.push(`<div class="sg sg-vacio" style="left:${(a / HORAS_TURNO * 100).toFixed(2)}%;width:${((b - a) / HORAS_TURNO * 100).toFixed(2)}%" title="${horaTxt(ini + a)}–${horaTxt(ini + b)} · sin producción planificada"><span class="sg-h">${fmtDias(b - a)} h</span></div>`); };
+            v.forEach(w => {
+                hueco(cursor, w.ini);
+                const m = w.t;
+                const col = getBrickColor(m.baseName, m.number), txt = pickTextColor(col);
+                const ancho = w.dur / HORAS_TURNO;
+                partes.push(`<div class="sg${ancho < 0.6 ? ' sg-angosto' : ''}" style="left:${(w.ini / HORAS_TURNO * 100).toFixed(2)}%;width:${(ancho * 100).toFixed(2)}%;background:${col};color:${txt}" title="${horaTxt(ini + w.ini)}–${horaTxt(ini + w.ini + w.dur)} · ${escAttr(m.moldeCompleto)} · ${fmtDias(w.dur)} h"><img src="${getImageSrc(m.baseName)}" class="sg-img" onerror="this.src='${FALLBACK_IMG}'" alt=""><b class="sg-m">${escAttr(m.baseName)}<small>·${m.number}</small></b><span class="sg-h">${fmtDias(w.dur)} h</span></div>`);
+                cursor = Math.max(cursor, w.ini + w.dur);
+            });
+            hueco(cursor, HORAS_TURNO);
+            return `<div class="seg-turno">${partes.join('')}</div>`;
+        }
+        function caraPrisma(tasks, etiqueta, cls, turno) {
             const seq = getProdSeq(tasks);
-            if (!seq.length) return `<div class="pr-cara ${cls} pr-vacia"><span class="pr-et">${etiqueta}</span><b class="pr-mold">Sin prod.</b>${extra || ''}</div>`;
-            const ds = durSeq(tasks), tot = ds.reduce((a, b) => a + b, 0) || 1;
-            const prop = seq.length > 1 ? ds.map(x => x / tot) : null;
+            if (!seq.length) return `<div class="pr-cara ${cls} pr-vacia"><span class="pr-et">${etiqueta}</span><b class="pr-mold">Sin prod.</b></div>`;
+            if (turnoDividido(tasks)) return `<div class="pr-cara ${cls} pr-seg">${segmentosHtml(tasks, turno)}<span class="pr-et">${etiqueta}</span></div>`;
             const ult = seq[seq.length - 1];
             const txt = pickTextColor(getBrickColor(ult.baseName, ult.number));
-            const h = Math.min(HORAS_TURNO, tot);
             const img = `<img src="${getImageSrc(ult.baseName)}" class="pr-img" onerror="this.src='${FALLBACK_IMG}'" alt="${escAttr(ult.baseName)}">`;
-            return `<div class="pr-cara ${cls}${txt === '#000' ? ' txt-dark' : ''}" style="${fondoSeq(seq, prop)} color:${txt};"><span class="pr-et">${etiqueta}</span>${img}<b class="pr-mold">${seq.map(m => `${escAttr(m.baseName)}${m.variante ? `<small>${escAttr(m.variante)}</small>` : ''}·${m.number}`).join('<i>→</i>')}</b>${h < HORAS_TURNO - 0.01 ? `<span class="pr-h">${fmtDias(h)} h</span>` : ''}${extra || ''}</div>`;
+            return `<div class="pr-cara ${cls}${txt === '#000' ? ' txt-dark' : ''}" style="${fondoSeq(seq, null)} color:${txt};"><span class="pr-et">${etiqueta}</span>${img}<b class="pr-mold">${escAttr(ult.baseName)}${ult.variante ? `<small>${escAttr(ult.variante)}</small>` : ''}·${ult.number}</b></div>`;
         }
         function prismaHtml(k, dateStr, turno) {
             const orig = planBase ? planBase[k] : null, act = (planUltimo || planData)[k];
-            const et = estadoTurno(dateStr, turno);
             const ultMod = (modTurnos.get(k) || []).slice(-1)[0];
-            const tipoMod = ultMod ? ({ 'Quitar producción': 'Quitado', 'Cambio de molde': 'Cambio', 'Agregar producción': 'Agregado', 'Cambiar horas': 'Horas' }[ultMod.tipo] || 'Modif.') : 'Modif.';
-            let extra = '';
-            if (et === 'pasado') {
-                const ev = evaluarProduccion(dateStr, turno);
-                const est = ev.status === 'cumplido' ? '<span class="pr-st ok">✓ Cumplió</span>' : ev.status === 'parcial' ? '<span class="pr-st par">◐ Parcial</span>' : ev.status === 'desvio' ? '<span class="pr-st mal">✕ Desvío</span>' : ev.status === 'noplan' ? '<span class="pr-st mal">➕ Sin plan</span>' : '';
-                const sr = getProdSeq(realData[k]);
-                extra = `${est}<span class="pr-h">real: ${sr.length ? sr.map(m => m.baseName + '·' + m.number).join(' → ') : 'sin prod.'}</span>`;
-            }
-            const segunda = caraPrisma(act, tipoMod, 'c1' + (et === 'pasado' ? ' pr-pasado' : ''), extra);
-            return `<div class="prisma">${caraPrisma(orig, 'Orig.', 'c0')}${segunda}</div>`;
+            const tipoMod = ultMod ? ({ 'Quitar producción': 'Quitado', 'Cambio de molde': 'Cambio', 'Agregar producción': 'Agregado', 'Cambiar horas': 'Horas' }[ultMod.tipo] || 'Modif.') : 'Nuevo plan';
+            return `<div class="prisma">${caraPrisma(orig, 'Orig.', 'c0', turno)}${caraPrisma(act, tipoMod, 'c1', turno)}</div>`;
         }
 
         function buildCellParts(pre, compacto) {
@@ -3158,7 +3353,10 @@
                 const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (modsK ? `\n\n✏️ Modificado: ${modsK[modsK.length - 1].tipo}\n📝 ${modsK[modsK.length - 1].justificacion}` : '') + (pc && currentView !== 'prod' ? '\n\n' + textoPostCierre(k, pc) : '') + (seleccionCompras && extraAttr ? '\n\n💼 Clic para recomendar cambios en este bloque' : '');
                 if (esPrisma) {
                     hayPrisma = true;
-                    return `<td class="${cls} td-prisma"${extraAttr} style="--d:${idx};${extraStyle}" title="${escAttr(tooltip + '\n\n⟲ La celda alterna entre el plan original y el modificado (o lo real y el desvío si el turno ya pasó). Elegí la vista con los botones arriba del calendario.')}" onclick="${onclick}">${tnHtml}${markers}${prismaHtml(k, dateStr, turno)}</td>`;
+                    return `<td class="${cls} td-prisma"${extraAttr} style="--d:${idx};${extraStyle}" title="${escAttr(tooltip + '\n\n⟲ La celda alterna entre el plan original y el modificado. Elegí la vista con los botones arriba del calendario. Los desvíos se ven en la vista Cumplimiento.')}" onclick="${onclick}">${tnHtml}${markers}${prismaHtml(k, dateStr, turno)}</td>`;
+                }
+                if (currentView === 'plan' && turnoDividido(planData[k])) {
+                    return `<td class="${cls} td-seg"${extraAttr} style="--d:${idx};${extraStyle}" title="${escAttr(tooltip)}" onclick="${onclick}">${tnHtml}${markers}${segmentosHtml(planData[k], turno)}</td>`;
                 }
                 const ov = overlayHoras(currentView === 'plan' ? fracPlan(k) : (estadoTurno(dateStr, turno) === 'futuro' ? null : fracReal(k)));
                 return `<td class="${cls}"${extraAttr} style="--d:${idx};${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="${onclick}">${ov}${tnHtml}${markers}${parts.content}</td>`;
@@ -3338,6 +3536,7 @@
             }
 
             wrapper.innerHTML = html;
+            if (currentView === 'cumpl' && !printState) { wrapper.innerHTML = ganttHorasHtml(year, month, tnDias); iniciarGanttHoras(); }
             activarTooltips(wrapper);
             renderLeyenda(visibles, hayMulti, hayAviso, fueraVisibles);
             renderAnalisis(tnDias, year, month);
@@ -3353,7 +3552,7 @@
                     const idx = td.cellIndex; Array.from(table.rows).forEach(row => { if (row.cells[idx]) row.cells[idx].classList.remove('hover-col'); });
                 });
             }
-            if (seleccionCompras) {
+            if (seleccionCompras && table) {
                 table.addEventListener('mouseover', e => {
                     const td = e.target.closest('td[data-bq]');
                     table.querySelectorAll('.bq-hover').forEach(x => x.classList.remove('bq-hover'));
@@ -3400,7 +3599,7 @@
             else h += `<div class="legend-item"><span class="tn-tag static">250</span><span>Tn producidas en el turno</span></div>`;
             }
             h += `<div class="legend-item lg-live"><div class="legend-now"></div><span>Turno en curso</span></div>`;
-            if (currentView === 'plan' && hayPrisma) h += `<div class="legend-item"><div class="legend-prisma"><div class="prisma"><div class="pr-cara c0"></div><div class="pr-cara c1"></div></div></div><span>Turno modificado: alterna original ↔ modificado / real y desvío</span></div>`;
+            if (currentView === 'plan' && hayPrisma) h += `<div class="legend-item"><div class="legend-prisma"><div class="prisma"><div class="pr-cara c0"></div><div class="pr-cara c1"></div></div></div><span>Turno modificado: alterna plan original ↔ modificado</span></div>`;
             if (currentView === 'plan' && moldesExt.recomendaciones.some(r => r.mes === mesClave())) {
                 h += `<div class="legend-item lg-live"><span class="mv mv-sol pend static">💼<b>?</b></span><span class="mv mv-sol anal static">💼<b>…</b></span><span>Solicitud de Comercial pendiente / en análisis (celda con borde azul / naranja)</span></div>`;
                 h += `<div class="legend-item lg-live"><span class="mv mv-sol ok static">💼<b>✓</b></span><span>Solicitud aceptada (borde verde)</span></div>`;
@@ -3520,26 +3719,28 @@
                 h += `<div class="kpi-card"><div class="kpi-label">Tipos producidos</div><div class="kpi-value">${realTipos.length}</div><div class="mini-chips">${realTipos.map(t => `<span class="mini-chip" style="background:${t.color}; color:${pickTextColor(t.color)}">${escAttr(t.nombre)}</span>`).join('')}</div></div>`;
                 h += tarjetaTipos('Tn producidas por tipo de ladrillo', realTipos, 'prod');
             } else {
-                let sumScore = 0, nEval = 0, nCump = 0, nParc = 0, nDesv = 0, nNoPlan = 0, pruebasEval = 0, pruebasHechas = 0, pruebasMes = 0, perdCom = 0, perdProd = 0;
+                let tTrab = 0, sumScore = 0, nEval = 0, nCump = 0, nParc = 0, nDesv = 0, nNoPlan = 0, pruebasEval = 0, pruebasHechas = 0, pruebasMes = 0, perdCom = 0, perdProd = 0;
                 for (let d = 1; d <= daysInMonth; d++) {
                     const ds = formatYYYYMMDD(new Date(year, month, d));
                     TURNOS.forEach(t => {
                         pruebasMes += getTestList(planData[key(ds, t)]).length;
                         if (estadoTurno(ds, t) !== 'pasado') return;
+                        tTrab += fracReal(key(ds, t)) || 0;
                         const pr = evaluarPruebas(ds, t);
                         if (pr) { pruebasHechas += pr.ok; pruebasEval += pr.ok + pr.om; }
                         const ev = evaluarProduccion(ds, t);
                         if (ev.status === 'noplan') nNoPlan++;
                         if (ev.score === null) return;
-                        nEval++; sumScore += ev.score;
-                        if (ev.status === 'cumplido') nCump++; else if (ev.status === 'parcial') nParc++; else nDesv++;
-                        if (ev.score < 1) { if (origenDesvio(key(ds, t), desviosMes.porTurno.get(key(ds, t))) === 'comercial') perdCom += 1 - ev.score; else perdProd += 1 - ev.score; }
+                        const w = pesoEval(key(ds, t));
+                        nEval += w; sumScore += ev.score * w;
+                        if (ev.status === 'cumplido') nCump += w; else if (ev.status === 'parcial') nParc += w; else nDesv += w;
+                        if (ev.score < 1) { if (origenDesvio(key(ds, t), desviosMes.porTurno.get(key(ds, t))) === 'comercial') perdCom += (1 - ev.score) * w; else perdProd += (1 - ev.score) * w; }
                     });
                 }
                 const pct = nEval > 0 ? Math.round(sumScore / nEval * 100) : 0;
                 const pctPr = pruebasEval > 0 ? Math.round(pruebasHechas / pruebasEval * 100) : null;
                 const pctTn = res.planComp > 0 ? Math.round(res.realTotal / res.planComp * 100) : null;
-                h += `<div class="kpi-card kpi-main" style="--kc:${colorPct(pct)}"><div class="kpi-label">🏭 Cumplimiento de producción</div><div class="kpi-value">${pct}%</div><div class="kpi-ring"><span style="width:${pct}%"></span></div><div class="kpi-sub">Promedio de ${nEval} turnos · ✅ ${nCump} · ⚠️ ${nParc} · ❌ ${nDesv}${nNoPlan ? ` · ➕ ${nNoPlan} sin plan` : ''}</div>${htmlInfluencia(perdCom, perdProd, nEval)}</div>`;
+                h += `<div class="kpi-card kpi-main" style="--kc:${colorPct(pct)}"><div class="kpi-label">🏭 Cumplimiento de producción</div><div class="kpi-value">${pct}%</div><div class="kpi-ring"><span style="width:${pct}%"></span></div><div class="kpi-sub" title="Turnos planificados ya cerrados, evaluados contra el plan (los turnos cortos cuentan según sus horas). Trabajados: turnos con producción real, según las horas de Bal-Paradas (igual que la fila T. acum. del calendario).">Promedio de ${fmtTurnos(nEval)} turnos planificados · ${fmtTurnos(tTrab)} trabajados<br>✅ ${fmtTurnos(nCump)} · ⚠️ ${fmtTurnos(nParc)} · ❌ ${fmtTurnos(nDesv)}${nNoPlan ? ` · ➕ ${nNoPlan} sin plan` : ''}</div>${htmlInfluencia(perdCom, perdProd, nEval)}</div>`;
                 h += `<div class="kpi-card" style="${pctTn === null ? '' : `--kc:${colorPct(pctTn)}`}"><div class="kpi-label">🎯 Tn real vs ${fuenteActual() === 'obj' ? 'objetivo' : 'plan'}</div><div class="kpi-value">${pctTn === null ? '–' : pctTn + '%'}</div><div class="kpi-sub">${fmtTn0(res.realTotal)} de ${fmtTn0(res.planComp)} Tn a la fecha</div></div>`;
                 h += `<div class="kpi-card" style="${pctPr === null ? '' : `--kc:${colorPct(pctPr)}`}"><div class="kpi-label">🔬 Cumplimiento de pruebas</div><div class="kpi-value">${pctPr === null ? '–' : pctPr + '%'}</div><div class="kpi-sub">${pruebasHechas} de ${pruebasEval} evaluadas · ${pruebasMes} plan. · ±${TOLERANCIA_PRUEBA_DIAS} días</div></div>`;
                 h += htmlDisponibilidad(daysInMonth, year, month, colorPct);
@@ -3770,7 +3971,8 @@
             const cont = document.getElementById('desviosInfo');
             if (currentView !== 'cumpl' && currentView !== 'plan') { cont.style.display = 'none'; cont.innerHTML = ''; return; }
             const editor = modo === 'produccion';
-            const todos = editor ? filasRegistro() : filasRegistro().filter(f => f.just);
+            const base = currentView === 'plan' ? filasRegistro().filter(f => f.tipo === 'mod') : filasRegistro();
+            const todos = editor ? base : base.filter(f => f.just);
             if (currentView === 'plan' && !todos.some(f => f.tipo === 'mod')) { cont.style.display = 'none'; cont.innerHTML = ''; return; }
             cont.style.display = 'block';
             const titulo = editor ? 'Registro de desvíos y modificaciones' : 'Desvíos y modificaciones justificados';
@@ -4036,7 +4238,7 @@
                         turnosCerrados++; ultCerrado = `${fechaCorta(ds)} ${t}`;
                         if (pr) { prOk += pr.ok; prEval += pr.ok + pr.om; if (pr.innecesaria) prInn++; }
                         if (ev.status === 'noplan') nNoPlan++;
-                        if (ev.score !== null) { nEval++; sumScore += ev.score; if (ev.status === 'cumplido') nCump++; else if (ev.status === 'parcial') nParc++; else nDesv++; if (ev.score < 1) { if (origenDesvio(k, desviosMes.porTurno.get(k)) === 'comercial') perdCom += 1 - ev.score; else perdProd += 1 - ev.score; } }
+                        if (ev.score !== null) { const w = pesoEval(k); nEval += w; sumScore += ev.score * w; if (ev.status === 'cumplido') nCump += w; else if (ev.status === 'parcial') nParc += w; else nDesv += w; if (ev.score < 1) { if (origenDesvio(k, desviosMes.porTurno.get(k)) === 'comercial') perdCom += (1 - ev.score) * w; else perdProd += (1 - ev.score) * w; } }
                     }
                     const plan = seqTexto(getProdSeq(planData[k]));
                     const real = seqTexto(getProdSeq(realData[k]));
@@ -4087,7 +4289,7 @@
             let turnosCortos = 0, horasPerdidas = 0;
             for (let d = 1; d <= dias; d++) TURNOS.forEach(t => { const h = horasTurno(key(formatYYYYMMDD(new Date(year, month, d)), t)); if (h !== null && h < HORAS_TURNO) { turnosCortos++; horasPerdidas += HORAS_TURNO - h; } });
             const nivel = (v, a, b) => v === null ? 'sin datos' : v >= a ? 'bueno' : v >= b ? 'aceptable' : 'bajo';
-            const lecturaProd = pctProd === null ? 'Todavía no hay turnos cerrados para evaluar.' : `Nivel ${nivel(pctProd, 90, 75)}. ${nDesv ? `${nDesv} turno${nDesv > 1 ? 's' : ''} no produjeron el tipo planificado` : 'Ningún turno quedó sin producir el tipo planificado'}${nParc ? ` y ${nParc} lo cumplieron en parte (cambio de tipo dentro del turno)` : ''}.${motivoTop ? ` El motivo más frecuente de desvío fue "${motivoTop[0]}" (${motivoTop[1]} turno${motivoTop[1] > 1 ? 's' : ''}).` : ''}`;
+            const lecturaProd = pctProd === null ? 'Todavía no hay turnos cerrados para evaluar.' : `Nivel ${nivel(pctProd, 90, 75)}. ${nDesv ? `${fmtTurnos(nDesv)} turno${nDesv > 1 ? 's' : ''} no produjeron el tipo planificado` : 'Ningún turno quedó sin producir el tipo planificado'}${nParc ? ` y ${fmtTurnos(nParc)} lo cumplieron en parte (cambio de tipo dentro del turno)` : ''}.${motivoTop ? ` El motivo más frecuente de desvío fue "${motivoTop[0]}" (${motivoTop[1]} turno${motivoTop[1] > 1 ? 's' : ''}).` : ''}`;
             const lecturaTn = pctTn === null ? 'Sin objetivo a la fecha para comparar.' : `${pctTn >= 100 ? `Se produjo ${fmtTn0(realAc - objAc)} Tn por encima` : `Faltan ${fmtTn0(objAc - realAc)} Tn`} respecto del objetivo de los turnos cerrados (${pctTn >= 100 ? '+' : '−'}${Math.abs(pctTn - 100)}%).${diasRest > 0 && objMes > realAc ? ` Para llegar al objetivo del mes hacen falta ≈${fmtTn0(requerido)} Tn/día en los ${diasRest} días que quedan; el ritmo actual es ${fmtTn0(ritmo)} Tn/día (${requerido > 0 ? Math.round(ritmo / requerido * 100) : 100}% de lo necesario).` : ''}${turnosCortos ? ` Hubo ${turnosCortos} turno${turnosCortos > 1 ? 's' : ''} de menos de 8 h (${fmtDias(horasPerdidas)} h menos), ya descontados del objetivo.` : ''}`;
             const lecturaPr = pctPr === null ? 'No hubo pruebas evaluables todavía.' : `Nivel ${nivel(pctPr, 90, 70)}. ${prEval - prOk ? `${prEval - prOk} prueba${prEval - prOk > 1 ? 's' : ''} no se hicieron en su ventana de ±${TOLERANCIA_PRUEBA_DIAS} días (incluye pospuestas)` : 'Todas las pruebas evaluadas se realizaron'}.${prInn ? ` ${prInn} no fueron necesarias porque el molde quedó Operativo.` : ''}`;
             const lecturaDesv = !desviosMes.lista.length ? 'Sin bloques de desvío.' : `${Math.round(nJustR / desviosMes.lista.length * 100)}% de los bloques están justificados.${desviosMes.lista.length - nJustR ? ` Quedan ${desviosMes.lista.length - nJustR} por justificar desde el modo Producción.` : ''}`;
@@ -4110,15 +4312,15 @@
 
             titulo('2. Indicadores principales');
             L.push(`Cumplimiento de producción ........ ${nEval ? Math.round(sumScore / nEval * 100) + '%' : '–'}`);
-            L.push(`   ${nCump} turnos cumplidos · ${nParc} parciales · ${nDesv} con desvío · ${nEval} turnos evaluados${nNoPlan ? ` · ${nNoPlan} con producción sin plan` : ''}.`);
+            L.push(`   ${fmtTurnos(nCump)} turnos cumplidos · ${fmtTurnos(nParc)} parciales · ${fmtTurnos(nDesv)} con desvío · ${fmtTurnos(nEval)} turnos evaluados (los turnos cortos cuentan según sus horas planificadas)${nNoPlan ? ` · ${nNoPlan} con producción sin plan` : ''}.`);
             L.push('   Qué mide: si en cada turno cerrado se produjo el TIPO de ladrillo planificado.');
             L.push('   Cálculo: promedio del puntaje de cada turno cerrado = tipos planificados que se produjeron / (tipos planificados + tipos no planificados).');
             L.push(`   Lectura: ${lecturaProd}`);
             if (anCausas.turnos) {
                 const pp = v => (v / Math.max(1, nEval) * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 });
                 L.push('   Causas de desvío (turnos cerrados con desvío o modificación del plan, según sector y motivo registrados):');
-                anCausas.motivos.forEach(c => L.push(`      Motivo · ${c.nombre}: ${Math.round(c.pct * 100)}% (${c.turnos} turnos, −${pp(c.perd)} pts)`));
-                anCausas.sectores.forEach(c => L.push(`      Sector · ${c.nombre}: ${Math.round(c.pct * 100)}% (${c.turnos} turnos, −${pp(c.perd)} pts)`));
+                anCausas.motivos.forEach(c => L.push(`      Motivo · ${c.nombre}: ${Math.round(c.pct * 100)}% (${fmtTurnos(c.turnos)} turnos, −${pp(c.perd)} pts)`));
+                anCausas.sectores.forEach(c => L.push(`      Sector · ${c.nombre}: ${Math.round(c.pct * 100)}% (${fmtTurnos(c.turnos)} turnos, −${pp(c.perd)} pts)`));
             }
             if (nEval) {
                 const tot = perdCom + perdProd, pp = v => (v / nEval * 100).toLocaleString('es-AR', { maximumFractionDigits: 1 });
