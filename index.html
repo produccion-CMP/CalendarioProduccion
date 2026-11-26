@@ -155,7 +155,8 @@
         @keyframes moveDown { 0%, 100% { transform: translateY(-2px); } 50% { transform: translateY(2px); } }
 
         .change-marker { position: absolute; top: 0; left: 0; width: 0; height: 0; border-top: 22px solid; border-right: 22px solid transparent; z-index: 5; filter: drop-shadow(2px 2px 2px rgba(0,0,0,0.4)); }
-        .test-marker { position: absolute; top: 0; right: 0; width: 0; height: 0; border-top: 22px solid #000; border-left: 22px solid transparent; z-index: 5; filter: drop-shadow(-1px 1px 0 rgba(255,255,255,0.9)); }
+        .test-marker { position: absolute; top: 0; right: 0; width: 24px; height: 24px; z-index: 5; background: var(--prueba-bg); clip-path: polygon(0 0, 100% 0, 100% 100%); }
+        .test-marker::after { content: 'PR'; position: absolute; top: 2px; right: 2px; font-size: 7px; font-weight: 900; color: #000; letter-spacing: -0.2px; line-height: 1; }
 
         td.multi-mold { padding: 0 !important; }
         .cell-content.cc-change { position: relative; z-index: 2; justify-content: flex-end; padding-bottom: 4px; gap: 0; }
@@ -1189,14 +1190,22 @@
         .gh-l-cab { height: 58px; color: var(--text-muted); } .gh-l-plan { height: 64px; color: var(--text-main); border-top: 1px solid var(--border); }
         .gh-l-est { height: 22px; color: var(--text-muted); font-size: 0.58rem !important; } .gh-l-real { height: 64px; color: var(--accent-light); border-bottom: 0; }
         .gh-scroll { flex: 1; overflow-x: auto; overflow-y: hidden; scroll-behavior: auto; }
-        .gh-lienzo { position: relative; height: 208px; background-image: linear-gradient(to right, rgba(255,255,255,0.22) 2px, transparent 2px), linear-gradient(to right, rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(to right, rgba(255,255,255,0.035) 1px, transparent 1px); background-size: calc(var(--z) * 24) 100%, calc(var(--z) * 8) 100%, var(--z) 100%; }
+        .gh-lienzo { position: relative; height: 208px; background-image: repeating-linear-gradient(to right, rgba(255,255,255,0.09) 0 1px, transparent 1px calc(var(--z) * 8)), repeating-linear-gradient(to right, rgba(255,255,255,0.03) 0 1px, transparent 1px var(--z)); }
+        .gh-bandas { position: absolute; inset: 0; pointer-events: none; }
+        .gh-banda { position: absolute; top: 0; bottom: 0; border-left: 3px solid rgba(255,255,255,0.5); }
+        .gh-banda.par { background: rgba(255,255,255,0.035); }
+        .gh-banda.hoy { background: rgba(224,123,76,0.1); border-left-color: var(--accent); }
         .gh-dias { position: absolute; left: 0; right: 0; top: 0; height: 36px; }
-        .gh-dia { position: absolute; top: 0; height: 36px; display: flex; flex-direction: column; justify-content: center; padding-left: 6px; font-size: 0.74rem; color: var(--text-main); cursor: pointer; overflow: hidden; white-space: nowrap; border-bottom: 1px solid var(--border); }
+        .gh-dia { position: absolute; top: 0; height: 36px; border-left: 3px solid rgba(255,255,255,0.5); display: flex; flex-direction: column; justify-content: center; padding-left: 6px; font-size: 0.74rem; color: var(--text-main); cursor: pointer; overflow: hidden; white-space: nowrap; border-bottom: 1px solid var(--border); }
         .gh-dia b { text-transform: capitalize; } .gh-dia small { color: var(--text-muted); font-size: 0.64rem; font-weight: 700; }
-        .gh-dia.dom b { color: var(--red); } .gh-dia.hoy { background: rgba(224,123,76,0.16); } .gh-dia:hover { background: rgba(127,127,127,0.12); }
+        .gh-dia.par { background: rgba(255,255,255,0.05); }
+        .gh-dia.dom b { color: var(--red); } .gh-dia.hoy { background: rgba(224,123,76,0.22); border-left-color: var(--accent); }
+        .gh-dia em { font-style: normal; font-size: 0.58rem; font-weight: 900; background: var(--accent); color: #fff; padding: 1px 4px; border-radius: 4px; margin-left: 3px; } .gh-dia:hover { background: rgba(127,127,127,0.12); }
         .gh-horas { position: absolute; left: 0; right: 0; top: 36px; height: 22px; border-bottom: 1px solid var(--border); }
-        .gh-t { position: absolute; top: 0; height: 22px; font-size: 0.6rem; font-weight: 900; color: var(--text-muted); padding-left: 3px; line-height: 22px; overflow: hidden; }
-        .gh-t i { position: absolute; bottom: 0; font-style: normal; font-size: 0.55rem; font-weight: 700; opacity: 0.7; line-height: 1; transform: translateX(2px); }
+        .gh-t { position: absolute; top: 0; height: 22px; overflow: hidden; border-left: 1px solid rgba(255,255,255,0.18); }
+        .gh-t b { position: absolute; left: 3px; top: 4px; font-size: 0.6rem; font-weight: 900; color: var(--text-main); background: rgba(127,127,127,0.22); padding: 1px 4px; border-radius: 4px; line-height: 1.1; }
+        .gh-t.t1 { border-left: 0; }
+        .gh-t i { position: absolute; bottom: 2px; font-style: normal; font-size: 0.52rem; font-weight: 700; color: var(--text-muted); opacity: 0.75; line-height: 1; transform: translateX(-50%); }
         .gh-fila { position: absolute; left: 0; right: 0; }
         .gh-plan { top: 58px; height: 64px; } .gh-est { top: 122px; height: 22px; } .gh-real { top: 144px; height: 64px; }
         .gh-real { background: repeating-linear-gradient(135deg, rgba(255,255,255,0.025) 0 6px, transparent 6px 12px); }
@@ -1216,20 +1225,22 @@
         @media (max-width: 768px) { .gh { padding: 8px; } .gh-lado { flex-basis: 52px; } .gh-ley { margin-left: 0; } }
         .gantt-table td.td-seg { background: var(--bg-body); padding: 0; }
         .seg-turno { position: absolute; inset: 0; }
-        .sg { position: absolute; top: 0; bottom: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 16px 1px 3px; overflow: hidden; box-shadow: inset -1px 0 0 rgba(0,0,0,0.35); }
-        .sg + .sg { border-left: 2px solid rgba(255,255,255,0.85); }
-        .sg-img { width: 22px; height: 22px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55)); flex: 0 0 auto; }
+        .sg { position: absolute; left: 0; right: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 1px 2px; overflow: hidden; z-index: 1; }
+        .sg.prim { padding-top: 15px; }
+        .sg-img { width: 18px; height: 18px; object-fit: contain; filter: drop-shadow(0 2px 3px rgba(0,0,0,0.55)); flex: 0 0 auto; }
         .sg-m { font-size: 10px; font-weight: 900; line-height: 1; white-space: nowrap; }
         .sg-m small { font-size: 0.85em; font-weight: 800; }
-        .sg-h { font-size: 9px; font-weight: 900; line-height: 1; padding: 1px 3px; border-radius: 4px; background: rgba(0,0,0,0.45); color: #fff; white-space: nowrap; }
-        .sg-angosto .sg-img { width: 16px; height: 16px; }
-        .sg-angosto .sg-m { font-size: 8.5px; } .sg-angosto .sg-m small { display: none; }
-        .sg-angosto .sg-h { font-size: 8px; padding: 1px 2px; }
-        .sg-vacio { background: repeating-linear-gradient(135deg, rgba(30,30,34,0.95) 0 5px, rgba(48,48,54,0.95) 5px 10px); color: #d1d1d6; }
-        .sg-vacio .sg-h { background: transparent; color: #aeaeb2; }
+        .sg-h { font-size: 8.5px; font-weight: 900; line-height: 1; padding: 1px 3px; border-radius: 4px; background: rgba(0,0,0,0.42); color: #fff; white-space: nowrap; }
+        .sg-comp { flex-direction: row; gap: 3px; } .sg-comp .sg-m small { display: none; } .sg-comp .sg-m { font-size: 9px; }
+        .sg-vacio { color: #c7c7cc; } .sg-vacio .sg-h { background: transparent; color: #aeaeb2; }
+        .sg-raya { position: absolute; left: 0; right: 0; background: repeating-linear-gradient(135deg, rgba(255,255,255,0.07) 0 5px, transparent 5px 10px); -webkit-mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent); mask-image: linear-gradient(to bottom, transparent, #000 25%, #000 75%, transparent); }
+        .mod-esq { position: absolute; left: 0; bottom: 0; width: 20px; height: 20px; z-index: 7; pointer-events: none; background: linear-gradient(45deg, #7d7bff 50%, transparent 50%); filter: drop-shadow(1px -1px 1px rgba(0,0,0,0.45)); }
+        .mod-esq i { position: absolute; left: 1px; bottom: 0; font-style: normal; font-size: 9px; font-weight: 900; color: #fff; line-height: 1; }
+        .mod-esq.orig { background: linear-gradient(45deg, #8e8e93 50%, transparent 50%); }
+        body.printing .mod-esq { display: none; }
         .pr-seg { padding: 0; background: var(--bg-body); }
         .pr-seg .pr-et { z-index: 3; }
-        .gantt-table td.td-prisma::after { content: ''; position: absolute; inset: 0; box-shadow: inset 0 0 0 2px #7d7bff; border-radius: 2px; pointer-events: none; z-index: 4; }
+
         .prisma { position: absolute; inset: 0; transform-style: preserve-3d; transform: rotateX(0deg); transition: transform 1.6s cubic-bezier(0.45, 0, 0.2, 1); }
         .pr-cara { position: absolute; inset: 0; backface-visibility: hidden; -webkit-backface-visibility: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; padding: 17px 2px 15px; overflow: hidden; box-shadow: inset 0 0 0 1px rgba(0,0,0,0.25); transition: opacity 1.2s ease; }
         .pr-cara.c0 { transform: rotateX(0deg); }
@@ -1262,6 +1273,11 @@
         .pr-info { background: linear-gradient(160deg, #2c2b55, #1c1c2e); color: #e6e6ff; }
         .pr-st { font-size: 9.5px; font-weight: 900; padding: 1px 6px; border-radius: 6px; background: rgba(0,0,0,0.6); color: #fff; }
         .pr-st.ok { background: var(--green); color: #04210d; } .pr-st.par { background: var(--orange); color: #2a1700; } .pr-st.mal { background: var(--red); color: #fff; }
+        .gantt-table th.today-col { position: relative; box-shadow: 0 0 0 2px var(--accent), 0 8px 22px rgba(224,123,76,0.6); z-index: 3; }
+        .gantt-table th.today-col::before { content: 'HOY'; position: absolute; top: 3px; left: 50%; transform: translateX(-50%); font-size: 8px; font-weight: 900; letter-spacing: 0.5px; padding: 1px 5px; border-radius: 5px; background: #fff; color: var(--accent); z-index: 2; }
+        .gantt-table td.today-col::after { content: ''; position: absolute; inset: 0; border-left: 3px solid var(--accent); border-right: 3px solid var(--accent); background: rgba(224,123,76,0.07); pointer-events: none; z-index: 6; }
+        body.printing .gantt-table th.today-col::before, body.printing .gantt-table td.today-col::after { display: none; }
+        .legend-mod { position: relative; width: 22px; height: 22px; border-radius: 5px; background: var(--bg-cell); overflow: hidden; }
         .legend-prisma { position: relative; width: 22px; height: 22px; perspective: 120px; border-radius: 5px; overflow: hidden; }
         .legend-prisma .pr-cara { padding: 0; } .legend-prisma .c0 { background: #ff9f0a; } .legend-prisma .c1 { background: #5e5ce6; }
         body.printing .prisma { transform: none !important; transition: none !important; }
@@ -1578,11 +1594,11 @@
 
     <div class="kpi-container" id="kpiContainer"></div>
     <div class="prisma-bar" id="prismaBar" hidden>
-        <span>Turnos modificados:</span>
+        <span>Planificación a mostrar:</span>
         <div class="anim-seg" role="radiogroup" aria-label="Vista de turnos modificados">
-            <button data-v="alt" onclick="setVistaPrisma('alt')">🔄 Alternar</button>
+            <button data-v="mod" onclick="setVistaPrisma('mod')">✎ Vigente (modificado)</button>
             <button data-v="orig" onclick="setVistaPrisma('orig')">📋 Original</button>
-            <button data-v="mod" onclick="setVistaPrisma('mod')">✏️ Modificado</button>
+            <button data-v="alt" onclick="setVistaPrisma('alt')">🔄 Alternar</button>
         </div>
         <span class="pb-ind" title="Cara visible"><i class="a"></i><i class="b"></i></span>
     </div>
@@ -1903,16 +1919,16 @@
 
     <script>
         let timerPrisma = null;
-        function leerVistaPrisma() { try { return localStorage.getItem('vistaPrisma') || 'alt'; } catch (e) { return 'alt'; } }
+        function leerVistaPrisma() { let v = 'mod'; try { v = localStorage.getItem('vistaPlan') || 'mod'; } catch (e) { } return ['mod', 'orig', 'alt'].includes(v) ? v : 'mod'; }
         function setVistaPrisma(v) {
-            try { localStorage.setItem('vistaPrisma', v); } catch (e) { }
-            actualizarPrisma(true);
+            try { localStorage.setItem('vistaPlan', v); } catch (e) { }
+            if (typeof renderGantt === 'function') renderGantt(); else actualizarPrisma(true);
         }
         function actualizarPrisma(reiniciar) {
             const v = leerVistaPrisma();
             const p = leerAnimPref();
             const bar = document.getElementById('prismaBar');
-            const visible = typeof currentView !== 'undefined' && currentView === 'plan' && typeof hayPrisma !== 'undefined' && hayPrisma;
+            const visible = typeof currentView !== 'undefined' && currentView === 'plan' && typeof hayModif !== 'undefined' && hayModif;
             if (bar) {
                 bar.hidden = !visible;
                 bar.querySelectorAll('button').forEach(b => b.classList.toggle('on', b.dataset.v === v));
@@ -1920,7 +1936,7 @@
             document.body.classList.toggle('prisma-2d', p !== 'on' && sistemaSinAnim());
             if (v === 'orig') document.body.classList.remove('prisma-b');
             if (v === 'mod') document.body.classList.add('prisma-b');
-            const alternar = visible && v === 'alt' && p !== 'off';
+            const alternar = visible && v === 'alt' && hayPrisma && p !== 'off';
             if (!alternar) { clearInterval(timerPrisma); timerPrisma = null; if (v === 'alt' && p === 'off') document.body.classList.add('prisma-b'); return; }
             if (timerPrisma && !reiniciar) return;
             clearInterval(timerPrisma);
@@ -2499,9 +2515,10 @@
             html += '<div class="gh-dias">' + dias.map((ds, i) => {
                 const d = new Date(ds + 'T00:00:00'), info = tnDias ? tnDias[ds] : null;
                 const tn = info && info.real !== null && info.pasado ? `<small>${fmtTn0(info.real || 0)}${info.obj ? ` / ${fmtTn0(info.obj)}` : ''} Tn</small>` : '';
-                return `<div class="gh-dia${ds === hoy ? ' hoy' : ''}${d.getDay() === 0 ? ' dom' : ''}" style="left:${i * 24 * z}px;width:${24 * z}px" onclick="abrirGantt('${ds}')" title="Ver el detalle del día"><b>${d.toLocaleDateString('es-AR', { weekday: 'short' }).replace('.', '')} ${d.getDate()}</b>${tn}</div>`;
+                return `<div class="gh-dia${ds === hoy ? ' hoy' : ''}${d.getDay() === 0 ? ' dom' : ''}${i % 2 ? ' par' : ''}" style="left:${i * 24 * z}px;width:${24 * z}px" onclick="abrirGantt('${ds}')" title="Día productivo ${fechaCorta(ds)}: de 22:00 del día anterior a 22:00 · clic para ver el detalle"><b>${d.toLocaleDateString('es-AR', { weekday: 'short' }).replace('.', '')} ${d.getDate()}/${d.getMonth() + 1}${ds === hoy ? ' <em>HOY</em>' : ''}</b>${tn}</div>`;
             }).join('') + '</div>';
-            html += '<div class="gh-horas">' + dias.map((ds, i) => TURNOS.map(t => `<span class="gh-t" style="left:${(i * 24 + off[t]) * z}px;width:${8 * z}px">${8 * z >= 40 ? t : ''}${z >= 9 ? [0, 2, 4, 6].map(h => `<i style="left:${h * z}px">${horaTxt(TURNO_HORARIO[t].ini + h).slice(0, 2)}</i>`).join('') : ''}</span>`).join('')).join('') + '</div>';
+            html += '<div class="gh-bandas">' + dias.map((ds, i) => `<div class="gh-banda${i % 2 ? ' par' : ''}${ds === hoy ? ' hoy' : ''}" style="left:${i * 24 * z}px;width:${24 * z}px"></div>`).join('') + '</div>';
+            html += '<div class="gh-horas">' + dias.map((ds, i) => TURNOS.map(t => `<span class="gh-t${t === 'T1' ? ' t1' : ''}" style="left:${(i * 24 + off[t]) * z}px;width:${8 * z}px" title="${t} · ${horaTxt(TURNO_HORARIO[t].ini)} a ${horaTxt(TURNO_HORARIO[t].fin)}">${8 * z >= 30 ? `<b>${horaTxt(TURNO_HORARIO[t].ini)}</b>` : ''}${z >= 9 ? [2, 4, 6].map(h => `<i style="left:${h * z}px">${horaTxt(TURNO_HORARIO[t].ini + h).slice(0, 2)}</i>`).join('') : ''}</span>`).join('')).join('') + '</div>';
             html += '<div class="gh-fila gh-plan">' + ghFusionar(planS).map(sg => ghBarra(sg, z, 'plan')).join('') + pruebas.map(p => `<span class="gh-prueba" style="left:${p.x * z + 2}px" title="${escAttr('Prueba planificada: ' + p.t.moldeCompleto)}">🔬</span>`).join('') + '</div>';
             const ico = { cumplido: '✓', parcial: '◐', desvio: '✕', noplan: '➕' };
             html += '<div class="gh-fila gh-est">' + est.map(e => {
@@ -2549,7 +2566,7 @@
         function fmtTurnos(v) { return v.toLocaleString('es-AR', { maximumFractionDigits: 2 }); }
         function turnosDia(ds, tipo) {
             let t = 0;
-            TURNOS.forEach(tt => { const f = tipo === 'plan' ? fracPlan(key(ds, tt)) : fracReal(key(ds, tt)); if (f !== null) t += f; });
+            TURNOS.forEach(tt => { if (tipo !== 'plan' && estadoTurno(ds, tt) !== 'pasado') return; const f = tipo === 'plan' ? fracPlan(key(ds, tt)) : fracReal(key(ds, tt)); if (f !== null) t += f; });
             return t;
         }
         function factorHoras(k, datos) { const h = horasPlanTurno(k, datos); return h === null ? 1 : h / HORAS_TURNO; }
@@ -3005,19 +3022,47 @@
         function segmentosHtml(tasks, turno) {
             const v = ventanasProd(tasks);
             const ini = TURNO_HORARIO[turno] ? TURNO_HORARIO[turno].ini : 0;
-            const partes = [];
+            const tramos = [];
             let cursor = 0;
-            const hueco = (a, b) => { if (b - a > 0.01) partes.push(`<div class="sg sg-vacio" style="left:${(a / HORAS_TURNO * 100).toFixed(2)}%;width:${((b - a) / HORAS_TURNO * 100).toFixed(2)}%" title="${horaTxt(ini + a)}–${horaTxt(ini + b)} · sin producción planificada"><span class="sg-h">${fmtDias(b - a)} h</span></div>`); };
-            v.forEach(w => {
-                hueco(cursor, w.ini);
-                const m = w.t;
-                const col = getBrickColor(m.baseName, m.number), txt = pickTextColor(col);
-                const ancho = w.dur / HORAS_TURNO;
-                partes.push(`<div class="sg${ancho < 0.6 ? ' sg-angosto' : ''}" style="left:${(w.ini / HORAS_TURNO * 100).toFixed(2)}%;width:${(ancho * 100).toFixed(2)}%;background:${col};color:${txt}" title="${horaTxt(ini + w.ini)}–${horaTxt(ini + w.ini + w.dur)} · ${escAttr(m.moldeCompleto)} · ${fmtDias(w.dur)} h"><img src="${getImageSrc(m.baseName)}" class="sg-img" onerror="this.src='${FALLBACK_IMG}'" alt=""><b class="sg-m">${escAttr(m.baseName)}<small>·${m.number}</small></b><span class="sg-h">${fmtDias(w.dur)} h</span></div>`);
-                cursor = Math.max(cursor, w.ini + w.dur);
-            });
+            const hueco = (a, b) => { if (b - a > 0.01) tramos.push({ a, b, vacio: true }); };
+            v.forEach(w => { hueco(cursor, w.ini); tramos.push({ a: w.ini, b: w.ini + w.dur, t: w.t }); cursor = Math.max(cursor, w.ini + w.dur); });
             hueco(cursor, HORAS_TURNO);
-            return `<div class="seg-turno">${partes.join('')}</div>`;
+            const VACIO = '#26262b';
+            const col = tr => tr.vacio ? VACIO : getBrickColor(tr.t.baseName, tr.t.number);
+            const pct = h => h / HORAS_TURNO * 100;
+            const fundido = 7;
+            const stops = [];
+            tramos.forEach((tr, i) => {
+                const c = col(tr), a = pct(tr.a), b = pct(tr.b);
+                const ia = i ? Math.min(b, a + fundido) : a, ib = i < tramos.length - 1 ? Math.max(ia, b - fundido) : b;
+                stops.push(`${c} ${ia.toFixed(1)}%`, `${c} ${ib.toFixed(1)}%`);
+            });
+            const contenido = tramos.map((tr, i) => {
+                const alto = (tr.b - tr.a) / HORAS_TURNO;
+                const estilo = `top:${pct(tr.a).toFixed(1)}%;height:${(alto * 100).toFixed(1)}%`;
+                const tip = `${horaTxt(ini + tr.a)}–${horaTxt(ini + tr.b)} · ${tr.vacio ? 'sin producción planificada' : escAttr(tr.t.moldeCompleto)} · ${fmtDias(tr.b - tr.a)} h`;
+                if (tr.vacio) return `<div class="sg sg-vacio${i === 0 ? ' prim' : ''}" style="${estilo}" title="${tip}"><span class="sg-h">${fmtDias(tr.b - tr.a)} h</span></div>`;
+                const txt = pickTextColor(col(tr));
+                const compacto = alto < 0.4;
+                return `<div class="sg${compacto ? ' sg-comp' : ''}${i === 0 ? ' prim' : ''}" style="${estilo};color:${txt}" title="${tip}">${compacto ? '' : `<img src="${getImageSrc(tr.t.baseName)}" class="sg-img" onerror="this.src='${FALLBACK_IMG}'" alt="">`}<b class="sg-m">${escAttr(tr.t.baseName)}<small>·${tr.t.number}</small></b><span class="sg-h">${fmtDias(tr.b - tr.a)} h</span></div>`;
+            }).join('');
+            const rayas = tramos.filter(tr => tr.vacio).map(tr => `<div class="sg-raya" style="top:${pct(tr.a).toFixed(1)}%;height:${pct(tr.b - tr.a).toFixed(1)}%"></div>`).join('');
+            return `<div class="seg-turno" style="background:linear-gradient(to bottom, ${stops.join(', ')})">${rayas}${contenido}</div>`;
+        }
+        function descPlan(tasks) {
+            const v = ventanasProd(tasks);
+            if (!v.length) return 'sin producción';
+            return v.map(w => `${w.t.baseName}·${w.t.number}${w.dur < HORAS_TURNO - 0.01 ? ` ${fmtDias(w.dur)} h` : ''}`).join(' + ');
+        }
+        function textoModif(k) {
+            const mods = modTurnos.get(k) || [];
+            const m = mods.slice(-1)[0];
+            const orig = descPlan(planBase ? planBase[k] : null), act = descPlan((planUltimo || planData)[k]);
+            return `✎ Turno modificado${m ? ` · ${m.tipo}` : ' · plan cargado después del cierre'}\nOriginal: ${orig}\nVigente: ${act}${m && m.motivo ? `\n📝 ${m.sector ? m.sector + ' · ' : ''}${m.motivo}${m.justificacion ? ' – ' + m.justificacion : ''}` : ''}`;
+        }
+        function marcaModif(k, turno) {
+            const orig = leerVistaPrisma() === 'orig';
+            return `<span class="mod-esq${orig ? ' orig' : ''}" aria-hidden="true"><i>${orig ? 'O' : '✎'}</i></span>`;
         }
         function caraPrisma(tasks, etiqueta, cls, turno) {
             const seq = getProdSeq(tasks);
@@ -3269,7 +3314,13 @@
 
         function mesClave() { return `${currentDate.getFullYear()}-${String(currentDate.getMonth() + 1).padStart(2, '0')}`; }
 
+        function planVista() { return leerVistaPrisma() === 'orig' ? (planBase || planData) : (planUltimo || planData); }
         function renderGantt() {
+            if (currentView === 'plan' && !printState) return conPlan(planVista(), renderGanttInterno);
+            return renderGanttInterno();
+        }
+
+        function renderGanttInterno() {
             const wrapper = document.getElementById('ganttWrapper');
             const year = currentDate.getFullYear(), month = currentDate.getMonth();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
@@ -3280,7 +3331,7 @@
             const colWidthCalc = `calc((100% - ${turnoWidth}px) / ${daysInMonth})`;
             const precalc = {}; const changeDays = new Set(); const testDays = new Set();
             const visibles = new Map(); const fueraVisibles = new Set();
-            let hayMulti = false, hayAviso = false; hayPrisma = false;
+            let hayMulti = false, hayAviso = false; hayPrisma = false; hayModif = false;
 
             const ultimoAntes = (data, ds0) => {
                 for (let i = 1; i <= 15; i++) {
@@ -3333,13 +3384,13 @@
                 if (aviso) markers += `<div class="mold-warn mw-${aviso.nivel}">!</div>`;
                 let extraAttr = '', onclick = `abrirGantt('${dateStr}')`;
                 const pc = postCierre.get(k);
-                const esPrisma = currentView === 'plan' && cambioPlan(k);
+                const esModif = currentView === 'plan' && !printState && cambioPlan(k);
+                const esPrisma = esModif && leerVistaPrisma() === 'alt';
+                if (esModif) { hayModif = true; markers += marcaModif(k, turno); }
                 if (currentView === 'plan') {
                     const ids = bloquesMes.porTurno.get(k) || [];
                     const mov = movPlan.get(k);
-                    const mods = esPrisma ? null : modTurnos.get(k);
-                    const pcB = esPrisma ? null : pc;
-                    if (mov || mods || pcB) markers += badgesMovimiento(mov || [], mods || [], k, pcB);
+                    if (mov) markers += badgesMovimiento(mov, [], k, null);
                     if (ids.length) {
                         if (seleccionCompras) { extraAttr = ` data-bq="${ids.join(' ')}"`; onclick = `abrirBloque('${ids[ids.length - 1]}')`; }
                     }
@@ -3348,15 +3399,15 @@
                 const solK = currentView === 'plan' ? (movPlan.get(k) || []).filter(ev => ev.tipo === 'sol') : [];
                 const clsSol = solK.length ? ` rec-anc rec-${infoEstadoRec(solK[solK.length - 1].r.estado).cls}` : '';
                 if (pc && currentView === 'cumpl') { const b = badgePostCierre(k, pc); if (b) markers += `<div class="mv-wrap">${b}</div>`; }
-                const clsMod = (modsK ? (modsK[modsK.length - 1].tipo === 'Quitar producción' ? ' td-mod td-quitado' : ' td-mod') : '') + (pc && currentView !== 'prod' ? ' td-postcierre' : '');
+                const clsMod = currentView === 'plan' ? (esModif ? ' td-modif' : '') : (modsK ? (modsK[modsK.length - 1].tipo === 'Quitar producción' ? ' td-mod td-quitado' : ' td-mod') : '') + (pc && currentView !== 'prod' ? ' td-postcierre' : '');
                 const cls = `${extraCls} ${parts.cls}${clsMod}${clsSol}${estadoTurno(dateStr, turno) === 'actual' ? ' turno-actual' : ''}${seleccionCompras && extraAttr ? ' bq-sel' : ''}`;
-                const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (modsK ? `\n\n✏️ Modificado: ${modsK[modsK.length - 1].tipo}\n📝 ${modsK[modsK.length - 1].justificacion}` : '') + (pc && currentView !== 'prod' ? '\n\n' + textoPostCierre(k, pc) : '') + (seleccionCompras && extraAttr ? '\n\n💼 Clic para recomendar cambios en este bloque' : '');
+                const tooltip = buildTooltip(dateStr, turno, dateObj, pre, k, aviso) + (currentView === 'plan' ? (esModif ? '\n\n' + textoModif(k) : '') : (modsK ? `\n\n✏️ Modificado: ${modsK[modsK.length - 1].tipo}\n📝 ${modsK[modsK.length - 1].justificacion}` : '') + (pc && currentView !== 'prod' ? '\n\n' + textoPostCierre(k, pc) : '')) + (seleccionCompras && extraAttr ? '\n\n💼 Clic para recomendar cambios en este bloque' : '');
                 if (esPrisma) {
                     hayPrisma = true;
-                    return `<td class="${cls} td-prisma"${extraAttr} style="--d:${idx};${extraStyle}" title="${escAttr(tooltip + '\n\n⟲ La celda alterna entre el plan original y el modificado. Elegí la vista con los botones arriba del calendario. Los desvíos se ven en la vista Cumplimiento.')}" onclick="${onclick}">${tnHtml}${markers}${prismaHtml(k, dateStr, turno)}</td>`;
+                    return `<td class="${cls} td-prisma${clsMod}"${extraAttr} style="--d:${idx};${extraStyle}" title="${escAttr(tooltip + '\n\n⟲ La celda alterna entre el plan original y el modificado. Elegí la vista con los botones arriba del calendario. Los desvíos se ven en la vista Cumplimiento.')}" onclick="${onclick}">${tnHtml}${markers}${prismaHtml(k, dateStr, turno)}</td>`;
                 }
                 if (currentView === 'plan' && turnoDividido(planData[k])) {
-                    return `<td class="${cls} td-seg"${extraAttr} style="--d:${idx};${extraStyle}" title="${escAttr(tooltip)}" onclick="${onclick}">${tnHtml}${markers}${segmentosHtml(planData[k], turno)}</td>`;
+                    return `<td class="${cls} td-seg${clsMod}"${extraAttr} style="--d:${idx};${extraStyle}" title="${escAttr(tooltip)}" onclick="${onclick}">${tnHtml}${markers}${segmentosHtml(planData[k], turno)}</td>`;
                 }
                 const ov = overlayHoras(currentView === 'plan' ? fracPlan(k) : (estadoTurno(dateStr, turno) === 'futuro' ? null : fracReal(k)));
                 return `<td class="${cls}"${extraAttr} style="--d:${idx};${extraStyle}${parts.style}" title="${escAttr(tooltip)}" onclick="${onclick}">${ov}${tnHtml}${markers}${parts.content}</td>`;
@@ -3599,7 +3650,7 @@
             else h += `<div class="legend-item"><span class="tn-tag static">250</span><span>Tn producidas en el turno</span></div>`;
             }
             h += `<div class="legend-item lg-live"><div class="legend-now"></div><span>Turno en curso</span></div>`;
-            if (currentView === 'plan' && hayPrisma) h += `<div class="legend-item"><div class="legend-prisma"><div class="prisma"><div class="pr-cara c0"></div><div class="pr-cara c1"></div></div></div><span>Turno modificado: alterna plan original ↔ modificado</span></div>`;
+            if (currentView === 'plan' && hayModif) h += `<div class="legend-item"><div class="legend-mod"><span class="mod-esq"><i>✎</i></span></div><span>Turno modificado respecto del plan original (pasá el mouse para ver el detalle)</span></div>`;
             if (currentView === 'plan' && moldesExt.recomendaciones.some(r => r.mes === mesClave())) {
                 h += `<div class="legend-item lg-live"><span class="mv mv-sol pend static">💼<b>?</b></span><span class="mv mv-sol anal static">💼<b>…</b></span><span>Solicitud de Comercial pendiente / en análisis (celda con borde azul / naranja)</span></div>`;
                 h += `<div class="legend-item lg-live"><span class="mv mv-sol ok static">💼<b>✓</b></span><span>Solicitud aceptada (borde verde)</span></div>`;
@@ -3635,7 +3686,7 @@
                 if (!tipos.has(clave)) tipos.set(clave, { nombre, color: getBrickColor(base, 2), plan: 0, planComp: 0, real: 0, turnosPlan: 0, turnosReal: 0, sinProm: false, prom: null });
                 return tipos.get(clave);
             };
-            let planTotal = 0, planComp = 0, realTotal = 0, turnosProd = 0, turnosPlan = 0;
+            let planTotal = 0, planComp = 0, realTotal = 0, turnosProd = 0, turnosPlan = 0, tnCerrados = 0;
             for (let d = 1; d <= dias; d++) {
                 const ds = formatYYYYMMDD(new Date(year, month, d));
                 TURNOS.forEach(t => {
@@ -3645,7 +3696,7 @@
                     const seq = tpo ? tpo.partes.map(x => x.t) : getProdSeq(planData[k]);
                     const hs = tpo ? tpo.partes.map(x => x.h) : durSeq(planData[k]);
                     const hTot = hs.reduce((a, b) => a + b, 0) || 1;
-                    if (seq.length) turnosPlan++;
+                    if (seq.length) turnosPlan += Math.min(HORAS_TURNO, hs.reduce((a, b) => a + b, 0)) / HORAS_TURNO;
                     seq.forEach((m, i) => {
                         const nomTipo = currentView === 'plan' ? tipoProducto(m) : tipoVelocidad(m);
                         const it = item(claveTipo(nomTipo), nomTipo, m.baseName);
@@ -3656,7 +3707,7 @@
                     });
                     const tr = tnRealTurno(k);
                     if (tr) {
-                        turnosProd++;
+                        if (pasado) { turnosProd += fracReal(k) || 0; tnCerrados += tr.filas.reduce((a, f) => a + f.tn, 0); }
                         tr.filas.forEach(f => {
                             const res = resolverMolde(f.tipo.includes('(') ? f.tipo : f.tipo + ' (1)');
                             const nombre = moldesExt.informe ? f.tipo : tipoProducto({ baseName: getBaseName(res.molde), variante: res.variante });
@@ -3668,7 +3719,7 @@
                 });
             }
             tipos.forEach(it => { planTotal += it.plan; planComp += it.planComp; realTotal += it.real; });
-            return { tipos: [...tipos.values()], planTotal, planComp, realTotal, turnosProd, turnosPlan };
+            return { tipos: [...tipos.values()], planTotal, planComp, realTotal, turnosProd, turnosPlan, tnCerrados };
         }
 
         function tarjetaTipos(titulo, filas, modo) {
@@ -3711,11 +3762,11 @@
             let h = '';
             if (currentView === 'plan') {
                 h += cardTipos;
-                h += `<div class="kpi-card"><div class="kpi-label">Tn planificadas</div><div class="kpi-value">${hayProm ? fmtTn0(res.planTotal) : '–'}</div><div class="kpi-sub">${res.turnosPlan} turnos de producción${hayProm ? '' : ' · sin datos del informe'}</div></div>`;
+                h += `<div class="kpi-card"><div class="kpi-label">Tn planificadas</div><div class="kpi-value">${hayProm ? fmtTn0(res.planTotal) : '–'}</div><div class="kpi-sub">${fmtTurnos(res.turnosPlan)} turnos de producción${currentView === 'plan' ? (leerVistaPrisma() === 'orig' ? ' · plan original' : ' · plan vigente') : ''}${hayProm ? '' : ' · sin datos del informe'}</div></div>`;
                 h += tarjetaTipos('Tn planificadas por tipo de ladrillo', planTipos, 'plan');
             } else if (currentView === 'prod') {
-                const prom = res.turnosProd ? res.realTotal / res.turnosProd : 0;
-                h += `<div class="kpi-card"><div class="kpi-label">Tn producidas (acum.)</div><div class="kpi-value">${moldesExt.cargado ? fmtTn0(res.realTotal) : '–'}</div><div class="kpi-sub">${res.turnosProd} turnos · prom. ${fmtTn0(prom)} Tn/turno</div></div>`;
+                const prom = res.turnosProd ? res.tnCerrados / res.turnosProd : 0;
+                h += `<div class="kpi-card"><div class="kpi-label">Tn producidas (acum.)</div><div class="kpi-value">${moldesExt.cargado ? fmtTn0(res.realTotal) : '–'}</div><div class="kpi-sub" title="Turnos cerrados con producción, según sus horas (Bal-Paradas). El turno en curso no se cuenta hasta que termina.">${fmtTurnos(res.turnosProd)} turnos cerrados · prom. ${fmtTn0(prom)} Tn/turno</div></div>`;
                 h += `<div class="kpi-card"><div class="kpi-label">Tipos producidos</div><div class="kpi-value">${realTipos.length}</div><div class="mini-chips">${realTipos.map(t => `<span class="mini-chip" style="background:${t.color}; color:${pickTextColor(t.color)}">${escAttr(t.nombre)}</span>`).join('')}</div></div>`;
                 h += tarjetaTipos('Tn producidas por tipo de ladrillo', realTipos, 'prod');
             } else {
@@ -3969,7 +4020,7 @@
 
         function renderDesvios() {
             const cont = document.getElementById('desviosInfo');
-            if (currentView !== 'cumpl' && currentView !== 'plan') { cont.style.display = 'none'; cont.innerHTML = ''; return; }
+            if (currentView !== 'cumpl') { cont.style.display = 'none'; cont.innerHTML = ''; return; }
             const editor = modo === 'produccion';
             const base = currentView === 'plan' ? filasRegistro().filter(f => f.tipo === 'mod') : filasRegistro();
             const todos = editor ? base : base.filter(f => f.just);
@@ -5263,6 +5314,7 @@
         let planObjetivo = null;
         let planUltimo = null;
         let hayPrisma = false;
+        let hayModif = false;
         let modTurnos = new Map();
         let postCierre = new Map();
 
